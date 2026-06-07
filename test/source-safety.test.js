@@ -32,11 +32,25 @@ test("surf rating UI avoids numeric precision labels", () => {
   assert.match(mainSource, /rating\.label/);
 });
 
-test("camera list rows keep only pre-click surf decision signals", () => {
-  assert.match(mainSource, /windFit\.textContent = rating\.wind\.alignment/);
-  assert.doesNotMatch(mainSource, /conditions\.append\(score, wave, coast, wind\)/);
-  assert.doesNotMatch(mainSource, /wind\.textContent = rating\.wind\.label/);
-  assert.doesNotMatch(mainSource, /coast\.textContent = exposure\.shortLabel/);
+test("Best Today cards expose practical pre-click decision signals", () => {
+  assert.match(mainSource, /surfDecision\(camera,\s*index\)/);
+  assert.match(mainSource, /decision\.tide/);
+  assert.match(mainSource, /decision\.wind/);
+  assert.match(mainSource, /decision\.swell/);
+  assert.match(mainSource, /decision\.period/);
+  assert.match(mainSource, /decision\.confidence\.label/);
+  assert.match(mainSource, /decision\.abilityFit/);
+  assert.match(mainSource, /decision\.reason/);
+});
+
+test("main UI wires Best Today monitor helpers", () => {
+  assert.match(mainSource, /surfDecision/);
+  assert.match(mainSource, /monitorTileData/);
+  assert.match(mainSource, /buildGroupSummary/);
+  assert.match(mainSource, /createMonitorSelection/);
+  assert.match(mainSource, /Add to Monitor/);
+  assert.match(mainSource, /MONITOR_DURATION_SECONDS\s*=\s*60/);
+  assert.match(mainSource, /navigator\.clipboard\.writeText/);
 });
 
 test("direction visualization notes can wrap instead of truncating", () => {
@@ -46,4 +60,12 @@ test("direction visualization notes can wrap instead of truncating", () => {
   assert.match(noteRule, /white-space:\s*normal/);
   assert.match(noteRule, /overflow-wrap:\s*anywhere/);
   assert.doesNotMatch(noteRule, /text-overflow:\s*ellipsis/);
+});
+
+test("styles define responsive Best Today and monitor deck behavior", () => {
+  assert.match(styleSource, /\.best-today/);
+  assert.match(styleSource, /\.monitor-bar/);
+  assert.match(styleSource, /\.monitor-grid/);
+  assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(styleSource, /@media \(max-width:\s*760px\)[\s\S]*\.monitor-grid/);
 });

@@ -37,3 +37,16 @@ test("index includes the condition direction visualization shell", () => {
   assert.match(html, /id="windVector"/);
   assert.match(html, /id="swellVector"/);
 });
+
+test("index includes Best Today and monitor deck shells", () => {
+  assert.match(html, /id="bestTodayTitle"/);
+  assert.match(html, /id="monitorCount"/);
+  assert.match(html, /id="monitorButton"/);
+  assert.match(html, /id="clearMonitorButton"/);
+  assert.match(html, /id="monitorDeck"/);
+  assert.match(html, /id="monitorGrid"/);
+  assert.match(html, /id="monitorCountdown"/);
+  assert.match(html, /id="stopMonitorButton"/);
+  assert.match(html, /id="runMonitorAgainButton"/);
+  assert.match(html, /id="copySummaryButton"/);
+});

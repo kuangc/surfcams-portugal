@@ -6095,6 +6095,22 @@
         <h1>Surfcams Portugal</h1>
       </header>
 
+      <section class="best-today" aria-labelledby="bestTodayTitle">
+        <div class="section-heading">
+          <div>
+            <span class="brand__eyebrow">Decision board</span>
+            <h2 id="bestTodayTitle">Best Today</h2>
+          </div>
+          <span class="monitor-count" id="monitorCount">0/6 selected</span>
+        </div>
+        <section class="list best-today__list" id="cameraList" aria-label="Best Today ranked camera list"></section>
+        <div class="monitor-bar">
+          <button class="primary-button monitor-bar__primary" type="button" id="monitorButton" disabled>Monitor for 1 min</button>
+          <button class="secondary-button" type="button" id="clearMonitorButton" disabled>Clear</button>
+        </div>
+        <div class="list-note" id="listNote">Loading cameras.</div>
+      </section>
+
       <section class="stats">
         <div class="stat">
           <span class="meta-label">Cams</span>
@@ -6143,9 +6159,6 @@
           <span>Favorites only</span>
         </label>
       </section>
-
-      <section class="list" id="cameraList" aria-label="Camera list"></section>
-      <div class="list-note" id="listNote">Loading cameras.</div>
     </aside>
 
     <main class="map-wrap">
@@ -6205,6 +6218,24 @@
       </div>
     </aside>
   </div>
+
+  <section class="monitor-deck" id="monitorDeck" aria-label="Monitor selected cameras" hidden>
+    <div class="monitor-deck__panel">
+      <header class="monitor-deck__header">
+        <div>
+          <span class="brand__eyebrow">Monitor Deck</span>
+          <h2>Watch shortlist</h2>
+        </div>
+        <strong class="monitor-deck__timer" id="monitorCountdown">60s</strong>
+      </header>
+      <div class="monitor-grid" id="monitorGrid"></div>
+      <div class="monitor-deck__actions">
+        <button class="secondary-button" type="button" id="stopMonitorButton">Stop</button>
+        <button class="secondary-button" type="button" id="runMonitorAgainButton">Run again</button>
+        <button class="primary-button" type="button" id="copySummaryButton">Copy group summary</button>
+      </div>
+    </div>
+  </section>
 
   <script type="module" src="./src/main.js"></script>
 </body>
