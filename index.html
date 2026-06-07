@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A private, ad-free Portugal surfcam viewer built from indexed Beachcam/MEO public camera pages.">
   <title>Surfcams Portugal</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQPDYqTe7z7kD/nAJwiC2z3yZgUllhA=" crossorigin="anonymous">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
   <link rel="stylesheet" href="./src/styles/app.css">
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
   <script id="embeddedCameraDb" type="application/json">{
@@ -6100,8 +6101,8 @@
           <strong id="totalCount">0</strong>
         </div>
         <div class="stat">
-          <span class="meta-label">Feeds</span>
-          <strong id="streamCount">0</strong>
+          <span class="meta-label">Good</span>
+          <strong id="fitCount">0</strong>
         </div>
         <div class="stat">
           <span class="meta-label">Shown</span>
@@ -6118,8 +6119,27 @@
           <label for="regionSelect">Region</label>
           <select id="regionSelect"></select>
         </div>
+        <div class="toggle-row toggle-row--with-info">
+          <label class="toggle-row__label">
+            <input id="fitOnly" type="checkbox">
+            <span>Good for us</span>
+          </label>
+          <details class="info-popover">
+            <summary aria-label="Explain Good for us">i</summary>
+            <div class="info-popover__body" id="fitExplanation">
+              <strong>Good for us</strong>
+              <p>Shows spots that match the group's must-haves, then ranks them with Surfline-style model rating labels.</p>
+              <ul>
+                <li>Waves must be in the 0.3-1.5m range.</li>
+                <li>Wind must be offshore and 18 km/h or less.</li>
+                <li>Best model matches show as Fair to Good; weaker matches step down through Fair, Poor to Fair, Poor, and Very Poor.</li>
+                <li>Unknown coast exposure is not treated as offshore.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
         <label class="toggle-row">
-          <input id="favoriteOnly" type="checkbox" checked>
+          <input id="favoriteOnly" type="checkbox">
           <span>Favorites only</span>
         </label>
       </section>
@@ -6141,6 +6161,34 @@
           <input id="detailFavorite" type="checkbox">
           <span>Favorite</span>
         </label>
+        <div class="surf-callout">
+          <strong class="surf-badge" id="surfBadge" data-rating="poor-to-fair">Poor to Fair</strong>
+          <p id="surfSummary">Wave and wind fit will appear here.</p>
+          <ul class="rating-reasons" id="ratingReasons"></ul>
+        </div>
+        <section class="condition-visual" id="conditionVisual" aria-label="Coast, wind, and swell directions">
+          <div class="vector-row" id="coastVector">
+            <span class="vector-arrow" aria-hidden="true"></span>
+            <div>
+              <strong class="vector-label">Coast</strong>
+              <span class="vector-note">Exposure will appear here.</span>
+            </div>
+          </div>
+          <div class="vector-row" id="windVector">
+            <span class="vector-arrow" aria-hidden="true"></span>
+            <div>
+              <strong class="vector-label">Wind</strong>
+              <span class="vector-note">Wind direction will appear here.</span>
+            </div>
+          </div>
+          <div class="vector-row" id="swellVector">
+            <span class="vector-arrow" aria-hidden="true"></span>
+            <div>
+              <strong class="vector-label">Swell</strong>
+              <span class="vector-note">Swell direction will appear here.</span>
+            </div>
+          </div>
+        </section>
       </header>
 
       <div class="video-shell">
@@ -6150,15 +6198,10 @@
       <section class="metadata">
         <p class="description" id="description"></p>
         <div class="metadata-grid" id="metadataGrid"></div>
-        <p class="stream-url" id="streamUrl"></p>
       </section>
 
       <div>
-        <div class="button-grid">
-          <button class="primary-button" type="button" id="playButton">Play Feed</button>
-          <button class="secondary-button" type="button" id="copyButton">Copy URL</button>
-        </div>
-        <p class="legal">Personal prototype. Camera streams and page content belong to Beachcam/MEO; do not redistribute without permission.</p>
+        <button class="primary-button action-button" type="button" id="playButton">Play Feed</button>
       </div>
     </aside>
   </div>

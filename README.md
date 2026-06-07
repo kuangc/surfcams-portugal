@@ -2,12 +2,15 @@
 
 Ad-free personal viewer for Portugal surf cameras indexed from public Beachcam/MEO livecam pages.
 
-The app opens directly to a map and camera list, filters out unavailable streams, defaults to a small favorites set, and lets each browser choose its own favorites with `localStorage`.
+The app opens directly to a map and score-ranked camera list, filters out unavailable streams, and lets each browser choose its own favorites with `localStorage`.
 
 ## Features
 
 - Interactive Leaflet map of indexed Portugal cameras with live HLS feeds.
-- Favorites-first workflow with defaults for Estoril, Riviera, Sesimbra, São Julião, Fonte da Telha Norte, and Peniche Lagide.
+- Surfline-style model rating labels for small-group sessions, using Beachcam wave, wind, period, tide, and spot/coast mechanics.
+- "Good for us" filtering for in-window waves, offshore wind, and light-wind conditions.
+- Focused pre-click rows with rating, estimated surf size, and wind fit; detailed wind, swell, and exposure vectors live in the selected spot panel.
+- Favorites workflow with defaults for Estoril, Riviera, Sesimbra, São Julião, Fonte da Telha Norte, and Peniche Lagide.
 - Default map bounds covering Baleal/Peniche in the north and Sesimbra in the south.
 - No advertising, tracking code, backend, login, or build step.
 - Embedded camera database fallback so GitHub Pages works without an API server.

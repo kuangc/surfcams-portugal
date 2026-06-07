@@ -8,6 +8,7 @@ Surfcams Portugal is a static web app. It has no backend, build step, database s
 - `src/main.js` owns the UI controller for map markers, filters, list rows, details, and events.
 - `src/camera-data.js` loads the embedded DB first and falls back to `data/beachcam-cameras.json`.
 - `src/favorites.js` owns default favorites and browser persistence.
+- `src/surf-rating.js` maps camera conditions into Surfline-style model labels, applies spot-level shelter/exposure mechanics where known, and exposes wind, swell, and coast-exposure vectors for the UI.
 - `src/video-player.js` owns HLS playback and lazy-loads hls.js only when the browser needs it.
 - `src/styles/app.css` contains the app layout and visual system.
 
@@ -20,4 +21,3 @@ Surfcams Portugal is a static web app. It has no backend, build step, database s
 ## Deployment
 
 The repository can be served as static files from GitHub Pages. Use the root directory as the Pages source.
-

@@ -7,7 +7,8 @@ import {
 } from "./camera-filters.js";
 import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS, MAX_CAMERA_LIST_ROWS } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
-import { formatRegion } from "./format.js";
+import { formatRegion, formatTideState } from "./format.js";
+import { getConditionVectors, rateSurfSpot } from "./surf-rating.js";
 import { createVideoPlayer } from "./video-player.js";
 
 const state = {
@@ -24,22 +25,27 @@ const state = {
 const els = {
   mapStatus: document.querySelector("#mapStatus"),
   totalCount: document.querySelector("#totalCount"),
-  streamCount: document.querySelector("#streamCount"),
+  fitCount: document.querySelector("#fitCount"),
   shownCount: document.querySelector("#shownCount"),
   searchInput: document.querySelector("#searchInput"),
   regionSelect: document.querySelector("#regionSelect"),
+  fitOnly: document.querySelector("#fitOnly"),
   favoriteOnly: document.querySelector("#favoriteOnly"),
   cameraList: document.querySelector("#cameraList"),
   listNote: document.querySelector("#listNote"),
   detailName: document.querySelector("#detailName"),
   detailLocation: document.querySelector("#detailLocation"),
   detailFavorite: document.querySelector("#detailFavorite"),
+  surfBadge: document.querySelector("#surfBadge"),
+  surfSummary: document.querySelector("#surfSummary"),
+  ratingReasons: document.querySelector("#ratingReasons"),
+  coastVector: document.querySelector("#coastVector"),
+  windVector: document.querySelector("#windVector"),
+  swellVector: document.querySelector("#swellVector"),
   description: document.querySelector("#description"),
   metadataGrid: document.querySelector("#metadataGrid"),
-  streamUrl: document.querySelector("#streamUrl"),
   video: document.querySelector("#video"),
-  playButton: document.querySelector("#playButton"),
-  copyButton: document.querySelector("#copyButton")
+  playButton: document.querySelector("#playButton")
 };
 
 const videoPlayer = createVideoPlayer({
@@ -63,9 +69,11 @@ function toggleFavorite(camera, checked) {
 }
 
 function markerIcon(camera, active = false) {
+  const rating = rateSurfSpot(camera);
+
   return L.divIcon({
     className: "",
-    html: `<span class="cam-marker" data-live="${camera.hasStream}" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}"></span>`,
+    html: `<span class="cam-marker" data-live="${camera.hasStream}" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}" data-rating="${rating.key}"></span>`,
     iconSize: active ? [28, 28] : [20, 20],
     iconAnchor: active ? [14, 14] : [10, 10],
     popupAnchor: [0, -12]
@@ -90,16 +98,61 @@ function createMetadataItem(label, value) {
 }
 
 function renderMetadata(camera) {
+  const rating = rateSurfSpot(camera);
+  const vectors = getConditionVectors(camera);
+  const tideState = formatTideState(camera.forecast?.tideState);
+  const tide = [tideState, camera.forecast?.tide].filter(Boolean).join(" ");
   const metrics = [
-    createMetadataItem("Wave", camera.forecast?.wave),
-    createMetadataItem("Tide", camera.forecast?.tide),
-    createMetadataItem("Wind", camera.forecast?.wind),
-    createMetadataItem("Wind Dir", camera.forecast?.windDirection),
+    createMetadataItem("Surf", rating.wave.label),
+    rating.wave.estimated ? createMetadataItem("Source Swell", camera.forecast?.wave) : null,
+    createMetadataItem("Period", camera.detailMetrics?.["Período das ondas"]),
+    createMetadataItem("Swell Dir", vectors.swell.label.replace("Swell from ", "")),
+    createMetadataItem("Wind", rating.wind.label),
+    createMetadataItem("Wind Fit", rating.wind.alignment),
+    createMetadataItem("Coast", vectors.coast.label),
+    createMetadataItem("Tide", tide),
     createMetadataItem("Sea Temp", camera.detailMetrics?.["Temp. do mar"])
   ].filter(Boolean);
 
   els.metadataGrid.textContent = "";
   els.metadataGrid.append(...metrics);
+}
+
+function renderVector(vectorEl, label, vector, note = "") {
+  const arrow = vectorEl.querySelector(".vector-arrow");
+  const labelEl = vectorEl.querySelector(".vector-label");
+  const noteEl = vectorEl.querySelector(".vector-note");
+  const hasBearing = Number.isFinite(vector.bearing);
+  const arrowBearing = Number.isFinite(vector.arrowBearing) ? vector.arrowBearing : vector.bearing;
+
+  arrow.dataset.known = String(hasBearing);
+  arrow.style.setProperty("--bearing", `${hasBearing ? arrowBearing : 0}deg`);
+  labelEl.textContent = label;
+  noteEl.textContent = note || vector.label;
+}
+
+function renderConditionVisual(camera) {
+  const vectors = getConditionVectors(camera);
+
+  renderVector(els.coastVector, "Coast", vectors.coast, `${vectors.coast.label} (${vectors.coast.confidence})`);
+  renderVector(els.windVector, "Wind", vectors.wind, `${vectors.wind.label} · ${vectors.wind.alignment}`);
+  renderVector(els.swellVector, "Swell", vectors.swell);
+}
+
+function renderSurfRating(camera) {
+  const rating = rateSurfSpot(camera);
+  const surfSize = rating.wave.estimated ? rating.wave.label : `${rating.wave.label} waves`;
+
+  els.surfBadge.textContent = rating.label;
+  els.surfBadge.dataset.rating = rating.key;
+  els.surfSummary.textContent = `${surfSize} · ${rating.wind.label} · ${rating.period.label} period`;
+  els.ratingReasons.textContent = "";
+
+  rating.reasons.forEach((reason) => {
+    const item = document.createElement("li");
+    item.textContent = reason;
+    els.ratingReasons.appendChild(item);
+  });
 }
 
 function findCameraRow(cameraId) {
@@ -124,10 +177,10 @@ function selectCamera(camera, options = {}) {
   els.detailName.textContent = camera.name;
   els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
   els.description.textContent = camera.description || "";
-  els.streamUrl.textContent = camera.streamUrl || "No stream URL indexed.";
   els.playButton.disabled = !camera.streamUrl;
-  els.copyButton.disabled = !camera.streamUrl;
   els.detailFavorite.checked = state.favoriteIds.has(camera.id);
+  renderSurfRating(camera);
+  renderConditionVisual(camera);
   renderMetadata(camera);
 
   els.mapStatus.textContent = camera.streamUrl
@@ -146,6 +199,8 @@ function applyFilters() {
   state.filtered = filterCameras(state.cameras, {
     query: els.searchInput.value,
     region: els.regionSelect.value,
+    surfFitOnly: els.fitOnly.checked,
+    sortBySurfFit: true,
     favoriteOnly: els.favoriteOnly.checked,
     favoriteIds: state.favoriteIds
   });
@@ -153,7 +208,12 @@ function applyFilters() {
   renderMarkers();
   renderList();
   els.shownCount.textContent = state.filtered.length;
-  els.mapStatus.textContent = `${state.filtered.length} cameras shown.`;
+  els.fitCount.textContent = state.cameras.filter((camera) => rateSurfSpot(camera).isRecommended).length;
+  els.mapStatus.textContent = `${state.filtered.length} cameras shown · ${state.filtered.filter((camera) => rateSurfSpot(camera).isRecommended).length} good for us.`;
+
+  if (state.selected && !state.filtered.some((camera) => camera.id === state.selected.id) && state.filtered[0]) {
+    selectCamera(state.filtered[0], { pan: false });
+  }
 }
 
 function renderMarkers() {
@@ -190,6 +250,7 @@ function fitInitialBounds() {
 }
 
 function createCameraRow(camera) {
+  const rating = rateSurfSpot(camera);
   const row = document.createElement("div");
   row.className = "camera-row";
   row.dataset.cameraRow = camera.id;
@@ -208,7 +269,25 @@ function createCameraRow(camera) {
   meta.className = "camera-row__meta";
   meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
 
-  openButton.append(name, meta);
+  const conditions = document.createElement("span");
+  conditions.className = "camera-row__conditions";
+
+  const score = document.createElement("span");
+  score.className = "rating-chip";
+  score.dataset.rating = rating.key;
+  score.textContent = rating.label;
+
+  const wave = document.createElement("span");
+  wave.className = "condition-chip";
+  wave.textContent = rating.wave.label;
+
+  const windFit = document.createElement("span");
+  windFit.className = "condition-chip condition-chip--wind-fit";
+  windFit.dataset.fit = rating.wind.alignment;
+  windFit.textContent = rating.wind.alignment;
+
+  conditions.append(score, wave, windFit);
+  openButton.append(name, meta, conditions);
 
   const favoriteLabel = document.createElement("label");
   favoriteLabel.className = "favorite-check";
@@ -219,10 +298,7 @@ function createCameraRow(camera) {
   favoriteInput.setAttribute("aria-label", `Favorite ${camera.name}`);
   favoriteInput.addEventListener("change", (event) => toggleFavorite(camera, event.target.checked));
 
-  const favoriteText = document.createElement("span");
-  favoriteText.textContent = "Fav";
-
-  favoriteLabel.append(favoriteInput, favoriteText);
+  favoriteLabel.append(favoriteInput);
   row.append(openButton, favoriteLabel);
   return row;
 }
@@ -237,7 +313,9 @@ function renderList() {
 
   els.cameraList.textContent = "";
   els.cameraList.appendChild(fragment);
-  els.listNote.textContent = state.filtered.length > MAX_CAMERA_LIST_ROWS
+  els.listNote.textContent = state.filtered.length === 0
+    ? "No cameras match these filters."
+    : state.filtered.length > MAX_CAMERA_LIST_ROWS
     ? `Showing ${MAX_CAMERA_LIST_ROWS} of ${state.filtered.length}. Search or filter to narrow.`
     : `${state.filtered.length} cameras in view.`;
 }
@@ -279,31 +357,23 @@ async function init() {
   state.favoriteIds = loadFavoriteIds(state.cameras);
 
   els.totalCount.textContent = state.cameras.length;
-  els.streamCount.textContent = state.cameras.length;
+  els.fitCount.textContent = state.cameras.filter((camera) => rateSurfSpot(camera).isRecommended).length;
   els.shownCount.textContent = state.cameras.length;
   renderRegions();
   applyFilters();
   fitInitialBounds();
 
-  const firstFavorite = firstCameraById(state.cameras, DEFAULT_FAVORITE_IDS) || state.cameras[0];
-  selectCamera(firstFavorite, { play: false, pan: false });
+  const firstFavorite = firstCameraById(state.cameras, DEFAULT_FAVORITE_IDS);
+  const initialCamera = state.filtered[0] || firstFavorite || state.cameras[0];
+  selectCamera(initialCamera, { play: false, pan: false });
 }
 
 els.searchInput.addEventListener("input", applyFilters);
 els.regionSelect.addEventListener("change", applyFilters);
+els.fitOnly.addEventListener("change", applyFilters);
 els.favoriteOnly.addEventListener("change", applyFilters);
 els.detailFavorite.addEventListener("change", (event) => toggleFavorite(state.selected, event.target.checked));
 els.playButton.addEventListener("click", () => videoPlayer.play(state.selected));
-els.copyButton.addEventListener("click", async () => {
-  if (!state.selected?.streamUrl) return;
-
-  try {
-    await navigator.clipboard.writeText(state.selected.streamUrl);
-    els.mapStatus.textContent = "Stream URL copied.";
-  } catch (_error) {
-    els.mapStatus.textContent = "Copy failed. Select the URL in the detail panel.";
-  }
-});
 
 init().catch((error) => {
   els.mapStatus.textContent = error.message;

@@ -1,15 +1,29 @@
 import { normalizeText } from "./format.js";
+import { compareSurfFit, rateSurfSpot } from "./surf-rating.js";
 
-export function filterCameras(cameras, { query = "", region = "", favoriteOnly = false, favoriteIds = new Set() } = {}) {
+export function filterCameras(
+  cameras,
+  {
+    query = "",
+    region = "",
+    favoriteOnly = false,
+    favoriteIds = new Set(),
+    surfFitOnly = false,
+    sortBySurfFit = false
+  } = {}
+) {
   const normalizedQuery = normalizeText(query);
 
-  return cameras.filter((camera) => {
+  const filtered = cameras.filter((camera) => {
     const matchesRegion = !region || camera.region === region;
     const matchesFavorite = !favoriteOnly || favoriteIds.has(camera.id);
+    const matchesSurfFit = !surfFitOnly || rateSurfSpot(camera).isRecommended;
     const haystack = normalizeText(`${camera.name} ${camera.location} ${camera.region}`);
     const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
-    return matchesRegion && matchesFavorite && matchesQuery;
+    return matchesRegion && matchesFavorite && matchesSurfFit && matchesQuery;
   });
+
+  return sortBySurfFit ? filtered.sort(compareSurfFit) : filtered;
 }
 
 export function uniqueSortedRegions(cameras) {
