@@ -43,3 +43,17 @@ test("firstCameraById returns the first available configured camera", () => {
   assert.equal(firstCameraById(cameras, ["missing", "praia-sesimbra"]).id, "praia-sesimbra");
   assert.equal(firstCameraById(cameras, ["missing"]), null);
 });
+
+test("filterCameras can show only tentative might-be-good cameras", () => {
+  const result = filterCameras([
+    { id: "good", name: "Good", region: "cascais", rating: { isRecommended: true } },
+    { id: "poor", name: "Poor", region: "cascais", rating: { isRecommended: false } }
+  ], {
+    mightBeGoodOnly: true,
+    isMightBeGood(camera) {
+      return camera.rating.isRecommended;
+    }
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["good"]);
+});
