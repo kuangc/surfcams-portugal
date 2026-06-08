@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { DEFAULT_SURF_PREFERENCES } from "../src/surf-preferences.js";
-import { formatConditionLine, formatSpotMetadata } from "../src/condition-summary.js";
+import { formatConditionChips, formatConditionLine, formatSpotMetadata } from "../src/condition-summary.js";
 
 const camera = {
   id: "praia-de-carcavelos",
@@ -42,4 +42,13 @@ test("formatSpotMetadata exposes richer favorite and explore details", () => {
     "Sea Temp"
   ]);
   assert.equal(metadata.find((item) => item.label === "Sea Temp").value, "15.2º");
+});
+
+test("formatConditionChips exposes scan-friendly condition tokens", () => {
+  const chips = formatConditionChips(camera, DEFAULT_SURF_PREFERENCES);
+
+  assert.deepEqual(chips.map((chip) => chip.key), ["fit", "wave", "swell", "wind", "tide"]);
+  assert.deepEqual(chips.map((chip) => chip.label), ["Good", "~0.8m", "NW 8s", "↓ 6km/h", "low 1.2m"]);
+  assert.equal(chips[0].tone, "good");
+  assert.equal(chips.find((chip) => chip.key === "wind").detail, "cross");
 });

@@ -6143,10 +6143,19 @@
           </div>
         </header>
         <div class="map-layout">
+          <aside class="browse-panel" aria-label="Browse surf spots">
+            <p class="status-line" id="exploreResultsSummary">Loading spots...</p>
+            <div class="explore-list" id="exploreList"></div>
+          </aside>
           <div id="map" class="map"></div>
           <aside class="spot-panel" id="spotPanel" aria-live="polite">
+            <div class="explore-video-shell">
+              <video id="exploreVideo" muted playsinline controls></video>
+              <span class="feed-status" id="exploreFeedStatus">Select a spot</span>
+            </div>
             <h2 id="detailName">Select a camera</h2>
             <p id="detailLocation" class="muted">Choose a marker to inspect conditions.</p>
+            <div class="condition-strip" id="detailConditionStrip"></div>
             <button id="detailFavorite" class="secondary-button" type="button">Add favorite</button>
             <p id="description"></p>
             <div id="metadataGrid" class="metadata-grid"></div>

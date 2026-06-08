@@ -32,7 +32,11 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderMonitor/);
   assert.match(mainSource, /renderFavorites/);
   assert.match(mainSource, /renderExploreSelection/);
+  assert.match(mainSource, /renderExploreList/);
+  assert.match(mainSource, /playExploreCamera/);
+  assert.match(mainSource, /explorePlayer/);
   assert.match(mainSource, /renderConfigure/);
+  assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
   assert.doesNotMatch(mainSource, /autoFill/i);
 });
 
@@ -40,6 +44,9 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.app-shell\s*{/);
   assert.match(styleSource, /\.app-nav\s*{/);
   assert.match(styleSource, /\.monitor-grid\s*{/);
+  assert.match(styleSource, /\.browse-panel\s*{/);
+  assert.match(styleSource, /\.explore-video-shell\s*{/);
+  assert.match(styleSource, /\.condition-chip\s*{/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(styleSource, /\.condition-vectors\s*{/);
   assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);

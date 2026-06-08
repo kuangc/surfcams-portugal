@@ -4,7 +4,7 @@ import {
   filterCameras,
   uniqueSortedRegions
 } from "./camera-filters.js";
-import { formatConditionLine, formatSpotMetadata } from "./condition-summary.js";
+import { formatConditionChips, formatConditionLine, formatSpotMetadata } from "./condition-summary.js";
 import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
@@ -31,6 +31,7 @@ const state = {
   markers: new Map(),
   markerLayer: null,
   selectedExploreCamera: null,
+  explorePlayer: null,
   map: null
 };
 
@@ -46,8 +47,13 @@ const els = {
   regionSelect: document.querySelector("#regionSelect"),
   favoriteOnly: document.querySelector("#favoriteOnly"),
   mightBeGoodOnly: document.querySelector("#mightBeGoodOnly"),
+  exploreResultsSummary: document.querySelector("#exploreResultsSummary"),
+  exploreList: document.querySelector("#exploreList"),
+  exploreVideo: document.querySelector("#exploreVideo"),
+  exploreFeedStatus: document.querySelector("#exploreFeedStatus"),
   detailName: document.querySelector("#detailName"),
   detailLocation: document.querySelector("#detailLocation"),
+  detailConditionStrip: document.querySelector("#detailConditionStrip"),
   detailFavorite: document.querySelector("#detailFavorite"),
   description: document.querySelector("#description"),
   metadataGrid: document.querySelector("#metadataGrid"),
@@ -55,7 +61,16 @@ const els = {
   resetConfigButton: document.querySelector("#resetConfigButton")
 };
 
+state.explorePlayer = createFeedTilePlayer({
+  video: els.exploreVideo,
+  status: els.exploreFeedStatus,
+  hlsScriptUrl: HLS_SCRIPT_URL
+});
+
 function setRoute(route) {
+  if (route !== "monitor") clearMonitorPlayers();
+  if (route !== "explore") state.explorePlayer.clear();
+
   state.activeRoute = route;
 
   els.navButtons.forEach((button) => {
@@ -72,8 +87,20 @@ function setRoute(route) {
     screen.dataset.active = String(isActive);
   });
 
-  if (route === "explore" && state.map) {
-    window.setTimeout(() => state.map.invalidateSize(), 0);
+  if (route === "monitor" && state.cameras.length) {
+    renderMonitor();
+  }
+
+  if (route === "explore") {
+    window.setTimeout(() => {
+      ensureMap();
+      renderExploreList();
+      renderMarkers();
+      state.map.invalidateSize();
+      if (state.selectedExploreCamera) {
+        playExploreCamera(state.selectedExploreCamera);
+      }
+    }, 0);
   }
 }
 
@@ -98,11 +125,16 @@ function favoriteCameras() {
 }
 
 function clearMonitorPlayers() {
-  state.monitorPlayers.forEach(({ player, timeoutId }) => {
+  state.monitorPlayers.forEach(({ player, playTimeoutId, timeoutId }) => {
+    window.clearTimeout(playTimeoutId);
     window.clearTimeout(timeoutId);
     player.clear();
   });
   state.monitorPlayers.clear();
+}
+
+function renderMonitorIfActive() {
+  if (state.activeRoute === "monitor") renderMonitor();
 }
 
 function createEmptyMonitorTile(index) {
@@ -143,20 +175,17 @@ function createMonitorTile(slot, index) {
 
   const status = document.createElement("span");
   status.className = "feed-status";
-  status.textContent = camera.streamUrl ? "Loading" : "No feed";
+  status.textContent = camera.streamUrl ? "Queued" : "No feed";
 
   frame.append(video, status);
-
-  const summary = document.createElement("p");
-  summary.className = "condition-line";
-  summary.textContent = `${camera.name} / ${formatConditionLine(camera, state.preferences)}`;
-
-  tile.append(frame, summary);
+  tile.append(frame, createConditionStrip(camera, { showName: true }));
 
   const player = createFeedTilePlayer({ video, status, hlsScriptUrl: HLS_SCRIPT_URL });
+  const playTimeoutId = window.setTimeout(() => {
+    if (state.activeRoute === "monitor") player.play(camera);
+  }, 350 + (index * 450));
   const timeoutId = window.setTimeout(() => player.expire(), MONITOR_DURATION_MS);
-  state.monitorPlayers.set(`${camera.id}:${index}`, { player, timeoutId });
-  player.play(camera);
+  state.monitorPlayers.set(`${camera.id}:${index}`, { player, playTimeoutId, timeoutId });
 
   return tile;
 }
@@ -236,6 +265,31 @@ function createConditionVectors(camera) {
   return strip;
 }
 
+function createConditionStrip(camera, { showName = false, compact = false } = {}) {
+  const strip = document.createElement("div");
+  strip.className = compact ? "condition-strip condition-strip--compact" : "condition-strip";
+  strip.setAttribute("aria-label", `${camera.name} / ${formatConditionLine(camera, state.preferences)}`);
+
+  if (showName) {
+    const name = document.createElement("span");
+    name.className = "condition-spot-name";
+    name.textContent = camera.name;
+    strip.appendChild(name);
+  }
+
+  formatConditionChips(camera, state.preferences).forEach((chip) => {
+    const chipEl = document.createElement("span");
+    chipEl.className = "condition-chip";
+    chipEl.dataset.key = chip.key;
+    chipEl.dataset.tone = chip.tone;
+    chipEl.title = chip.detail;
+    chipEl.textContent = chip.label;
+    strip.appendChild(chipEl);
+  });
+
+  return strip;
+}
+
 function renderMetadata(camera) {
   els.metadataGrid.textContent = "";
   if (!camera) return;
@@ -262,8 +316,9 @@ function toggleFavorite(camera, checked) {
   }
 
   saveFavoriteIds(state.favoriteIds);
-  renderMonitor();
+  renderMonitorIfActive();
   renderFavorites();
+  renderExploreList();
   renderMarkers();
   renderExploreSelection(camera);
 }
@@ -284,10 +339,6 @@ function createFavoriteCard(camera) {
 
   header.append(title, meta);
 
-  const summary = document.createElement("p");
-  summary.className = "condition-line";
-  summary.textContent = formatConditionLine(camera, state.preferences);
-
   const vectors = createConditionVectors(camera);
 
   const actions = document.createElement("div");
@@ -300,9 +351,11 @@ function createFavoriteCard(camera) {
   mapButton.addEventListener("click", () => {
     renderExploreSelection(camera);
     setRoute("explore");
-    if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon)) {
-      state.map.panTo([camera.lat, camera.lon]);
-    }
+    window.setTimeout(() => {
+      if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon) && state.map) {
+        state.map.panTo([camera.lat, camera.lon]);
+      }
+    }, 0);
   });
 
   const removeButton = document.createElement("button");
@@ -312,7 +365,7 @@ function createFavoriteCard(camera) {
   removeButton.addEventListener("click", () => toggleFavorite(camera, false));
 
   actions.append(mapButton, removeButton);
-  card.append(header, summary, vectors, actions);
+  card.append(header, createConditionStrip(camera), vectors, actions);
   return card;
 }
 
@@ -333,8 +386,65 @@ function renderFavorites() {
   });
 }
 
+function playExploreCamera(camera) {
+  if (state.activeRoute !== "explore") return;
+  state.explorePlayer.play(camera);
+}
+
+function renderExploreList() {
+  if (!els.exploreList) return;
+
+  const cameras = exploreCameras();
+  els.exploreResultsSummary.textContent = `${cameras.length} spots shown. Click a row or marker to watch.`;
+  els.exploreList.textContent = "";
+
+  if (!cameras.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "No spots match those filters.";
+    els.exploreList.appendChild(empty);
+    return;
+  }
+
+  cameras.forEach((camera) => {
+    const row = document.createElement("button");
+    row.className = "explore-row";
+    row.type = "button";
+    row.dataset.cameraRow = camera.id;
+    row.setAttribute("aria-current", String(camera.id === state.selectedExploreCamera?.id));
+
+    const title = document.createElement("span");
+    title.className = "explore-row__title";
+    title.textContent = camera.name;
+
+    const meta = document.createElement("span");
+    meta.className = "explore-row__meta";
+    meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
+
+    row.append(title, meta, createConditionStrip(camera, { compact: true }));
+    row.addEventListener("click", () => {
+      renderExploreSelection(camera);
+      if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon) && state.map) {
+        state.map.panTo([camera.lat, camera.lon]);
+      }
+    });
+
+    els.exploreList.appendChild(row);
+  });
+}
+
+function updateExploreRowSelection(cameraId) {
+  els.exploreList.querySelectorAll(".explore-row[aria-current='true']").forEach((row) => {
+    row.setAttribute("aria-current", "false");
+  });
+  const row = [...els.exploreList.querySelectorAll(".explore-row")]
+    .find((item) => item.dataset.cameraRow === cameraId);
+  if (row) row.setAttribute("aria-current", "true");
+}
+
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
+  els.detailConditionStrip.textContent = "";
 
   if (!camera) {
     els.detailName.textContent = "Select a camera";
@@ -345,6 +455,7 @@ function renderExploreSelection(camera) {
     els.description.textContent = "";
     renderMetadata(null);
     renderMarkers();
+    state.explorePlayer.clear();
     return;
   }
 
@@ -357,8 +468,11 @@ function renderExploreSelection(camera) {
   els.detailFavorite.textContent = isFavorite ? "Remove favorite" : "Add favorite";
   els.detailFavorite.setAttribute("aria-pressed", String(isFavorite));
   els.description.textContent = camera.description || "No spot notes indexed.";
+  els.detailConditionStrip.appendChild(createConditionStrip(camera));
   renderMetadata(camera);
+  updateExploreRowSelection(camera.id);
   renderMarkers();
+  playExploreCamera(camera);
 }
 
 function formField(name) {
@@ -432,7 +546,6 @@ function renderMarkers() {
       marker = L.marker([camera.lat, camera.lon]);
       marker.on("click", () => {
         renderExploreSelection(camera);
-        setRoute("explore");
       });
       state.markers.set(camera.id, marker);
     }
@@ -471,7 +584,9 @@ function renderRegions() {
   });
 }
 
-function initMap() {
+function ensureMap() {
+  if (state.map) return;
+
   state.map = L.map("map", {
     preferCanvas: true,
     zoomControl: true
@@ -481,6 +596,8 @@ function initMap() {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(state.map);
   state.markerLayer = L.layerGroup().addTo(state.map);
+  renderMarkers();
+  fitInitialBounds();
 }
 
 function bindEvents() {
@@ -492,8 +609,14 @@ function bindEvents() {
   els.monitorMightBeGoodMode.addEventListener("click", () => setMonitorMode("might-be-good"));
 
   [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
-    input.addEventListener("input", renderMarkers);
-    input.addEventListener("change", renderMarkers);
+    input.addEventListener("input", () => {
+      renderExploreList();
+      renderMarkers();
+    });
+    input.addEventListener("change", () => {
+      renderExploreList();
+      renderMarkers();
+    });
   });
 
   els.detailFavorite.addEventListener("click", () => {
@@ -506,23 +629,24 @@ function bindEvents() {
     event.preventDefault();
     state.preferences = saveSurfPreferences(readConfigForm());
     renderConfigure();
-    renderMonitor();
+    renderMonitorIfActive();
     renderFavorites();
+    renderExploreList();
     renderExploreSelection(state.selectedExploreCamera);
   });
 
   els.resetConfigButton.addEventListener("click", () => {
     state.preferences = saveSurfPreferences(DEFAULT_SURF_PREFERENCES);
     renderConfigure();
-    renderMonitor();
+    renderMonitorIfActive();
     renderFavorites();
+    renderExploreList();
     renderExploreSelection(state.selectedExploreCamera);
   });
 }
 
 async function init() {
   bindEvents();
-  initMap();
   state.db = await loadCameraDb();
   state.cameras = availableCameras(state.db);
   state.favoriteIds = loadFavoriteIds(state.cameras);
@@ -530,10 +654,9 @@ async function init() {
 
   renderRegions();
   renderConfigure();
-  renderMonitor();
   renderFavorites();
+  renderExploreList();
   renderExploreSelection(favoriteCameras()[0] || state.cameras[0]);
-  fitInitialBounds();
   setRoute("monitor");
 }
 
