@@ -22,3 +22,15 @@ test("v3 source has monitor-first routing and no v2 monitor overlay", () => {
   assert.doesNotMatch(indexSource, /id="monitorDeck"/);
   assert.doesNotMatch(indexSource, /bestTodayTitle/);
 });
+
+test("main controller wires v3 screens and keeps might-be-good explicit", () => {
+  assert.match(mainSource, /activeRoute:\s*"monitor"/);
+  assert.match(mainSource, /monitorMode:\s*"favorites"/);
+  assert.match(mainSource, /monitorCameraSlots/);
+  assert.match(mainSource, /mightBeGoodCameras/);
+  assert.match(mainSource, /renderMonitor/);
+  assert.match(mainSource, /renderFavorites/);
+  assert.match(mainSource, /renderExploreSelection/);
+  assert.match(mainSource, /renderConfigure/);
+  assert.doesNotMatch(mainSource, /autoFill/i);
+});

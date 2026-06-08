@@ -2,74 +2,196 @@ import { availableCameras, loadCameraDb } from "./camera-data.js";
 import {
   camerasForInitialBounds,
   filterCameras,
-  firstCameraById,
   uniqueSortedRegions
 } from "./camera-filters.js";
-import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS, MAX_CAMERA_LIST_ROWS } from "./config.js";
+import { formatConditionLine, formatSpotMetadata } from "./condition-summary.js";
+import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
-import { createVideoPlayer } from "./video-player.js";
+import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
+import {
+  DEFAULT_SURF_PREFERENCES,
+  loadSurfPreferences,
+  saveSurfPreferences,
+  serializeSurfPreferences
+} from "./surf-preferences.js";
+import { getConditionVectors, rateSurfSpot } from "./surf-rating.js";
+import { createFeedTilePlayer } from "./video-player.js";
+
+const MONITOR_DURATION_MS = 60_000;
 
 const state = {
+  activeRoute: "monitor",
   db: null,
   cameras: [],
-  filtered: [],
   favoriteIds: new Set(),
+  preferences: DEFAULT_SURF_PREFERENCES,
+  monitorMode: "favorites",
+  monitorPlayers: new Map(),
   markers: new Map(),
   markerLayer: null,
-  selected: null,
+  selectedExploreCamera: null,
   map: null
 };
 
 const els = {
-  mapStatus: document.querySelector("#mapStatus"),
-  totalCount: document.querySelector("#totalCount"),
-  streamCount: document.querySelector("#streamCount"),
-  shownCount: document.querySelector("#shownCount"),
+  navButtons: [...document.querySelectorAll("[data-route]")],
+  screens: [...document.querySelectorAll("[data-screen]")],
+  monitorStatus: document.querySelector("#monitorStatus"),
+  monitorGrid: document.querySelector("#monitorGrid"),
+  monitorFavoritesMode: document.querySelector("#monitorFavoritesMode"),
+  monitorMightBeGoodMode: document.querySelector("#monitorMightBeGoodMode"),
+  favoritesList: document.querySelector("#favoritesList"),
   searchInput: document.querySelector("#searchInput"),
   regionSelect: document.querySelector("#regionSelect"),
   favoriteOnly: document.querySelector("#favoriteOnly"),
-  cameraList: document.querySelector("#cameraList"),
-  listNote: document.querySelector("#listNote"),
+  mightBeGoodOnly: document.querySelector("#mightBeGoodOnly"),
   detailName: document.querySelector("#detailName"),
   detailLocation: document.querySelector("#detailLocation"),
   detailFavorite: document.querySelector("#detailFavorite"),
   description: document.querySelector("#description"),
   metadataGrid: document.querySelector("#metadataGrid"),
-  streamUrl: document.querySelector("#streamUrl"),
-  video: document.querySelector("#video"),
-  playButton: document.querySelector("#playButton"),
-  copyButton: document.querySelector("#copyButton")
+  configForm: document.querySelector("#configForm"),
+  resetConfigButton: document.querySelector("#resetConfigButton")
 };
 
-const videoPlayer = createVideoPlayer({
-  video: els.video,
-  status: els.mapStatus,
-  hlsScriptUrl: HLS_SCRIPT_URL
-});
+function setRoute(route) {
+  state.activeRoute = route;
 
-function toggleFavorite(camera, checked) {
-  if (!camera) return;
+  els.navButtons.forEach((button) => {
+    if (button.dataset.route === route) {
+      button.setAttribute("aria-current", "page");
+    } else {
+      button.removeAttribute("aria-current");
+    }
+  });
 
-  if (checked) {
-    state.favoriteIds.add(camera.id);
-  } else {
-    state.favoriteIds.delete(camera.id);
+  els.screens.forEach((screen) => {
+    const isActive = screen.dataset.screen === route;
+    screen.hidden = !isActive;
+    screen.dataset.active = String(isActive);
+  });
+
+  if (route === "explore" && state.map) {
+    window.setTimeout(() => state.map.invalidateSize(), 0);
   }
-
-  saveFavoriteIds(state.favoriteIds);
-  applyFilters();
-  selectCamera(camera, { pan: false });
 }
 
-function markerIcon(camera, active = false) {
-  return L.divIcon({
-    className: "",
-    html: `<span class="cam-marker" data-live="${camera.hasStream}" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}"></span>`,
-    iconSize: active ? [28, 28] : [20, 20],
-    iconAnchor: active ? [14, 14] : [10, 10],
-    popupAnchor: [0, -12]
+function favoriteOrder() {
+  return [...new Set([
+    ...DEFAULT_FAVORITE_IDS,
+    ...state.favoriteIds,
+    ...state.cameras.map((camera) => camera.id)
+  ])];
+}
+
+function byId() {
+  return new Map(state.cameras.map((camera) => [camera.id, camera]));
+}
+
+function favoriteCameras() {
+  const camerasById = byId();
+  return favoriteOrder()
+    .filter((id) => state.favoriteIds.has(id))
+    .map((id) => camerasById.get(id))
+    .filter(Boolean);
+}
+
+function clearMonitorPlayers() {
+  state.monitorPlayers.forEach(({ player, timeoutId }) => {
+    window.clearTimeout(timeoutId);
+    player.clear();
   });
+  state.monitorPlayers.clear();
+}
+
+function createEmptyMonitorTile(index) {
+  const tile = document.createElement("article");
+  tile.className = "monitor-tile monitor-tile--empty";
+  tile.setAttribute("aria-label", `Empty monitor slot ${index + 1}`);
+
+  const button = document.createElement("button");
+  button.className = "empty-slot-button";
+  button.type = "button";
+  button.textContent = "Add favorite";
+  button.addEventListener("click", () => setRoute("explore"));
+
+  const note = document.createElement("p");
+  note.textContent = "Empty on purpose. Favorites are never auto-filled.";
+
+  tile.append(button, note);
+  return tile;
+}
+
+function createMonitorTile(slot, index) {
+  if (slot.empty || !slot.camera) return createEmptyMonitorTile(index);
+
+  const camera = slot.camera;
+  const tile = document.createElement("article");
+  tile.className = "monitor-tile";
+
+  const frame = document.createElement("div");
+  frame.className = "feed-frame";
+
+  const video = document.createElement("video");
+  video.className = "feed-video";
+  video.muted = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.controls = true;
+  video.poster = camera.image || "";
+
+  const status = document.createElement("span");
+  status.className = "feed-status";
+  status.textContent = camera.streamUrl ? "Loading" : "No feed";
+
+  frame.append(video, status);
+
+  const summary = document.createElement("p");
+  summary.className = "condition-line";
+  summary.textContent = `${camera.name} / ${formatConditionLine(camera, state.preferences)}`;
+
+  tile.append(frame, summary);
+
+  const player = createFeedTilePlayer({ video, status, hlsScriptUrl: HLS_SCRIPT_URL });
+  const timeoutId = window.setTimeout(() => player.expire(), MONITOR_DURATION_MS);
+  state.monitorPlayers.set(`${camera.id}:${index}`, { player, timeoutId });
+  player.play(camera);
+
+  return tile;
+}
+
+function setMonitorMode(mode) {
+  state.monitorMode = mode;
+  els.monitorFavoritesMode.setAttribute("aria-pressed", String(mode === "favorites"));
+  els.monitorMightBeGoodMode.setAttribute("aria-pressed", String(mode === "might-be-good"));
+  renderMonitor();
+}
+
+function renderMonitor() {
+  clearMonitorPlayers();
+
+  const slots = state.monitorMode === "favorites"
+    ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder())
+    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences)
+      .map((camera) => ({ camera, empty: false }));
+
+  els.monitorGrid.textContent = "";
+
+  if (!slots.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "No spots match the current might-be-good model.";
+    els.monitorGrid.appendChild(empty);
+  } else {
+    slots.forEach((slot, index) => {
+      els.monitorGrid.appendChild(createMonitorTile(slot, index));
+    });
+  }
+
+  els.monitorStatus.textContent = state.monitorMode === "favorites"
+    ? "Showing favorites only. Empty slots are not auto-filled."
+    : "Might be good is model-based. Check the cams before leaving.";
 }
 
 function createMetadataItem(label, value) {
@@ -89,89 +211,233 @@ function createMetadataItem(label, value) {
   return item;
 }
 
-function renderMetadata(camera) {
-  const metrics = [
-    createMetadataItem("Wave", camera.forecast?.wave),
-    createMetadataItem("Tide", camera.forecast?.tide),
-    createMetadataItem("Wind", camera.forecast?.wind),
-    createMetadataItem("Wind Dir", camera.forecast?.windDirection),
-    createMetadataItem("Sea Temp", camera.detailMetrics?.["Temp. do mar"])
-  ].filter(Boolean);
-
-  els.metadataGrid.textContent = "";
-  els.metadataGrid.append(...metrics);
+function compassFromBearing(bearing) {
+  if (!Number.isFinite(bearing)) return "unknown";
+  const labels = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  return labels[Math.round((((bearing % 360) + 360) % 360) / 45) % 8];
 }
 
-function findCameraRow(cameraId) {
-  return [...els.cameraList.querySelectorAll(".camera-row")]
+function createConditionVectors(camera) {
+  const vectors = getConditionVectors(camera);
+  const strip = document.createElement("div");
+  strip.className = "condition-vectors";
+
+  [
+    ["Coast", `${compassFromBearing(vectors.coast.bearing)} exposure`],
+    ["Wind", `${vectors.wind.arrow} ${vectors.wind.compass} ${vectors.wind.alignment}`],
+    ["Swell", `${vectors.swell.compass} swell`]
+  ].forEach(([label, value]) => {
+    const item = document.createElement("span");
+    item.className = "vector-pill";
+    item.textContent = `${label}: ${value}`;
+    strip.appendChild(item);
+  });
+
+  return strip;
+}
+
+function renderMetadata(camera) {
+  els.metadataGrid.textContent = "";
+  if (!camera) return;
+
+  const items = formatSpotMetadata(camera, state.preferences)
+    .map((metric) => createMetadataItem(metric.label, metric.value))
+    .filter(Boolean);
+
+  els.metadataGrid.append(...items, createConditionVectors(camera));
+}
+
+function findFavoriteCard(cameraId) {
+  return [...els.favoritesList.querySelectorAll(".favorite-card")]
     .find((row) => row.dataset.cameraRow === cameraId);
 }
 
-function selectCamera(camera, options = {}) {
+function toggleFavorite(camera, checked) {
   if (!camera) return;
 
-  const previous = state.selected;
-  state.selected = camera;
-
-  if (previous && state.markers.has(previous.id)) {
-    state.markers.get(previous.id).setIcon(markerIcon(previous, false));
-  }
-  if (state.markers.has(camera.id)) {
-    state.markers.get(camera.id).setIcon(markerIcon(camera, true));
-    if (options.pan !== false) state.map.panTo([camera.lat, camera.lon]);
+  if (checked) {
+    state.favoriteIds.add(camera.id);
+  } else {
+    state.favoriteIds.delete(camera.id);
   }
 
-  els.detailName.textContent = camera.name;
-  els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
-  els.description.textContent = camera.description || "";
-  els.streamUrl.textContent = camera.streamUrl || "No stream URL indexed.";
-  els.playButton.disabled = !camera.streamUrl;
-  els.copyButton.disabled = !camera.streamUrl;
-  els.detailFavorite.checked = state.favoriteIds.has(camera.id);
-  renderMetadata(camera);
-
-  els.mapStatus.textContent = camera.streamUrl
-    ? `${camera.name}: feed ready.`
-    : `${camera.name}: no feed URL indexed.`;
-
-  els.cameraList.querySelectorAll(".camera-row[aria-current='true']").forEach((row) => {
-    row.setAttribute("aria-current", "false");
-  });
-  const row = findCameraRow(camera.id);
-  if (row) row.setAttribute("aria-current", "true");
-  if (options.play) videoPlayer.play(camera);
+  saveFavoriteIds(state.favoriteIds);
+  renderMonitor();
+  renderFavorites();
+  renderMarkers();
+  renderExploreSelection(camera);
 }
 
-function applyFilters() {
-  state.filtered = filterCameras(state.cameras, {
+function createFavoriteCard(camera) {
+  const card = document.createElement("article");
+  card.className = "favorite-card";
+  card.dataset.cameraRow = camera.id;
+
+  const header = document.createElement("header");
+
+  const title = document.createElement("h2");
+  title.textContent = camera.name;
+
+  const meta = document.createElement("p");
+  meta.className = "muted";
+  meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
+
+  header.append(title, meta);
+
+  const summary = document.createElement("p");
+  summary.className = "condition-line";
+  summary.textContent = formatConditionLine(camera, state.preferences);
+
+  const vectors = createConditionVectors(camera);
+
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const mapButton = document.createElement("button");
+  mapButton.className = "secondary-button";
+  mapButton.type = "button";
+  mapButton.textContent = "Map";
+  mapButton.addEventListener("click", () => {
+    renderExploreSelection(camera);
+    setRoute("explore");
+    if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon)) {
+      state.map.panTo([camera.lat, camera.lon]);
+    }
+  });
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "danger-button";
+  removeButton.type = "button";
+  removeButton.textContent = "Remove";
+  removeButton.addEventListener("click", () => toggleFavorite(camera, false));
+
+  actions.append(mapButton, removeButton);
+  card.append(header, summary, vectors, actions);
+  return card;
+}
+
+function renderFavorites() {
+  els.favoritesList.textContent = "";
+  const cameras = favoriteCameras();
+
+  if (!cameras.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "No favorites yet. Add spots from the map.";
+    els.favoritesList.appendChild(empty);
+    return;
+  }
+
+  cameras.forEach((camera) => {
+    els.favoritesList.appendChild(createFavoriteCard(camera));
+  });
+}
+
+function renderExploreSelection(camera) {
+  state.selectedExploreCamera = camera || null;
+
+  if (!camera) {
+    els.detailName.textContent = "Select a camera";
+    els.detailLocation.textContent = "Choose a marker to inspect conditions.";
+    els.detailFavorite.disabled = true;
+    els.detailFavorite.textContent = "Add favorite";
+    els.detailFavorite.setAttribute("aria-pressed", "false");
+    els.description.textContent = "";
+    renderMetadata(null);
+    renderMarkers();
+    return;
+  }
+
+  const rating = rateSurfSpot(camera, state.preferences);
+  const isFavorite = state.favoriteIds.has(camera.id);
+
+  els.detailName.textContent = camera.name;
+  els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)} / ${rating.label}`;
+  els.detailFavorite.disabled = false;
+  els.detailFavorite.textContent = isFavorite ? "Remove favorite" : "Add favorite";
+  els.detailFavorite.setAttribute("aria-pressed", String(isFavorite));
+  els.description.textContent = camera.description || "No spot notes indexed.";
+  renderMetadata(camera);
+  renderMarkers();
+}
+
+function formField(name) {
+  return els.configForm.elements.namedItem(name);
+}
+
+function renderConfigure() {
+  const values = serializeSurfPreferences(state.preferences);
+
+  Object.entries(values).forEach(([name, value]) => {
+    const field = formField(name);
+    if (!field) return;
+
+    if (field.type === "checkbox") {
+      field.checked = value;
+    } else {
+      field.value = value;
+    }
+  });
+}
+
+function readConfigForm() {
+  return {
+    minSurfHeightM: formField("minSurfHeightM").value,
+    maxSurfHeightM: formField("maxSurfHeightM").value,
+    maxWindSpeedKmh: formField("maxWindSpeedKmh").value,
+    minPeriodSeconds: formField("minPeriodSeconds").value,
+    surfSizeScale: formField("surfSizeScale").value,
+    preferOffshore: formField("preferOffshore").checked,
+    allowLightWind: formField("allowLightWind").checked
+  };
+}
+
+function markerIcon(camera, active = false) {
+  const rating = rateSurfSpot(camera, state.preferences);
+
+  return L.divIcon({
+    className: "",
+    html: `<span class="cam-marker" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}" data-fit="${rating.key}" data-live="${camera.hasStream}"></span>`,
+    iconSize: active ? [28, 28] : [20, 20],
+    iconAnchor: active ? [14, 14] : [10, 10],
+    popupAnchor: [0, -12]
+  });
+}
+
+function isMightBeGood(camera) {
+  return rateSurfSpot(camera, state.preferences).isRecommended;
+}
+
+function exploreCameras() {
+  return filterCameras(state.cameras, {
     query: els.searchInput.value,
     region: els.regionSelect.value,
     favoriteOnly: els.favoriteOnly.checked,
-    favoriteIds: state.favoriteIds
+    favoriteIds: state.favoriteIds,
+    mightBeGoodOnly: els.mightBeGoodOnly.checked,
+    isMightBeGood
   });
-
-  renderMarkers();
-  renderList();
-  els.shownCount.textContent = state.filtered.length;
-  els.mapStatus.textContent = `${state.filtered.length} cameras shown.`;
 }
 
 function renderMarkers() {
+  if (!state.markerLayer) return;
+
   state.markerLayer.clearLayers();
 
-  state.filtered.forEach((camera) => {
+  exploreCameras().forEach((camera) => {
     if (!Number.isFinite(camera.lat) || !Number.isFinite(camera.lon)) return;
 
     let marker = state.markers.get(camera.id);
     if (!marker) {
-      marker = L.marker([camera.lat, camera.lon], {
-        icon: markerIcon(camera, camera.id === state.selected?.id)
+      marker = L.marker([camera.lat, camera.lon]);
+      marker.on("click", () => {
+        renderExploreSelection(camera);
+        setRoute("explore");
       });
-      marker.on("click", () => selectCamera(camera, { play: true, pan: false }));
       state.markers.set(camera.id, marker);
     }
 
-    marker.setIcon(markerIcon(camera, camera.id === state.selected?.id));
+    marker.setIcon(markerIcon(camera, camera.id === state.selectedExploreCamera?.id));
     state.markerLayer.addLayer(marker);
   });
 }
@@ -189,59 +455,6 @@ function fitInitialBounds() {
   fitCameraBounds(boundsCameras, [42, 42]);
 }
 
-function createCameraRow(camera) {
-  const row = document.createElement("div");
-  row.className = "camera-row";
-  row.dataset.cameraRow = camera.id;
-  row.setAttribute("aria-current", String(camera.id === state.selected?.id));
-
-  const openButton = document.createElement("button");
-  openButton.className = "camera-open";
-  openButton.type = "button";
-  openButton.addEventListener("click", () => selectCamera(camera, { play: true }));
-
-  const name = document.createElement("span");
-  name.className = "camera-row__name";
-  name.textContent = camera.name;
-
-  const meta = document.createElement("span");
-  meta.className = "camera-row__meta";
-  meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
-
-  openButton.append(name, meta);
-
-  const favoriteLabel = document.createElement("label");
-  favoriteLabel.className = "favorite-check";
-
-  const favoriteInput = document.createElement("input");
-  favoriteInput.type = "checkbox";
-  favoriteInput.checked = state.favoriteIds.has(camera.id);
-  favoriteInput.setAttribute("aria-label", `Favorite ${camera.name}`);
-  favoriteInput.addEventListener("change", (event) => toggleFavorite(camera, event.target.checked));
-
-  const favoriteText = document.createElement("span");
-  favoriteText.textContent = "Fav";
-
-  favoriteLabel.append(favoriteInput, favoriteText);
-  row.append(openButton, favoriteLabel);
-  return row;
-}
-
-function renderList() {
-  const fragment = document.createDocumentFragment();
-  const rows = state.filtered.slice(0, MAX_CAMERA_LIST_ROWS);
-
-  rows.forEach((camera) => {
-    fragment.appendChild(createCameraRow(camera));
-  });
-
-  els.cameraList.textContent = "";
-  els.cameraList.appendChild(fragment);
-  els.listNote.textContent = state.filtered.length > MAX_CAMERA_LIST_ROWS
-    ? `Showing ${MAX_CAMERA_LIST_ROWS} of ${state.filtered.length}. Search or filter to narrow.`
-    : `${state.filtered.length} cameras in view.`;
-}
-
 function renderRegions() {
   els.regionSelect.textContent = "";
 
@@ -250,8 +463,7 @@ function renderRegions() {
   allOption.textContent = "All regions";
   els.regionSelect.appendChild(allOption);
 
-  const regions = uniqueSortedRegions(state.cameras);
-  regions.forEach((region) => {
+  uniqueSortedRegions(state.cameras).forEach((region) => {
     const option = document.createElement("option");
     option.value = region;
     option.textContent = formatRegion(region);
@@ -271,41 +483,60 @@ function initMap() {
   state.markerLayer = L.layerGroup().addTo(state.map);
 }
 
+function bindEvents() {
+  els.navButtons.forEach((button) => {
+    button.addEventListener("click", () => setRoute(button.dataset.route));
+  });
+
+  els.monitorFavoritesMode.addEventListener("click", () => setMonitorMode("favorites"));
+  els.monitorMightBeGoodMode.addEventListener("click", () => setMonitorMode("might-be-good"));
+
+  [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
+    input.addEventListener("input", renderMarkers);
+    input.addEventListener("change", renderMarkers);
+  });
+
+  els.detailFavorite.addEventListener("click", () => {
+    const camera = state.selectedExploreCamera;
+    if (!camera) return;
+    toggleFavorite(camera, !state.favoriteIds.has(camera.id));
+  });
+
+  els.configForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    state.preferences = saveSurfPreferences(readConfigForm());
+    renderConfigure();
+    renderMonitor();
+    renderFavorites();
+    renderExploreSelection(state.selectedExploreCamera);
+  });
+
+  els.resetConfigButton.addEventListener("click", () => {
+    state.preferences = saveSurfPreferences(DEFAULT_SURF_PREFERENCES);
+    renderConfigure();
+    renderMonitor();
+    renderFavorites();
+    renderExploreSelection(state.selectedExploreCamera);
+  });
+}
+
 async function init() {
+  bindEvents();
   initMap();
   state.db = await loadCameraDb();
   state.cameras = availableCameras(state.db);
-  state.filtered = state.cameras;
   state.favoriteIds = loadFavoriteIds(state.cameras);
+  state.preferences = loadSurfPreferences();
 
-  els.totalCount.textContent = state.cameras.length;
-  els.streamCount.textContent = state.cameras.length;
-  els.shownCount.textContent = state.cameras.length;
   renderRegions();
-  applyFilters();
+  renderConfigure();
+  renderMonitor();
+  renderFavorites();
+  renderExploreSelection(favoriteCameras()[0] || state.cameras[0]);
   fitInitialBounds();
-
-  const firstFavorite = firstCameraById(state.cameras, DEFAULT_FAVORITE_IDS) || state.cameras[0];
-  selectCamera(firstFavorite, { play: false, pan: false });
+  setRoute("monitor");
 }
 
-els.searchInput.addEventListener("input", applyFilters);
-els.regionSelect.addEventListener("change", applyFilters);
-els.favoriteOnly.addEventListener("change", applyFilters);
-els.detailFavorite.addEventListener("change", (event) => toggleFavorite(state.selected, event.target.checked));
-els.playButton.addEventListener("click", () => videoPlayer.play(state.selected));
-els.copyButton.addEventListener("click", async () => {
-  if (!state.selected?.streamUrl) return;
-
-  try {
-    await navigator.clipboard.writeText(state.selected.streamUrl);
-    els.mapStatus.textContent = "Stream URL copied.";
-  } catch (_error) {
-    els.mapStatus.textContent = "Copy failed. Select the URL in the detail panel.";
-  }
-});
-
 init().catch((error) => {
-  els.mapStatus.textContent = error.message;
-  els.listNote.textContent = error.message;
+  els.monitorStatus.textContent = error.message;
 });
