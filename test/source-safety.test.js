@@ -5,6 +5,7 @@ import test from "node:test";
 const mainSource = fs.readFileSync("src/main.js", "utf8");
 const configSource = fs.readFileSync("src/config.js", "utf8");
 const indexSource = fs.readFileSync("index.html", "utf8");
+const styleSource = fs.readFileSync("src/styles/app.css", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
@@ -33,4 +34,16 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreSelection/);
   assert.match(mainSource, /renderConfigure/);
   assert.doesNotMatch(mainSource, /autoFill/i);
+});
+
+test("v3 styles are monitor-first and responsive without the old side panels", () => {
+  assert.match(styleSource, /\.app-shell\s*{/);
+  assert.match(styleSource, /\.app-nav\s*{/);
+  assert.match(styleSource, /\.monitor-grid\s*{/);
+  assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(styleSource, /\.condition-vectors\s*{/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)/);
+  assert.doesNotMatch(styleSource, /\.sidebar\b/);
+  assert.doesNotMatch(styleSource, /\.detail\b/);
 });
