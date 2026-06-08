@@ -13,7 +13,16 @@ test("index embeds the same camera database that lives in data", () => {
   assert.deepEqual(JSON.parse(match[1]), db);
 });
 
-test("index loads the modular app and avoids removed click metadata UI", () => {
+test("index loads the v3 app shell", () => {
   assert.match(html, /<script type="module" src="\.\/src\/main\.js"><\/script>/);
-  assert.doesNotMatch(html, /Clicks/);
+  assert.match(html, /data-route="monitor"/);
+  assert.match(html, /data-route="favorites"/);
+  assert.match(html, /data-route="explore"/);
+  assert.match(html, /data-route="configure"/);
+  assert.match(html, /id="monitorScreen"/);
+  assert.match(html, /id="favoritesScreen"/);
+  assert.match(html, /id="exploreScreen"/);
+  assert.match(html, /id="configureScreen"/);
+  assert.doesNotMatch(html, /Copy URL/);
+  assert.doesNotMatch(html, /id="streamUrl"/);
 });

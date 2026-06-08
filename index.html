@@ -6087,80 +6087,96 @@
 }</script>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <header class="brand">
-        <span class="brand__eyebrow">Beachcam Index</span>
-        <h1>Surfcams Portugal</h1>
-      </header>
+  <div class="app-shell">
+    <nav class="app-nav" aria-label="Primary">
+      <button class="nav-button" type="button" data-route="monitor" aria-label="Monitor" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">▣</span>
+      </button>
+      <button class="nav-button" type="button" data-route="favorites" aria-label="Favorites">
+        <span class="nav-icon" aria-hidden="true">★</span>
+      </button>
+      <button class="nav-button" type="button" data-route="explore" aria-label="Explore">
+        <span class="nav-icon" aria-hidden="true">⌖</span>
+      </button>
+      <button class="nav-button" type="button" data-route="configure" aria-label="Configure">
+        <span class="nav-icon" aria-hidden="true">☷</span>
+      </button>
+    </nav>
 
-      <section class="stats">
-        <div class="stat">
-          <span class="meta-label">Cams</span>
-          <strong id="totalCount">0</strong>
-        </div>
-        <div class="stat">
-          <span class="meta-label">Feeds</span>
-          <strong id="streamCount">0</strong>
-        </div>
-        <div class="stat">
-          <span class="meta-label">Shown</span>
-          <strong id="shownCount">0</strong>
+    <main class="app-main">
+      <section class="screen monitor-screen" id="monitorScreen" data-active="true" data-screen="monitor" aria-labelledby="monitorTitle">
+        <header class="screen-header">
+          <div>
+            <p class="eyebrow">Monitor</p>
+            <h1 id="monitorTitle">Surfcams Portugal</h1>
+          </div>
+          <div class="segmented-control" role="group" aria-label="Monitor mode">
+            <button type="button" id="monitorFavoritesMode" data-monitor-mode="favorites" aria-pressed="true">Favorites</button>
+            <button type="button" id="monitorMightBeGoodMode" data-monitor-mode="might-be-good" aria-pressed="false">Might be good</button>
+          </div>
+        </header>
+        <p class="status-line" id="monitorStatus">Loading cameras...</p>
+        <div class="monitor-grid" id="monitorGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="screen favorites-screen" id="favoritesScreen" data-screen="favorites" hidden aria-labelledby="favoritesTitle">
+        <header class="screen-header">
+          <div>
+            <p class="eyebrow">Favorites</p>
+            <h1 id="favoritesTitle">Trusted spots</h1>
+          </div>
+        </header>
+        <div class="favorites-list" id="favoritesList"></div>
+      </section>
+
+      <section class="screen explore-screen" id="exploreScreen" data-screen="explore" hidden aria-labelledby="exploreTitle">
+        <header class="screen-header explore-header">
+          <div>
+            <p class="eyebrow">Explore</p>
+            <h1 id="exploreTitle">Map</h1>
+          </div>
+          <div class="explore-filters">
+            <input id="searchInput" type="search" placeholder="Search beaches">
+            <select id="regionSelect" aria-label="Region"></select>
+            <label class="toggle-row"><input id="favoriteOnly" type="checkbox"> Favorites</label>
+            <label class="toggle-row"><input id="mightBeGoodOnly" type="checkbox"> Might be good</label>
+          </div>
+        </header>
+        <div class="map-layout">
+          <div id="map" class="map"></div>
+          <aside class="spot-panel" id="spotPanel" aria-live="polite">
+            <h2 id="detailName">Select a camera</h2>
+            <p id="detailLocation" class="muted">Choose a marker to inspect conditions.</p>
+            <button id="detailFavorite" class="secondary-button" type="button">Add favorite</button>
+            <p id="description"></p>
+            <div id="metadataGrid" class="metadata-grid"></div>
+          </aside>
         </div>
       </section>
 
-      <section class="filters">
-        <div class="field">
-          <label for="searchInput">Search</label>
-          <input id="searchInput" type="search" autocomplete="off" spellcheck="false" placeholder="Spot, region, town">
-        </div>
-        <div class="field">
-          <label for="regionSelect">Region</label>
-          <select id="regionSelect"></select>
-        </div>
-        <label class="toggle-row">
-          <input id="favoriteOnly" type="checkbox" checked>
-          <span>Favorites only</span>
-        </label>
+      <section class="screen configure-screen" id="configureScreen" data-screen="configure" hidden aria-labelledby="configureTitle">
+        <header class="screen-header">
+          <div>
+            <p class="eyebrow">Configure</p>
+            <h1 id="configureTitle">Fit for us</h1>
+          </div>
+        </header>
+        <form class="config-form" id="configForm">
+          <label>Min surf height <input id="minSurfHeightM" name="minSurfHeightM" type="number" min="0" max="4" step="0.1"></label>
+          <label>Max surf height <input id="maxSurfHeightM" name="maxSurfHeightM" type="number" min="0" max="4" step="0.1"></label>
+          <label>Max wind km/h <input id="maxWindSpeedKmh" name="maxWindSpeedKmh" type="number" min="0" max="80" step="1"></label>
+          <label>Min period seconds <input id="minPeriodSeconds" name="minPeriodSeconds" type="number" min="0" max="20" step="0.5"></label>
+          <label>Surf size scale <input id="surfSizeScale" name="surfSizeScale" type="number" min="0.2" max="2" step="0.05"></label>
+          <label class="toggle-row"><input id="preferOffshore" name="preferOffshore" type="checkbox"> Prefer offshore wind</label>
+          <label class="toggle-row"><input id="allowLightWind" name="allowLightWind" type="checkbox"> Allow light wind</label>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Save</button>
+            <button class="secondary-button" id="resetConfigButton" type="button">Reset</button>
+          </div>
+        </form>
+        <p class="status-line">The heuristic is a model, not a guarantee. Check the cam before leaving.</p>
       </section>
-
-      <section class="list" id="cameraList" aria-label="Camera list"></section>
-      <div class="list-note" id="listNote">Loading cameras.</div>
-    </aside>
-
-    <main class="map-wrap">
-      <div id="map"></div>
-      <div class="map-status" id="mapStatus">Loading map.</div>
     </main>
-
-    <aside class="detail">
-      <header>
-        <h2 id="detailName">Select a camera</h2>
-        <p class="detail__sub" id="detailLocation">Map markers and list rows open feeds.</p>
-        <label class="toggle-row">
-          <input id="detailFavorite" type="checkbox">
-          <span>Favorite</span>
-        </label>
-      </header>
-
-      <div class="video-shell">
-        <video id="video" controls muted playsinline></video>
-      </div>
-
-      <section class="metadata">
-        <p class="description" id="description"></p>
-        <div class="metadata-grid" id="metadataGrid"></div>
-        <p class="stream-url" id="streamUrl"></p>
-      </section>
-
-      <div>
-        <div class="button-grid">
-          <button class="primary-button" type="button" id="playButton">Play Feed</button>
-          <button class="secondary-button" type="button" id="copyButton">Copy URL</button>
-        </div>
-        <p class="legal">Personal prototype. Camera streams and page content belong to Beachcam/MEO; do not redistribute without permission.</p>
-      </div>
-    </aside>
   </div>
 
   <script type="module" src="./src/main.js"></script>

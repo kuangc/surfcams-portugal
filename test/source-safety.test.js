@@ -4,6 +4,7 @@ import test from "node:test";
 
 const mainSource = fs.readFileSync("src/main.js", "utf8");
 const configSource = fs.readFileSync("src/config.js", "utf8");
+const indexSource = fs.readFileSync("index.html", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
@@ -14,4 +15,10 @@ test("main UI avoids selector interpolation from camera IDs", () => {
 test("CDN dependencies are pinned to explicit versions", () => {
   assert.doesNotMatch(`${configSource}\n${videoSource}`, /@latest/);
   assert.match(configSource, /hls\.js@1\.6\.4/);
+});
+
+test("v3 source has monitor-first routing and no v2 monitor overlay", () => {
+  assert.match(indexSource, /id="monitorScreen"[^>]*data-active="true"/);
+  assert.doesNotMatch(indexSource, /id="monitorDeck"/);
+  assert.doesNotMatch(indexSource, /bestTodayTitle/);
 });
