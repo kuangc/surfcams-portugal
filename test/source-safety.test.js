@@ -16,6 +16,8 @@ test("main UI avoids selector interpolation from camera IDs", () => {
 test("CDN dependencies are pinned to explicit versions", () => {
   assert.doesNotMatch(`${configSource}\n${videoSource}`, /@latest/);
   assert.match(configSource, /hls\.js@1\.6\.4/);
+  assert.match(indexSource, /leaflet@1\.9\.4\/dist\/leaflet\.css" integrity="sha256-p4NxAoJBhIIN\+hmNHrzRCf9tD\/miZyoHS5obTRR9BMY="/);
+  assert.match(indexSource, /rel="icon"/);
 });
 
 test("v3 source has monitor-first routing and no v2 monitor overlay", () => {
@@ -34,10 +36,25 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreSelection/);
   assert.match(mainSource, /renderExploreList/);
   assert.match(mainSource, /playExploreCamera/);
+  assert.match(mainSource, /restartMonitorTile/);
+  assert.match(mainSource, /favoriteManagerCameras/);
+  assert.match(mainSource, /createFavoriteToggle/);
+  assert.match(mainSource, /selectExploreCamera/);
+  assert.match(mainSource, /renderWaterSummaries/);
+  assert.match(mainSource, /formatWaterSummary/);
   assert.match(mainSource, /explorePlayer/);
   assert.match(mainSource, /renderConfigure/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
   assert.doesNotMatch(mainSource, /autoFill/i);
+});
+
+test("explore map refreshes after the visible layout has painted", () => {
+  assert.match(mainSource, /function afterNextPaint/);
+  assert.match(mainSource, /requestAnimationFrame/);
+  assert.match(mainSource, /function refreshExploreMap/);
+  assert.match(mainSource, /invalidateSize\(\{\s*pan:\s*false\s*\}\)/);
+  assert.match(mainSource, /mapHasInitialFit:\s*false/);
+  assert.doesNotMatch(mainSource, /ensureMap\(\);\s*renderExploreList\(\);\s*renderMarkers\(\);\s*state\.map\.invalidateSize\(\);/);
 });
 
 test("v3 styles are monitor-first and responsive without the old side panels", () => {
@@ -46,11 +63,23 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.monitor-grid\s*{/);
   assert.match(styleSource, /\.browse-panel\s*{/);
   assert.match(styleSource, /\.explore-video-shell\s*{/);
+  assert.match(styleSource, /\.favorite-toolbar\s*{/);
+  assert.match(styleSource, /\.favorite-toggle\s*{/);
+  assert.match(styleSource, /\.spot-panel__header\s*{/);
   assert.match(styleSource, /\.condition-chip\s*{/);
+  assert.match(styleSource, /\.condition-chip__icon\s*{/);
+  assert.match(styleSource, /\.water-summary\s*{/);
+  assert.match(indexSource, /id="monitorWaterSummary"/);
+  assert.match(indexSource, /id="favoritesWaterSummary"/);
+  assert.match(indexSource, /id="detailWaterSummary"/);
+  assert.match(indexSource, /id="favoritesSearchInput"/);
+  assert.match(indexSource, /aria-label="Toggle favorite"/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(styleSource, /\.condition-vectors\s*{/);
+  assert.match(styleSource, /grid-template-areas:\s*"map detail"\s*"browse detail"/);
   assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
   assert.match(styleSource, /@media\s*\(max-width:\s*640px\)/);
+  assert.doesNotMatch(mainSource, /danger-button/);
+  assert.doesNotMatch(indexSource, />Remove favorite</);
   assert.doesNotMatch(styleSource, /\.sidebar\b/);
   assert.doesNotMatch(styleSource, /\.detail\b/);
 });

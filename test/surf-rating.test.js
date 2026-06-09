@@ -72,5 +72,26 @@ test("getConditionVectors points wind arrow where wind is blowing", () => {
 
   assert.equal(vectors.wind.compass, "N");
   assert.equal(vectors.wind.arrowBearing, 180);
+  assert.equal(vectors.wind.alignment, "offshore");
   assert.equal(vectors.swell.compass, "NW");
+});
+
+test("getConditionVectors treats wind from an exposed coast as onshore", () => {
+  const vectors = getConditionVectors({
+    ...baseCamera,
+    id: "costa-da-caparica",
+    region: "almada",
+    forecast: {
+      ...baseCamera.forecast,
+      windDirection: "northwest"
+    },
+    detailMetrics: {
+      ...baseCamera.detailMetrics,
+      "Direção do vento": "Noroeste"
+    }
+  });
+
+  assert.equal(vectors.coast.bearing, 270);
+  assert.equal(vectors.wind.arrowBearing, 135);
+  assert.equal(vectors.wind.alignment, "onshore");
 });

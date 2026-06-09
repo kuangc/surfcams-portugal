@@ -154,7 +154,7 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
 
   function expire() {
     clear();
-    setState("expired", "Expired");
+    setState("expired", "Tap to restart");
   }
 
   function state() {

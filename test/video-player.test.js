@@ -61,6 +61,6 @@ test("createFeedTilePlayer can expire and clear a tile", () => {
 
   player.expire();
 
-  assert.equal(status.textContent, "Expired");
+  assert.equal(status.textContent, "Tap to restart");
   assert.equal(player.state(), "expired");
 });

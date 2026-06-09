@@ -20,8 +20,20 @@ const COMPASS = {
 const COAST_EXPOSURE = {
   cascais: { label: "West-facing regional estimate", bearing: 270, confidence: "regional" },
   almada: { label: "West-facing regional estimate", bearing: 270, confidence: "regional" },
+  oeiras: { label: "South-facing regional estimate", bearing: 180, confidence: "regional" },
   peniche: { label: "West/Northwest exposure estimate", bearing: 300, confidence: "regional" },
   sesimbra: { label: "Sheltered south-facing bay", bearing: 180, confidence: "spot" }
+};
+
+const SPOT_EXPOSURE = {
+  "praia-de-carcavelos": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "carcavelos-calhau": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "carcavelos-norte-estatica": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "carcavelos-calhau-estatica": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "sao-pedro-do-estoril": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "sao-pedro-do-estoril-bico-estatica": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  parede: { label: "South-facing spot estimate", bearing: 180, confidence: "spot" },
+  "parede-estatica": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" }
 };
 
 export function parseMetricNumber(value) {
@@ -46,8 +58,7 @@ function bearingDifference(a, b) {
 
 function windAlignment(windBearing, coastBearing) {
   if (!Number.isFinite(windBearing) || !Number.isFinite(coastBearing)) return "unknown";
-  const blowingToward = (windBearing + 180) % 360;
-  const diff = bearingDifference(blowingToward, coastBearing);
+  const diff = bearingDifference(windBearing, coastBearing);
   if (diff <= 45) return "onshore";
   if (diff >= 135) return "offshore";
   return "cross";
@@ -59,16 +70,23 @@ function formatArrow(bearing) {
   return arrows[Math.round((((bearing % 360) + 360) % 360) / 45) % 8];
 }
 
+function compassFromBearing(bearing) {
+  if (!Number.isFinite(bearing)) return "unknown";
+  const labels = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  return labels[Math.round((((bearing % 360) + 360) % 360) / 45) % 8];
+}
+
 export function getConditionVectors(camera) {
   const wind = normalizeDirection(camera.forecast?.windDirection || camera.detailMetrics?.["Direção do vento"]);
   const swell = normalizeDirection(camera.detailMetrics?.["Direção das ondas"]);
-  const coast = COAST_EXPOSURE[camera.region] || { label: "Unknown exposure", bearing: null, confidence: "unknown" };
+  const coast = SPOT_EXPOSURE[camera.id] || COAST_EXPOSURE[camera.region] || { label: "Unknown exposure", bearing: null, confidence: "unknown" };
   const windArrowBearing = Number.isFinite(wind?.bearing) ? (wind.bearing + 180) % 360 : null;
 
   return {
     coast: {
       label: coast.label,
       bearing: coast.bearing,
+      compass: compassFromBearing(coast.bearing),
       confidence: coast.confidence
     },
     wind: {
@@ -114,6 +132,7 @@ export function rateSurfSpot(camera, preferences) {
       arrow: vectors.wind.arrow
     },
     swell: vectors.swell,
+    coast: vectors.coast,
     period: {
       seconds: periodSeconds,
       label: periodSeconds === null ? "unknown" : `${formatCompactNumber(periodSeconds)}s`

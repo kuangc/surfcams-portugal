@@ -4,7 +4,11 @@ import {
   filterCameras,
   uniqueSortedRegions
 } from "./camera-filters.js";
-import { formatConditionChips, formatConditionLine, formatSpotMetadata } from "./condition-summary.js";
+import {
+  formatConditionChips,
+  formatConditionLine,
+  formatWaterSummary
+} from "./condition-summary.js";
 import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
@@ -15,7 +19,7 @@ import {
   saveSurfPreferences,
   serializeSurfPreferences
 } from "./surf-preferences.js";
-import { getConditionVectors, rateSurfSpot } from "./surf-rating.js";
+import { rateSurfSpot } from "./surf-rating.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
@@ -32,17 +36,22 @@ const state = {
   markerLayer: null,
   selectedExploreCamera: null,
   explorePlayer: null,
-  map: null
+  map: null,
+  mapHasInitialFit: false
 };
 
 const els = {
   navButtons: [...document.querySelectorAll("[data-route]")],
   screens: [...document.querySelectorAll("[data-screen]")],
   monitorStatus: document.querySelector("#monitorStatus"),
+  monitorWaterSummary: document.querySelector("#monitorWaterSummary"),
   monitorGrid: document.querySelector("#monitorGrid"),
   monitorFavoritesMode: document.querySelector("#monitorFavoritesMode"),
   monitorMightBeGoodMode: document.querySelector("#monitorMightBeGoodMode"),
+  favoritesSearchInput: document.querySelector("#favoritesSearchInput"),
+  favoritesStatus: document.querySelector("#favoritesStatus"),
   favoritesList: document.querySelector("#favoritesList"),
+  favoritesWaterSummary: document.querySelector("#favoritesWaterSummary"),
   searchInput: document.querySelector("#searchInput"),
   regionSelect: document.querySelector("#regionSelect"),
   favoriteOnly: document.querySelector("#favoriteOnly"),
@@ -53,10 +62,10 @@ const els = {
   exploreFeedStatus: document.querySelector("#exploreFeedStatus"),
   detailName: document.querySelector("#detailName"),
   detailLocation: document.querySelector("#detailLocation"),
+  spotPanel: document.querySelector("#spotPanel"),
+  detailWaterSummary: document.querySelector("#detailWaterSummary"),
   detailConditionStrip: document.querySelector("#detailConditionStrip"),
   detailFavorite: document.querySelector("#detailFavorite"),
-  description: document.querySelector("#description"),
-  metadataGrid: document.querySelector("#metadataGrid"),
   configForm: document.querySelector("#configForm"),
   resetConfigButton: document.querySelector("#resetConfigButton")
 };
@@ -66,6 +75,12 @@ state.explorePlayer = createFeedTilePlayer({
   status: els.exploreFeedStatus,
   hlsScriptUrl: HLS_SCRIPT_URL
 });
+
+function afterNextPaint(callback) {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(callback);
+  });
+}
 
 function setRoute(route) {
   if (route !== "monitor") clearMonitorPlayers();
@@ -92,15 +107,9 @@ function setRoute(route) {
   }
 
   if (route === "explore") {
-    window.setTimeout(() => {
-      ensureMap();
-      renderExploreList();
-      renderMarkers();
-      state.map.invalidateSize();
-      if (state.selectedExploreCamera) {
-        playExploreCamera(state.selectedExploreCamera);
-      }
-    }, 0);
+    afterNextPaint(() => {
+      refreshExploreMap({ fit: !state.mapHasInitialFit });
+    });
   }
 }
 
@@ -124,6 +133,40 @@ function favoriteCameras() {
     .filter(Boolean);
 }
 
+function normalizedSearchText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function cameraSearchText(camera) {
+  return [
+    camera.name,
+    camera.location,
+    formatRegion(camera.region)
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function favoriteManagerCameras() {
+  const query = normalizedSearchText(els.favoritesSearchInput.value);
+
+  return state.cameras
+    .filter((camera) => !query || cameraSearchText(camera).includes(query))
+    .sort((a, b) => {
+      const favoriteSort = Number(state.favoriteIds.has(b.id)) - Number(state.favoriteIds.has(a.id));
+      if (favoriteSort !== 0) return favoriteSort;
+      return a.name.localeCompare(b.name);
+    });
+}
+
+function hasWaterSummaryData(camera) {
+  return Boolean(camera?.detailMetrics?.["Temp. do mar"] || camera?.forecast?.tideState);
+}
+
+function waterSummaryCamera() {
+  return favoriteCameras().find(hasWaterSummaryData)
+    || state.cameras.find(hasWaterSummaryData)
+    || null;
+}
+
 function clearMonitorPlayers() {
   state.monitorPlayers.forEach(({ player, playTimeoutId, timeoutId }) => {
     window.clearTimeout(playTimeoutId);
@@ -135,6 +178,35 @@ function clearMonitorPlayers() {
 
 function renderMonitorIfActive() {
   if (state.activeRoute === "monitor") renderMonitor();
+}
+
+function monitorPlayerKey(camera, index) {
+  return `${camera.id}:${index}`;
+}
+
+function scheduleMonitorTile(camera, index, player, delayMs) {
+  const key = monitorPlayerKey(camera, index);
+  const playTimeoutId = window.setTimeout(() => {
+    if (state.activeRoute === "monitor") player.play(camera);
+  }, delayMs);
+  const timeoutId = window.setTimeout(() => player.expire(), delayMs + MONITOR_DURATION_MS);
+
+  state.monitorPlayers.set(key, { player, playTimeoutId, timeoutId });
+}
+
+function restartMonitorTile(camera, index, player) {
+  if (state.activeRoute !== "monitor" || player.state() !== "expired") return;
+
+  const key = monitorPlayerKey(camera, index);
+  const entry = state.monitorPlayers.get(key);
+  if (entry) {
+    window.clearTimeout(entry.playTimeoutId);
+    window.clearTimeout(entry.timeoutId);
+  }
+
+  player.play(camera);
+  const timeoutId = window.setTimeout(() => player.expire(), MONITOR_DURATION_MS);
+  state.monitorPlayers.set(key, { player, playTimeoutId: null, timeoutId });
 }
 
 function createEmptyMonitorTile(index) {
@@ -181,11 +253,8 @@ function createMonitorTile(slot, index) {
   tile.append(frame, createConditionStrip(camera, { showName: true }));
 
   const player = createFeedTilePlayer({ video, status, hlsScriptUrl: HLS_SCRIPT_URL });
-  const playTimeoutId = window.setTimeout(() => {
-    if (state.activeRoute === "monitor") player.play(camera);
-  }, 350 + (index * 450));
-  const timeoutId = window.setTimeout(() => player.expire(), MONITOR_DURATION_MS);
-  state.monitorPlayers.set(`${camera.id}:${index}`, { player, playTimeoutId, timeoutId });
+  frame.addEventListener("click", () => restartMonitorTile(camera, index, player));
+  scheduleMonitorTile(camera, index, player, 350 + (index * 450));
 
   return tile;
 }
@@ -199,6 +268,7 @@ function setMonitorMode(mode) {
 
 function renderMonitor() {
   clearMonitorPlayers();
+  renderWaterSummaries();
 
   const slots = state.monitorMode === "favorites"
     ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder())
@@ -223,46 +293,53 @@ function renderMonitor() {
     : "Might be good is model-based. Check the cams before leaving.";
 }
 
-function createMetadataItem(label, value) {
-  if (!value) return null;
-
-  const item = document.createElement("div");
-  item.className = "metadata-item";
-
-  const labelEl = document.createElement("span");
-  labelEl.className = "meta-label";
-  labelEl.textContent = label;
-
-  const valueEl = document.createElement("strong");
-  valueEl.textContent = value;
-
-  item.append(labelEl, valueEl);
-  return item;
+function createMetricIcon(icon, key, tone = "neutral") {
+  const iconEl = document.createElement("span");
+  iconEl.className = "metric-icon";
+  iconEl.dataset.key = key;
+  iconEl.dataset.tone = tone;
+  iconEl.setAttribute("aria-hidden", "true");
+  iconEl.textContent = icon;
+  return iconEl;
 }
 
-function compassFromBearing(bearing) {
-  if (!Number.isFinite(bearing)) return "unknown";
-  const labels = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  return labels[Math.round((((bearing % 360) + 360) % 360) / 45) % 8];
-}
+function renderWaterSummary(container) {
+  if (!container) return;
 
-function createConditionVectors(camera) {
-  const vectors = getConditionVectors(camera);
-  const strip = document.createElement("div");
-  strip.className = "condition-vectors";
+  const camera = waterSummaryCamera();
+  container.textContent = "";
 
-  [
-    ["Coast", `${compassFromBearing(vectors.coast.bearing)} exposure`],
-    ["Wind", `${vectors.wind.arrow} ${vectors.wind.compass} ${vectors.wind.alignment}`],
-    ["Swell", `${vectors.swell.compass} swell`]
-  ].forEach(([label, value]) => {
-    const item = document.createElement("span");
-    item.className = "vector-pill";
-    item.textContent = `${label}: ${value}`;
-    strip.appendChild(item);
+  if (!camera) {
+    container.hidden = true;
+    return;
+  }
+
+  container.hidden = false;
+  formatWaterSummary(camera).forEach((item) => {
+    const metric = document.createElement("div");
+    metric.className = "water-metric";
+    metric.dataset.key = item.key;
+    metric.dataset.tone = item.tone;
+
+    const label = document.createElement("span");
+    label.className = "water-metric__label";
+    label.textContent = item.label;
+
+    const value = document.createElement("strong");
+    value.className = "water-metric__value";
+    value.textContent = item.value;
+
+    metric.append(createMetricIcon(item.icon, item.key, item.tone), label, value);
+    container.appendChild(metric);
   });
+}
 
-  return strip;
+function renderWaterSummaries() {
+  [
+    els.monitorWaterSummary,
+    els.favoritesWaterSummary,
+    els.detailWaterSummary
+  ].forEach(renderWaterSummary);
 }
 
 function createConditionStrip(camera, { showName = false, compact = false } = {}) {
@@ -282,28 +359,34 @@ function createConditionStrip(camera, { showName = false, compact = false } = {}
     chipEl.className = "condition-chip";
     chipEl.dataset.key = chip.key;
     chipEl.dataset.tone = chip.tone;
+    if (chip.source) chipEl.dataset.source = chip.source;
     chipEl.title = chip.detail;
-    chipEl.textContent = chip.label;
+
+    const iconEl = document.createElement("span");
+    iconEl.className = "condition-chip__icon";
+    iconEl.setAttribute("aria-hidden", "true");
+    iconEl.textContent = chip.icon;
+
+    if (chip.key === "source") {
+      chipEl.setAttribute("aria-label", chip.detail);
+
+      const readable = document.createElement("span");
+      readable.className = "sr-only";
+      readable.textContent = chip.detail;
+
+      chipEl.append(iconEl, readable);
+    } else {
+      const labelEl = document.createElement("span");
+      labelEl.className = "condition-chip__label";
+      labelEl.textContent = chip.label;
+
+      chipEl.append(iconEl, labelEl);
+    }
+
     strip.appendChild(chipEl);
   });
 
   return strip;
-}
-
-function renderMetadata(camera) {
-  els.metadataGrid.textContent = "";
-  if (!camera) return;
-
-  const items = formatSpotMetadata(camera, state.preferences)
-    .map((metric) => createMetadataItem(metric.label, metric.value))
-    .filter(Boolean);
-
-  els.metadataGrid.append(...items, createConditionVectors(camera));
-}
-
-function findFavoriteCard(cameraId) {
-  return [...els.favoritesList.querySelectorAll(".favorite-card")]
-    .find((row) => row.dataset.cameraRow === cameraId);
 }
 
 function toggleFavorite(camera, checked) {
@@ -323,10 +406,34 @@ function toggleFavorite(camera, checked) {
   renderExploreSelection(camera);
 }
 
+function syncFavoriteToggle(button, camera) {
+  const isFavorite = Boolean(camera && state.favoriteIds.has(camera.id));
+  button.disabled = !camera;
+  button.textContent = isFavorite ? "♥" : "♡";
+  button.title = isFavorite ? "Remove from favorites" : "Add to favorites";
+  button.setAttribute("aria-pressed", String(isFavorite));
+  button.setAttribute("aria-label", camera ? `Toggle favorite: ${camera.name}` : "Toggle favorite");
+}
+
+function createFavoriteToggle(camera) {
+  const button = document.createElement("button");
+  button.className = "favorite-toggle";
+  button.type = "button";
+  syncFavoriteToggle(button, camera);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleFavorite(camera, !state.favoriteIds.has(camera.id));
+  });
+  return button;
+}
+
 function createFavoriteCard(camera) {
   const card = document.createElement("article");
   card.className = "favorite-card";
   card.dataset.cameraRow = camera.id;
+
+  const body = document.createElement("div");
+  body.className = "favorite-card__body";
 
   const header = document.createElement("header");
 
@@ -338,45 +445,22 @@ function createFavoriteCard(camera) {
   meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
 
   header.append(title, meta);
-
-  const vectors = createConditionVectors(camera);
-
-  const actions = document.createElement("div");
-  actions.className = "card-actions";
-
-  const mapButton = document.createElement("button");
-  mapButton.className = "secondary-button";
-  mapButton.type = "button";
-  mapButton.textContent = "Map";
-  mapButton.addEventListener("click", () => {
-    renderExploreSelection(camera);
-    setRoute("explore");
-    window.setTimeout(() => {
-      if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon) && state.map) {
-        state.map.panTo([camera.lat, camera.lon]);
-      }
-    }, 0);
-  });
-
-  const removeButton = document.createElement("button");
-  removeButton.className = "danger-button";
-  removeButton.type = "button";
-  removeButton.textContent = "Remove";
-  removeButton.addEventListener("click", () => toggleFavorite(camera, false));
-
-  actions.append(mapButton, removeButton);
-  card.append(header, createConditionStrip(camera), vectors, actions);
+  body.append(header, createConditionStrip(camera, { compact: true }));
+  card.append(body, createFavoriteToggle(camera));
   return card;
 }
 
 function renderFavorites() {
   els.favoritesList.textContent = "";
-  const cameras = favoriteCameras();
+  renderWaterSummaries();
+  const cameras = favoriteManagerCameras();
+  const favoriteCount = favoriteCameras().length;
+  els.favoritesStatus.textContent = `${favoriteCount} favorites · ${cameras.length} spots shown`;
 
   if (!cameras.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    empty.textContent = "No favorites yet. Add spots from the map.";
+    empty.textContent = "No spots match that search.";
     els.favoritesList.appendChild(empty);
     return;
   }
@@ -389,6 +473,20 @@ function renderFavorites() {
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
   state.explorePlayer.play(camera);
+}
+
+function selectExploreCamera(camera, { pan = false, route = false, scroll = false } = {}) {
+  renderExploreSelection(camera);
+
+  if (route) setRoute("explore");
+
+  if (pan && Number.isFinite(camera?.lat) && Number.isFinite(camera?.lon) && state.map) {
+    state.map.panTo([camera.lat, camera.lon]);
+  }
+
+  if (scroll && els.spotPanel && window.matchMedia("(max-width: 900px)").matches) {
+    els.spotPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+  }
 }
 
 function renderExploreList() {
@@ -423,10 +521,7 @@ function renderExploreList() {
 
     row.append(title, meta, createConditionStrip(camera, { compact: true }));
     row.addEventListener("click", () => {
-      renderExploreSelection(camera);
-      if (Number.isFinite(camera.lat) && Number.isFinite(camera.lon) && state.map) {
-        state.map.panTo([camera.lat, camera.lon]);
-      }
+      selectExploreCamera(camera, { pan: true, scroll: true });
     });
 
     els.exploreList.appendChild(row);
@@ -438,38 +533,30 @@ function updateExploreRowSelection(cameraId) {
     row.setAttribute("aria-current", "false");
   });
   const row = [...els.exploreList.querySelectorAll(".explore-row")]
-    .find((item) => item.dataset.cameraRow === cameraId);
+    .find((row) => row.dataset.cameraRow === cameraId);
   if (row) row.setAttribute("aria-current", "true");
 }
 
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
   els.detailConditionStrip.textContent = "";
+  renderWaterSummaries();
 
   if (!camera) {
     els.detailName.textContent = "Select a camera";
-    els.detailLocation.textContent = "Choose a marker to inspect conditions.";
+    els.detailLocation.textContent = "Choose a marker to watch.";
     els.detailFavorite.disabled = true;
-    els.detailFavorite.textContent = "Add favorite";
-    els.detailFavorite.setAttribute("aria-pressed", "false");
-    els.description.textContent = "";
-    renderMetadata(null);
+    syncFavoriteToggle(els.detailFavorite, null);
     renderMarkers();
     state.explorePlayer.clear();
     return;
   }
 
-  const rating = rateSurfSpot(camera, state.preferences);
-  const isFavorite = state.favoriteIds.has(camera.id);
-
   els.detailName.textContent = camera.name;
-  els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)} / ${rating.label}`;
+  els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
   els.detailFavorite.disabled = false;
-  els.detailFavorite.textContent = isFavorite ? "Remove favorite" : "Add favorite";
-  els.detailFavorite.setAttribute("aria-pressed", String(isFavorite));
-  els.description.textContent = camera.description || "No spot notes indexed.";
+  syncFavoriteToggle(els.detailFavorite, camera);
   els.detailConditionStrip.appendChild(createConditionStrip(camera));
-  renderMetadata(camera);
   updateExploreRowSelection(camera.id);
   renderMarkers();
   playExploreCamera(camera);
@@ -545,7 +632,7 @@ function renderMarkers() {
     if (!marker) {
       marker = L.marker([camera.lat, camera.lon]);
       marker.on("click", () => {
-        renderExploreSelection(camera);
+        selectExploreCamera(camera, { scroll: true });
       });
       state.markers.set(camera.id, marker);
     }
@@ -596,8 +683,29 @@ function ensureMap() {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(state.map);
   state.markerLayer = L.layerGroup().addTo(state.map);
+}
+
+function refreshExploreMap({ fit = false } = {}) {
+  if (state.activeRoute !== "explore") return;
+
+  ensureMap();
+  renderExploreList();
+  state.map.invalidateSize({ pan: false });
   renderMarkers();
-  fitInitialBounds();
+
+  if (fit || !state.mapHasInitialFit) {
+    fitInitialBounds();
+    state.mapHasInitialFit = true;
+  } else if (
+    Number.isFinite(state.selectedExploreCamera?.lat)
+    && Number.isFinite(state.selectedExploreCamera?.lon)
+  ) {
+    state.map.panTo([state.selectedExploreCamera.lat, state.selectedExploreCamera.lon], { animate: false });
+  }
+
+  if (state.selectedExploreCamera) {
+    playExploreCamera(state.selectedExploreCamera);
+  }
 }
 
 function bindEvents() {
@@ -607,15 +715,24 @@ function bindEvents() {
 
   els.monitorFavoritesMode.addEventListener("click", () => setMonitorMode("favorites"));
   els.monitorMightBeGoodMode.addEventListener("click", () => setMonitorMode("might-be-good"));
+  els.favoritesSearchInput.addEventListener("input", renderFavorites);
 
   [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
     input.addEventListener("input", () => {
-      renderExploreList();
-      renderMarkers();
+      if (state.activeRoute === "explore") {
+        refreshExploreMap({ fit: true });
+      } else {
+        renderExploreList();
+        renderMarkers();
+      }
     });
     input.addEventListener("change", () => {
-      renderExploreList();
-      renderMarkers();
+      if (state.activeRoute === "explore") {
+        refreshExploreMap({ fit: true });
+      } else {
+        renderExploreList();
+        renderMarkers();
+      }
     });
   });
 

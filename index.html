@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A private, ad-free Portugal surfcam viewer built from indexed Beachcam/MEO public camera pages.">
   <title>Surfcams Portugal</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQPDYqTe7z7kD/nAJwiC2z3yZgUllhA=" crossorigin="anonymous">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2308756f'/%3E%3Cpath d='M8 39c8 5 16 5 24 0s14-5 22 0v10c-7-5-15-5-23 0s-16 5-23 0z' fill='white'/%3E%3Cpath d='M13 29c8 4 15 4 22 0s13-4 19 0v8c-6-4-13-4-20 0s-15 4-21 0z' fill='%23c8911e'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
   <link rel="stylesheet" href="./src/styles/app.css">
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
   <script id="embeddedCameraDb" type="application/json">{
@@ -6116,6 +6117,7 @@
           </div>
         </header>
         <p class="status-line" id="monitorStatus">Loading cameras...</p>
+        <section class="water-summary" id="monitorWaterSummary" aria-label="Water and tide"></section>
         <div class="monitor-grid" id="monitorGrid" aria-live="polite"></div>
       </section>
 
@@ -6123,9 +6125,14 @@
         <header class="screen-header">
           <div>
             <p class="eyebrow">Favorites</p>
-            <h1 id="favoritesTitle">Trusted spots</h1>
+            <h1 id="favoritesTitle">Manage spots</h1>
+          </div>
+          <div class="favorite-toolbar">
+            <input id="favoritesSearchInput" type="search" placeholder="Search places">
           </div>
         </header>
+        <section class="water-summary" id="favoritesWaterSummary" aria-label="Water and tide"></section>
+        <p class="status-line" id="favoritesStatus">Loading spots...</p>
         <div class="favorites-list" id="favoritesList"></div>
       </section>
 
@@ -6153,12 +6160,15 @@
               <video id="exploreVideo" muted playsinline controls></video>
               <span class="feed-status" id="exploreFeedStatus">Select a spot</span>
             </div>
-            <h2 id="detailName">Select a camera</h2>
-            <p id="detailLocation" class="muted">Choose a marker to inspect conditions.</p>
+            <div class="spot-panel__header">
+              <div>
+                <h2 id="detailName">Select a camera</h2>
+                <p id="detailLocation" class="muted">Choose a marker to watch.</p>
+              </div>
+              <button id="detailFavorite" class="favorite-toggle" type="button" aria-label="Toggle favorite" aria-pressed="false">♡</button>
+            </div>
+            <section class="water-summary water-summary--compact" id="detailWaterSummary" aria-label="Water and tide"></section>
             <div class="condition-strip" id="detailConditionStrip"></div>
-            <button id="detailFavorite" class="secondary-button" type="button">Add favorite</button>
-            <p id="description"></p>
-            <div id="metadataGrid" class="metadata-grid"></div>
           </aside>
         </div>
       </section>
