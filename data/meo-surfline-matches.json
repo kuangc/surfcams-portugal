@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-09",
+  "closeRuleProposal": {
+    "id": "exact-or-nearby-surfline-spots-for-same-outing",
+    "description": "Exact/name match first, then nearby Surfline spots that a Lisbon surfer would reasonably compare in the same outing corridor. Typical physical radius is 0-12km for Cascais, Caparica, Peniche and Ericeira clusters; Sesimbra also includes Surfline's nearby alternatives because it is a sheltered bay whose reported surf height can diverge sharply from exposed beaches.",
+    "needsUserCalibration": true
+  },
+  "matches": [
+    {
+      "meoSpotId": "sao-pedro-do-estoril",
+      "surflineSpotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos",
+        "surfline-parede"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-sao-pedro-do-estoril": 0,
+        "surfline-carcavelos": 3.2,
+        "surfline-parede": 1.7
+      },
+      "notes": "Exact Surfline page plus nearby Cascais-line references."
+    },
+    {
+      "meoSpotId": "praia-de-carcavelos",
+      "surflineSpotIds": [
+        "surfline-carcavelos",
+        "surfline-parede",
+        "surfline-sao-pedro-do-estoril"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-carcavelos": 0,
+        "surfline-parede": 3.9,
+        "surfline-sao-pedro-do-estoril": 3.2
+      },
+      "notes": "Exact Surfline page plus neighboring Cascais-line spots."
+    },
+    {
+      "meoSpotId": "parede",
+      "surflineSpotIds": [
+        "surfline-parede",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-parede": 0,
+        "surfline-sao-pedro-do-estoril": 1.7,
+        "surfline-carcavelos": 3.9
+      },
+      "notes": "Exact Surfline page plus adjacent São Pedro and Carcavelos references."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-riviera",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-fonte-da-telha",
+        "surfline-praia-do-barbas"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 3.8,
+        "surfline-fonte-da-telha": 5.3,
+        "surfline-praia-do-barbas": 1.5
+      },
+      "notes": "Riviera sits inside the broader Caparica/Fonte da Telha comparison corridor."
+    },
+    {
+      "meoSpotId": "costa-da-caparica",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-do-barbas",
+        "surfline-fonte-da-telha"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.8,
+        "surfline-praia-do-barbas": 4.9,
+        "surfline-fonte-da-telha": 8.5
+      },
+      "notes": "Main Caparica Beachcam page maps to Surfline Caparica and nearby alternates."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-cds",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-do-barbas",
+        "surfline-fonte-da-telha"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.7,
+        "surfline-praia-do-barbas": 4.8,
+        "surfline-fonte-da-telha": 8.4
+      },
+      "notes": "CDS south page shares the same Caparica Surfline cluster."
+    },
+    {
+      "meoSpotId": "fonte-da-telha",
+      "surflineSpotIds": [
+        "surfline-fonte-da-telha",
+        "surfline-costa-da-caparica",
+        "surfline-praia-do-barbas"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-fonte-da-telha": 0.1,
+        "surfline-costa-da-caparica": 8.5,
+        "surfline-praia-do-barbas": 6.8
+      },
+      "notes": "Exact Fonte page plus the practical Caparica alternatives."
+    },
+    {
+      "meoSpotId": "lagide-e-baia",
+      "surflineSpotIds": [
+        "surfline-lagide",
+        "surfline-cantinho-da-baia",
+        "surfline-baia",
+        "surfline-baleal"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-lagide": 0,
+        "surfline-cantinho-da-baia": 0.5,
+        "surfline-baia": 1.1,
+        "surfline-baleal": 0.4
+      },
+      "notes": "One MEO camera represents the Lagide/Cantinho/Baía/Baleal cluster."
+    },
+    {
+      "meoSpotId": "praia-sesimbra",
+      "surflineSpotIds": [
+        "surfline-sesimbra",
+        "surfline-fonte-da-telha",
+        "surfline-costa-da-caparica"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-sesimbra": 0,
+        "surfline-fonte-da-telha": 15.6,
+        "surfline-costa-da-caparica": 24.7
+      },
+      "notes": "Sesimbra is a protected bay, so exposed nearby alternatives are useful as a sanity check."
+    },
+    {
+      "meoSpotId": "sao-juliao",
+      "surflineSpotIds": [
+        "surfline-sao-juliao",
+        "surfline-foz-do-lizandro",
+        "surfline-praia-do-sul",
+        "surfline-ribeira-d-ilhas"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-sao-juliao": 0,
+        "surfline-foz-do-lizandro": 1.4,
+        "surfline-praia-do-sul": 3.6,
+        "surfline-ribeira-d-ilhas": 8.2
+      },
+      "notes": "Exact São Julião page plus Ericeira-area options in the same outing corridor."
+    }
+  ]
+}

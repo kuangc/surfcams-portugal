@@ -12,6 +12,10 @@ function formatCompactNumber(value) {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 
+function formatWindSpeed(value) {
+  return Number.isFinite(value) ? String(Math.round(value)) : null;
+}
+
 function formatArrow(bearing) {
   if (!Number.isFinite(bearing)) return "•";
   const arrows = ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"];
@@ -115,14 +119,15 @@ export function formatConditionLine(camera, preferences) {
   return `${shortFitLabel(rating.key)} · ${source.label} · ${rating.wave.label} · ${swell} ${period} · ${wind} · ${coast}`;
 }
 
-export function formatConditionChips(camera, preferences) {
+export function formatConditionChips(camera, preferences, { driveEstimate = null } = {}) {
   const rating = rateSurfSpot(camera, preferences);
   const source = formatSource(camera);
   const swell = rating.swell.compass === "unknown" ? "swell ?" : rating.swell.compass;
   const period = rating.period.seconds === null ? "?s" : `${formatCompactNumber(rating.period.seconds)}s`;
   const swellIcon = Number.isFinite(rating.swell.bearing) ? formatArrow((rating.swell.bearing + 180) % 360) : "≈";
-  const wind = rating.wind.speedKmh === null ? "wind ?" : `${formatCompactNumber(rating.wind.speedKmh)}km/h ${rating.wind.alignment}`;
-  const coast = rating.coast.compass === "unknown" ? "coast ?" : `${rating.coast.compass} exposure`;
+  const windSpeed = formatWindSpeed(rating.wind.speedKmh);
+  const wind = windSpeed === null ? "wind ?" : `${windSpeed}km/h ${rating.wind.alignment}`;
+  const coast = rating.coast.compass === "unknown" ? "coast ?" : `${rating.coast.compass} facing`;
 
   return [
     {
@@ -167,8 +172,15 @@ export function formatConditionChips(camera, preferences) {
       detail: `${rating.confidence.label} coast exposure`,
       icon: formatCoastIcon(rating.coast.bearing),
       tone: rating.coast.confidence === "spot" ? "good" : rating.coast.confidence === "regional" ? "neutral" : "muted"
+    },
+    driveEstimate && {
+      key: "drive",
+      label: driveEstimate.distanceLabel || driveEstimate.label,
+      detail: `Estimated route distance from ${driveEstimate.origin?.label || "Central Lisbon"}`,
+      icon: "↦",
+      tone: "neutral"
     }
-  ];
+  ].filter(Boolean);
 }
 
 export function formatSpotMetadata(camera, preferences) {

@@ -52,12 +52,46 @@ test("formatConditionChips exposes scan-friendly condition tokens", () => {
   const chips = formatConditionChips(camera, DEFAULT_SURF_PREFERENCES);
 
   assert.deepEqual(chips.map((chip) => chip.key), ["fit", "source", "wave", "swell", "wind", "coast"]);
-  assert.deepEqual(chips.map((chip) => chip.label), ["Good", "MEO", "~0.8m", "NW 8s", "6km/h offshore", "S exposure"]);
+  assert.deepEqual(chips.map((chip) => chip.label), ["Good", "MEO", "~0.8m", "NW 8s", "6km/h offshore", "S facing"]);
   assert.deepEqual(chips.map((chip) => chip.icon), ["●", "MEO", "≈", "↘", "↓", "━"]);
   assert.equal(chips[0].tone, "good");
   assert.equal(chips.find((chip) => chip.key === "source").detail, "Beachcam/MEO forecast");
   assert.equal(chips.find((chip) => chip.key === "wind").detail, "offshore");
   assert.equal(chips.find((chip) => chip.key === "coast").detail, "Spot-calibrated coast exposure");
+});
+
+test("formatConditionChips can include central Lisbon route distance", () => {
+  const chips = formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {
+    driveEstimate: {
+      label: "~35m",
+      distanceLabel: "~25km",
+      origin: { label: "Central Lisbon" },
+      profile: "urban-coast"
+    }
+  });
+
+  const drive = chips.find((chip) => chip.key === "drive");
+
+  assert.equal(drive.label, "~25km");
+  assert.equal(drive.icon, "↦");
+  assert.equal(drive.detail, "Estimated route distance from Central Lisbon");
+  assert.equal(drive.tone, "neutral");
+});
+
+test("formatConditionChips rounds wind speed for the compact row", () => {
+  const chips = formatConditionChips({
+    ...camera,
+    forecast: {
+      ...camera.forecast,
+      wind: "16.6Km/h"
+    },
+    detailMetrics: {
+      ...camera.detailMetrics,
+      Vento: "16.6km/h"
+    }
+  }, DEFAULT_SURF_PREFERENCES);
+
+  assert.equal(chips.find((chip) => chip.key === "wind").label, "17km/h offshore");
 });
 
 test("formatWaterSummary exposes shared sea temperature and tide status", () => {

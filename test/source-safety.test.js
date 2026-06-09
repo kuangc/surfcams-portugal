@@ -28,6 +28,9 @@ test("v3 source has monitor-first routing and no v2 monitor overlay", () => {
 
 test("main controller wires v3 screens and keeps might-be-good explicit", () => {
   assert.match(mainSource, /activeRoute:\s*"monitor"/);
+  assert.match(mainSource, /loadSpotData/);
+  assert.match(mainSource, /findDriveEstimate/);
+  assert.match(mainSource, /findSurflineMatches/);
   assert.match(mainSource, /monitorMode:\s*"favorites"/);
   assert.match(mainSource, /monitorCameraSlots/);
   assert.match(mainSource, /mightBeGoodCameras/);
@@ -42,6 +45,12 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /selectExploreCamera/);
   assert.match(mainSource, /renderWaterSummaries/);
   assert.match(mainSource, /formatWaterSummary/);
+  assert.match(mainSource, /createSurflineControl/);
+  assert.match(mainSource, /PROVIDER_ICON_URLS/);
+  assert.match(mainSource, /provider-logo/);
+  assert.match(mainSource, /external-link-icon/);
+  assert.match(mainSource, /placeholder\.textContent\s*=\s*"Nearby"/);
+  assert.match(mainSource, /window\.open\(selectedUrl,\s*"_blank"/);
   assert.match(mainSource, /explorePlayer/);
   assert.match(mainSource, /renderConfigure/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
@@ -68,6 +77,13 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.spot-panel__header\s*{/);
   assert.match(styleSource, /\.condition-chip\s*{/);
   assert.match(styleSource, /\.condition-chip__icon\s*{/);
+  assert.match(styleSource, /\.condition-strip__top\s*{/);
+  assert.match(styleSource, /\.condition-strip__metrics\s*{/);
+  assert.match(styleSource, /\.condition-strip__route\s*{/);
+  assert.match(styleSource, /\.provider-logo\s*{/);
+  assert.match(styleSource, /\.surfline-control\s*{/);
+  assert.match(styleSource, /\.surfline-control__select\s*{/);
+  assert.doesNotMatch(styleSource, /provider-mark/);
   assert.match(styleSource, /\.water-summary\s*{/);
   assert.match(indexSource, /id="monitorWaterSummary"/);
   assert.match(indexSource, /id="favoritesWaterSummary"/);

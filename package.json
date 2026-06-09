@@ -8,6 +8,7 @@
     "dev": "node scripts/dev-server.js",
     "test": "node --test \"test/*.test.js\"",
     "embed-data": "node scripts/embed-camera-db.js",
+    "build-spot-data": "node scripts/build-spot-data.js",
     "crawl": "node scripts/crawl-beachcam.cjs",
     "extract-feed": "node scripts/extract-beachcam-feed.cjs"
   },

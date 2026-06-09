@@ -14,6 +14,12 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
+  emptySpotData,
+  findDriveEstimate,
+  findSurflineMatches,
+  loadSpotData
+} from "./spot-data.js";
+import {
   DEFAULT_SURF_PREFERENCES,
   loadSurfPreferences,
   saveSurfPreferences,
@@ -23,10 +29,16 @@ import { rateSurfSpot } from "./surf-rating.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
+const PROVIDER_ICON_URLS = {
+  meo: "https://beachcam.meo.pt/favicon.ico",
+  surfline: "https://www.surfline.com/favicon.ico",
+  unknown: ""
+};
 
 const state = {
   activeRoute: "monitor",
   db: null,
+  spotData: emptySpotData(),
   cameras: [],
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
@@ -342,49 +354,149 @@ function renderWaterSummaries() {
   ].forEach(renderWaterSummary);
 }
 
-function createConditionStrip(camera, { showName = false, compact = false } = {}) {
+function createProviderLogo(source, label) {
+  const url = PROVIDER_ICON_URLS[source];
+  if (!url) {
+    const fallback = document.createElement("span");
+    fallback.className = "provider-logo provider-logo--fallback";
+    fallback.textContent = label || "SRC";
+    return fallback;
+  }
+
+  const logo = document.createElement("img");
+  logo.className = "provider-logo";
+  logo.src = url;
+  logo.alt = "";
+  logo.width = 22;
+  logo.height = 22;
+  logo.decoding = "async";
+  logo.loading = "lazy";
+  return logo;
+}
+
+function createConditionToken(chip, { iconOnly = false } = {}) {
+  const token = document.createElement("span");
+  token.className = "condition-token";
+  token.dataset.key = chip.key;
+  token.dataset.tone = chip.tone;
+  token.title = chip.detail;
+
+  const iconEl = document.createElement("span");
+  iconEl.className = "condition-token__icon";
+  iconEl.setAttribute("aria-hidden", "true");
+  iconEl.textContent = chip.icon;
+
+  const labelEl = document.createElement("span");
+  labelEl.className = "condition-token__label";
+  labelEl.textContent = chip.label;
+
+  token.append(iconEl);
+  if (!iconOnly) token.append(labelEl);
+  return token;
+}
+
+function createRatingToken(chip) {
+  const token = createConditionToken(chip);
+  token.classList.add("condition-token--fit");
+  return token;
+}
+
+function createSurflineControl(camera) {
+  const matches = findSurflineMatches(camera, state.spotData);
+  if (!matches.length) return null;
+
+  const control = document.createElement("label");
+  control.className = "condition-chip surfline-control";
+  control.dataset.key = "surfline";
+  control.dataset.tone = "neutral";
+  control.title = "Open a nearby Surfline report";
+
+  const logo = createProviderLogo("surfline", "Surfline");
+
+  const externalIcon = document.createElement("span");
+  externalIcon.className = "external-link-icon";
+  externalIcon.setAttribute("aria-hidden", "true");
+  externalIcon.textContent = "↗";
+
+  const select = document.createElement("select");
+  select.className = "surfline-control__select";
+  select.setAttribute("aria-label", `Open Surfline report for ${camera.name}`);
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Nearby";
+  select.appendChild(placeholder);
+
+  matches.forEach((match) => {
+    const option = document.createElement("option");
+    option.value = match.url;
+    option.textContent = match.name;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("click", (event) => event.stopPropagation());
+  select.addEventListener("change", () => {
+    const selectedUrl = select.value;
+    select.value = "";
+    if (!selectedUrl) return;
+    window.open(selectedUrl, "_blank", "noopener,noreferrer");
+  });
+
+  control.append(logo, externalIcon, select);
+  return control;
+}
+
+function createConditionStrip(camera, { showName = false, compact = false, showSurfline = !compact } = {}) {
   const strip = document.createElement("div");
   strip.className = compact ? "condition-strip condition-strip--compact" : "condition-strip";
   strip.setAttribute("aria-label", `${camera.name} / ${formatConditionLine(camera, state.preferences)}`);
+  const driveEstimate = findDriveEstimate(camera, state.spotData);
+  const chips = new Map(
+    formatConditionChips(camera, state.preferences, { driveEstimate })
+      .map((chip) => [chip.key, chip])
+  );
 
-  if (showName) {
+  const topRow = document.createElement("div");
+  topRow.className = "condition-strip__top";
+  if (showName && chips.has("fit")) {
     const name = document.createElement("span");
     name.className = "condition-spot-name";
     name.textContent = camera.name;
-    strip.appendChild(name);
+    topRow.append(name, createRatingToken(chips.get("fit")));
+  } else if (chips.has("fit")) {
+    topRow.appendChild(createRatingToken(chips.get("fit")));
+  }
+  strip.appendChild(topRow);
+
+  const metricsRow = document.createElement("div");
+  metricsRow.className = "condition-strip__metrics";
+  const source = chips.get("source");
+  if (source) {
+    const sourceToken = document.createElement("span");
+    sourceToken.className = "condition-source";
+    sourceToken.dataset.source = source.source;
+    sourceToken.title = source.detail;
+    sourceToken.setAttribute("aria-label", source.detail);
+    sourceToken.appendChild(createProviderLogo(source.source, source.label));
+    metricsRow.appendChild(sourceToken);
   }
 
-  formatConditionChips(camera, state.preferences).forEach((chip) => {
-    const chipEl = document.createElement("span");
-    chipEl.className = "condition-chip";
-    chipEl.dataset.key = chip.key;
-    chipEl.dataset.tone = chip.tone;
-    if (chip.source) chipEl.dataset.source = chip.source;
-    chipEl.title = chip.detail;
-
-    const iconEl = document.createElement("span");
-    iconEl.className = "condition-chip__icon";
-    iconEl.setAttribute("aria-hidden", "true");
-    iconEl.textContent = chip.icon;
-
-    if (chip.key === "source") {
-      chipEl.setAttribute("aria-label", chip.detail);
-
-      const readable = document.createElement("span");
-      readable.className = "sr-only";
-      readable.textContent = chip.detail;
-
-      chipEl.append(iconEl, readable);
-    } else {
-      const labelEl = document.createElement("span");
-      labelEl.className = "condition-chip__label";
-      labelEl.textContent = chip.label;
-
-      chipEl.append(iconEl, labelEl);
-    }
-
-    strip.appendChild(chipEl);
+  ["wave", "swell", "wind"].forEach((key) => {
+    const chip = chips.get(key);
+    if (chip) metricsRow.appendChild(createConditionToken(chip));
   });
+  strip.appendChild(metricsRow);
+
+  const routeRow = document.createElement("div");
+  routeRow.className = "condition-strip__route";
+  ["coast", "drive"].forEach((key) => {
+    const chip = chips.get(key);
+    if (chip) routeRow.appendChild(createConditionToken(chip));
+  });
+  if (routeRow.childElementCount) strip.appendChild(routeRow);
+
+  const surflineControl = showSurfline ? createSurflineControl(camera) : null;
+  if (surflineControl) strip.appendChild(surflineControl);
 
   return strip;
 }
@@ -764,7 +876,13 @@ function bindEvents() {
 
 async function init() {
   bindEvents();
-  state.db = await loadCameraDb();
+  const [cameraDb, spotData] = await Promise.all([
+    loadCameraDb(),
+    loadSpotData().catch(() => emptySpotData())
+  ]);
+
+  state.db = cameraDb;
+  state.spotData = spotData;
   state.cameras = availableCameras(state.db);
   state.favoriteIds = loadFavoriteIds(state.cameras);
   state.preferences = loadSurfPreferences();
