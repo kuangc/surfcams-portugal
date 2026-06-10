@@ -42,6 +42,8 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /playExploreCamera/);
   assert.match(mainSource, /restartMonitorTile/);
   assert.match(mainSource, /favoriteManagerCameras/);
+  assert.match(mainSource, /manageSpotCameras/);
+  assert.match(mainSource, /state\.db\?\.cameras/);
   assert.match(mainSource, /createFavoriteToggle/);
   assert.match(mainSource, /selectExploreCamera/);
   assert.match(mainSource, /renderWaterSummaries/);

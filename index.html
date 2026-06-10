@@ -6128,7 +6128,43 @@
             <h1 id="favoritesTitle">Manage spots</h1>
           </div>
           <div class="favorite-toolbar">
-            <input id="favoritesSearchInput" type="search" placeholder="Search places">
+            <label class="filter-field" for="favoritesSearchInput">
+              <span>Search</span>
+              <input id="favoritesSearchInput" type="search" placeholder="Search places" aria-label="Search places">
+            </label>
+            <label class="filter-field" for="favoritesRegionSelect">
+              <span>Region</span>
+              <select id="favoritesRegionSelect" aria-label="Region">
+                <option value="">All regions</option>
+              </select>
+            </label>
+            <label class="filter-field" for="favoritesStatusSelect">
+              <span>Saved</span>
+              <select id="favoritesStatusSelect" aria-label="Saved status">
+                <option value="all">All spots</option>
+                <option value="favorites">Favorites</option>
+                <option value="not-favorites">Not favorites</option>
+              </select>
+            </label>
+            <label class="filter-field" for="favoritesStreamSelect">
+              <span>Streams</span>
+              <select id="favoritesStreamSelect" aria-label="Stream status">
+                <option value="all">All streams</option>
+                <option value="live">Has stream</option>
+                <option value="no-stream">No stream</option>
+              </select>
+            </label>
+            <label class="filter-field" for="favoritesSortSelect">
+              <span>Sort</span>
+              <select id="favoritesSortSelect" aria-label="Sort spots">
+                <option value="favorites">Favorites first</option>
+                <option value="fit">Best conditions</option>
+                <option value="name">Name A-Z</option>
+                <option value="region">Region</option>
+                <option value="wave">Wave height</option>
+                <option value="popular">Most viewed</option>
+              </select>
+            </label>
           </div>
         </header>
         <section class="water-summary" id="favoritesWaterSummary" aria-label="Water and tide"></section>
