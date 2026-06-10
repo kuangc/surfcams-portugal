@@ -30,6 +30,17 @@ function compareNumberDesc(a, b, getValue) {
   return 0;
 }
 
+function compareNumberAsc(a, b, getValue) {
+  const aValue = getValue(a);
+  const bValue = getValue(b);
+  const aFinite = Number.isFinite(aValue);
+  const bFinite = Number.isFinite(bValue);
+
+  if (aFinite && bFinite && aValue !== bValue) return aValue - bValue;
+  if (aFinite !== bFinite) return aFinite ? -1 : 1;
+  return 0;
+}
+
 function waveMeters(camera) {
   return parseMetricNumber(camera.forecast?.wave || camera.detailMetrics?.Ondulação);
 }
@@ -41,10 +52,12 @@ function conditionRank(camera, getConditionRank) {
   return CONDITION_RANKS[key] || 0;
 }
 
-function compareCameras(a, b, sort, favoriteIds, getConditionRank) {
+function compareCameras(a, b, sort, favoriteIds, getConditionRank, getDriveDistanceKm) {
   switch (sort) {
     case "favorites":
       return compareFavorite(a, b, favoriteIds) || compareName(a, b);
+    case "distance":
+      return compareNumberAsc(a, b, getDriveDistanceKm) || compareName(a, b);
     case "name":
       return compareName(a, b);
     case "region":
@@ -69,16 +82,22 @@ export function filterCameras(
     favoriteIds = new Set(),
     favoriteStatus = "",
     streamStatus = "",
+    maxDistanceKm = "",
     mightBeGoodOnly = false,
     isMightBeGood = () => true,
     sort = "",
-    getConditionRank = () => null
+    getConditionRank = () => null,
+    getDriveDistanceKm = () => null
   } = {}
 ) {
   const normalizedQuery = normalizeText(query);
+  const maxDistance = maxDistanceKm === "" || maxDistanceKm === null || maxDistanceKm === undefined
+    ? null
+    : Number(maxDistanceKm);
 
   const filtered = cameras.filter((camera) => {
     const isFavorite = favoriteIds.has(camera.id);
+    const driveDistanceKm = getDriveDistanceKm(camera);
     const matchesRegion = !region || camera.region === region;
     const matchesFavorite = !favoriteOnly || isFavorite;
     const matchesFavoriteStatus = !favoriteStatus
@@ -89,15 +108,33 @@ export function filterCameras(
       || streamStatus === "all"
       || (streamStatus === "live" && camera.hasStream)
       || (streamStatus === "no-stream" && !camera.hasStream);
+    const matchesDistance = !Number.isFinite(maxDistance)
+      || (Number.isFinite(driveDistanceKm) && driveDistanceKm <= maxDistance);
     const matchesMightBeGood = !mightBeGoodOnly || isMightBeGood(camera);
     const haystack = normalizeText(`${camera.name} ${camera.location} ${camera.region}`);
     const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
-    return matchesRegion && matchesFavorite && matchesFavoriteStatus && matchesStreamStatus && matchesMightBeGood && matchesQuery;
+    return matchesRegion
+      && matchesFavorite
+      && matchesFavoriteStatus
+      && matchesStreamStatus
+      && matchesDistance
+      && matchesMightBeGood
+      && matchesQuery;
   });
 
   return sort
-    ? [...filtered].sort((a, b) => compareCameras(a, b, sort, favoriteIds, getConditionRank))
+    ? [...filtered].sort((a, b) => compareCameras(a, b, sort, favoriteIds, getConditionRank, getDriveDistanceKm))
     : filtered;
+}
+
+export function camerasInBounds(cameras, bounds) {
+  if (!bounds?.contains) return cameras;
+
+  return cameras.filter((camera) => (
+    Number.isFinite(camera.lat)
+    && Number.isFinite(camera.lon)
+    && bounds.contains([camera.lat, camera.lon])
+  ));
 }
 
 export function uniqueSortedRegions(cameras) {

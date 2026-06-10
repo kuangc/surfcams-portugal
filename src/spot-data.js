@@ -53,6 +53,11 @@ export function estimateDrivingMinutes(distanceKm, profile = "regional") {
   return Math.max(5, Math.round(rawMinutes / 5) * 5);
 }
 
+export function estimateDrivingMinutesFromSeconds(durationSeconds) {
+  if (!Number.isFinite(durationSeconds)) return null;
+  return Math.max(5, Math.round((durationSeconds / 60) / 5) * 5);
+}
+
 export function formatDriveLabel(minutes) {
   if (!Number.isFinite(minutes)) return "drive ?";
   if (minutes < 60) return `~${minutes}m`;
@@ -76,6 +81,53 @@ export function formatDistanceLabel(distanceKm) {
   if (!Number.isFinite(distanceKm)) return "distance ?";
   const rounded = Math.max(1, Math.round(distanceKm / 5) * 5);
   return `~${rounded}km`;
+}
+
+function routedDistanceKm(estimate) {
+  const heuristicDistanceKm = Number.isFinite(estimate.distanceKm)
+    ? estimateRouteDistanceKm(estimate.distanceKm, estimate.profile)
+    : null;
+  let routeDistanceKm = null;
+
+  if (Number.isFinite(estimate.routeDistanceKm)) routeDistanceKm = estimate.routeDistanceKm;
+  if (Number.isFinite(estimate.routeDistanceMeters)) {
+    routeDistanceKm = Number((estimate.routeDistanceMeters / 1000).toFixed(1));
+  }
+
+  if (Number.isFinite(routeDistanceKm) && isPlausibleRouteDistance(estimate, routeDistanceKm)) {
+    return routeDistanceKm;
+  }
+  return heuristicDistanceKm;
+}
+
+function rawRouteDistanceKm(estimate) {
+  if (Number.isFinite(estimate.routeDistanceMeters)) {
+    return Number((estimate.routeDistanceMeters / 1000).toFixed(1));
+  }
+  return Number.isFinite(estimate.routeDistanceKm) ? estimate.routeDistanceKm : null;
+}
+
+function isPlausibleRouteDistance(estimate, routeDistanceKm) {
+  return !Number.isFinite(estimate.distanceKm) || routeDistanceKm >= estimate.distanceKm * 0.9;
+}
+
+function routedMinutes(estimate, routeDistanceKm) {
+  const rawRouteDistance = rawRouteDistanceKm(estimate);
+  const hasPlausibleRoute = Number.isFinite(rawRouteDistance)
+    && isPlausibleRouteDistance(estimate, rawRouteDistance)
+    && rawRouteDistance === routeDistanceKm;
+
+  if (hasPlausibleRoute) {
+    if (Number.isFinite(estimate.estimatedMinutes)) return estimate.estimatedMinutes;
+    return estimateDrivingMinutesFromSeconds(estimate.durationSeconds);
+  }
+
+  if (Number.isFinite(estimate.distanceKm)) {
+    return estimateDrivingMinutes(estimate.distanceKm, estimate.profile);
+  }
+  return Number.isFinite(estimate.estimatedMinutes)
+    ? estimate.estimatedMinutes
+    : estimateDrivingMinutesFromSeconds(estimate.durationSeconds);
 }
 
 export function normalizeSpotData({
@@ -125,15 +177,16 @@ export function findDriveEstimate(camera, normalizedSpotData) {
   const estimate = normalizedSpotData?.driveByMeoId?.get(id);
   if (!estimate) return null;
 
-  const minutes = estimate.estimatedMinutes;
-  const routeDistanceKm = estimate.routeDistanceKm
-    ?? estimateRouteDistanceKm(estimate.distanceKm, estimate.profile);
+  const routeDistanceKm = routedDistanceKm(estimate);
+  const minutes = routedMinutes(estimate, routeDistanceKm);
+  const usesSourceLabels = isPlausibleRouteDistance(estimate, rawRouteDistanceKm(estimate));
   return {
     ...estimate,
+    estimatedMinutes: minutes,
     routeDistanceKm,
     origin: normalizedSpotData.driveDb.origin || CENTRAL_LISBON,
-    label: estimate.label || formatDriveLabel(minutes),
-    distanceLabel: estimate.distanceLabel || formatDistanceLabel(routeDistanceKm)
+    label: usesSourceLabels && estimate.label ? estimate.label : formatDriveLabel(minutes),
+    distanceLabel: usesSourceLabels && estimate.distanceLabel ? estimate.distanceLabel : formatDistanceLabel(routeDistanceKm)
   };
 }
 

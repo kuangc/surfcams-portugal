@@ -1,6 +1,7 @@
 import { firstClassCameras, loadCameraDb } from "./camera-data.js";
 import {
   camerasForInitialBounds,
+  camerasInBounds,
   filterCameras,
   uniqueSortedRegions
 } from "./camera-filters.js";
@@ -66,6 +67,7 @@ const els = {
   favoritesRegionSelect: document.querySelector("#favoritesRegionSelect"),
   favoritesStatusSelect: document.querySelector("#favoritesStatusSelect"),
   favoritesStreamSelect: document.querySelector("#favoritesStreamSelect"),
+  favoritesDistanceSelect: document.querySelector("#favoritesDistanceSelect"),
   favoritesSortSelect: document.querySelector("#favoritesSortSelect"),
   favoritesStatus: document.querySelector("#favoritesStatus"),
   favoritesList: document.querySelector("#favoritesList"),
@@ -155,6 +157,10 @@ function manageSpotCameras() {
   return state.db?.cameras || state.cameras;
 }
 
+function driveDistanceKm(camera) {
+  return findDriveEstimate(camera, state.spotData)?.routeDistanceKm;
+}
+
 function favoriteManagerCameras() {
   return filterCameras(manageSpotCameras(), {
     query: els.favoritesSearchInput.value,
@@ -162,10 +168,12 @@ function favoriteManagerCameras() {
     favoriteIds: state.favoriteIds,
     favoriteStatus: els.favoritesStatusSelect.value,
     streamStatus: els.favoritesStreamSelect.value,
+    maxDistanceKm: els.favoritesDistanceSelect.value,
     sort: els.favoritesSortSelect.value || "favorites",
     getConditionRank(camera) {
       return rateSurfSpot(camera, state.preferences);
-    }
+    },
+    getDriveDistanceKm: driveDistanceKm
   });
 }
 
@@ -325,8 +333,8 @@ function renderMonitor() {
   renderWaterSummaries();
 
   const slots = state.monitorMode === "favorites"
-    ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder())
-    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences)
+    ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm })
+    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences, undefined, { getDriveDistanceKm: driveDistanceKm })
       .map((camera) => ({ camera, empty: false }));
 
   els.monitorGrid.textContent = "";
@@ -655,14 +663,20 @@ function selectExploreCamera(camera, { pan = false, route = false, scroll = fals
 function renderExploreList() {
   if (!els.exploreList) return;
 
-  const cameras = exploreCameras();
-  els.exploreResultsSummary.textContent = `${cameras.length} spots shown. Click a row or marker to watch.`;
+  const allCameras = exploreCameras();
+  const cameras = exploreVisibleCameras();
+  const mapScoped = state.activeRoute === "explore" && state.map && state.mapHasInitialFit;
+  els.exploreResultsSummary.textContent = mapScoped
+    ? `${cameras.length}/${allCameras.length} spots in this map view. Move or zoom the map to change the list.`
+    : `${cameras.length} spots shown. Click a row or marker to watch.`;
   els.exploreList.textContent = "";
 
   if (!cameras.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    empty.textContent = "No spots match those filters.";
+    empty.textContent = mapScoped
+      ? "No spots visible in this map view. Move or zoom the map."
+      : "No spots match those filters.";
     els.exploreList.appendChild(empty);
     return;
   }
@@ -783,6 +797,14 @@ function exploreCameras() {
   });
 }
 
+function exploreVisibleCameras() {
+  if (state.activeRoute !== "explore" || !state.map || !state.mapHasInitialFit) {
+    return exploreCameras();
+  }
+
+  return camerasInBounds(exploreCameras(), state.map.getBounds());
+}
+
 function renderMarkers() {
   if (!state.markerLayer) return;
 
@@ -793,7 +815,16 @@ function renderMarkers() {
 
     let marker = state.markers.get(camera.id);
     if (!marker) {
-      marker = L.marker([camera.lat, camera.lon]);
+      marker = L.marker([camera.lat, camera.lon], {
+        title: camera.name,
+        alt: camera.name
+      });
+      marker.bindTooltip(camera.name, {
+        direction: "top",
+        offset: [0, -12],
+        opacity: 0.95,
+        sticky: true
+      });
       marker.on("click", () => {
         selectExploreCamera(camera, { scroll: true });
       });
@@ -851,13 +882,15 @@ function ensureMap() {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(state.map);
   state.markerLayer = L.layerGroup().addTo(state.map);
+  state.map.on("moveend zoomend", () => {
+    if (state.activeRoute === "explore") renderExploreList();
+  });
 }
 
 function refreshExploreMap({ fit = false } = {}) {
   if (state.activeRoute !== "explore") return;
 
   ensureMap();
-  renderExploreList();
   state.map.invalidateSize({ pan: false });
   renderMarkers();
 
@@ -874,6 +907,8 @@ function refreshExploreMap({ fit = false } = {}) {
   if (state.selectedExploreCamera) {
     playExploreCamera(state.selectedExploreCamera);
   }
+
+  renderExploreList();
 }
 
 function bindEvents() {
@@ -889,6 +924,7 @@ function bindEvents() {
     els.favoritesRegionSelect,
     els.favoritesStatusSelect,
     els.favoritesStreamSelect,
+    els.favoritesDistanceSelect,
     els.favoritesSortSelect
   ].forEach((input) => {
     input.addEventListener("input", renderFavorites);

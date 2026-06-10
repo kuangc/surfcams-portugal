@@ -8,6 +8,7 @@ const indexSource = fs.readFileSync("index.html", "utf8");
 const packageSource = fs.readFileSync("package.json", "utf8");
 const styleSource = fs.readFileSync("src/styles/app.css", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
+const buildSpotDataSource = fs.readFileSync("scripts/build-spot-data.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-row=/);
@@ -75,6 +76,15 @@ test("explore map refreshes after the visible layout has painted", () => {
   assert.doesNotMatch(mainSource, /ensureMap\(\);\s*renderExploreList\(\);\s*renderMarkers\(\);\s*state\.map\.invalidateSize\(\);/);
 });
 
+test("explore list follows the visible map bounds and pins expose hover names", () => {
+  assert.match(mainSource, /function exploreVisibleCameras/);
+  assert.match(mainSource, /camerasInBounds\(exploreCameras\(\),\s*state\.map\.getBounds\(\)\)/);
+  assert.match(mainSource, /state\.map\.on\("moveend zoomend"/);
+  assert.match(mainSource, /title:\s*camera\.name/);
+  assert.match(mainSource, /alt:\s*camera\.name/);
+  assert.match(mainSource, /marker\.bindTooltip\(camera\.name/);
+});
+
 test("v3 styles are monitor-first and responsive without the old side panels", () => {
   assert.match(styleSource, /\.app-shell\s*{/);
   assert.match(styleSource, /\.app-nav\s*{/);
@@ -118,4 +128,12 @@ test("official tide cache has a scheduled refresh path", () => {
   assert.match(workflowSource, /cron:/);
   assert.match(workflowSource, /npm run fetch-tides/);
   assert.match(workflowSource, /data\/portugal-tides\.json/);
+});
+
+test("spot data build can refresh road distances from a directions table API", () => {
+  assert.match(buildSpotDataSource, /ROUTING_PROVIDER/);
+  assert.match(buildSpotDataSource, /router\.project-osrm\.org\/table\/v1\/driving/);
+  assert.match(buildSpotDataSource, /annotations=distance,duration/);
+  assert.match(buildSpotDataSource, /routeDistanceMeters/);
+  assert.match(buildSpotDataSource, /durationSeconds/);
 });

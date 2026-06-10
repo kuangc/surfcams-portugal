@@ -146,9 +146,70 @@ test("spot-data helpers resolve matches and Lisbon drive estimates", () => {
     "surfline-sao-pedro-do-estoril",
     "surfline-carcavelos"
   ]);
-  assert.equal(drive.label, "~45m");
+  assert.equal(drive.label, "~25m");
   assert.equal(drive.distanceLabel, "~25km");
   assert.equal(drive.origin.label, "Central Lisbon");
+});
+
+test("findDriveEstimate prefers routed distance and duration when directions data is available", () => {
+  const routed = normalizeSpotData({
+    driveDb: {
+      origin: {
+        label: "Central Lisbon",
+        lat: 38.7223,
+        lon: -9.1393
+      },
+      estimates: [
+        {
+          meoSpotId: "routed-spot",
+          distanceKm: 12,
+          routeDistanceMeters: 42100,
+          durationSeconds: 2920,
+          source: "osrm-table"
+        }
+      ]
+    }
+  });
+
+  const drive = findDriveEstimate({ id: "routed-spot" }, routed);
+
+  assert.equal(drive.routeDistanceKm, 42.1);
+  assert.equal(drive.estimatedMinutes, 50);
+  assert.equal(drive.distanceLabel, "~40km");
+  assert.equal(drive.label, "~50m");
+  assert.equal(drive.source, "osrm-table");
+});
+
+test("findDriveEstimate rejects impossible routed distances and falls back to the heuristic", () => {
+  const routed = normalizeSpotData({
+    driveDb: {
+      origin: {
+        label: "Central Lisbon",
+        lat: 38.7223,
+        lon: -9.1393
+      },
+      estimates: [
+        {
+          meoSpotId: "island-spot",
+          distanceKm: 957.9,
+          routeDistanceKm: 333.5,
+          routeDistanceMeters: 333451,
+          durationSeconds: 13822,
+          profile: "regional",
+          label: "~3h 50m",
+          distanceLabel: "~335km",
+          source: "osrm-table"
+        }
+      ]
+    }
+  });
+
+  const drive = findDriveEstimate({ id: "island-spot" }, routed);
+
+  assert.equal(drive.routeDistanceKm, 1130.322);
+  assert.equal(drive.estimatedMinutes, 955);
+  assert.equal(drive.distanceLabel, "~1130km");
+  assert.equal(drive.label, "~15h 55m");
 });
 
 test("driving heuristic is deterministic for central Lisbon distances", () => {

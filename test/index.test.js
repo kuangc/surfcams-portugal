@@ -32,9 +32,13 @@ test("manage spots exposes practical filter and sort controls", () => {
   assert.match(html, /id="favoritesRegionSelect"/);
   assert.match(html, /id="favoritesStatusSelect"/);
   assert.match(html, /id="favoritesStreamSelect"/);
+  assert.match(html, /id="favoritesDistanceSelect"/);
   assert.match(html, /id="favoritesSortSelect"/);
+  assert.match(html, /<label class="filter-field" for="favoritesDistanceSelect">[\s\S]*<span>Distance<\/span>/);
   assert.match(html, /<label class="filter-field" for="favoritesSortSelect">[\s\S]*<span>Sort<\/span>/);
   assert.match(html, /<option value="favorites">Favorites first<\/option>/);
+  assert.match(html, /<option value="distance">Nearest first<\/option>/);
+  assert.match(html, /<option value="50">Within 50 km<\/option>/);
   assert.match(html, /<option value="fit">Best conditions<\/option>/);
   assert.match(html, /<option value="wave">Wave height<\/option>/);
   assert.match(html, /<option value="popular">Most viewed<\/option>/);

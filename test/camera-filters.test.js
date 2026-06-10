@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   camerasForInitialBounds,
+  camerasInBounds,
   filterCameras,
   firstCameraById,
   uniqueSortedRegions
@@ -42,6 +43,21 @@ test("camerasForInitialBounds preserves configured camera order", () => {
 test("firstCameraById returns the first available configured camera", () => {
   assert.equal(firstCameraById(cameras, ["missing", "praia-sesimbra"]).id, "praia-sesimbra");
   assert.equal(firstCameraById(cameras, ["missing"]), null);
+});
+
+test("camerasInBounds returns only cameras visible inside map bounds", () => {
+  const result = camerasInBounds([
+    { id: "visible", lat: 38.7, lon: -9.35 },
+    { id: "outside", lat: 41.1, lon: -8.7 },
+    { id: "missing-lat", lon: -9.3 },
+    { id: "missing-lon", lat: 38.7 }
+  ], {
+    contains([lat, lon]) {
+      return lat >= 38.5 && lat <= 39 && lon >= -9.5 && lon <= -9;
+    }
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["visible"]);
 });
 
 test("filterCameras can show only tentative might-be-good cameras", () => {
@@ -119,4 +135,32 @@ test("filterCameras supports manage spot sort orders", () => {
   assert.deepEqual(idsForSort("wave"), ["matosinhos", "praia-da-barra", "carcavelos"]);
   assert.deepEqual(idsForSort("fit"), ["carcavelos", "praia-da-barra", "matosinhos"]);
   assert.deepEqual(idsForSort("region"), ["carcavelos", "praia-da-barra", "matosinhos"]);
+});
+
+test("filterCameras supports nearest-distance sorting and max-distance filtering", () => {
+  const sortableCameras = [
+    { id: "peniche", name: "Peniche", location: "PENICHE", region: "peniche" },
+    { id: "carcavelos", name: "Carcavelos", location: "CASCAIS", region: "cascais" },
+    { id: "sesimbra", name: "Sesimbra", location: "SESIMBRA", region: "sesimbra" },
+    { id: "unknown", name: "Unknown", location: "UNKNOWN", region: "unknown" }
+  ];
+  const distances = new Map([
+    ["peniche", 85],
+    ["carcavelos", 24],
+    ["sesimbra", 42]
+  ]);
+  const getDriveDistanceKm = (camera) => distances.get(camera.id);
+
+  const nearest = filterCameras(sortableCameras, {
+    sort: "distance",
+    getDriveDistanceKm
+  });
+  const within50 = filterCameras(sortableCameras, {
+    maxDistanceKm: 50,
+    sort: "distance",
+    getDriveDistanceKm
+  });
+
+  assert.deepEqual(nearest.map((camera) => camera.id), ["carcavelos", "sesimbra", "peniche", "unknown"]);
+  assert.deepEqual(within50.map((camera) => camera.id), ["carcavelos", "sesimbra"]);
 });

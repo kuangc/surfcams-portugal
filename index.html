@@ -6179,10 +6179,21 @@
                 <option value="no-stream">No stream</option>
               </select>
             </label>
+            <label class="filter-field" for="favoritesDistanceSelect">
+              <span>Distance</span>
+              <select id="favoritesDistanceSelect" aria-label="Maximum drive distance">
+                <option value="">All distances</option>
+                <option value="25">Within 25 km</option>
+                <option value="50">Within 50 km</option>
+                <option value="100">Within 100 km</option>
+                <option value="200">Within 200 km</option>
+              </select>
+            </label>
             <label class="filter-field" for="favoritesSortSelect">
               <span>Sort</span>
               <select id="favoritesSortSelect" aria-label="Sort spots">
                 <option value="favorites">Favorites first</option>
+                <option value="distance">Nearest first</option>
                 <option value="fit">Best conditions</option>
                 <option value="name">Name A-Z</option>
                 <option value="region">Region</option>
