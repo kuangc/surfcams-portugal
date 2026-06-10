@@ -25,9 +25,11 @@ function routeProfile(camera) {
 }
 
 function normalizeMeoSpot(camera) {
+  const provider = camera.provider || "meo-beachcam";
+
   return {
     id: camera.id,
-    provider: "meo-beachcam",
+    provider,
     name: camera.name,
     url: camera.pageUrl,
     lat: camera.lat,
@@ -36,7 +38,7 @@ function normalizeMeoSpot(camera) {
     municipality: camera.location || null,
     hasStream: Boolean(camera.hasStream),
     staticMetadata: {
-      providerPageType: "beachcam-livecam",
+      providerPageType: provider === "surfline" ? "surfline-report" : "beachcam-livecam",
       livecamId: camera.livecamId || null,
       videoId: camera.videoId || null,
       image: camera.image || null,

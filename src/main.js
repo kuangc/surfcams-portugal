@@ -1,4 +1,4 @@
-import { availableCameras, loadCameraDb } from "./camera-data.js";
+import { firstClassCameras, loadCameraDb } from "./camera-data.js";
 import {
   camerasForInitialBounds,
   filterCameras,
@@ -63,6 +63,10 @@ const els = {
   monitorFavoritesMode: document.querySelector("#monitorFavoritesMode"),
   monitorMightBeGoodMode: document.querySelector("#monitorMightBeGoodMode"),
   favoritesSearchInput: document.querySelector("#favoritesSearchInput"),
+  favoritesRegionSelect: document.querySelector("#favoritesRegionSelect"),
+  favoritesStatusSelect: document.querySelector("#favoritesStatusSelect"),
+  favoritesStreamSelect: document.querySelector("#favoritesStreamSelect"),
+  favoritesSortSelect: document.querySelector("#favoritesSortSelect"),
   favoritesStatus: document.querySelector("#favoritesStatus"),
   favoritesList: document.querySelector("#favoritesList"),
   favoritesWaterSummary: document.querySelector("#favoritesWaterSummary"),
@@ -147,28 +151,22 @@ function favoriteCameras() {
     .filter(Boolean);
 }
 
-function normalizedSearchText(value) {
-  return String(value || "").trim().toLowerCase();
-}
-
-function cameraSearchText(camera) {
-  return [
-    camera.name,
-    camera.location,
-    formatRegion(camera.region)
-  ].filter(Boolean).join(" ").toLowerCase();
+function manageSpotCameras() {
+  return state.db?.cameras || state.cameras;
 }
 
 function favoriteManagerCameras() {
-  const query = normalizedSearchText(els.favoritesSearchInput.value);
-
-  return state.cameras
-    .filter((camera) => !query || cameraSearchText(camera).includes(query))
-    .sort((a, b) => {
-      const favoriteSort = Number(state.favoriteIds.has(b.id)) - Number(state.favoriteIds.has(a.id));
-      if (favoriteSort !== 0) return favoriteSort;
-      return a.name.localeCompare(b.name);
-    });
+  return filterCameras(manageSpotCameras(), {
+    query: els.favoritesSearchInput.value,
+    region: els.favoritesRegionSelect.value,
+    favoriteIds: state.favoriteIds,
+    favoriteStatus: els.favoritesStatusSelect.value,
+    streamStatus: els.favoritesStreamSelect.value,
+    sort: els.favoritesSortSelect.value || "favorites",
+    getConditionRank(camera) {
+      return rateSurfSpot(camera, state.preferences);
+    }
+  });
 }
 
 function hasWaterSummaryData(camera) {
@@ -245,12 +243,50 @@ function createEmptyMonitorTile(index) {
   return tile;
 }
 
+function isReportOnlyCamera(camera) {
+  return !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
+}
+
+function reportUrl(camera) {
+  return camera?.surfline?.pageUrl || camera?.pageUrl || "";
+}
+
+function createReportFrame(camera) {
+  const frame = document.createElement("div");
+  frame.className = "feed-frame report-frame";
+
+  const logo = createProviderLogo("surfline", "Surfline");
+
+  const source = document.createElement("span");
+  source.className = "report-frame__source";
+  source.textContent = "Surfline";
+
+  const title = document.createElement("strong");
+  title.className = "report-frame__title";
+  title.textContent = camera.name;
+
+  const action = document.createElement("a");
+  action.className = "report-frame__action";
+  action.href = reportUrl(camera);
+  action.target = "_blank";
+  action.rel = "noopener noreferrer";
+  action.textContent = "Open Surfline report";
+
+  frame.append(logo, source, title, action);
+  return frame;
+}
+
 function createMonitorTile(slot, index) {
   if (slot.empty || !slot.camera) return createEmptyMonitorTile(index);
 
   const camera = slot.camera;
   const tile = document.createElement("article");
   tile.className = "monitor-tile";
+
+  if (isReportOnlyCamera(camera)) {
+    tile.append(createReportFrame(camera), createConditionStrip(camera, { showName: true }));
+    return tile;
+  }
 
   const frame = document.createElement("div");
   frame.className = "feed-frame";
@@ -522,7 +558,9 @@ function toggleFavorite(camera, checked) {
   renderFavorites();
   renderExploreList();
   renderMarkers();
-  renderExploreSelection(camera);
+  if (state.selectedExploreCamera?.id === camera.id) {
+    renderExploreSelection(state.cameras.find((candidate) => candidate.id === camera.id) || null);
+  }
 }
 
 function syncFavoriteToggle(button, camera) {
@@ -572,14 +610,15 @@ function createFavoriteCard(camera) {
 function renderFavorites() {
   els.favoritesList.textContent = "";
   renderWaterSummaries();
+  const manageCameras = manageSpotCameras();
   const cameras = favoriteManagerCameras();
-  const favoriteCount = favoriteCameras().length;
-  els.favoritesStatus.textContent = `${favoriteCount} favorites · ${cameras.length} spots shown`;
+  const favoriteCount = manageCameras.filter((camera) => state.favoriteIds.has(camera.id)).length;
+  els.favoritesStatus.textContent = `${favoriteCount} favorites · ${cameras.length}/${manageCameras.length} spots shown`;
 
   if (!cameras.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    empty.textContent = "No spots match that search.";
+    empty.textContent = "No spots match those filters.";
     els.favoritesList.appendChild(empty);
     return;
   }
@@ -591,6 +630,11 @@ function renderFavorites() {
 
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
+  if (isReportOnlyCamera(camera)) {
+    state.explorePlayer.clear();
+    els.exploreFeedStatus.textContent = "Open Surfline report";
+    return;
+  }
   state.explorePlayer.play(camera);
 }
 
@@ -774,20 +818,25 @@ function fitInitialBounds() {
   fitCameraBounds(boundsCameras, [42, 42]);
 }
 
-function renderRegions() {
-  els.regionSelect.textContent = "";
+function renderRegionOptions(select, cameras = state.cameras) {
+  select.textContent = "";
 
   const allOption = document.createElement("option");
   allOption.value = "";
   allOption.textContent = "All regions";
-  els.regionSelect.appendChild(allOption);
+  select.appendChild(allOption);
 
-  uniqueSortedRegions(state.cameras).forEach((region) => {
+  uniqueSortedRegions(cameras).forEach((region) => {
     const option = document.createElement("option");
     option.value = region;
     option.textContent = formatRegion(region);
-    els.regionSelect.appendChild(option);
+    select.appendChild(option);
   });
+}
+
+function renderRegions() {
+  renderRegionOptions(els.regionSelect, state.cameras);
+  renderRegionOptions(els.favoritesRegionSelect, manageSpotCameras());
 }
 
 function ensureMap() {
@@ -834,7 +883,17 @@ function bindEvents() {
 
   els.monitorFavoritesMode.addEventListener("click", () => setMonitorMode("favorites"));
   els.monitorMightBeGoodMode.addEventListener("click", () => setMonitorMode("might-be-good"));
-  els.favoritesSearchInput.addEventListener("input", renderFavorites);
+
+  [
+    els.favoritesSearchInput,
+    els.favoritesRegionSelect,
+    els.favoritesStatusSelect,
+    els.favoritesStreamSelect,
+    els.favoritesSortSelect
+  ].forEach((input) => {
+    input.addEventListener("input", renderFavorites);
+    input.addEventListener("change", renderFavorites);
+  });
 
   [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
     input.addEventListener("input", () => {
@@ -892,8 +951,8 @@ async function init() {
   state.db = cameraDb;
   state.spotData = spotData;
   state.tideData = tideData;
-  state.cameras = availableCameras(state.db);
-  state.favoriteIds = loadFavoriteIds(state.cameras);
+  state.cameras = firstClassCameras(state.db);
+  state.favoriteIds = loadFavoriteIds(manageSpotCameras());
   state.preferences = loadSurfPreferences();
 
   renderRegions();

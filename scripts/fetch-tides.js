@@ -34,7 +34,8 @@ const CAMERA_PORT_OVERRIDES = {
   "costa-da-caparica-riviera": "15",
   "fonte-da-telha": "15",
   "lagide-e-baia": "29",
-  "sao-juliao": "15"
+  "sao-juliao": "15",
+  "surfline-castelo": "15"
 };
 
 const REGION_PORT_OVERRIDES = {
@@ -61,7 +62,7 @@ function formatDateParam(date) {
 }
 
 function isCoordinateCamera(camera) {
-  return camera?.hasStream && Number.isFinite(camera.lat) && Number.isFinite(camera.lon);
+  return (camera?.hasStream || camera?.firstClass) && Number.isFinite(camera.lat) && Number.isFinite(camera.lon);
 }
 
 function haversineKm(a, b) {

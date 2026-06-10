@@ -26,3 +26,16 @@ test("index loads the v3 app shell", () => {
   assert.doesNotMatch(html, /Copy URL/);
   assert.doesNotMatch(html, /id="streamUrl"/);
 });
+
+test("manage spots exposes practical filter and sort controls", () => {
+  assert.match(html, /id="favoritesSearchInput"/);
+  assert.match(html, /id="favoritesRegionSelect"/);
+  assert.match(html, /id="favoritesStatusSelect"/);
+  assert.match(html, /id="favoritesStreamSelect"/);
+  assert.match(html, /id="favoritesSortSelect"/);
+  assert.match(html, /<label class="filter-field" for="favoritesSortSelect">[\s\S]*<span>Sort<\/span>/);
+  assert.match(html, /<option value="favorites">Favorites first<\/option>/);
+  assert.match(html, /<option value="fit">Best conditions<\/option>/);
+  assert.match(html, /<option value="wave">Wave height<\/option>/);
+  assert.match(html, /<option value="popular">Most viewed<\/option>/);
+});

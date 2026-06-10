@@ -57,3 +57,66 @@ test("filterCameras can show only tentative might-be-good cameras", () => {
 
   assert.deepEqual(result.map((camera) => camera.id), ["good"]);
 });
+
+test("filterCameras can narrow manage spots by saved status and stream availability", () => {
+  const result = filterCameras([
+    { id: "carcavelos", name: "Carcavelos", location: "CASCAIS", region: "cascais", hasStream: true },
+    { id: "guincho", name: "Guincho", location: "CASCAIS", region: "cascais", hasStream: false },
+    { id: "matosinhos", name: "Matosinhos", location: "PORTO", region: "norte", hasStream: true }
+  ], {
+    query: "cascais",
+    region: "cascais",
+    favoriteIds: new Set(["guincho"]),
+    favoriteStatus: "not-favorites",
+    streamStatus: "live"
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["carcavelos"]);
+});
+
+test("filterCameras supports manage spot sort orders", () => {
+  const sortableCameras = [
+    {
+      id: "praia-da-barra",
+      name: "Praia da Barra",
+      location: "AVEIRO",
+      region: "centro",
+      clicks: 80,
+      forecast: { wave: "2.0 m" },
+      rating: { key: "caution" }
+    },
+    {
+      id: "carcavelos",
+      name: "Carcavelos",
+      location: "CASCAIS",
+      region: "cascais",
+      clicks: 225,
+      forecast: { wave: "1.4 m" },
+      rating: { key: "good" }
+    },
+    {
+      id: "matosinhos",
+      name: "Matosinhos",
+      location: "PORTO",
+      region: "norte",
+      clicks: 160,
+      forecast: { wave: "2.1 m" },
+      rating: { key: "poor" }
+    }
+  ];
+
+  const favoriteIds = new Set(["matosinhos"]);
+  const idsForSort = (sort) => filterCameras(sortableCameras, {
+    favoriteIds,
+    sort,
+    getConditionRank(camera) {
+      return camera.rating.key;
+    }
+  }).map((camera) => camera.id);
+
+  assert.deepEqual(idsForSort("favorites"), ["matosinhos", "carcavelos", "praia-da-barra"]);
+  assert.deepEqual(idsForSort("popular"), ["carcavelos", "matosinhos", "praia-da-barra"]);
+  assert.deepEqual(idsForSort("wave"), ["matosinhos", "praia-da-barra", "carcavelos"]);
+  assert.deepEqual(idsForSort("fit"), ["carcavelos", "praia-da-barra", "matosinhos"]);
+  assert.deepEqual(idsForSort("region"), ["carcavelos", "praia-da-barra", "matosinhos"]);
+});

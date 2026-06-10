@@ -4,8 +4,8 @@
     "listingUrl": "https://beachcam.meo.pt/livecams/",
     "detailPageCount": 189
   },
-  "total": 189,
-  "withCoordinates": 189,
+  "total": 190,
+  "withCoordinates": 190,
   "withStreams": 147,
   "regions": [
     "alentejo",
@@ -1116,6 +1116,31 @@
         "Temp. do mar": "15.3º",
         "Maré": "14:19"
       }
+    },
+    {
+      "id": "surfline-castelo",
+      "provider": "surfline",
+      "firstClass": true,
+      "name": "Costa da Caparica | Costelo (Irmao)",
+      "location": "ALMADA",
+      "region": "almada",
+      "pageUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+      "lat": 38.6131034,
+      "lon": -9.2161894,
+      "clicks": 0,
+      "isMulti": false,
+      "forecast": {},
+      "livecamId": "",
+      "streamUrl": "",
+      "videoId": "",
+      "hasStream": false,
+      "image": "",
+      "description": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.",
+      "surfline": {
+        "spotId": "584204204e65fad6a77099d8",
+        "pageUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8"
+      },
+      "detailMetrics": {}
     },
     {
       "id": "praia-canide-norte-sul",

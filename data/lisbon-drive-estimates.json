@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-09T07:04:34.665Z",
+  "generatedAt": "2026-06-10T08:14:35.358Z",
   "origin": {
     "label": "Central Lisbon",
     "lat": 38.7223,
@@ -303,6 +303,15 @@
       "meoSpotId": "costa-da-caparica-riviera",
       "distanceKm": 13.4,
       "routeDistanceKm": 19.5,
+      "profile": "south-bank",
+      "estimatedMinutes": 40,
+      "label": "~40m",
+      "distanceLabel": "~20km"
+    },
+    {
+      "meoSpotId": "surfline-castelo",
+      "distanceKm": 13.9,
+      "routeDistanceKm": 20.1,
       "profile": "south-bank",
       "estimatedMinutes": 40,
       "label": "~40m",
