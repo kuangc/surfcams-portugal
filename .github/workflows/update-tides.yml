@@ -1,0 +1,30 @@
+name: Update Portugal tides
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 4 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-tides:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run fetch-tides
+      - name: Commit tide cache
+        run: |
+          if git diff --quiet -- data/portugal-tides.json; then
+            echo "No tide cache changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/portugal-tides.json
+          git commit -m "Update Portugal tide cache"
+          git push

@@ -94,23 +94,32 @@ test("formatConditionChips rounds wind speed for the compact row", () => {
   assert.equal(chips.find((chip) => chip.key === "wind").label, "17km/h offshore");
 });
 
-test("formatWaterSummary exposes shared sea temperature and tide status", () => {
+test("formatWaterSummary exposes shared sea temperature and tide status without unknown high tide placeholders", () => {
   const summary = formatWaterSummary(camera);
 
-  assert.deepEqual(summary.map((item) => item.key), ["sea-temp", "tide-now", "next-high"]);
-  assert.deepEqual(summary.map((item) => item.label), ["Sea temp", "Tide now", "High daylight"]);
-  assert.deepEqual(summary.map((item) => item.value), ["15.2°", "Low", "unknown"]);
-  assert.deepEqual(summary.map((item) => item.icon), ["≋", "↓", "⇡"]);
+  assert.deepEqual(summary.map((item) => item.key), ["sea-temp", "tide-now"]);
+  assert.deepEqual(summary.map((item) => item.label), ["Sea temp", "Tide now"]);
+  assert.deepEqual(summary.map((item) => item.value), ["15.2°", "Low"]);
+  assert.deepEqual(summary.map((item) => item.icon), ["≋", "↓"]);
 });
 
-test("formatWaterSummary only shows daylight high tide time from explicit tide data", () => {
-  const summary = formatWaterSummary({
-    ...camera,
-    forecast: {
-      ...camera.forecast,
-      nextDaylightHighTideTime: "19:42"
+test("formatWaterSummary shows official next high tide when a tide snapshot is available", () => {
+  const summary = formatWaterSummary(camera, {
+    tideSnapshot: {
+      stateLabel: "Falling",
+      station: {
+        portName: "Cascais"
+      },
+      nextHigh: {
+        timeUtc: "2026-06-10T22:27:00.000Z",
+        heightM: 3
+      }
     }
   });
 
-  assert.equal(summary.find((item) => item.key === "next-high").value, "7:42pm");
+  assert.deepEqual(summary.map((item) => item.key), ["sea-temp", "tide-now", "next-high"]);
+  assert.equal(summary.find((item) => item.key === "tide-now").value, "Falling");
+  assert.equal(summary.find((item) => item.key === "next-high").label, "Next high");
+  assert.equal(summary.find((item) => item.key === "next-high").value, "11:27pm");
+  assert.equal(summary.find((item) => item.key === "next-high").detail, "Cascais tide gauge");
 });

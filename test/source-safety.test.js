@@ -5,6 +5,7 @@ import test from "node:test";
 const mainSource = fs.readFileSync("src/main.js", "utf8");
 const configSource = fs.readFileSync("src/config.js", "utf8");
 const indexSource = fs.readFileSync("index.html", "utf8");
+const packageSource = fs.readFileSync("package.json", "utf8");
 const styleSource = fs.readFileSync("src/styles/app.css", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
 
@@ -45,6 +46,9 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /selectExploreCamera/);
   assert.match(mainSource, /renderWaterSummaries/);
   assert.match(mainSource, /formatWaterSummary/);
+  assert.match(mainSource, /loadTideData/);
+  assert.match(mainSource, /findTideSnapshot/);
+  assert.match(mainSource, /tideSnapshot/);
   assert.match(mainSource, /createSurflineControl/);
   assert.match(mainSource, /PROVIDER_ICON_URLS/);
   assert.match(mainSource, /provider-logo/);
@@ -98,4 +102,14 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.doesNotMatch(indexSource, />Remove favorite</);
   assert.doesNotMatch(styleSource, /\.sidebar\b/);
   assert.doesNotMatch(styleSource, /\.detail\b/);
+});
+
+
+test("official tide cache has a scheduled refresh path", () => {
+  const workflowSource = fs.readFileSync(".github/workflows/update-tides.yml", "utf8");
+
+  assert.match(packageSource, /"fetch-tides":\s*"node scripts\/fetch-tides\.js"/);
+  assert.match(workflowSource, /cron:/);
+  assert.match(workflowSource, /npm run fetch-tides/);
+  assert.match(workflowSource, /data\/portugal-tides\.json/);
 });

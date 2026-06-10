@@ -26,6 +26,7 @@ import {
   serializeSurfPreferences
 } from "./surf-preferences.js";
 import { rateSurfSpot } from "./surf-rating.js";
+import { emptyTideData, findTideSnapshot, loadTideData } from "./tide-data.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
@@ -39,6 +40,7 @@ const state = {
   activeRoute: "monitor",
   db: null,
   spotData: emptySpotData(),
+  tideData: emptyTideData(),
   cameras: [],
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
@@ -170,7 +172,11 @@ function favoriteManagerCameras() {
 }
 
 function hasWaterSummaryData(camera) {
-  return Boolean(camera?.detailMetrics?.["Temp. do mar"] || camera?.forecast?.tideState);
+  return Boolean(
+    camera?.detailMetrics?.["Temp. do mar"]
+    || camera?.forecast?.tideState
+    || findTideSnapshot(camera, state.tideData)
+  );
 }
 
 function waterSummaryCamera() {
@@ -327,7 +333,8 @@ function renderWaterSummary(container) {
   }
 
   container.hidden = false;
-  formatWaterSummary(camera).forEach((item) => {
+  const tideSnapshot = findTideSnapshot(camera, state.tideData);
+  formatWaterSummary(camera, { tideSnapshot }).forEach((item) => {
     const metric = document.createElement("div");
     metric.className = "water-metric";
     metric.dataset.key = item.key;
@@ -876,13 +883,15 @@ function bindEvents() {
 
 async function init() {
   bindEvents();
-  const [cameraDb, spotData] = await Promise.all([
+  const [cameraDb, spotData, tideData] = await Promise.all([
     loadCameraDb(),
-    loadSpotData().catch(() => emptySpotData())
+    loadSpotData().catch(() => emptySpotData()),
+    loadTideData().catch(() => emptyTideData())
   ]);
 
   state.db = cameraDb;
   state.spotData = spotData;
+  state.tideData = tideData;
   state.cameras = availableCameras(state.db);
   state.favoriteIds = loadFavoriteIds(state.cameras);
   state.preferences = loadSurfPreferences();

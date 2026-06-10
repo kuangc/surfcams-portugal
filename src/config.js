@@ -19,6 +19,7 @@ export const SURFLINE_SPOTS_URL = "./data/surfline-spots.json";
 export const MEO_SPOTS_URL = "./data/meo-spots.json";
 export const MEO_SURFLINE_MATCHES_URL = "./data/meo-surfline-matches.json";
 export const LISBON_DRIVE_ESTIMATES_URL = "./data/lisbon-drive-estimates.json";
+export const PORTUGAL_TIDES_URL = "./data/portugal-tides.json";
 export const MAX_CAMERA_LIST_ROWS = 90;
 export const MONITOR_CAMERA_LIMIT = 6;
 export const HLS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/hls.js@1.6.4/dist/hls.min.js";

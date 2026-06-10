@@ -1,5 +1,6 @@
 import { formatTideState } from "./format.js";
 import { rateSurfSpot } from "./surf-rating.js";
+import { formatTideEventTime } from "./tide-data.js";
 
 function shortFitLabel(key) {
   if (key === "good") return "Good";
@@ -52,20 +53,6 @@ function formatSource(camera) {
   };
 }
 
-function formatTideTime(value) {
-  const raw = String(value || "").trim();
-  const match = raw.match(/^(\d{1,2}):(\d{2})$/);
-  if (!match) return raw;
-
-  const hour = Number(match[1]);
-  const minute = match[2];
-  if (!Number.isInteger(hour) || hour < 0 || hour > 23) return raw;
-
-  const hour12 = hour % 12 || 12;
-  const suffix = hour >= 12 ? "pm" : "am";
-  return `${hour12}:${minute}${suffix}`;
-}
-
 function formatSeaTemperature(value) {
   return String(value || "").trim().replace("º", "°") || "unknown";
 }
@@ -79,11 +66,9 @@ function currentTideIcon(value) {
   return "≈";
 }
 
-export function formatWaterSummary(camera) {
-  const tideNow = formatTideState(camera?.forecast?.tideState);
-  const nextDaylightHigh = formatTideTime(camera?.forecast?.nextDaylightHighTideTime);
-
-  return [
+export function formatWaterSummary(camera, { tideSnapshot = null, timeZone = "Europe/Lisbon" } = {}) {
+  const tideNow = tideSnapshot?.stateLabel || formatTideState(camera?.forecast?.tideState);
+  const tideMetrics = [
     {
       key: "sea-temp",
       label: "Sea temp",
@@ -95,17 +80,26 @@ export function formatWaterSummary(camera) {
       key: "tide-now",
       label: "Tide now",
       value: tideNow || "unknown",
-      icon: currentTideIcon(camera?.forecast?.tideState),
-      tone: "neutral"
-    },
-    {
-      key: "next-high",
-      label: "High daylight",
-      value: nextDaylightHigh || "unknown",
-      icon: "⇡",
-      tone: nextDaylightHigh ? "good" : "muted"
+      icon: currentTideIcon(tideNow || camera?.forecast?.tideState),
+      tone: "neutral",
+      detail: tideSnapshot?.station?.portName ? `${tideSnapshot.station.portName} tide gauge` : ""
     }
   ];
+
+  if (tideSnapshot?.nextHigh) {
+    tideMetrics.push(
+      {
+        key: "next-high",
+        label: "Next high",
+        value: formatTideEventTime(tideSnapshot.nextHigh, timeZone),
+        icon: "⇡",
+        tone: "good",
+        detail: tideSnapshot?.station?.portName ? `${tideSnapshot.station.portName} tide gauge` : ""
+      }
+    );
+  }
+
+  return tideMetrics;
 }
 
 export function formatConditionLine(camera, preferences) {
