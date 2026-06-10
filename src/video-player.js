@@ -2,10 +2,9 @@ const DEFAULT_HLS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/hls.js@1.6.4/dist/h
 
 let sharedHlsLoader = null;
 
-function ensureHls(hlsScriptUrl = DEFAULT_HLS_SCRIPT_URL) {
-  if (typeof window !== "undefined" && window.Hls) return Promise.resolve(window.Hls);
+function ensureHls(hlsScriptUrl) {
+  if (window.Hls) return Promise.resolve(window.Hls);
   if (sharedHlsLoader) return sharedHlsLoader;
-  if (typeof document === "undefined") return Promise.reject(new Error("Unable to load HLS player."));
 
   sharedHlsLoader = new Promise((resolve, reject) => {
     const script = document.createElement("script");
@@ -91,9 +90,9 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
   let hls = null;
   let currentState = "idle";
 
-  function setState(nextState, message) {
+  function setState(nextState, label) {
     currentState = nextState;
-    if (status) status.textContent = message;
+    status.textContent = label;
   }
 
   function destroyHls() {
@@ -108,10 +107,11 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
     video.pause();
     video.removeAttribute("src");
     video.load();
+    currentState = "idle";
   }
 
-  function play(camera) {
-    if (!camera || !camera.streamUrl) {
+  async function play(camera) {
+    if (!camera?.streamUrl) {
       clear();
       setState("unavailable", "Feed unavailable");
       return;
@@ -120,27 +120,24 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
     destroyHls();
     video.pause();
     video.removeAttribute("src");
-    video.poster = camera.image || camera.poster || "";
+    video.poster = camera.image || "";
     setState("loading", "Loading");
 
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = camera.streamUrl;
       video.load();
-      video.play().catch(() => {});
+      await video.play().catch(() => {});
       setState("playing", "Playing");
       return;
     }
 
-    ensureHls(hlsScriptUrl).then((HlsPlayer) => {
+    return ensureHls(hlsScriptUrl).then((HlsPlayer) => {
       if (!HlsPlayer || !HlsPlayer.isSupported()) {
         setState("unavailable", "Feed unavailable");
         return;
       }
 
-      hls = new HlsPlayer({
-        backBufferLength: 30,
-        maxBufferLength: 20
-      });
+      hls = new HlsPlayer({ backBufferLength: 30, maxBufferLength: 20 });
       hls.loadSource(camera.streamUrl);
       hls.attachMedia(video);
       hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
@@ -151,19 +148,18 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
         if (data.fatal) setState("error", "Feed error");
       });
     }).catch(() => {
-      setState("unavailable", "Feed unavailable");
+      setState("error", "Feed error");
     });
   }
 
   function expire() {
     clear();
-    setState("expired", "Expired");
+    setState("expired", "Tap to restart");
   }
 
-  return {
-    clear,
-    expire,
-    play,
-    state: () => currentState
-  };
+  function state() {
+    return currentState;
+  }
+
+  return { clear, expire, play, state };
 }

@@ -8,6 +8,9 @@
     "dev": "node scripts/dev-server.js",
     "test": "node --test \"test/*.test.js\"",
     "embed-data": "node scripts/embed-camera-db.js",
+    "build-spot-data": "node scripts/build-spot-data.js",
+    "fetch-tides": "node scripts/fetch-tides.js",
+    "cache-surfline": "node scripts/cache-surfline-pages.js",
     "crawl": "node scripts/crawl-beachcam.cjs",
     "extract-feed": "node scripts/extract-beachcam-feed.cjs"
   },

@@ -1,5 +1,6 @@
 .DS_Store
 .cache/
+.playwright-mcp/
 .superpowers/
 node_modules/
 npm-debug.log*
@@ -7,4 +8,5 @@ coverage/
 dist/
 docs/superpowers/
 outputs/
+tmp/
 work/

@@ -54,6 +54,5 @@ test("favorites save under the current versioned storage key", () => {
   saveFavoriteIds(new Set(["lagide-e-baia"]), storage);
 
   assert.equal(storage.value(), JSON.stringify(["lagide-e-baia"]));
-  assert.equal(FAVORITE_STORAGE_KEY, "surfcamFavoriteIds:v2");
+  assert.equal(FAVORITE_STORAGE_KEY, "surfcamFavoriteIds:v3");
 });
-

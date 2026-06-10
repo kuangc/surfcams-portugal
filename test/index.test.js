@@ -13,40 +13,29 @@ test("index embeds the same camera database that lives in data", () => {
   assert.deepEqual(JSON.parse(match[1]), db);
 });
 
-test("index loads the modular app and avoids removed click metadata UI", () => {
+test("index loads the v3 app shell", () => {
   assert.match(html, /<script type="module" src="\.\/src\/main\.js"><\/script>/);
-  assert.doesNotMatch(html, /Clicks/);
+  assert.match(html, /data-route="monitor"/);
+  assert.match(html, /data-route="favorites"/);
+  assert.match(html, /data-route="explore"/);
+  assert.match(html, /data-route="configure"/);
+  assert.match(html, /id="monitorScreen"/);
+  assert.match(html, /id="favoritesScreen"/);
+  assert.match(html, /id="exploreScreen"/);
+  assert.match(html, /id="configureScreen"/);
   assert.doesNotMatch(html, /Copy URL/);
   assert.doesNotMatch(html, /id="streamUrl"/);
 });
 
-test("index explains the Good for us filter criteria", () => {
-  assert.match(html, /id="fitExplanation"/);
-  assert.match(html, /0\.3-1\.5m/);
-  assert.match(html, /offshore/i);
-  assert.match(html, /18 km\/h/);
-  assert.match(html, /Fair to Good/);
-  assert.match(html, /model rating/i);
-  assert.doesNotMatch(html, /Surf score/i);
-  assert.doesNotMatch(html, /\/100/);
-});
-
-test("index includes the condition direction visualization shell", () => {
-  assert.match(html, /id="conditionVisual"/);
-  assert.match(html, /id="coastVector"/);
-  assert.match(html, /id="windVector"/);
-  assert.match(html, /id="swellVector"/);
-});
-
-test("index includes Best Today and monitor deck shells", () => {
-  assert.match(html, /id="bestTodayTitle"/);
-  assert.match(html, /id="monitorCount"/);
-  assert.match(html, /id="monitorButton"/);
-  assert.match(html, /id="clearMonitorButton"/);
-  assert.match(html, /id="monitorDeck"/);
-  assert.match(html, /id="monitorGrid"/);
-  assert.match(html, /id="monitorCountdown"/);
-  assert.match(html, /id="stopMonitorButton"/);
-  assert.match(html, /id="runMonitorAgainButton"/);
-  assert.match(html, /id="copySummaryButton"/);
+test("manage spots exposes practical filter and sort controls", () => {
+  assert.match(html, /id="favoritesSearchInput"/);
+  assert.match(html, /id="favoritesRegionSelect"/);
+  assert.match(html, /id="favoritesStatusSelect"/);
+  assert.match(html, /id="favoritesStreamSelect"/);
+  assert.match(html, /id="favoritesSortSelect"/);
+  assert.match(html, /<label class="filter-field" for="favoritesSortSelect">[\s\S]*<span>Sort<\/span>/);
+  assert.match(html, /<option value="favorites">Favorites first<\/option>/);
+  assert.match(html, /<option value="fit">Best conditions<\/option>/);
+  assert.match(html, /<option value="wave">Wave height<\/option>/);
+  assert.match(html, /<option value="popular">Most viewed<\/option>/);
 });

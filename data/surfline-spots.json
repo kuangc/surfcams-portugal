@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "provider": "surfline",
+  "generatedAt": "2026-06-09",
+  "source": {
+    "method": "Seeded from public Surfline report/search pages for default favorites and nearby practical alternatives.",
+    "supportUrl": "https://support.surfline.com/hc/en-us/articles/13749782983579-Understanding-the-Spot-Forecast-Page-on-the-Surfline-Website"
+  },
+  "staticMetadataFields": [
+    "name",
+    "url",
+    "lat",
+    "lon",
+    "region",
+    "country",
+    "breadcrumb",
+    "guideSummary",
+    "nearbySpotNames"
+  ],
+  "refreshConcepts": {
+    "daily": [
+      "tideExtremes",
+      "sunriseSunset",
+      "daylightWindows",
+      "humanForecastSummary"
+    ],
+    "hourly": [
+      "conditionRating",
+      "surfHeight",
+      "wind",
+      "swellComponents",
+      "tideAtHour",
+      "weather",
+      "waterTemperature"
+    ]
+  },
+  "spots": [
+    {
+      "id": "surfline-sao-pedro-do-estoril",
+      "provider": "surfline",
+      "name": "São Pedro do Estoril",
+      "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+      "lat": 38.693546,
+      "lon": -9.368644,
+      "region": "Cascais",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Cascais Municipality",
+          "São Pedro do Estoril"
+        ],
+        "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
+        "nearbySpotNames": [
+          "Carcavelos",
+          "Parede",
+          "Praia do Guincho",
+          "Fonte da Telha"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-carcavelos",
+      "provider": "surfline",
+      "name": "Carcavelos",
+      "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+      "lat": 38.680088,
+      "lon": -9.335203,
+      "region": "Cascais",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Cascais Municipality",
+          "Carcavelos"
+        ],
+        "guideSummary": "Lisbon-area beachbreak and reef cams near the Cascais rail line.",
+        "nearbySpotNames": [
+          "São Pedro do Estoril",
+          "Parede",
+          "Praia da Laje",
+          "Costa da Caparica"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-parede",
+      "provider": "surfline",
+      "name": "Parede",
+      "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+      "lat": 38.68578,
+      "lon": -9.353703,
+      "region": "Cascais",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Cascais Municipality",
+          "Parede"
+        ],
+        "guideSummary": "Cascais-line spot listed between São Pedro and Carcavelos.",
+        "nearbySpotNames": [
+          "São Pedro do Estoril",
+          "Carcavelos",
+          "Santo Amaro",
+          "Costa da Caparica"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-costa-da-caparica",
+      "provider": "surfline",
+      "name": "Costa da Caparica",
+      "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+      "lat": 38.64036,
+      "lon": -9.24275,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa da Caparica"
+        ],
+        "guideSummary": "Caparica beachbreak corridor with many sandbank options.",
+        "nearbySpotNames": [
+          "Praia da Rainha",
+          "Praia do Barbas",
+          "Fonte da Telha",
+          "Carcavelos",
+          "São Pedro do Estoril"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-praia-da-rainha",
+      "provider": "surfline",
+      "name": "Praia da Rainha",
+      "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+      "lat": 38.6192,
+      "lon": -9.2195,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa de Caparica",
+          "Praia da Rainha"
+        ],
+        "guideSummary": "Caparica beachbreak in the same southern Costa da Caparica corridor as Riviera and Praia do Barbas.",
+        "nearbySpotNames": [
+          "Costa da Caparica",
+          "Praia do Barbas",
+          "Castelo",
+          "Fonte da Telha"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-castelo",
+      "provider": "surfline",
+      "name": "Costa da Caparica | Costelo (Irmao)",
+      "url": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+      "lat": 38.6131034,
+      "lon": -9.2161894,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa de Caparica",
+          "Castelo"
+        ],
+        "guideSummary": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.",
+        "nearbySpotNames": [
+          "Praia da Rainha",
+          "Praia do Barbas",
+          "Costa da Caparica",
+          "Fonte da Telha",
+          "São Pedro do Estoril"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-praia-do-barbas",
+      "provider": "surfline",
+      "name": "Praia do Barbas",
+      "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+      "lat": 38.6325,
+      "lon": -9.2305,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa de Caparica",
+          "Praia do Barbas"
+        ],
+        "guideSummary": "Caparica beachbreak near the main Costa da Caparica report cluster.",
+        "nearbySpotNames": [
+          "Costa da Caparica",
+          "Fonte da Telha",
+          "São João da Caparica"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-fonte-da-telha",
+      "provider": "surfline",
+      "name": "Fonte da Telha",
+      "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+      "lat": 38.573721,
+      "lon": -9.19898,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Fonte da Telha"
+        ],
+        "guideSummary": "Southern Caparica/Fonte beachbreak option in the same outing corridor.",
+        "nearbySpotNames": [
+          "Costa da Caparica",
+          "Praia do Barbas",
+          "São Pedro do Estoril"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-sesimbra",
+      "provider": "surfline",
+      "name": "Sesimbra",
+      "url": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d",
+      "lat": 38.442867,
+      "lon": -9.105705,
+      "region": "Setúbal Peninsula",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Setúbal Peninsula",
+          "Sesimbra"
+        ],
+        "guideSummary": "Protected bay with several wave options and strong shelter from exposed Atlantic swell.",
+        "nearbySpotNames": [
+          "Costa da Caparica",
+          "Praia do Barbas",
+          "Fonte da Telha"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-sao-juliao",
+      "provider": "surfline",
+      "name": "São Julião",
+      "url": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+      "lat": 38.932163,
+      "lon": -9.420092,
+      "region": "Mafra",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "São Julião"
+        ],
+        "guideSummary": "Big open beach that catches more swell than many nearby Ericeira spots.",
+        "nearbySpotNames": [
+          "Foz do Lizandro",
+          "Praia do Sul",
+          "Ribeira D’Ilhas"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-foz-do-lizandro",
+      "provider": "surfline",
+      "name": "Foz do Lizandro",
+      "url": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd",
+      "lat": 38.945,
+      "lon": -9.42,
+      "region": "Mafra",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "Ericeira",
+          "Foz do Lizandro"
+        ],
+        "guideSummary": "Ericeira-area rivermouth beachbreak with shifting peaks.",
+        "nearbySpotNames": [
+          "São Julião",
+          "Praia do Sul",
+          "Ribeira D’Ilhas"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-praia-do-sul",
+      "provider": "surfline",
+      "name": "Praia do Sul",
+      "url": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3",
+      "lat": 38.964,
+      "lon": -9.418,
+      "region": "Mafra",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "Ericeira",
+          "Praia do Sul"
+        ],
+        "guideSummary": "Sheltered Ericeira corner that can work in larger north or northwest swells.",
+        "nearbySpotNames": [
+          "São Julião",
+          "Foz do Lizandro",
+          "Ribeira D’Ilhas"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-ribeira-d-ilhas",
+      "provider": "surfline",
+      "name": "Ribeira D’Ilhas",
+      "url": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2",
+      "lat": 39.006,
+      "lon": -9.421,
+      "region": "Mafra",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "Ericeira",
+          "Ribeira D’Ilhas"
+        ],
+        "guideSummary": "Right-hand Ericeira point/reef bay that can run long in the right swell.",
+        "nearbySpotNames": [
+          "São Julião",
+          "Foz do Lizandro",
+          "Praia do Sul"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-lagide",
+      "provider": "surfline",
+      "name": "Lagide",
+      "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2",
+      "lat": 39.372226,
+      "lon": -9.337493,
+      "region": "Peniche",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche",
+          "Lagide"
+        ],
+        "guideSummary": "Northern Baleal reef/point area with lefts over shallow rocks.",
+        "nearbySpotNames": [
+          "Cantinho da Baía",
+          "Meio da Baía",
+          "Baleal",
+          "Supertubos"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-cantinho-da-baia",
+      "provider": "surfline",
+      "name": "Cantinho da Baía",
+      "url": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8",
+      "lat": 39.374,
+      "lon": -9.333,
+      "region": "Peniche",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche",
+          "Cantinho da Baía"
+        ],
+        "guideSummary": "Corner of the bay that likes northerly to northwesterly swell and clean east-side winds.",
+        "nearbySpotNames": [
+          "Lagide",
+          "Meio da Baía",
+          "Baleal"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-baia",
+      "provider": "surfline",
+      "name": "Meio da Baía",
+      "url": "https://www.surfline.com/surf-report/meio-da-baia/63a4374bb5c53b335b3eada7",
+      "lat": 39.368,
+      "lon": -9.326,
+      "region": "Peniche",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche",
+          "Meio da Baía"
+        ],
+        "guideSummary": "Central North Bay sandbanks with beginner/intermediate-friendly peaks.",
+        "nearbySpotNames": [
+          "Lagide",
+          "Cantinho da Baía",
+          "Baleal"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-baleal",
+      "provider": "surfline",
+      "name": "Baleal",
+      "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+      "lat": 39.372,
+      "lon": -9.333,
+      "region": "Peniche",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche",
+          "Baleal"
+        ],
+        "guideSummary": "Peniche/Baleal surf hub with Lagide and open beachbreak nearby.",
+        "nearbySpotNames": [
+          "Lagide",
+          "Cantinho da Baía",
+          "Meio da Baía"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    }
+  ]
+}
