@@ -55,62 +55,97 @@
     {
       "meoSpotId": "costa-da-caparica-riviera",
       "surflineSpotIds": [
+        "surfline-praia-da-rainha",
+        "surfline-castelo",
+        "surfline-praia-do-barbas",
         "surfline-costa-da-caparica",
-        "surfline-fonte-da-telha",
-        "surfline-praia-do-barbas"
+        "surfline-fonte-da-telha"
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
+        "surfline-praia-da-rainha": 0.1,
+        "surfline-castelo": 0.8,
+        "surfline-praia-do-barbas": 1.5,
         "surfline-costa-da-caparica": 3.8,
-        "surfline-fonte-da-telha": 5.3,
-        "surfline-praia-do-barbas": 1.5
+        "surfline-fonte-da-telha": 5.3
       },
-      "notes": "Riviera sits inside the broader Caparica/Fonte da Telha comparison corridor."
+      "notes": "Riviera is closest to Surfline's Praia da Rainha page; Castelo, Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives."
     },
     {
       "meoSpotId": "costa-da-caparica",
       "surflineSpotIds": [
         "surfline-costa-da-caparica",
+        "surfline-praia-da-rainha",
+        "surfline-castelo",
         "surfline-praia-do-barbas",
         "surfline-fonte-da-telha"
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
         "surfline-costa-da-caparica": 0.8,
+        "surfline-praia-da-rainha": 3.7,
+        "surfline-castelo": 4.4,
         "surfline-praia-do-barbas": 4.9,
         "surfline-fonte-da-telha": 8.5
       },
-      "notes": "Main Caparica Beachcam page maps to Surfline Caparica and nearby alternates."
+      "notes": "Main Caparica Beachcam page maps to the corrected Surfline Caparica report first, then nearby south-Caparica alternates including Castelo."
     },
     {
       "meoSpotId": "costa-da-caparica-cds",
       "surflineSpotIds": [
         "surfline-costa-da-caparica",
+        "surfline-praia-da-rainha",
+        "surfline-castelo",
         "surfline-praia-do-barbas",
         "surfline-fonte-da-telha"
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
         "surfline-costa-da-caparica": 0.7,
+        "surfline-praia-da-rainha": 3.6,
+        "surfline-castelo": 4.3,
         "surfline-praia-do-barbas": 4.8,
         "surfline-fonte-da-telha": 8.4
       },
-      "notes": "CDS south page shares the same Caparica Surfline cluster."
+      "notes": "CDS south page shares the same Caparica Surfline cluster, including Castelo."
     },
     {
       "meoSpotId": "fonte-da-telha",
       "surflineSpotIds": [
         "surfline-fonte-da-telha",
-        "surfline-costa-da-caparica",
-        "surfline-praia-do-barbas"
+        "surfline-castelo",
+        "surfline-praia-da-rainha",
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica"
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
         "surfline-fonte-da-telha": 0.1,
-        "surfline-costa-da-caparica": 8.5,
-        "surfline-praia-do-barbas": 6.8
+        "surfline-castelo": 4.6,
+        "surfline-praia-da-rainha": 5.5,
+        "surfline-praia-do-barbas": 6.8,
+        "surfline-costa-da-caparica": 8.5
       },
-      "notes": "Exact Fonte page plus the practical Caparica alternatives."
+      "notes": "Exact Fonte page plus the practical Caparica alternatives, with Castelo as the nearest northern Surfline page."
+    },
+    {
+      "meoSpotId": "surfline-castelo",
+      "surflineSpotIds": [
+        "surfline-castelo",
+        "surfline-praia-da-rainha",
+        "surfline-praia-do-barbas",
+        "surfline-fonte-da-telha",
+        "surfline-costa-da-caparica"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-castelo": 0,
+        "surfline-praia-da-rainha": 0.8,
+        "surfline-praia-do-barbas": 2.3,
+        "surfline-fonte-da-telha": 4.6,
+        "surfline-costa-da-caparica": 4.4
+      },
+      "notes": "First-class Surfline-only Castelo spot plus the practical Caparica corridor references."
     },
     {
       "meoSpotId": "lagide-e-baia",

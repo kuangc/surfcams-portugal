@@ -1,0 +1,1136 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T06:19:14.439Z",
+  "source": {
+    "surflineDb": "data/surfline-spots.json",
+    "meoDb": "data/meo-spots.json",
+    "mappingDb": "data/meo-surfline-matches.json",
+    "cacheRoot": ".cache/surfline/pages"
+  },
+  "pages": [
+    {
+      "id": "surfline-sao-pedro-do-estoril",
+      "provider": "surfline",
+      "name": "São Pedro do Estoril",
+      "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+      "lat": 38.693546,
+      "lon": -9.368644,
+      "region": "Cascais",
+      "country": "Portugal",
+      "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-carcavelos",
+      "provider": "surfline",
+      "name": "Carcavelos",
+      "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+      "lat": 38.680088,
+      "lon": -9.335203,
+      "region": "Cascais",
+      "country": "Portugal",
+      "extractedTitle": "Carcavelos Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-carcavelos.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-carcavelos.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-parede",
+      "provider": "surfline",
+      "name": "Parede",
+      "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+      "lat": 38.68578,
+      "lon": -9.353703,
+      "region": "Cascais",
+      "country": "Portugal",
+      "extractedTitle": "Parede Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-parede.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-parede.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-costa-da-caparica",
+      "provider": "surfline",
+      "name": "Costa da Caparica",
+      "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+      "lat": 38.64036,
+      "lon": -9.24275,
+      "region": "Almada",
+      "country": "Portugal",
+      "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-costa-da-caparica.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-praia-da-rainha",
+      "provider": "surfline",
+      "name": "Praia da Rainha",
+      "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+      "lat": 38.6192,
+      "lon": -9.2195,
+      "region": "Almada",
+      "country": "Portugal",
+      "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-praia-da-rainha.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-praia-do-barbas",
+      "provider": "surfline",
+      "name": "Praia do Barbas",
+      "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+      "lat": 38.6325,
+      "lon": -9.2305,
+      "region": "Almada",
+      "country": "Portugal",
+      "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-praia-do-barbas.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-fonte-da-telha",
+      "provider": "surfline",
+      "name": "Fonte da Telha",
+      "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+      "lat": 38.573721,
+      "lon": -9.19898,
+      "region": "Almada",
+      "country": "Portugal",
+      "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-fonte-da-telha.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-sesimbra",
+      "provider": "surfline",
+      "name": "Sesimbra",
+      "url": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d",
+      "lat": 38.442867,
+      "lon": -9.105705,
+      "region": "Setúbal Peninsula",
+      "country": "Portugal",
+      "extractedTitle": "Sesimbra Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-sesimbra.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-sesimbra.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-sao-juliao",
+      "provider": "surfline",
+      "name": "São Julião",
+      "url": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+      "lat": 38.932163,
+      "lon": -9.420092,
+      "region": "Mafra",
+      "country": "Portugal",
+      "extractedTitle": "São Julião Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-sao-juliao.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-sao-juliao.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-foz-do-lizandro",
+      "provider": "surfline",
+      "name": "Foz do Lizandro",
+      "url": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd",
+      "lat": 38.945,
+      "lon": -9.42,
+      "region": "Mafra",
+      "country": "Portugal",
+      "extractedTitle": "Foz do Lizandro Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-foz-do-lizandro.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-foz-do-lizandro.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-praia-do-sul",
+      "provider": "surfline",
+      "name": "Praia do Sul",
+      "url": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3",
+      "lat": 38.964,
+      "lon": -9.418,
+      "region": "Mafra",
+      "country": "Portugal",
+      "extractedTitle": "Praia do Sul Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-praia-do-sul.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-praia-do-sul.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-ribeira-d-ilhas",
+      "provider": "surfline",
+      "name": "Ribeira D’Ilhas",
+      "url": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2",
+      "lat": 39.006,
+      "lon": -9.421,
+      "region": "Mafra",
+      "country": "Portugal",
+      "extractedTitle": "Ribeira D’Ilhas Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-ribeira-d-ilhas.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-ribeira-d-ilhas.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-lagide",
+      "provider": "surfline",
+      "name": "Lagide",
+      "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2",
+      "lat": 39.372226,
+      "lon": -9.337493,
+      "region": "Peniche",
+      "country": "Portugal",
+      "extractedTitle": "Lagide Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-lagide.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-lagide.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-cantinho-da-baia",
+      "provider": "surfline",
+      "name": "Cantinho da Baía",
+      "url": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8",
+      "lat": 39.374,
+      "lon": -9.333,
+      "region": "Peniche",
+      "country": "Portugal",
+      "extractedTitle": "Cantinho da Baía Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-cantinho-da-baia.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-cantinho-da-baia.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-baia",
+      "provider": "surfline",
+      "name": "Meio da Baía",
+      "url": "https://www.surfline.com/surf-report/meio-da-baia/63a4374bb5c53b335b3eada7",
+      "lat": 39.368,
+      "lon": -9.326,
+      "region": "Peniche",
+      "country": "Portugal",
+      "extractedTitle": "Meio da Baía Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-baia.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-baia.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    },
+    {
+      "id": "surfline-baleal",
+      "provider": "surfline",
+      "name": "Baleal",
+      "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+      "lat": 39.372,
+      "lon": -9.333,
+      "region": "Peniche",
+      "country": "Portugal",
+      "extractedTitle": "Baleal Surf Report & Forecast",
+      "titleSource": "h1",
+      "cachePath": ".cache/surfline/pages/surfline-baleal.html",
+      "cacheMetaPath": ".cache/surfline/pages/surfline-baleal.json",
+      "cacheStatus": "cached-html",
+      "httpStatus": null,
+      "fetchedAt": null
+    }
+  ],
+  "mappings": [
+    {
+      "meoSpotId": "sao-pedro-do-estoril",
+      "meoName": "São Pedro do Estoril",
+      "meoUrl": "http://beachcam.meo.pt/livecams/sao-pedro-do-estoril/",
+      "meoLat": 38.693546,
+      "meoLon": -9.368644,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Exact Surfline page plus nearby Cascais-line references.",
+      "surflineMatches": [
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        },
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 3.2,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        },
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 1.7,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        },
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 1.7,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        },
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 3.2,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "praia-de-carcavelos",
+      "meoName": "Carcavelos",
+      "meoUrl": "http://beachcam.meo.pt/livecams/praia-de-carcavelos/",
+      "meoLat": 38.680088,
+      "meoLon": -9.335203,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Exact Surfline page plus neighboring Cascais-line spots.",
+      "surflineMatches": [
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        },
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 3.9,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        },
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 3.2,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        },
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 3.2,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        },
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 3.9,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "parede",
+      "meoName": "Parede ",
+      "meoUrl": "http://beachcam.meo.pt/livecams/parede/",
+      "meoLat": 38.68578,
+      "meoLon": -9.353703,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Exact Surfline page plus adjacent São Pedro and Carcavelos references.",
+      "surflineMatches": [
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        },
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 1.7,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        },
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 3.9,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-parede",
+          "name": "Parede",
+          "extractedTitle": "Parede Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-parede.html"
+        },
+        {
+          "id": "surfline-sao-pedro-do-estoril",
+          "name": "São Pedro do Estoril",
+          "extractedTitle": "São Pedro do Estoril Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "distanceKm": 1.7,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-sao-pedro-do-estoril.html"
+        },
+        {
+          "id": "surfline-carcavelos",
+          "name": "Carcavelos",
+          "extractedTitle": "Carcavelos Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "distanceKm": 3.9,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-carcavelos.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "costa-da-caparica-riviera",
+      "meoName": "Costa de Caparica | Riviera",
+      "meoUrl": "http://beachcam.meo.pt/livecams/costa-da-caparica-riviera/",
+      "meoLat": 38.619311,
+      "meoLon": -9.219895,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Riviera is closest to Surfline's Praia da Rainha page; Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives.",
+      "surflineMatches": [
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 0.1,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 1.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 3.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 5.3,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 0.1,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 1.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 3.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 5.3,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "costa-da-caparica",
+      "meoName": "Costa de Caparica | CDS NORTE",
+      "meoUrl": "http://beachcam.meo.pt/livecams/costa-da-caparica/",
+      "meoLat": 38.646801,
+      "meoLon": -9.242691,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Main Caparica Beachcam page maps to the corrected Surfline Caparica report first, then nearby south-Caparica alternates.",
+      "surflineMatches": [
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 0.8,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 3.7,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 4.9,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 8.5,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 0.8,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 3.7,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 4.9,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 8.5,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "costa-da-caparica-cds",
+      "meoName": "Costa de Caparica | CDS SUL",
+      "meoUrl": "http://beachcam.meo.pt/livecams/costa-da-caparica-cds/",
+      "meoLat": 38.645943,
+      "meoLon": -9.242064,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "CDS south page shares the same Caparica Surfline cluster.",
+      "surflineMatches": [
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 0.7,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 3.6,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 4.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 8.4,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 0.7,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 3.6,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 4.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 8.4,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "fonte-da-telha",
+      "meoName": "Fonte da Telha | Norte",
+      "meoUrl": "http://beachcam.meo.pt/livecams/fonte-da-telha/",
+      "meoLat": 38.57518,
+      "meoLon": -9.197515,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Exact Fonte page plus the practical Caparica alternatives.",
+      "surflineMatches": [
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 0.1,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 5.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 6.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 8.5,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 0.1,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        },
+        {
+          "id": "surfline-praia-da-rainha",
+          "name": "Praia da Rainha",
+          "extractedTitle": "Praia da Rainha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "distanceKm": 5.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-praia-da-rainha.html"
+        },
+        {
+          "id": "surfline-praia-do-barbas",
+          "name": "Praia do Barbas",
+          "extractedTitle": "Praia do Barbas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "distanceKm": 6.8,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-barbas.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 8.5,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "lagide-e-baia",
+      "meoName": "Peniche | Lagide | Cantinho da baía ",
+      "meoUrl": "http://beachcam.meo.pt/livecams/lagide-e-baia/",
+      "meoLat": 39.372226,
+      "meoLon": -9.337493,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "One MEO camera represents the Lagide/Cantinho/Baía/Baleal cluster.",
+      "surflineMatches": [
+        {
+          "id": "surfline-lagide",
+          "name": "Lagide",
+          "extractedTitle": "Lagide Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-lagide.html"
+        },
+        {
+          "id": "surfline-cantinho-da-baia",
+          "name": "Cantinho da Baía",
+          "extractedTitle": "Cantinho da Baía Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8",
+          "distanceKm": 0.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-cantinho-da-baia.html"
+        },
+        {
+          "id": "surfline-baia",
+          "name": "Meio da Baía",
+          "extractedTitle": "Meio da Baía Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/meio-da-baia/63a4374bb5c53b335b3eada7",
+          "distanceKm": 1.1,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-baia.html"
+        },
+        {
+          "id": "surfline-baleal",
+          "name": "Baleal",
+          "extractedTitle": "Baleal Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+          "distanceKm": 0.4,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-baleal.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-lagide",
+          "name": "Lagide",
+          "extractedTitle": "Lagide Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-lagide.html"
+        },
+        {
+          "id": "surfline-baleal",
+          "name": "Baleal",
+          "extractedTitle": "Baleal Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+          "distanceKm": 0.4,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-baleal.html"
+        },
+        {
+          "id": "surfline-cantinho-da-baia",
+          "name": "Cantinho da Baía",
+          "extractedTitle": "Cantinho da Baía Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8",
+          "distanceKm": 0.5,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-cantinho-da-baia.html"
+        },
+        {
+          "id": "surfline-baia",
+          "name": "Meio da Baía",
+          "extractedTitle": "Meio da Baía Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/meio-da-baia/63a4374bb5c53b335b3eada7",
+          "distanceKm": 1.1,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-baia.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "praia-sesimbra",
+      "meoName": "Praia Sesimbra",
+      "meoUrl": "http://beachcam.meo.pt/livecams/praia-sesimbra/",
+      "meoLat": 38.442867,
+      "meoLon": -9.105705,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Sesimbra is a protected bay, so exposed nearby alternatives are useful as a sanity check.",
+      "surflineMatches": [
+        {
+          "id": "surfline-sesimbra",
+          "name": "Sesimbra",
+          "extractedTitle": "Sesimbra Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sesimbra.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 15.6,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 24.7,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-sesimbra",
+          "name": "Sesimbra",
+          "extractedTitle": "Sesimbra Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sesimbra.html"
+        },
+        {
+          "id": "surfline-fonte-da-telha",
+          "name": "Fonte da Telha",
+          "extractedTitle": "Fonte da Telha Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "distanceKm": 15.6,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-fonte-da-telha.html"
+        },
+        {
+          "id": "surfline-costa-da-caparica",
+          "name": "Costa da Caparica",
+          "extractedTitle": "Costa da Caparica Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "distanceKm": 24.7,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-costa-da-caparica.html"
+        }
+      ]
+    },
+    {
+      "meoSpotId": "sao-juliao",
+      "meoName": "São Julião ",
+      "meoUrl": "http://beachcam.meo.pt/livecams/sao-juliao/",
+      "meoLat": 38.932163453498475,
+      "meoLon": -9.42009175212114,
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "notes": "Exact São Julião page plus Ericeira-area options in the same outing corridor.",
+      "surflineMatches": [
+        {
+          "id": "surfline-sao-juliao",
+          "name": "São Julião",
+          "extractedTitle": "São Julião Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sao-juliao.html"
+        },
+        {
+          "id": "surfline-foz-do-lizandro",
+          "name": "Foz do Lizandro",
+          "extractedTitle": "Foz do Lizandro Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd",
+          "distanceKm": 1.4,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-foz-do-lizandro.html"
+        },
+        {
+          "id": "surfline-praia-do-sul",
+          "name": "Praia do Sul",
+          "extractedTitle": "Praia do Sul Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3",
+          "distanceKm": 3.6,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-sul.html"
+        },
+        {
+          "id": "surfline-ribeira-d-ilhas",
+          "name": "Ribeira D’Ilhas",
+          "extractedTitle": "Ribeira D’Ilhas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2",
+          "distanceKm": 8.2,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-ribeira-d-ilhas.html"
+        }
+      ],
+      "sortedByDistanceForReview": [
+        {
+          "id": "surfline-sao-juliao",
+          "name": "São Julião",
+          "extractedTitle": "São Julião Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+          "distanceKm": 0,
+          "matchRank": 1,
+          "cachePath": ".cache/surfline/pages/surfline-sao-juliao.html"
+        },
+        {
+          "id": "surfline-foz-do-lizandro",
+          "name": "Foz do Lizandro",
+          "extractedTitle": "Foz do Lizandro Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd",
+          "distanceKm": 1.4,
+          "matchRank": 2,
+          "cachePath": ".cache/surfline/pages/surfline-foz-do-lizandro.html"
+        },
+        {
+          "id": "surfline-praia-do-sul",
+          "name": "Praia do Sul",
+          "extractedTitle": "Praia do Sul Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3",
+          "distanceKm": 3.6,
+          "matchRank": 3,
+          "cachePath": ".cache/surfline/pages/surfline-praia-do-sul.html"
+        },
+        {
+          "id": "surfline-ribeira-d-ilhas",
+          "name": "Ribeira D’Ilhas",
+          "extractedTitle": "Ribeira D’Ilhas Surf Report & Forecast",
+          "titleSource": "h1",
+          "url": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2",
+          "distanceKm": 8.2,
+          "matchRank": 4,
+          "cachePath": ".cache/surfline/pages/surfline-ribeira-d-ilhas.html"
+        }
+      ]
+    }
+  ]
+}

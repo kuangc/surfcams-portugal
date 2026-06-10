@@ -1,4 +1,4 @@
-import { availableCameras, loadCameraDb } from "./camera-data.js";
+import { firstClassCameras, loadCameraDb } from "./camera-data.js";
 import {
   camerasForInitialBounds,
   filterCameras,
@@ -243,12 +243,50 @@ function createEmptyMonitorTile(index) {
   return tile;
 }
 
+function isReportOnlyCamera(camera) {
+  return !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
+}
+
+function reportUrl(camera) {
+  return camera?.surfline?.pageUrl || camera?.pageUrl || "";
+}
+
+function createReportFrame(camera) {
+  const frame = document.createElement("div");
+  frame.className = "feed-frame report-frame";
+
+  const logo = createProviderLogo("surfline", "Surfline");
+
+  const source = document.createElement("span");
+  source.className = "report-frame__source";
+  source.textContent = "Surfline";
+
+  const title = document.createElement("strong");
+  title.className = "report-frame__title";
+  title.textContent = camera.name;
+
+  const action = document.createElement("a");
+  action.className = "report-frame__action";
+  action.href = reportUrl(camera);
+  action.target = "_blank";
+  action.rel = "noopener noreferrer";
+  action.textContent = "Open Surfline report";
+
+  frame.append(logo, source, title, action);
+  return frame;
+}
+
 function createMonitorTile(slot, index) {
   if (slot.empty || !slot.camera) return createEmptyMonitorTile(index);
 
   const camera = slot.camera;
   const tile = document.createElement("article");
   tile.className = "monitor-tile";
+
+  if (isReportOnlyCamera(camera)) {
+    tile.append(createReportFrame(camera), createConditionStrip(camera, { showName: true }));
+    return tile;
+  }
 
   const frame = document.createElement("div");
   frame.className = "feed-frame";
@@ -592,6 +630,11 @@ function renderFavorites() {
 
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
+  if (isReportOnlyCamera(camera)) {
+    state.explorePlayer.clear();
+    els.exploreFeedStatus.textContent = "Open Surfline report";
+    return;
+  }
   state.explorePlayer.play(camera);
 }
 
@@ -908,7 +951,7 @@ async function init() {
   state.db = cameraDb;
   state.spotData = spotData;
   state.tideData = tideData;
-  state.cameras = availableCameras(state.db);
+  state.cameras = firstClassCameras(state.db);
   state.favoriteIds = loadFavoriteIds(manageSpotCameras());
   state.preferences = loadSurfPreferences();
 

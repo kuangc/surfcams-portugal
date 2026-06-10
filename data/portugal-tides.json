@@ -1537,6 +1537,18 @@
       "gaugeLon": -9.4166667,
       "source": "manual-geomar-port-fallback"
     },
+    "surfline-castelo": {
+      "cameraId": "surfline-castelo",
+      "cameraName": "Costa da Caparica | Costelo (Irmao)",
+      "cameraRegion": "almada",
+      "cameraLat": 38.6131034,
+      "cameraLon": -9.2161894,
+      "portId": "15",
+      "portName": "Cascais",
+      "gaugeLat": 38.6916667,
+      "gaugeLon": -9.4166667,
+      "source": "manual-geomar-port-fallback"
+    },
     "sao-martinho-do-porto": {
       "cameraId": "sao-martinho-do-porto",
       "cameraName": "São Martinho do Porto ",
@@ -1803,6 +1815,7 @@
         "ribeira-dilhas",
         "sao-juliao",
         "sao-pedro-do-estoril",
+        "surfline-castelo",
         "tamariz"
       ]
     },

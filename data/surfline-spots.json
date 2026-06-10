@@ -165,7 +165,7 @@
       "id": "surfline-costa-da-caparica",
       "provider": "surfline",
       "name": "Costa da Caparica",
-      "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708d48",
+      "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
       "lat": 38.64036,
       "lon": -9.24275,
       "region": "Almada",
@@ -179,9 +179,97 @@
         ],
         "guideSummary": "Caparica beachbreak corridor with many sandbank options.",
         "nearbySpotNames": [
+          "Praia da Rainha",
           "Praia do Barbas",
           "Fonte da Telha",
           "Carcavelos",
+          "São Pedro do Estoril"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-praia-da-rainha",
+      "provider": "surfline",
+      "name": "Praia da Rainha",
+      "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+      "lat": 38.6192,
+      "lon": -9.2195,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa de Caparica",
+          "Praia da Rainha"
+        ],
+        "guideSummary": "Caparica beachbreak in the same southern Costa da Caparica corridor as Riviera and Praia do Barbas.",
+        "nearbySpotNames": [
+          "Costa da Caparica",
+          "Praia do Barbas",
+          "Castelo",
+          "Fonte da Telha"
+        ]
+      },
+      "refreshConcepts": {
+        "daily": [
+          "tideExtremes",
+          "sunriseSunset",
+          "daylightWindows",
+          "humanForecastSummary"
+        ],
+        "hourly": [
+          "conditionRating",
+          "surfHeight",
+          "wind",
+          "swellComponents",
+          "tideAtHour",
+          "weather",
+          "waterTemperature"
+        ]
+      }
+    },
+    {
+      "id": "surfline-castelo",
+      "provider": "surfline",
+      "name": "Costa da Caparica | Costelo (Irmao)",
+      "url": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+      "lat": 38.6131034,
+      "lon": -9.2161894,
+      "region": "Almada",
+      "country": "Portugal",
+      "staticMetadata": {
+        "breadcrumb": [
+          "Portugal",
+          "Setúbal",
+          "Almada Municipality",
+          "Costa de Caparica",
+          "Castelo"
+        ],
+        "guideSummary": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.",
+        "nearbySpotNames": [
+          "Praia da Rainha",
+          "Praia do Barbas",
+          "Costa da Caparica",
+          "Fonte da Telha",
           "São Pedro do Estoril"
         ]
       },

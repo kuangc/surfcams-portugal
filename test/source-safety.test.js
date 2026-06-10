@@ -52,6 +52,9 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /findTideSnapshot/);
   assert.match(mainSource, /tideSnapshot/);
   assert.match(mainSource, /createSurflineControl/);
+  assert.match(mainSource, /isReportOnlyCamera/);
+  assert.match(mainSource, /createReportFrame/);
+  assert.match(mainSource, /Open Surfline report/);
   assert.match(mainSource, /PROVIDER_ICON_URLS/);
   assert.match(mainSource, /provider-logo/);
   assert.match(mainSource, /external-link-icon/);
@@ -87,6 +90,8 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.condition-strip__metrics\s*{/);
   assert.match(styleSource, /\.condition-strip__route\s*{/);
   assert.match(styleSource, /\.provider-logo\s*{/);
+  assert.match(styleSource, /\.report-frame\s*{/);
+  assert.match(styleSource, /\.report-frame__action\s*{/);
   assert.match(styleSource, /\.surfline-control\s*{/);
   assert.match(styleSource, /\.surfline-control__select\s*{/);
   assert.doesNotMatch(styleSource, /provider-mark/);
@@ -105,7 +110,6 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.doesNotMatch(styleSource, /\.sidebar\b/);
   assert.doesNotMatch(styleSource, /\.detail\b/);
 });
-
 
 test("official tide cache has a scheduled refresh path", () => {
   const workflowSource = fs.readFileSync(".github/workflows/update-tides.yml", "utf8");

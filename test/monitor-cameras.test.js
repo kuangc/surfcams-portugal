@@ -21,11 +21,11 @@ test("monitorCameraSlots shows favorites only and leaves empty slots", () => {
   assert.equal(slots[1].empty, true);
 });
 
-test("monitorCameraSlots caps favorites at six", () => {
-  const many = ["a", "b", "c", "d", "e", "f", "g"].map((id) => ({ id }));
-  const slots = monitorCameraSlots(many, new Set(many.map((camera) => camera.id)), many.map((camera) => camera.id), 6);
+test("monitorCameraSlots caps favorites at the configured limit", () => {
+  const many = ["a", "b", "c", "d", "e", "f", "g", "h"].map((id) => ({ id }));
+  const slots = monitorCameraSlots(many, new Set(many.map((camera) => camera.id)), many.map((camera) => camera.id), 7);
 
-  assert.deepEqual(slots.map((slot) => slot.camera?.id), ["a", "b", "c", "d", "e", "f"]);
+  assert.deepEqual(slots.map((slot) => slot.camera?.id), ["a", "b", "c", "d", "e", "f", "g"]);
 });
 
 test("mightBeGoodCameras is explicit and excludes favorites", () => {

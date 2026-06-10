@@ -1,6 +1,8 @@
 .DS_Store
 .cache/
+.playwright-mcp/
 .superpowers/
+data/local-stream-overrides.json
 node_modules/
 npm-debug.log*
 coverage/

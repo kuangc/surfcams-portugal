@@ -6,7 +6,7 @@
     "listingUrl": "https://beachcam.meo.pt/livecams/",
     "detailPageCount": 189
   },
-  "total": 189,
+  "total": 190,
   "spots": [
     {
       "id": "praia-de-carcavelos",
@@ -1722,6 +1722,44 @@
           "Temp. do mar": "15.3º",
           "Maré": "14:19"
         }
+      }
+    },
+    {
+      "id": "surfline-castelo",
+      "provider": "surfline",
+      "name": "Costa da Caparica | Costelo (Irmao)",
+      "url": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+      "lat": 38.6131034,
+      "lon": -9.2161894,
+      "region": "almada",
+      "municipality": "ALMADA",
+      "hasStream": false,
+      "staticMetadata": {
+        "providerPageType": "surfline-report",
+        "livecamId": null,
+        "videoId": null,
+        "image": null,
+        "isMulti": false,
+        "description": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger."
+      },
+      "dynamicConcepts": {
+        "daily": [
+          "seaTemperature",
+          "regionalTideReference"
+        ],
+        "hourly": [
+          "waveHeight",
+          "wavePeriod",
+          "swellDirection",
+          "windSpeed",
+          "windDirection",
+          "tideState",
+          "providerTideTime"
+        ]
+      },
+      "currentSnapshot": {
+        "forecast": {},
+        "detailMetrics": {}
       }
     },
     {

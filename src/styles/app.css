@@ -273,6 +273,50 @@ video {
   font-weight: 850;
 }
 
+.report-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  gap: 8px 10px;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  padding: 18px;
+  background: #0c2b2b;
+  color: #ffffff;
+  cursor: default;
+}
+
+.report-frame .provider-logo {
+  grid-row: span 2;
+  align-self: center;
+  background: #ffffff;
+}
+
+.report-frame__source {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.74rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.report-frame__title {
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+  line-height: 1.12;
+}
+
+.report-frame__action {
+  grid-column: 1 / -1;
+  justify-self: start;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: #0c2b2b;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .condition-line,
 .condition-strip {
   margin: 0;
