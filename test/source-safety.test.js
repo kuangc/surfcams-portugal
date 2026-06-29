@@ -75,6 +75,8 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /explorePlayer/);
   assert.match(mainSource, /renderConfigure/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
+  assert.doesNotMatch(mainSource, /Showing favorites only\. Empty slots are not auto-filled\./);
+  assert.match(mainSource, /monitorStatus\.hidden\s*=\s*state\.monitorMode === "favorites"/);
   assert.doesNotMatch(mainSource, /autoFill/i);
 });
 
@@ -117,6 +119,10 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.surfline-control__select\s*{/);
   assert.doesNotMatch(styleSource, /provider-mark/);
   assert.match(styleSource, /\.water-summary\s*{/);
+  assert.match(styleSource, /grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(112px,\s*1fr\)\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.water-summary\s*{[\s\S]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.water-summary\s*{[\s\S]*gap:\s*8px/);
+  assert.doesNotMatch(styleSource.match(/\.water-metric__value\s*{[^}]*}/)?.[0] || "", /font-size:\s*0\.[0-9]+rem/);
   assert.match(indexSource, /id="monitorWaterSummary"/);
   assert.match(indexSource, /id="favoritesWaterSummary"/);
   assert.match(indexSource, /id="detailWaterSummary"/);

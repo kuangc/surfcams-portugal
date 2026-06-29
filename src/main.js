@@ -351,8 +351,9 @@ function renderMonitor() {
     });
   }
 
+  els.monitorStatus.hidden = state.monitorMode === "favorites";
   els.monitorStatus.textContent = state.monitorMode === "favorites"
-    ? "Showing favorites only. Empty slots are not auto-filled."
+    ? ""
     : "Might be good is model-based. Check the cams before leaving.";
 }
 
@@ -1001,5 +1002,6 @@ async function init() {
 }
 
 init().catch((error) => {
+  els.monitorStatus.hidden = false;
   els.monitorStatus.textContent = error.message;
 });
