@@ -53,6 +53,12 @@ function formatSource(camera) {
   };
 }
 
+function coastTone(confidence) {
+  if (confidence === "spot") return "good";
+  if (confidence === "regional") return "neutral";
+  return "muted";
+}
+
 function formatSeaTemperature(value) {
   return String(value || "").trim().replace("º", "°") || "unknown";
 }
@@ -187,7 +193,7 @@ export function formatConditionChips(camera, preferences, { driveEstimate = null
       label: coast,
       detail: `${rating.confidence.label} coast exposure`,
       icon: formatCoastIcon(rating.coast.bearing),
-      tone: rating.coast.confidence === "spot" ? "good" : rating.coast.confidence === "regional" ? "neutral" : "muted"
+      tone: coastTone(rating.coast.confidence)
     },
     driveEstimate && {
       key: "drive",

@@ -4,6 +4,8 @@ import test from "node:test";
 
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
 import {
+  applyCoastExposuresToCameraDb,
+  applySpotMetadataToCameraDb,
   estimateDrivingMinutes,
   findDriveEstimate,
   findSurflineMatches,
@@ -15,8 +17,15 @@ const surflineDb = JSON.parse(fs.readFileSync("data/surfline-spots.json", "utf8"
 const meoDb = JSON.parse(fs.readFileSync("data/meo-spots.json", "utf8"));
 const mappingDb = JSON.parse(fs.readFileSync("data/meo-surfline-matches.json", "utf8"));
 const driveDb = JSON.parse(fs.readFileSync("data/lisbon-drive-estimates.json", "utf8"));
+const coastExposureDb = JSON.parse(fs.readFileSync("data/coast-exposures.json", "utf8"));
+const spotMetadataDb = fs.existsSync("data/spot-metadata-enrichment.json")
+  ? JSON.parse(fs.readFileSync("data/spot-metadata-enrichment.json", "utf8"))
+  : null;
+const needsReviewHtml = fs.existsSync("docs/surfline-needs-review.html")
+  ? fs.readFileSync("docs/surfline-needs-review.html", "utf8")
+  : "";
 const mappingReview = JSON.parse(fs.readFileSync("data/surfline-mapping-review.json", "utf8"));
-const normalized = normalizeSpotData({ surflineDb, meoDb, mappingDb, driveDb });
+const normalized = normalizeSpotData({ surflineDb, meoDb, mappingDb, driveDb, coastExposureDb, spotMetadataDb });
 
 test("surfline database stores static metadata plus refresh concepts", () => {
   const saoPedro = surflineDb.spots.find((spot) => spot.id === "surfline-sao-pedro-do-estoril");
@@ -31,6 +40,44 @@ test("surfline database stores static metadata plus refresh concepts", () => {
   assert.ok(saoPedro.refreshConcepts.daily.includes("sunriseSunset"));
   assert.ok(saoPedro.refreshConcepts.hourly.includes("conditionRating"));
   assert.ok(saoPedro.refreshConcepts.hourly.includes("swellComponents"));
+});
+
+test("surfline database covers provider spots within 100km of Lisbon", () => {
+  assert.deepEqual(surflineDb.coverage.origin, {
+    label: "Central Lisbon",
+    lat: 38.7223,
+    lon: -9.1393
+  });
+  assert.equal(surflineDb.coverage.radiusKm, 100);
+  assert.ok(surflineDb.spots.length >= 70);
+  assert.equal(
+    surflineDb.spots.every((spot) => spot.distanceFromLisbonKm <= 100),
+    true
+  );
+
+  for (const id of [
+    "surfline-praia-da-cruz-quebrada",
+    "surfline-sao-joao-da-caparica",
+    "surfline-nazare",
+    "surfline-sao-torpes"
+  ]) {
+    assert.ok(surflineDb.spots.some((spot) => spot.id === id), `${id} is covered`);
+  }
+});
+
+test("surfline database preserves native provider metadata for surf decisions", () => {
+  const carcavelos = surflineDb.spots.find((spot) => spot.id === "surfline-carcavelos");
+  const lagide = surflineDb.spots.find((spot) => spot.id === "surfline-lagide");
+
+  assert.ok(carcavelos.staticMetadata.travelDetails.best.windDirection.value.includes("N"));
+  assert.ok(carcavelos.staticMetadata.travelDetails.best.swellDirection.value.includes("W"));
+  assert.deepEqual(carcavelos.staticMetadata.travelDetails.bottom.value, ["Sand"]);
+  assert.ok(carcavelos.staticMetadata.breakType.includes("Beach_Break"));
+  assert.ok(["Offshore", "Onshore", "Cross-shore"].includes(carcavelos.currentSnapshot.wind.directionType));
+  assert.equal(carcavelos.staticMetadata.coastExposure.bearing, 188);
+
+  assert.equal(lagide.staticMetadata.coastExposure.bearing, 345);
+  assert.ok(lagide.staticMetadata.travelDetails.breakType.includes("Lefts"));
 });
 
 test("normalized meo database mirrors the current camera index", () => {
@@ -65,6 +112,19 @@ test("mapping links default favorites to one or more surfline spots", () => {
   assert.equal(caparica.proposedCloseRule, "exact-or-nearby-surfline-spots-for-same-outing");
 });
 
+test("mapping remaps cached Surfline spots onto nearby MEO spots broadly and conservatively", () => {
+  assert.ok(mappingDb.matches.length >= 85);
+
+  const mappingByMeoId = new Map(mappingDb.matches.map((match) => [match.meoSpotId, match]));
+  const guincho = mappingByMeoId.get("praia-do-guincho");
+  const paredesDaVitoria = mappingByMeoId.get("paredes-da-vitoria");
+
+  assert.equal(guincho.surflineSpotIds[0], "surfline-praia-do-guincho");
+  assert.ok(guincho.distancesKm["surfline-praia-do-guincho"] <= 1);
+  assert.equal(guincho.reviewStatus, "generated");
+  assert.equal(paredesDaVitoria, undefined);
+});
+
 test("Caparica Surfline data includes reviewed Costa and Praia da Rainha pages", () => {
   const caparica = surflineDb.spots.find((spot) => spot.id === "surfline-costa-da-caparica");
   const rainha = surflineDb.spots.find((spot) => spot.id === "surfline-praia-da-rainha");
@@ -95,17 +155,18 @@ test("Caparica Surfline data includes the Castelo Irmao page metadata", () => {
   assert.ok(castelo);
   assert.equal(castelo.name, "Costa da Caparica | Costelo (Irmao)");
   assert.equal(castelo.url, "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8");
-  assert.equal(castelo.lat, 38.6131034);
-  assert.equal(castelo.lon, -9.2161894);
-  assert.equal(castelo.region, "Almada");
+  assert.ok(Math.abs(castelo.lat - 38.6131) < 0.001);
+  assert.ok(Math.abs(castelo.lon - -9.2175) < 0.001);
+  assert.equal(castelo.region, "Lisboa Portugal");
   assert.deepEqual(castelo.staticMetadata.breadcrumb, [
     "Portugal",
     "Setúbal",
     "Almada Municipality",
-    "Costa de Caparica",
-    "Castelo"
+    "Costa de Caparica"
   ]);
   assert.match(castelo.staticMetadata.guideSummary, /sandy.*bay/i);
+  assert.deepEqual(castelo.staticMetadata.travelDetails.bottom.value, ["Sand"]);
+  assert.ok(castelo.staticMetadata.breakType.includes("Beach_Break"));
   assert.ok(castelo.staticMetadata.nearbySpotNames.includes("Praia da Rainha"));
   assert.ok(castelo.staticMetadata.nearbySpotNames.includes("Fonte da Telha"));
   assert.ok(castelo.refreshConcepts.hourly.includes("conditionRating"));
@@ -122,6 +183,7 @@ test("Surfline mapping review artifact exposes cached page titles", () => {
   const pageById = new Map(mappingReview.pages.map((page) => [page.id, page]));
   const mappingByMeoId = new Map(mappingReview.mappings.map((mapping) => [mapping.meoSpotId, mapping]));
   const caparica = pageById.get("surfline-costa-da-caparica");
+  const castelo = pageById.get("surfline-castelo");
   const rainha = pageById.get("surfline-praia-da-rainha");
   const riviera = mappingByMeoId.get("costa-da-caparica-riviera");
 
@@ -129,11 +191,13 @@ test("Surfline mapping review artifact exposes cached page titles", () => {
   assert.match(caparica.extractedTitle, /Costa da Caparica/);
   assert.equal(caparica.titleSource, "h1");
   assert.ok(caparica.cachePath.endsWith(".cache/surfline/pages/surfline-costa-da-caparica.html"));
+  assert.equal(castelo.cacheStatus, "browser-fetched");
+  assert.ok(castelo.cachePath.endsWith(".cache/surfline/pages/surfline-castelo.html"));
   assert.match(rainha.extractedTitle, /Praia da Rainha/);
   assert.equal(rainha.titleSource, "h1");
   assert.deepEqual(riviera.surflineMatches.map((match) => match.id).slice(0, 2), [
     "surfline-praia-da-rainha",
-    "surfline-praia-do-barbas"
+    "surfline-castelo"
   ]);
 });
 
@@ -149,6 +213,125 @@ test("spot-data helpers resolve matches and Lisbon drive estimates", () => {
   assert.equal(drive.label, "~25m");
   assert.equal(drive.distanceLabel, "~25km");
   assert.equal(drive.origin.label, "Central Lisbon");
+});
+
+test("coast exposure layer is hand-curatable and covers default favorites", () => {
+  assert.equal(coastExposureDb.schemaVersion, 1);
+  assert.equal(coastExposureDb.provider, "surfcams-portugal");
+  assert.ok(coastExposureDb.method.includes("aggressive"));
+
+  const exposureById = new Map(coastExposureDb.exposures.map((exposure) => [exposure.id, exposure]));
+  for (const id of DEFAULT_FAVORITE_IDS) {
+    const exposure = exposureById.get(id);
+    assert.ok(exposure, `${id} has a coast exposure entry`);
+    assert.equal(Number.isFinite(exposure.coastExposure.bearing), true, `${id} has a bearing`);
+    assert.ok(exposure.coastExposure.evidence.length > 0, `${id} keeps evidence for hand curation`);
+  }
+
+  const saoJuliao = exposureById.get("sao-juliao");
+  assert.equal(saoJuliao.coastExposure.source, "surfline-metadata");
+  assert.equal(saoJuliao.coastExposure.confidence, "spot");
+
+  const coordinateOnly = exposureById.get("almograve");
+  assert.notEqual(coordinateOnly.coastExposure.source, "surfline-metadata");
+  assert.equal(coordinateOnly.coastExposure.source, "region-heuristic");
+  assert.equal(coordinateOnly.coastExposure.reviewStatus, "generated");
+  assert.equal(coordinateOnly.coastExposure.confidence, "heuristic");
+});
+
+test("spot metadata enrichment carries Surfline surf mechanics onto MEO-keyed entries", () => {
+  assert.ok(spotMetadataDb);
+  assert.equal(spotMetadataDb.schemaVersion, 1);
+  assert.ok(spotMetadataDb.entries.length >= 25);
+
+  const enrichmentById = new Map(spotMetadataDb.entries.map((entry) => [entry.id, entry]));
+  const carcavelos = enrichmentById.get("praia-de-carcavelos");
+
+  assert.equal(carcavelos.surfMetadata.sourceSpotId, "surfline-carcavelos");
+  assert.ok(carcavelos.surfMetadata.breakType.includes("Beach_Break"));
+  assert.deepEqual(carcavelos.surfMetadata.bottom, ["Sand"]);
+  assert.ok(carcavelos.surfMetadata.abilityLevels.includes("BEGINNER"));
+  assert.match(carcavelos.surfMetadata.guideSummary, /Lisbon-area beachbreak/i);
+  assert.equal(carcavelos.surfMetadata.coastExposure.bearing, 188);
+
+  assert.equal(enrichmentById.has("almograve"), false);
+
+  const covaDoVapor = enrichmentById.get("costa-de-caparica-sao-joao-cova-do-vapor");
+  assert.equal(covaDoVapor.surfMetadata.sourceSpotId, "surfline-cova-do-vapor");
+  assert.ok(covaDoVapor.surfMetadata.breakType.includes("Jetty"));
+});
+
+test("applySpotMetadataToCameraDb enriches cameras with Surfline metadata and coast exposure", () => {
+  const cameraDb = {
+    cameras: [
+      { id: "praia-de-carcavelos", name: "Carcavelos", region: "cascais" },
+      { id: "unmatched", name: "Unmatched", region: "unknown" }
+    ]
+  };
+
+  const enriched = applySpotMetadataToCameraDb(cameraDb, normalized);
+  const carcavelos = enriched.cameras.find((camera) => camera.id === "praia-de-carcavelos");
+  const unmatched = enriched.cameras.find((camera) => camera.id === "unmatched");
+
+  assert.notEqual(enriched, cameraDb);
+  assert.equal(cameraDb.cameras[0].surfMetadata, undefined);
+  assert.equal(carcavelos.surfMetadata.sourceSpotId, "surfline-carcavelos");
+  assert.ok(carcavelos.surfMetadata.breakType.includes("Beach_Break"));
+  assert.equal(carcavelos.surfMetadata.coastExposure.bearing, 188);
+  assert.equal(unmatched.surfMetadata, undefined);
+});
+
+test("surfline breakType values do not contain board-type enums", () => {
+  const boardTypeValues = new Set(["SHORTBOARD", "FUNBOARD", "LONGBOARD", "FISH", "BODYBOARD"]);
+  const polluted = surflineDb.spots
+    .filter((spot) => spot.staticMetadata.breakType.some((value) => boardTypeValues.has(value)))
+    .map((spot) => spot.id);
+
+  assert.deepEqual(polluted, []);
+});
+
+test("needs-review mappings are collected into a local feedback HTML interface", () => {
+  assert.match(needsReviewHtml, /id="needsReviewApp"/);
+  assert.match(needsReviewHtml, /data-review-id="almograve"/);
+  assert.match(needsReviewHtml, /surfline-sao-torpes/);
+  assert.match(needsReviewHtml, /Match score/);
+  assert.match(needsReviewHtml, /data-match-score="/);
+  assert.match(needsReviewHtml, /<textarea/);
+  assert.match(needsReviewHtml, /Export feedback/);
+  assert.match(needsReviewHtml, /id="exportPanel"/);
+  assert.match(needsReviewHtml, /id="exportJson"/);
+  assert.match(needsReviewHtml, /Copy JSON/);
+  assert.match(needsReviewHtml, /localStorage/);
+  assert.doesNotMatch(needsReviewHtml, /Needs manual mapping/);
+  assert.doesNotMatch(needsReviewHtml, /Correct Surfline id or URL/);
+  assert.doesNotMatch(needsReviewHtml, /manualValue/);
+  assert.doesNotMatch(needsReviewHtml, /URL\.createObjectURL/);
+
+  const balealCard = needsReviewHtml.match(/data-review-id="peniche-baleal-panoramica"[\s\S]*?<\/article>/)?.[0] || "";
+  const balealIndex = balealCard.indexOf('value="surfline-baleal" checked');
+  const cantinhoIndex = balealCard.indexOf('value="surfline-cantinho-da-baia"');
+  assert.ok(balealIndex >= 0, "Baleal should be the default selected Surfline candidate");
+  assert.ok(cantinhoIndex >= 0, "Cantinho should still be shown as a candidate");
+  assert.ok(balealIndex < cantinhoIndex, "candidate list should be sorted by weighted match score");
+});
+
+test("applyCoastExposuresToCameraDb enriches cameras without mutating the source database", () => {
+  const cameraDb = {
+    cameras: [
+      { id: "sao-juliao", name: "São Julião", region: "mafra" },
+      { id: "unmatched", name: "Unmatched", region: "unknown" }
+    ]
+  };
+
+  const enriched = applyCoastExposuresToCameraDb(cameraDb, normalized);
+  const saoJuliao = enriched.cameras.find((camera) => camera.id === "sao-juliao");
+  const unmatched = enriched.cameras.find((camera) => camera.id === "unmatched");
+
+  assert.notEqual(enriched, cameraDb);
+  assert.equal(cameraDb.cameras[0].surfMetadata, undefined);
+  assert.equal(saoJuliao.surfMetadata.coastExposure.source, "surfline-metadata");
+  assert.equal(Number.isFinite(saoJuliao.surfMetadata.coastExposure.bearing), true);
+  assert.equal(unmatched.surfMetadata, undefined);
 });
 
 test("findDriveEstimate prefers routed distance and duration when directions data is available", () => {
@@ -178,6 +361,16 @@ test("findDriveEstimate prefers routed distance and duration when directions dat
   assert.equal(drive.distanceLabel, "~40km");
   assert.equal(drive.label, "~50m");
   assert.equal(drive.source, "osrm-table");
+});
+
+test("needs-review Surfline mappings are excluded from runtime match lookup", () => {
+  assert.equal(
+    mappingDb.matches.some((match) => (
+      match.meoSpotId === "almograve" && match.reviewStatus === "needs-review"
+    )),
+    true
+  );
+  assert.deepEqual(findSurflineMatches({ id: "almograve" }, normalized), []);
 });
 
 test("findDriveEstimate rejects impossible routed distances and falls back to the heuristic", () => {

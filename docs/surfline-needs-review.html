@@ -1,0 +1,1925 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surfline Needs Review</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #1c2522;
+      background: #f4f7f5;
+    }
+    body { margin: 0; }
+    header.page-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #d8e0db;
+      background: #ffffff;
+    }
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 20px auto 48px;
+    }
+    h1, h2 { margin: 0; line-height: 1.2; }
+    .page-header p, .review-card p { margin: 4px 0 0; color: #53635d; }
+    button, select, input, textarea {
+      font: inherit;
+      border: 1px solid #b9c7c0;
+      border-radius: 6px;
+      background: #fff;
+      color: #1c2522;
+    }
+    button {
+      padding: 9px 12px;
+      cursor: pointer;
+      background: #1f6f58;
+      color: #fff;
+      border-color: #1f6f58;
+    }
+    .review-card {
+      margin: 0 0 16px;
+      padding: 18px;
+      border: 1px solid #d7e0dc;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .review-card > header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    fieldset {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 0;
+      border: 0;
+    }
+    legend {
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .candidate {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #e0e7e3;
+      border-radius: 6px;
+      background: #fbfcfb;
+    }
+    .candidate small {
+      display: block;
+      margin-top: 3px;
+      color: #5d6c66;
+    }
+    label { display: grid; gap: 6px; font-weight: 650; }
+    label > input, label > select, label > textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 10px;
+      font-weight: 400;
+    }
+    textarea { resize: vertical; }
+    .export-panel {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 48px;
+      padding: 18px;
+      border: 1px solid #d7e0dc;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .export-panel[hidden] { display: none; }
+    .export-panel header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .export-panel textarea {
+      min-height: 280px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+    .export-status {
+      margin: 8px 0 0;
+      color: #53635d;
+    }
+    a { color: #1b6954; }
+    @media (max-width: 720px) {
+      header.page-header, .review-card > header, .export-panel header { grid-template-columns: 1fr; display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>Surfline Needs Review</h1>
+      <p>21 coordinate-nearby mappings are excluded from runtime until curated.</p>
+    </div>
+    <button id="exportFeedback" type="button">Export feedback</button>
+  </header>
+  <main id="needsReviewApp">
+    
+      <article class="review-card" data-review-id="costa-da-caparica-tarquinio-fixa">
+        <header>
+          <div>
+            <h2>Costa de Caparica | Tarquínio | Estática </h2>
+            <p>costa-da-caparica-tarquinio-fixa | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costa-da-caparica-tarquinio-fixa/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="4" data-surfline-name="Costa da Caparica">
+            <input type="radio" name="candidate-costa-da-caparica-tarquinio-fixa" value="surfline-costa-da-caparica" checked>
+            <span>
+              <strong>Costa da Caparica</strong>
+              <small>Match score 4/6 | strong name match +3 | within 500m +1 | 373m</small>
+              <small>surfline-costa-da-caparica | 0.4km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>Caparica beachbreak corridor with many sandbank options.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Praia do Barbas">
+            <input type="radio" name="candidate-costa-da-caparica-tarquinio-fixa" value="surfline-praia-do-barbas">
+            <span>
+              <strong>Praia do Barbas</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 267m</small>
+              <small>surfline-praia-do-barbas | 0.3km</small>
+              <small>coast 188</small>
+              <p>Caparica beachbreak near the main Costa da Caparica report cluster.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Marcelino">
+            <input type="radio" name="candidate-costa-da-caparica-tarquinio-fixa" value="surfline-marcelino">
+            <span>
+              <strong>Marcelino</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 584m</small>
+              <small>surfline-marcelino | 0.6km</small>
+              <small>coast 188</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Saude">
+            <input type="radio" name="candidate-costa-da-caparica-tarquinio-fixa" value="surfline-praia-da-saude">
+            <span>
+              <strong>Praia da Saude</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1768m</small>
+              <small>surfline-praia-da-saude | 1.8km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São João da Caparica">
+            <input type="radio" name="candidate-costa-da-caparica-tarquinio-fixa" value="surfline-sao-joao-da-caparica">
+            <span>
+              <strong>São João da Caparica</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1782m</small>
+              <small>surfline-sao-joao-da-caparica | 1.8km</small>
+              <small>coast 240</small>
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="ericeira-praia-do-sul">
+        <header>
+          <div>
+            <h2>Ericeira | Praia do Sul</h2>
+            <p>ericeira-praia-do-sul | mafra | MAFRA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/ericeira-praia-do-sul/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="4" data-surfline-name="Praia do Sul">
+            <input type="radio" name="candidate-ericeira-praia-do-sul" value="surfline-praia-do-sul" checked>
+            <span>
+              <strong>Praia do Sul</strong>
+              <small>Match score 4/6 | strong name match +3 | within 500m +1 | 358m</small>
+              <small>surfline-praia-do-sul | 0.4km</small>
+              <small>Rights, Lefts, Point, Beach_Break, Reef | bottom Sand, Rock</small>
+              <p>Sheltered Ericeira corner that can work in larger north or northwest swells.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Praia da Baleia">
+            <input type="radio" name="candidate-ericeira-praia-do-sul" value="surfline-praia-da-baleia">
+            <span>
+              <strong>Praia da Baleia</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 273m</small>
+              <small>surfline-praia-da-baleia | 0.3km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Foz do Lizandro">
+            <input type="radio" name="candidate-ericeira-praia-do-sul" value="surfline-foz-do-lizandro">
+            <span>
+              <strong>Foz do Lizandro</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1406m</small>
+              <small>surfline-foz-do-lizandro | 1.4km</small>
+              <small>coast 289 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Ericeira-area rivermouth beachbreak with shifting peaks.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Matadouro">
+            <input type="radio" name="candidate-ericeira-praia-do-sul" value="surfline-matadouro">
+            <span>
+              <strong>Matadouro</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2192m</small>
+              <small>surfline-matadouro | 2.2km</small>
+              <small>Point, Reef | bottom Rock, Sand</small>
+              <p>Matadouro is a reef-meets-point setup that offers a mix of mellow sections and faster walls. It’s forgiving for beginners at lower tide and lively enough for more advanced surfers. It’s a popular spot, especially with local groms and schools, so the vibe can shift between chill and competitive. Stay mobile, be patient, and look for overlooked inside runners.
+&lt;br&gt;
+&lt;br&gt;
+*ERICEIRA WORLD SURFING RESERVE*
+&lt;br&gt; Matadouro sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. &lt;a href=&quot;https://bit.ly/4cC9MEh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Here's why this break matters&lt;/a&gt;. </p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Pedra Branca">
+            <input type="radio" name="candidate-ericeira-praia-do-sul" value="surfline-pedra-branca">
+            <span>
+              <strong>Pedra Branca</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2728m</small>
+              <small>surfline-pedra-branca | 2.7km</small>
+              <small>coast 289 | Lefts, Reef, Slab | bottom Rock</small>
+              <p>Pedra Branca, or White Rock, is not only one of the most famous breaks in the area, it is also the most prominent. It's highly visible and exposed to swell and wind. On smaller days there's a fun, if shallow lefthand wall that peels along this flat rock slab. However, when Autumn swells kick in, it can be transformed into a powerful pit. 
+&lt;br&gt;
+&lt;br&gt;
+*ERICEIRA WORLD SURFING RESERVE*
+&lt;br&gt; Pedro Branca sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. &lt;a href=&quot;https://bit.ly/4cC9MEh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Here's why this break matters&lt;/a&gt;. </p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="bafureira">
+        <header>
+          <div>
+            <h2>Bafureira | Estática </h2>
+            <p>bafureira | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/bafureira/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-bafureira" value="surfline-sao-pedro-do-estoril" checked>
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 3/6 | no useful name match +0 | within 100m +3 | 92m</small>
+              <small>surfline-sao-pedro-do-estoril | 0.1km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-bafureira" value="surfline-parede">
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1541m</small>
+              <small>surfline-parede | 1.5km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-bafureira" value="surfline-estoril">
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2342m</small>
+              <small>surfline-estoril | 2.3km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Carcavelos">
+            <input type="radio" name="candidate-bafureira" value="surfline-carcavelos">
+            <span>
+              <strong>Carcavelos</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3216m</small>
+              <small>surfline-carcavelos | 3.2km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Lisbon-area beachbreak and reef cams near the Cascais rail line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-bafureira" value="surfline-praia-das-moitas">
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3682m</small>
+              <small>surfline-praia-das-moitas | 3.7km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="costa-da-caparica-cds-norte-estatica">
+        <header>
+          <div>
+            <h2>Costa de Caparica | CDS NORTE | Estática </h2>
+            <p>costa-da-caparica-cds-norte-estatica | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costa-da-caparica-cds-norte-estatica/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Costa da Caparica">
+            <input type="radio" name="candidate-costa-da-caparica-cds-norte-estatica" value="surfline-costa-da-caparica" checked>
+            <span>
+              <strong>Costa da Caparica</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 744m</small>
+              <small>surfline-costa-da-caparica | 0.7km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>Caparica beachbreak corridor with many sandbank options.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Marcelino">
+            <input type="radio" name="candidate-costa-da-caparica-cds-norte-estatica" value="surfline-marcelino">
+            <span>
+              <strong>Marcelino</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 252m</small>
+              <small>surfline-marcelino | 0.3km</small>
+              <small>coast 188</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Praia do Barbas">
+            <input type="radio" name="candidate-costa-da-caparica-cds-norte-estatica" value="surfline-praia-do-barbas">
+            <span>
+              <strong>Praia do Barbas</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 260m</small>
+              <small>surfline-praia-do-barbas | 0.3km</small>
+              <small>coast 188</small>
+              <p>Caparica beachbreak near the main Costa da Caparica report cluster.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São João da Caparica">
+            <input type="radio" name="candidate-costa-da-caparica-cds-norte-estatica" value="surfline-sao-joao-da-caparica">
+            <span>
+              <strong>São João da Caparica</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1284m</small>
+              <small>surfline-sao-joao-da-caparica | 1.3km</small>
+              <small>coast 240</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Cova Do Vapor">
+            <input type="radio" name="candidate-costa-da-caparica-cds-norte-estatica" value="surfline-cova-do-vapor">
+            <span>
+              <strong>Cova Do Vapor</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2256m</small>
+              <small>surfline-cova-do-vapor | 2.3km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>This sandy alcove, sandwiched between two, long, rocky groynes, looks across to Lisbon from the southern fringe of the Tejo / Tagus rivermouth. When a big swell hits, the accumulated sand throws up powerful, short, wedgy waves popular with a loyal bodyboarding crew. There is a right breaking off the northern groyne, as well as a left to the south. The waves are hollow and heavy. The swell angle is important as the rivermouth can cut out some of the size.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="costa-da-caparica-nova-praia">
+        <header>
+          <div>
+            <h2>Costa de Caparica | Nova Praia </h2>
+            <p>costa-da-caparica-nova-praia | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costa-da-caparica-nova-praia/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Costa da Caparica">
+            <input type="radio" name="candidate-costa-da-caparica-nova-praia" value="surfline-costa-da-caparica" checked>
+            <span>
+              <strong>Costa da Caparica</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 1244m</small>
+              <small>surfline-costa-da-caparica | 1.2km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>Caparica beachbreak corridor with many sandbank options.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Saude">
+            <input type="radio" name="candidate-costa-da-caparica-nova-praia" value="surfline-praia-da-saude">
+            <span>
+              <strong>Praia da Saude</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 509m</small>
+              <small>surfline-praia-da-saude | 0.5km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Cornelia">
+            <input type="radio" name="candidate-costa-da-caparica-nova-praia" value="surfline-praia-da-cornelia">
+            <span>
+              <strong>Praia da Cornelia</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 771m</small>
+              <small>surfline-praia-da-cornelia | 0.8km</small>
+              <small>coast 260</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Barbas">
+            <input type="radio" name="candidate-costa-da-caparica-nova-praia" value="surfline-praia-do-barbas">
+            <span>
+              <strong>Praia do Barbas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1562m</small>
+              <small>surfline-praia-do-barbas | 1.6km</small>
+              <small>coast 188</small>
+              <p>Caparica beachbreak near the main Costa da Caparica report cluster.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Marcelino">
+            <input type="radio" name="candidate-costa-da-caparica-nova-praia" value="surfline-marcelino">
+            <span>
+              <strong>Marcelino</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1865m</small>
+              <small>surfline-marcelino | 1.9km</small>
+              <small>coast 188</small>
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="peniche-baleal-panoramica">
+        <header>
+          <div>
+            <h2>Peniche | Baleal | Panorâmica</h2>
+            <p>peniche-baleal-panoramica | peniche | PENICHE</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/peniche-baleal-panoramica/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Baleal">
+            <input type="radio" name="candidate-peniche-baleal-panoramica" value="surfline-baleal" checked>
+            <span>
+              <strong>Baleal</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 723m</small>
+              <small>surfline-baleal | 0.7km</small>
+              <small>coast 345 | Rights, Lefts, Beach_Break, Reef | bottom Sand, Rock</small>
+              <p>Peniche/Baleal surf hub with Lagide and open beachbreak nearby.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Cantinho da Baía">
+            <input type="radio" name="candidate-peniche-baleal-panoramica" value="surfline-cantinho-da-baia">
+            <span>
+              <strong>Cantinho da Baía</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 164m</small>
+              <small>surfline-cantinho-da-baia | 0.2km</small>
+              <small>coast 15 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Corner of the bay that likes northerly to northwesterly swell and clean east-side winds.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Lagide">
+            <input type="radio" name="candidate-peniche-baleal-panoramica" value="surfline-lagide">
+            <span>
+              <strong>Lagide</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 772m</small>
+              <small>surfline-lagide | 0.8km</small>
+              <small>coast 345 | Lefts, Reef | bottom Rock</small>
+              <p>Northern Baleal reef/point area with lefts over shallow rocks.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Meio da Baía">
+            <input type="radio" name="candidate-peniche-baleal-panoramica" value="surfline-baia">
+            <span>
+              <strong>Meio da Baía</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1381m</small>
+              <small>surfline-baia | 1.4km</small>
+              <small>Beach_Break | bottom Sand</small>
+              <p>Central North Bay sandbanks with beginner/intermediate-friendly peaks.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Almagreira">
+            <input type="radio" name="candidate-peniche-baleal-panoramica" value="surfline-almagreira">
+            <span>
+              <strong>Almagreira</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2470m</small>
+              <small>surfline-almagreira | 2.5km</small>
+              <small>coast 345 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>A wall of crumbly, red sandstone cliffs looks out over this huge expanse of golden sand that stretches from Baleal northeast to the Obidos Lagoon. One of the highlights is Almagreira, home to some consistent banks that work through the tides. Picks up loads of swell so super consistent, but easily blown out.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-da-consolacao">
+        <header>
+          <div>
+            <h2>Peniche | Consolação</h2>
+            <p>praia-da-consolacao | peniche | PENICHE</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-da-consolacao/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Consolação">
+            <input type="radio" name="candidate-praia-da-consolacao" value="surfline-consolacao" checked>
+            <span>
+              <strong>Consolação</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 2568m</small>
+              <small>surfline-consolacao | 2.6km</small>
+              <small>coast 245 | Reef, Beach_Break | bottom Rock, Sand</small>
+              <p>Consolação is the fortress-adorned headland at the southern end of Supertubos beach. It delivers nice, heavy waves on both sides: a reefy, although somewhat fat, right-hand pointbreak, and a heavy, more stacked up sand-bottomed left. The right is a local favorite when the swell wraps around the headland and can hold size up to triple overhead. The left needs bigger swells to come to life and is a more volatile and dependable on sand placement on the bottom. </p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="1" data-surfline-name="Supertubos">
+            <input type="radio" name="candidate-praia-da-consolacao" value="surfline-supertubos">
+            <span>
+              <strong>Supertubos</strong>
+              <small>Match score 1/6 | no useful name match +0 | within 500m +1 | 424m</small>
+              <small>surfline-supertubos | 0.4km</small>
+              <small>coast 270 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Supertubos is one of the best waves in Europe. There's one main peak with a super-fast (though makeable) left, and a somewhat shorter right, and one other peak down the beach that's not quite as perfect but still way better than your average day at most beachbreaks.
+&lt;br&gt;&lt;br&gt;
+&lt;strong&gt;LINEUP TIPS:&lt;/strong&gt;
+&lt;a href=&quot;https://www.surfline.com/lp/surf-etiquette/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Etiquette&lt;/a&gt; | &lt;a href=&quot;https://www.surfline.com/surf-news/surf-safety-basics/222989/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Surf Safety Basics&lt;/a&gt;</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Molhe Leste">
+            <input type="radio" name="candidate-praia-da-consolacao" value="surfline-molhe-leste">
+            <span>
+              <strong>Molhe Leste</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 699m</small>
+              <small>surfline-molhe-leste | 0.7km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Cerro">
+            <input type="radio" name="candidate-praia-da-consolacao" value="surfline-cerro">
+            <span>
+              <strong>Cerro</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1892m</small>
+              <small>surfline-cerro | 1.9km</small>
+              <small>Beach_Break | bottom Rock, Sand</small>
+              <p>A lesser-known beachbreak at the south end of Peniche’s north bay (Baía), right at the city’s entry. Cerro offers softer beachbreak waves and quieter sessions. Ideal for a mellow surf or when looking to avoid the crowds at Supertubos or Baleal. Consistent throughout the year, even on average days there’s potential for some long rides if the banks align.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Meio da Baía">
+            <input type="radio" name="candidate-praia-da-consolacao" value="surfline-baia">
+            <span>
+              <strong>Meio da Baía</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2191m</small>
+              <small>surfline-baia | 2.2km</small>
+              <small>Beach_Break | bottom Sand</small>
+              <p>Central North Bay sandbanks with beginner/intermediate-friendly peaks.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="penichemolhelesteestatica">
+        <header>
+          <div>
+            <h2>Peniche | Molhe Leste | Estática</h2>
+            <p>penichemolhelesteestatica | peniche | PENICHE</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/penichemolhelesteestatica/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Molhe Leste">
+            <input type="radio" name="candidate-penichemolhelesteestatica" value="surfline-molhe-leste" checked>
+            <span>
+              <strong>Molhe Leste</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 699m</small>
+              <small>surfline-molhe-leste | 0.7km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="1" data-surfline-name="Supertubos">
+            <input type="radio" name="candidate-penichemolhelesteestatica" value="surfline-supertubos">
+            <span>
+              <strong>Supertubos</strong>
+              <small>Match score 1/6 | no useful name match +0 | within 500m +1 | 424m</small>
+              <small>surfline-supertubos | 0.4km</small>
+              <small>coast 270 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Supertubos is one of the best waves in Europe. There's one main peak with a super-fast (though makeable) left, and a somewhat shorter right, and one other peak down the beach that's not quite as perfect but still way better than your average day at most beachbreaks.
+&lt;br&gt;&lt;br&gt;
+&lt;strong&gt;LINEUP TIPS:&lt;/strong&gt;
+&lt;a href=&quot;https://www.surfline.com/lp/surf-etiquette/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Etiquette&lt;/a&gt; | &lt;a href=&quot;https://www.surfline.com/surf-news/surf-safety-basics/222989/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Surf Safety Basics&lt;/a&gt;</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Cerro">
+            <input type="radio" name="candidate-penichemolhelesteestatica" value="surfline-cerro">
+            <span>
+              <strong>Cerro</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1892m</small>
+              <small>surfline-cerro | 1.9km</small>
+              <small>Beach_Break | bottom Rock, Sand</small>
+              <p>A lesser-known beachbreak at the south end of Peniche’s north bay (Baía), right at the city’s entry. Cerro offers softer beachbreak waves and quieter sessions. Ideal for a mellow surf or when looking to avoid the crowds at Supertubos or Baleal. Consistent throughout the year, even on average days there’s potential for some long rides if the banks align.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Meio da Baía">
+            <input type="radio" name="candidate-penichemolhelesteestatica" value="surfline-baia">
+            <span>
+              <strong>Meio da Baía</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2191m</small>
+              <small>surfline-baia | 2.2km</small>
+              <small>Beach_Break | bottom Sand</small>
+              <p>Central North Bay sandbanks with beginner/intermediate-friendly peaks.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Consolação">
+            <input type="radio" name="candidate-penichemolhelesteestatica" value="surfline-consolacao">
+            <span>
+              <strong>Consolação</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2568m</small>
+              <small>surfline-consolacao | 2.6km</small>
+              <small>coast 245 | Reef, Beach_Break | bottom Rock, Sand</small>
+              <p>Consolação is the fortress-adorned headland at the southern end of Supertubos beach. It delivers nice, heavy waves on both sides: a reefy, although somewhat fat, right-hand pointbreak, and a heavy, more stacked up sand-bottomed left. The right is a local favorite when the swell wraps around the headland and can hold size up to triple overhead. The left needs bigger swells to come to life and is a more volatile and dependable on sand placement on the bottom. </p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-das-moitas">
+        <header>
+          <div>
+            <h2>Praia das Moitas</h2>
+            <p>praia-das-moitas | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-das-moitas/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="3" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-praia-das-moitas" value="surfline-praia-das-moitas" checked>
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 3/6 | strong name match +3 | more than 500m +0 | 943m</small>
+              <small>surfline-praia-das-moitas | 0.9km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-praia-das-moitas" value="surfline-estoril">
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 538m</small>
+              <small>surfline-estoril | 0.5km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-praia-das-moitas" value="surfline-sao-pedro-do-estoril">
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2747m</small>
+              <small>surfline-sao-pedro-do-estoril | 2.7km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-praia-das-moitas" value="surfline-parede">
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 4337m</small>
+              <small>surfline-parede | 4.3km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Carcavelos">
+            <input type="radio" name="candidate-praia-das-moitas" value="surfline-carcavelos">
+            <span>
+              <strong>Carcavelos</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 6025m</small>
+              <small>surfline-carcavelos | 6km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Lisbon-area beachbreak and reef cams near the Cascais rail line.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="almograve">
+        <header>
+          <div>
+            <h2>Almograve </h2>
+            <p>almograve | alentejo | ODEMIRA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/almograve/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="2" data-surfline-name="Sao Torpes">
+            <input type="radio" name="candidate-almograve" value="surfline-sao-torpes" checked>
+            <span>
+              <strong>Sao Torpes</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 156m</small>
+              <small>surfline-sao-torpes | 0.2km</small>
+              <small>coast 250</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Vieirinha">
+            <input type="radio" name="candidate-almograve" value="surfline-praia-da-vieirinha">
+            <span>
+              <strong>Praia da Vieirinha</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3568m</small>
+              <small>surfline-praia-da-vieirinha | 3.6km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Burrinho">
+            <input type="radio" name="candidate-almograve" value="surfline-praia-do-burrinho">
+            <span>
+              <strong>Praia do Burrinho</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 5399m</small>
+              <small>surfline-praia-do-burrinho | 5.4km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Sines">
+            <input type="radio" name="candidate-almograve" value="surfline-sines">
+            <span>
+              <strong>Sines</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 8031m</small>
+              <small>surfline-sines | 8km</small>
+              <small>coast 280</small>
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="costadecaparicacdssulestatica">
+        <header>
+          <div>
+            <h2>Costa de Caparica | CDS SUL | Estática</h2>
+            <p>costadecaparicacdssulestatica | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costadecaparicacdssulestatica/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="2" data-surfline-name="Praia do Barbas">
+            <input type="radio" name="candidate-costadecaparicacdssulestatica" value="surfline-praia-do-barbas" checked>
+            <span>
+              <strong>Praia do Barbas</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 144m</small>
+              <small>surfline-praia-do-barbas | 0.1km</small>
+              <small>coast 188</small>
+              <p>Caparica beachbreak near the main Costa da Caparica report cluster.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="2" data-surfline-name="Costa da Caparica">
+            <input type="radio" name="candidate-costadecaparicacdssulestatica" value="surfline-costa-da-caparica">
+            <span>
+              <strong>Costa da Caparica</strong>
+              <small>Match score 2/6 | long name match +2 | more than 500m +0 | 633m</small>
+              <small>surfline-costa-da-caparica | 0.6km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>Caparica beachbreak corridor with many sandbank options.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="1" data-surfline-name="Marcelino">
+            <input type="radio" name="candidate-costadecaparicacdssulestatica" value="surfline-marcelino">
+            <span>
+              <strong>Marcelino</strong>
+              <small>Match score 1/6 | no useful name match +0 | within 500m +1 | 309m</small>
+              <small>surfline-marcelino | 0.3km</small>
+              <small>coast 188</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São João da Caparica">
+            <input type="radio" name="candidate-costadecaparicacdssulestatica" value="surfline-sao-joao-da-caparica">
+            <span>
+              <strong>São João da Caparica</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1420m</small>
+              <small>surfline-sao-joao-da-caparica | 1.4km</small>
+              <small>coast 240</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Saude">
+            <input type="radio" name="candidate-costadecaparicacdssulestatica" value="surfline-praia-da-saude">
+            <span>
+              <strong>Praia da Saude</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2136m</small>
+              <small>surfline-praia-da-saude | 2.1km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="costa-de-caparica-praia-da-sereia-morena">
+        <header>
+          <div>
+            <h2>Costa de Caparica | Praia da Sereia | Morena</h2>
+            <p>costa-de-caparica-praia-da-sereia-morena | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costa-de-caparica-praia-da-sereia-morena/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="2" data-surfline-name="Costa da Caparica | Costelo (Irmao)">
+            <input type="radio" name="candidate-costa-de-caparica-praia-da-sereia-morena" value="surfline-castelo" checked>
+            <span>
+              <strong>Costa da Caparica | Costelo (Irmao)</strong>
+              <small>Match score 2/6 | long name match +2 | more than 500m +0 | 1448m</small>
+              <small>surfline-castelo | 1.4km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Rei">
+            <input type="radio" name="candidate-costa-de-caparica-praia-da-sereia-morena" value="surfline-praia-do-rei">
+            <span>
+              <strong>Praia do Rei</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 575m</small>
+              <small>surfline-praia-do-rei | 0.6km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Pescador">
+            <input type="radio" name="candidate-costa-de-caparica-praia-da-sereia-morena" value="surfline-praia-do-pescador">
+            <span>
+              <strong>Praia do Pescador</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 961m</small>
+              <small>surfline-praia-do-pescador | 1km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Rainha">
+            <input type="radio" name="candidate-costa-de-caparica-praia-da-sereia-morena" value="surfline-praia-da-rainha">
+            <span>
+              <strong>Praia da Rainha</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1805m</small>
+              <small>surfline-praia-da-rainha | 1.8km</small>
+              
+              <p>Caparica beachbreak in the same southern Costa da Caparica corridor as Riviera and Praia do Barbas.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Fonte da Telha">
+            <input type="radio" name="candidate-costa-de-caparica-praia-da-sereia-morena" value="surfline-fonte-da-telha">
+            <span>
+              <strong>Fonte da Telha</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3227m</small>
+              <small>surfline-fonte-da-telha | 3.2km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Southern Caparica/Fonte beachbreak option in the same outing corridor.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="costa-de-caparica-praia-do-norte">
+        <header>
+          <div>
+            <h2>Costa de Caparica | Praia do Norte </h2>
+            <p>costa-de-caparica-praia-do-norte | almada | ALMADA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/costa-de-caparica-praia-do-norte/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="2" data-surfline-name="Costa da Caparica">
+            <input type="radio" name="candidate-costa-de-caparica-praia-do-norte" value="surfline-costa-da-caparica" checked>
+            <span>
+              <strong>Costa da Caparica</strong>
+              <small>Match score 2/6 | long name match +2 | more than 500m +0 | 1196m</small>
+              <small>surfline-costa-da-caparica | 1.2km</small>
+              <small>coast 260 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>Caparica beachbreak corridor with many sandbank options.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Marcelino">
+            <input type="radio" name="candidate-costa-de-caparica-praia-do-norte" value="surfline-marcelino">
+            <span>
+              <strong>Marcelino</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 526m</small>
+              <small>surfline-marcelino | 0.5km</small>
+              <small>coast 188</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Barbas">
+            <input type="radio" name="candidate-costa-de-caparica-praia-do-norte" value="surfline-praia-do-barbas">
+            <span>
+              <strong>Praia do Barbas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 737m</small>
+              <small>surfline-praia-do-barbas | 0.7km</small>
+              <small>coast 188</small>
+              <p>Caparica beachbreak near the main Costa da Caparica report cluster.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São João da Caparica">
+            <input type="radio" name="candidate-costa-de-caparica-praia-do-norte" value="surfline-sao-joao-da-caparica">
+            <span>
+              <strong>São João da Caparica</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 814m</small>
+              <small>surfline-sao-joao-da-caparica | 0.8km</small>
+              <small>coast 240</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Cova Do Vapor">
+            <input type="radio" name="candidate-costa-de-caparica-praia-do-norte" value="surfline-cova-do-vapor">
+            <span>
+              <strong>Cova Do Vapor</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1800m</small>
+              <small>surfline-cova-do-vapor | 1.8km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break, Jetty | bottom Sand</small>
+              <p>This sandy alcove, sandwiched between two, long, rocky groynes, looks across to Lisbon from the southern fringe of the Tejo / Tagus rivermouth. When a big swell hits, the accumulated sand throws up powerful, short, wedgy waves popular with a loyal bodyboarding crew. There is a right breaking off the northern groyne, as well as a left to the south. The waves are hollow and heavy. The swell angle is important as the rivermouth can cut out some of the size.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="vila-nova-de-milfontes-franquia">
+        <header>
+          <div>
+            <h2>V.N.Milfontes | Franquia </h2>
+            <p>vila-nova-de-milfontes-franquia | alentejo | ODEMIRA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/vila-nova-de-milfontes-franquia/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="2" data-surfline-name="Sao Torpes">
+            <input type="radio" name="candidate-vila-nova-de-milfontes-franquia" value="surfline-sao-torpes" checked>
+            <span>
+              <strong>Sao Torpes</strong>
+              <small>Match score 2/6 | no useful name match +0 | within 300m +2 | 156m</small>
+              <small>surfline-sao-torpes | 0.2km</small>
+              <small>coast 250</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Vieirinha">
+            <input type="radio" name="candidate-vila-nova-de-milfontes-franquia" value="surfline-praia-da-vieirinha">
+            <span>
+              <strong>Praia da Vieirinha</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3568m</small>
+              <small>surfline-praia-da-vieirinha | 3.6km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Burrinho">
+            <input type="radio" name="candidate-vila-nova-de-milfontes-franquia" value="surfline-praia-do-burrinho">
+            <span>
+              <strong>Praia do Burrinho</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 5399m</small>
+              <small>surfline-praia-do-burrinho | 5.4km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Sines">
+            <input type="radio" name="candidate-vila-nova-de-milfontes-franquia" value="surfline-sines">
+            <span>
+              <strong>Sines</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 8031m</small>
+              <small>surfline-sines | 8km</small>
+              <small>coast 280</small>
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="cresmina">
+        <header>
+          <div>
+            <h2>Praia da Cresmina</h2>
+            <p>cresmina | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/cresmina/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="1" data-surfline-name="Praia da Crismina">
+            <input type="radio" name="candidate-cresmina" value="surfline-praia-da-crismina" checked>
+            <span>
+              <strong>Praia da Crismina</strong>
+              <small>Match score 1/6 | no useful name match +0 | within 500m +1 | 334m</small>
+              <small>surfline-praia-da-crismina | 0.3km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia Do Guincho">
+            <input type="radio" name="candidate-cresmina" value="surfline-praia-do-guincho">
+            <span>
+              <strong>Praia Do Guincho</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1016m</small>
+              <small>surfline-praia-do-guincho | 1km</small>
+              <small>coast 280 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>A favoured spot for Lisbon surfers when swell doesn't wrap into the city breaks, Guincho is a long, open beach that is rarely flat, but it's also exposed to wind - hence its popularity as a summertime windsurfing haunt. It does produce quality waves though, working best on lower tides.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Abano">
+            <input type="radio" name="candidate-cresmina" value="surfline-praia-do-abano">
+            <span>
+              <strong>Praia do Abano</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1976m</small>
+              <small>surfline-praia-do-abano | 2km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-cresmina" value="surfline-praia-das-moitas">
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 6269m</small>
+              <small>surfline-praia-das-moitas | 6.3km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Ursa">
+            <input type="radio" name="candidate-cresmina" value="surfline-praia-da-ursa">
+            <span>
+              <strong>Praia da Ursa</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 7468m</small>
+              <small>surfline-praia-da-ursa | 7.5km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-do-peixe-baia-de-cascais">
+        <header>
+          <div>
+            <h2>Baía de Cascais </h2>
+            <p>praia-do-peixe-baia-de-cascais | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-do-peixe-baia-de-cascais/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-praia-do-peixe-baia-de-cascais" value="surfline-praia-das-moitas" checked>
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 990m</small>
+              <small>surfline-praia-das-moitas | 1km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-praia-do-peixe-baia-de-cascais" value="surfline-estoril">
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2197m</small>
+              <small>surfline-estoril | 2.2km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-praia-do-peixe-baia-de-cascais" value="surfline-sao-pedro-do-estoril">
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 4360m</small>
+              <small>surfline-sao-pedro-do-estoril | 4.4km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-praia-do-peixe-baia-de-cascais" value="surfline-parede">
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 5825m</small>
+              <small>surfline-parede | 5.8km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Crismina">
+            <input type="radio" name="candidate-praia-do-peixe-baia-de-cascais" value="surfline-praia-da-crismina">
+            <span>
+              <strong>Praia da Crismina</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 6082m</small>
+              <small>surfline-praia-da-crismina | 6.1km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-da-conceicao-e-duquesa">
+        <header>
+          <div>
+            <h2>Praia da Conceição e Duquesa </h2>
+            <p>praia-da-conceicao-e-duquesa | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-da-conceicao-e-duquesa/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-praia-da-conceicao-e-duquesa" value="surfline-praia-das-moitas" checked>
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 526m</small>
+              <small>surfline-praia-das-moitas | 0.5km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-praia-da-conceicao-e-duquesa" value="surfline-estoril">
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1842m</small>
+              <small>surfline-estoril | 1.8km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-praia-da-conceicao-e-duquesa" value="surfline-sao-pedro-do-estoril">
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 4073m</small>
+              <small>surfline-sao-pedro-do-estoril | 4.1km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-praia-da-conceicao-e-duquesa" value="surfline-parede">
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 5593m</small>
+              <small>surfline-parede | 5.6km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Crismina">
+            <input type="radio" name="candidate-praia-da-conceicao-e-duquesa" value="surfline-praia-da-crismina">
+            <span>
+              <strong>Praia da Crismina</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 6186m</small>
+              <small>surfline-praia-da-crismina | 6.2km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-das-avencas">
+        <header>
+          <div>
+            <h2>Praia das Avencas  </h2>
+            <p>praia-das-avencas | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-das-avencas/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-praia-das-avencas" value="surfline-parede" checked>
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 635m</small>
+              <small>surfline-parede | 0.6km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-praia-das-avencas" value="surfline-sao-pedro-do-estoril">
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 978m</small>
+              <small>surfline-sao-pedro-do-estoril | 1km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Carcavelos">
+            <input type="radio" name="candidate-praia-das-avencas" value="surfline-carcavelos">
+            <span>
+              <strong>Carcavelos</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2319m</small>
+              <small>surfline-carcavelos | 2.3km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Lisbon-area beachbreak and reef cams near the Cascais rail line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-praia-das-avencas" value="surfline-estoril">
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3201m</small>
+              <small>surfline-estoril | 3.2km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia de Torre">
+            <input type="radio" name="candidate-praia-das-avencas" value="surfline-praia-de-torre">
+            <span>
+              <strong>Praia de Torre</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 3563m</small>
+              <small>surfline-praia-de-torre | 3.6km</small>
+              
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-do-carvalhal">
+        <header>
+          <div>
+            <h2>Praia do Carvalhal</h2>
+            <p>praia-do-carvalhal | alentejo | GRÂNDOLA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-do-carvalhal/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Pego">
+            <input type="radio" name="candidate-praia-do-carvalhal" value="surfline-praia-do-pego" checked>
+            <span>
+              <strong>Praia do Pego</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1135m</small>
+              <small>surfline-praia-do-pego | 1.1km</small>
+              <small>coast 260</small>
+              
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="tamariz">
+        <header>
+          <div>
+            <h2>Praia do Tamariz </h2>
+            <p>tamariz | cascais | CASCAIS</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/tamariz/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Estoril">
+            <input type="radio" name="candidate-tamariz" value="surfline-estoril" checked>
+            <span>
+              <strong>Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 538m</small>
+              <small>surfline-estoril | 0.5km</small>
+              <small>coast 185</small>
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia das Moitas">
+            <input type="radio" name="candidate-tamariz" value="surfline-praia-das-moitas">
+            <span>
+              <strong>Praia das Moitas</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 943m</small>
+              <small>surfline-praia-das-moitas | 0.9km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="São Pedro do Estoril">
+            <input type="radio" name="candidate-tamariz" value="surfline-sao-pedro-do-estoril">
+            <span>
+              <strong>São Pedro do Estoril</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2747m</small>
+              <small>surfline-sao-pedro-do-estoril | 2.7km</small>
+              
+              <p>Right-hand reef pointbreak on the Cascais line.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Parede">
+            <input type="radio" name="candidate-tamariz" value="surfline-parede">
+            <span>
+              <strong>Parede</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 4337m</small>
+              <small>surfline-parede | 4.3km</small>
+              
+              <p>Cascais-line spot listed between São Pedro and Carcavelos.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Carcavelos">
+            <input type="radio" name="candidate-tamariz" value="surfline-carcavelos">
+            <span>
+              <strong>Carcavelos</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 6025m</small>
+              <small>surfline-carcavelos | 6km</small>
+              <small>coast 188 | Rights, Lefts, Beach_Break | bottom Sand</small>
+              <p>Lisbon-area beachbreak and reef cams near the Cascais rail line.</p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+
+      <article class="review-card" data-review-id="praia-dos-pescadores">
+        <header>
+          <div>
+            <h2>Praia dos Pescadores</h2>
+            <p>praia-dos-pescadores | mafra | MAFRA</p>
+          </div>
+          <a href="http://beachcam.meo.pt/livecams/praia-dos-pescadores/" target="_blank" rel="noopener noreferrer">MEO page</a>
+        </header>
+
+        <fieldset>
+          <legend>Choose the Surfline mapping</legend>
+          
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia do Sul">
+            <input type="radio" name="candidate-praia-dos-pescadores" value="surfline-praia-do-sul" checked>
+            <span>
+              <strong>Praia do Sul</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 614m</small>
+              <small>surfline-praia-do-sul | 0.6km</small>
+              <small>Rights, Lefts, Point, Beach_Break, Reef | bottom Sand, Rock</small>
+              <p>Sheltered Ericeira corner that can work in larger north or northwest swells.</p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Praia da Baleia">
+            <input type="radio" name="candidate-praia-dos-pescadores" value="surfline-praia-da-baleia">
+            <span>
+              <strong>Praia da Baleia</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1059m</small>
+              <small>surfline-praia-da-baleia | 1.1km</small>
+              
+              
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Matadouro">
+            <input type="radio" name="candidate-praia-dos-pescadores" value="surfline-matadouro">
+            <span>
+              <strong>Matadouro</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1268m</small>
+              <small>surfline-matadouro | 1.3km</small>
+              <small>Point, Reef | bottom Rock, Sand</small>
+              <p>Matadouro is a reef-meets-point setup that offers a mix of mellow sections and faster walls. It’s forgiving for beginners at lower tide and lively enough for more advanced surfers. It’s a popular spot, especially with local groms and schools, so the vibe can shift between chill and competitive. Stay mobile, be patient, and look for overlooked inside runners.
+&lt;br&gt;
+&lt;br&gt;
+*ERICEIRA WORLD SURFING RESERVE*
+&lt;br&gt; Matadouro sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. &lt;a href=&quot;https://bit.ly/4cC9MEh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Here's why this break matters&lt;/a&gt;. </p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Pedra Branca">
+            <input type="radio" name="candidate-praia-dos-pescadores" value="surfline-pedra-branca">
+            <span>
+              <strong>Pedra Branca</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 1803m</small>
+              <small>surfline-pedra-branca | 1.8km</small>
+              <small>coast 289 | Lefts, Reef, Slab | bottom Rock</small>
+              <p>Pedra Branca, or White Rock, is not only one of the most famous breaks in the area, it is also the most prominent. It's highly visible and exposed to swell and wind. On smaller days there's a fun, if shallow lefthand wall that peels along this flat rock slab. However, when Autumn swells kick in, it can be transformed into a powerful pit. 
+&lt;br&gt;
+&lt;br&gt;
+*ERICEIRA WORLD SURFING RESERVE*
+&lt;br&gt; Pedro Branca sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. &lt;a href=&quot;https://bit.ly/4cC9MEh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Here's why this break matters&lt;/a&gt;. </p>
+            </span>
+          </label>
+
+          <label class="candidate" data-match-score="0" data-surfline-name="Reef">
+            <input type="radio" name="candidate-praia-dos-pescadores" value="surfline-reef">
+            <span>
+              <strong>Reef</strong>
+              <small>Match score 0/6 | no useful name match +0 | more than 500m +0 | 2130m</small>
+              <small>surfline-reef | 2.1km</small>
+              <small>coast 293 | Rights, Reef | bottom Rock</small>
+              <p>The Reef is a little finger of lava that sticks out at the far south tip of the Ribeira Bay. North swells come in from deep water, peak up on an outside rock and fold over themselves down the line in one of the fastest, and most dangerous, tubes around. &lt;/br&gt;&lt;/br&gt;There are no cutback sections, really, and very little room for error. If you blow the drop, you're up on sharp, dry reef. But if you're able to snag one off the locals and make the ledgey drop from behind the peak, you're in for a fantastic four-second view. Just remember to avoid going for that floater on the inside section.&lt;/br&gt;&lt;/br&gt;There are a few other waves close by, if you're not in the mood for tight tubes and reef dances: Piedra Branca (White Rock) is a hollow, high-tide left about 100 yards south. There's a slightly mushy right just south of the Reef, and on bigger swells, a left breaks off the north edge.
+&lt;br&gt;
+&lt;br&gt;
+*ERICEIRA WORLD SURFING RESERVE*
+&lt;br&gt; Reef sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. &lt;a href=&quot;https://bit.ly/4cC9MEh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Here's why this break matters&lt;/a&gt;. </p>
+            </span>
+          </label>
+        </fieldset>
+
+        <label>
+          Decision
+          <select data-field="decision">
+            <option value="">Unreviewed</option>
+            <option value="accept">Accept selected</option>
+            <option value="reject">Reject mapping</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea data-field="notes" rows="3" placeholder="What should this map to, or why reject it?"></textarea>
+        </label>
+      </article>
+  </main>
+  <section class="export-panel" id="exportPanel" hidden>
+    <header>
+      <h2>Feedback JSON</h2>
+      <button id="copyFeedback" type="button">Copy JSON</button>
+    </header>
+    <textarea id="exportJson" readonly spellcheck="false" aria-label="Exported feedback JSON"></textarea>
+    <p class="export-status" id="exportStatus">Export JSON generated below.</p>
+  </section>
+  <script id="reviewMeta" type="application/json">{
+  "generatedAt": "2026-06-12T06:30:08.568Z",
+  "total": 21
+}</script>
+  <script>
+    const storageKey = "surfcams:surfline-needs-review-feedback:v1";
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+    const exportPanel = document.querySelector("#exportPanel");
+    const exportJson = document.querySelector("#exportJson");
+    const exportStatus = document.querySelector("#exportStatus");
+
+    function rowState(card) {
+      const selected = card.querySelector("input[type=radio]:checked");
+      const selectedCandidate = selected?.closest("[data-match-score]");
+      return {
+        meoSpotId: card.dataset.reviewId,
+        selectedSurflineSpotId: selected?.value || "",
+        selectedSurflineSpotName: selectedCandidate?.dataset.surflineName || "",
+        matchScore: Number(selectedCandidate?.dataset.matchScore || 0),
+        decision: card.querySelector("[data-field=decision]").value,
+        notes: card.querySelector("[data-field=notes]").value.trim()
+      };
+    }
+
+    function save() {
+      const state = {};
+      document.querySelectorAll("[data-review-id]").forEach((card) => {
+        state[card.dataset.reviewId] = rowState(card);
+      });
+      localStorage.setItem(storageKey, JSON.stringify(state, null, 2));
+    }
+
+    function restore() {
+      document.querySelectorAll("[data-review-id]").forEach((card) => {
+        const state = saved[card.dataset.reviewId];
+        if (!state) return;
+        const radio = Array.from(card.querySelectorAll("input[type=radio]"))
+          .find((input) => input.value === (state.selectedSurflineSpotId || ""));
+        if (radio) radio.checked = true;
+        card.querySelector("[data-field=decision]").value = state.decision || "";
+        card.querySelector("[data-field=notes]").value = state.notes || "";
+      });
+    }
+
+    function feedbackPayload() {
+      save();
+      const feedback = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      return {
+        exportedAt: new Date().toISOString(),
+        feedback: Object.values(feedback)
+      };
+    }
+
+    function exportFeedback() {
+      exportJson.value = JSON.stringify(feedbackPayload(), null, 2) + "\n";
+      exportPanel.hidden = false;
+      exportStatus.textContent = "Export JSON generated below.";
+      exportJson.focus();
+      exportJson.select();
+    }
+
+    async function copyFeedback() {
+      if (!exportJson.value) exportFeedback();
+      try {
+        await navigator.clipboard.writeText(exportJson.value);
+        exportStatus.textContent = "Copied feedback JSON.";
+      } catch {
+        exportJson.focus();
+        exportJson.select();
+        exportStatus.textContent = "Copy the selected feedback JSON.";
+      }
+    }
+
+    restore();
+    document.addEventListener("input", save);
+    document.addEventListener("change", save);
+    document.querySelector("#exportFeedback").addEventListener("click", exportFeedback);
+    document.querySelector("#copyFeedback").addEventListener("click", copyFeedback);
+  </script>
+</body>
+</html>

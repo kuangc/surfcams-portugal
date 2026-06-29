@@ -15,6 +15,7 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
+  applySpotMetadataToCameraDb,
   emptySpotData,
   findDriveEstimate,
   findSurflineMatches,
@@ -984,8 +985,8 @@ async function init() {
     loadTideData().catch(() => emptyTideData())
   ]);
 
-  state.db = cameraDb;
   state.spotData = spotData;
+  state.db = applySpotMetadataToCameraDb(cameraDb, state.spotData);
   state.tideData = tideData;
   state.cameras = firstClassCameras(state.db);
   state.favoriteIds = loadFavoriteIds(manageSpotCameras());

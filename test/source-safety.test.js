@@ -9,6 +9,17 @@ const packageSource = fs.readFileSync("package.json", "utf8");
 const styleSource = fs.readFileSync("src/styles/app.css", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
 const buildSpotDataSource = fs.readFileSync("scripts/build-spot-data.js", "utf8");
+const buildMeoSurflineMatchesSource = fs.readFileSync("scripts/build-meo-surfline-matches.js", "utf8");
+const buildCoastExposuresSource = fs.readFileSync("scripts/build-coast-exposures.js", "utf8");
+const buildSurflineSpotsSource = fs.readFileSync("scripts/build-surfline-spots.js", "utf8");
+const buildSpotMetadataEnrichmentSource = fs.readFileSync("scripts/build-spot-metadata-enrichment.js", "utf8");
+const buildNeedsReviewSource = fs.existsSync("scripts/build-surfline-needs-review-html.js")
+  ? fs.readFileSync("scripts/build-surfline-needs-review-html.js", "utf8")
+  : "";
+const browserSurflineCacheSource = fs.existsSync("scripts/cache-surfline-browser-cdp.js")
+  ? fs.readFileSync("scripts/cache-surfline-browser-cdp.js", "utf8")
+  : "";
+const cacheSurflineSource = fs.readFileSync("scripts/cache-surfline-pages.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-row=/);
@@ -136,4 +147,72 @@ test("spot data build can refresh road distances from a directions table API", (
   assert.match(buildSpotDataSource, /annotations=distance,duration/);
   assert.match(buildSpotDataSource, /routeDistanceMeters/);
   assert.match(buildSpotDataSource, /durationSeconds/);
+});
+
+test("coast exposure build preserves manually curated exposure entries", () => {
+  assert.match(buildCoastExposuresSource, /readExistingCuratedExposures/);
+  assert.match(buildCoastExposuresSource, /reviewStatus === "curated"/);
+  assert.match(buildCoastExposuresSource, /source === "manual"/);
+  assert.match(buildCoastExposuresSource, /collectSurflineMetadataExposures/);
+  assert.match(buildCoastExposuresSource, /source:\s*"surfline-metadata"/);
+  assert.doesNotMatch(buildCoastExposuresSource, /__NEXT_DATA__/);
+});
+
+test("surfline spot build normalizes cached provider metadata within Lisbon radius", () => {
+  assert.match(buildSurflineSpotsSource, /LISBON_RADIUS_KM = 100/);
+  assert.match(buildSurflineSpotsSource, /travelDetails/);
+  assert.match(buildSurflineSpotsSource, /coastExposure/);
+  assert.match(buildSurflineSpotsSource, /distanceFromLisbonKm/);
+});
+
+test("MEO Surfline remap preserves curated joins before generated nearest joins", () => {
+  assert.match(packageSource, /"build-meo-surfline-matches":\s*"node scripts\/build-meo-surfline-matches\.js"/);
+  assert.match(buildMeoSurflineMatchesSource, /curatedByMeoId/);
+  assert.match(buildMeoSurflineMatchesSource, /source === "curated"/);
+  assert.match(buildMeoSurflineMatchesSource, /generated-nearest/);
+  assert.match(buildMeoSurflineMatchesSource, /needs-review/);
+  assert.match(buildMeoSurflineMatchesSource, /MAX_PRIMARY_DISTANCE_KM/);
+});
+
+test("spot metadata enrichment stays MEO-keyed and compact", () => {
+  assert.match(packageSource, /"build-spot-metadata-enrichment":\s*"node scripts\/build-spot-metadata-enrichment\.js"/);
+  assert.match(buildSpotMetadataEnrichmentSource, /spot-metadata-enrichment\.json/);
+  assert.match(buildSpotMetadataEnrichmentSource, /reviewStatus === "needs-review"/);
+  assert.match(buildSpotMetadataEnrichmentSource, /metadataScore/);
+  assert.match(buildSpotMetadataEnrichmentSource, /sourceSpotId/);
+  assert.match(buildSpotMetadataEnrichmentSource, /breakType/);
+  assert.match(buildSpotMetadataEnrichmentSource, /abilityLevels/);
+  assert.match(buildSpotMetadataEnrichmentSource, /coastExposure/);
+});
+
+test("Surfline needs-review feedback HTML is generated from mapping evidence", () => {
+  assert.match(packageSource, /"build-surfline-needs-review":\s*"node scripts\/build-surfline-needs-review-html\.js"/);
+  assert.match(buildNeedsReviewSource, /surfline-needs-review\.html/);
+  assert.match(buildNeedsReviewSource, /reviewStatus === "needs-review"/);
+  assert.match(buildNeedsReviewSource, /weightedMatchScore/);
+  assert.match(buildNeedsReviewSource, /namePoints/);
+  assert.match(buildNeedsReviewSource, /distancePoints/);
+  assert.match(buildNeedsReviewSource, /exportJson/);
+  assert.match(buildNeedsReviewSource, /localStorage/);
+  assert.match(buildNeedsReviewSource, /Export feedback/);
+  assert.doesNotMatch(buildNeedsReviewSource, /manualValue/);
+  assert.doesNotMatch(buildNeedsReviewSource, /URL\.createObjectURL/);
+});
+
+test("surfline direct cache refresh does not generate placeholder HTML for blocked provider pages", () => {
+  assert.doesNotMatch(cacheSurflineSource, /buildGeneratedSnapshotHtml/);
+  assert.match(cacheSurflineSource, /!cached\.html\.includes\("x-surfcams-cache-kind"\)/);
+  assert.doesNotMatch(cacheSurflineSource, /cacheStatus:\s*"generated-provider-snapshot"/);
+  assert.match(cacheSurflineSource, /throw error/);
+  assert.match(cacheSurflineSource, /fetchError/);
+});
+
+test("browser surfline cache fetches real provider HTML through Chrome CDP", () => {
+  assert.match(packageSource, /"cache-surfline-browser":\s*"node scripts\/cache-surfline-browser-cdp\.js"/);
+  assert.match(browserSurflineCacheSource, /Runtime\.evaluate/);
+  assert.match(browserSurflineCacheSource, /credentials:\s*"include"/);
+  assert.match(browserSurflineCacheSource, /__NEXT_DATA__/);
+  assert.match(browserSurflineCacheSource, /cacheStatus:\s*"browser-fetched"/);
+  assert.match(browserSurflineCacheSource, /source:\s*"chrome-cdp"/);
+  assert.doesNotMatch(browserSurflineCacheSource, /generated-provider-snapshot/);
 });

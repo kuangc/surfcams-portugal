@@ -36,6 +36,13 @@ const SPOT_EXPOSURE = {
   "parede-estatica": { label: "South-facing spot estimate", bearing: 180, confidence: "spot" }
 };
 
+const CONFIDENCE_LABELS = {
+  spot: "Spot-calibrated",
+  regional: "Regional estimate",
+  heuristic: "Heuristic estimate",
+  unknown: "Unknown exposure"
+};
+
 export function parseMetricNumber(value) {
   if (typeof value !== "string" && typeof value !== "number") return null;
   const match = String(value).replace(",", ".").match(/-?\d+(?:\.\d+)?/);
@@ -76,10 +83,29 @@ function compassFromBearing(bearing) {
   return labels[Math.round((((bearing % 360) + 360) % 360) / 45) % 8];
 }
 
+function normalizeCoastExposure(exposure) {
+  if (!exposure || typeof exposure !== "object") return null;
+  const bearing = Number(exposure.bearing);
+  if (!Number.isFinite(bearing)) return null;
+
+  return {
+    label: exposure.label || `${compassFromBearing(bearing)}-facing exposure`,
+    bearing,
+    confidence: exposure.confidence || "spot",
+    source: exposure.source || "metadata"
+  };
+}
+
+function fallbackCoastExposure(camera) {
+  return SPOT_EXPOSURE[camera.id]
+    || COAST_EXPOSURE[camera.region]
+    || { label: "Unknown exposure", bearing: null, confidence: "unknown", source: "fallback" };
+}
+
 export function getConditionVectors(camera) {
   const wind = normalizeDirection(camera.forecast?.windDirection || camera.detailMetrics?.["Direção do vento"]);
   const swell = normalizeDirection(camera.detailMetrics?.["Direção das ondas"]);
-  const coast = SPOT_EXPOSURE[camera.id] || COAST_EXPOSURE[camera.region] || { label: "Unknown exposure", bearing: null, confidence: "unknown" };
+  const coast = normalizeCoastExposure(camera.surfMetadata?.coastExposure) || fallbackCoastExposure(camera);
   const windArrowBearing = Number.isFinite(wind?.bearing) ? (wind.bearing + 180) % 360 : null;
 
   return {
@@ -87,7 +113,8 @@ export function getConditionVectors(camera) {
       label: coast.label,
       bearing: coast.bearing,
       compass: compassFromBearing(coast.bearing),
-      confidence: coast.confidence
+      confidence: coast.confidence,
+      source: coast.source || "static"
     },
     wind: {
       compass: wind?.label || "unknown",
@@ -143,7 +170,7 @@ export function rateSurfSpot(camera, preferences) {
     },
     confidence: {
       key: vectors.coast.confidence,
-      label: vectors.coast.confidence === "spot" ? "Spot-calibrated" : vectors.coast.confidence === "regional" ? "Regional estimate" : "Unknown exposure"
+      label: CONFIDENCE_LABELS[vectors.coast.confidence] || CONFIDENCE_LABELS.unknown
     }
   };
 }

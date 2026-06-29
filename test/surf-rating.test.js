@@ -95,3 +95,33 @@ test("getConditionVectors treats wind from an exposed coast as onshore", () => {
   assert.equal(vectors.wind.arrowBearing, 135);
   assert.equal(vectors.wind.alignment, "onshore");
 });
+
+test("getConditionVectors prefers camera exposure metadata over static fallbacks", () => {
+  const vectors = getConditionVectors({
+    ...baseCamera,
+    id: "sao-juliao",
+    region: "mafra",
+    forecast: {
+      ...baseCamera.forecast,
+      windDirection: "east"
+    },
+    detailMetrics: {
+      ...baseCamera.detailMetrics,
+      "Direção do vento": "Este"
+    },
+    surfMetadata: {
+      coastExposure: {
+        bearing: 289,
+        label: "Surfline-derived west-facing exposure",
+        confidence: "spot",
+        source: "surfline-metadata"
+      }
+    }
+  });
+
+  assert.equal(vectors.coast.bearing, 289);
+  assert.equal(vectors.coast.compass, "W");
+  assert.equal(vectors.coast.label, "Surfline-derived west-facing exposure");
+  assert.equal(vectors.coast.source, "surfline-metadata");
+  assert.equal(vectors.wind.alignment, "offshore");
+});

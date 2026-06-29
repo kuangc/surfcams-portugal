@@ -1,7 +1,9 @@
 import {
+  COAST_EXPOSURES_URL,
   LISBON_DRIVE_ESTIMATES_URL,
   MEO_SPOTS_URL,
   MEO_SURFLINE_MATCHES_URL,
+  SPOT_METADATA_ENRICHMENT_URL,
   SURFLINE_SPOTS_URL
 } from "./config.js";
 
@@ -15,7 +17,9 @@ const EMPTY_SPOT_DATA = {
   surflineDb: { spots: [] },
   meoDb: { spots: [] },
   mappingDb: { matches: [] },
-  driveDb: { origin: CENTRAL_LISBON, estimates: [] }
+  driveDb: { origin: CENTRAL_LISBON, estimates: [] },
+  coastExposureDb: { exposures: [] },
+  spotMetadataDb: { entries: [] }
 };
 
 function toMap(items = [], key = "id") {
@@ -134,22 +138,36 @@ export function normalizeSpotData({
   surflineDb = EMPTY_SPOT_DATA.surflineDb,
   meoDb = EMPTY_SPOT_DATA.meoDb,
   mappingDb = EMPTY_SPOT_DATA.mappingDb,
-  driveDb = EMPTY_SPOT_DATA.driveDb
+  driveDb = EMPTY_SPOT_DATA.driveDb,
+  coastExposureDb = EMPTY_SPOT_DATA.coastExposureDb,
+  spotMetadataDb = EMPTY_SPOT_DATA.spotMetadataDb
 } = EMPTY_SPOT_DATA) {
-  const surflineById = toMap(surflineDb.spots);
-  const meoById = toMap(meoDb.spots);
-  const matchesByMeoId = toMap(mappingDb.matches, "meoSpotId");
-  const driveByMeoId = toMap(driveDb.estimates, "meoSpotId");
+  const safeSurflineDb = surflineDb || EMPTY_SPOT_DATA.surflineDb;
+  const safeMeoDb = meoDb || EMPTY_SPOT_DATA.meoDb;
+  const safeMappingDb = mappingDb || EMPTY_SPOT_DATA.mappingDb;
+  const safeDriveDb = driveDb || EMPTY_SPOT_DATA.driveDb;
+  const safeCoastExposureDb = coastExposureDb || EMPTY_SPOT_DATA.coastExposureDb;
+  const safeSpotMetadataDb = spotMetadataDb || EMPTY_SPOT_DATA.spotMetadataDb;
+  const surflineById = toMap(safeSurflineDb.spots);
+  const meoById = toMap(safeMeoDb.spots);
+  const matchesByMeoId = toMap(safeMappingDb.matches, "meoSpotId");
+  const driveByMeoId = toMap(safeDriveDb.estimates, "meoSpotId");
+  const coastExposureById = toMap(safeCoastExposureDb.exposures);
+  const spotMetadataById = toMap(safeSpotMetadataDb.entries);
 
   return {
-    surflineDb,
-    meoDb,
-    mappingDb,
-    driveDb,
+    surflineDb: safeSurflineDb,
+    meoDb: safeMeoDb,
+    mappingDb: safeMappingDb,
+    driveDb: safeDriveDb,
+    coastExposureDb: safeCoastExposureDb,
+    spotMetadataDb: safeSpotMetadataDb,
     surflineById,
     meoById,
     matchesByMeoId,
-    driveByMeoId
+    driveByMeoId,
+    coastExposureById,
+    spotMetadataById
   };
 }
 
@@ -161,6 +179,7 @@ export function findSurflineMatches(camera, normalizedSpotData) {
   const id = normalizeId(camera);
   const mapping = normalizedSpotData?.matchesByMeoId?.get(id);
   if (!mapping) return [];
+  if (mapping.reviewStatus === "needs-review") return [];
 
   return mapping.surflineSpotIds
     .map((surflineSpotId) => normalizedSpotData.surflineById.get(surflineSpotId))
@@ -190,6 +209,41 @@ export function findDriveEstimate(camera, normalizedSpotData) {
   };
 }
 
+export function applySpotMetadataToCameraDb(cameraDb, normalizedSpotData) {
+  if (
+    !cameraDb?.cameras?.length
+    || (
+      !normalizedSpotData?.coastExposureById?.size
+      && !normalizedSpotData?.spotMetadataById?.size
+    )
+  ) {
+    return cameraDb;
+  }
+
+  let changed = false;
+  const cameras = cameraDb.cameras.map((camera) => {
+    const metadata = normalizedSpotData.spotMetadataById?.get(camera.id)?.surfMetadata;
+    const exposure = normalizedSpotData.coastExposureById.get(camera.id)?.coastExposure;
+    if (!metadata && !exposure) return camera;
+
+    changed = true;
+    return {
+      ...camera,
+      surfMetadata: {
+        ...camera.surfMetadata,
+        ...metadata,
+        coastExposure: exposure || metadata?.coastExposure || camera.surfMetadata?.coastExposure
+      }
+    };
+  });
+
+  return changed ? { ...cameraDb, cameras } : cameraDb;
+}
+
+export function applyCoastExposuresToCameraDb(cameraDb, normalizedSpotData) {
+  return applySpotMetadataToCameraDb(cameraDb, normalizedSpotData);
+}
+
 async function fetchJson(fetcher, url) {
   const response = await fetcher(url);
   if (!response.ok) {
@@ -198,13 +252,23 @@ async function fetchJson(fetcher, url) {
   return response.json();
 }
 
+async function fetchOptionalJson(fetcher, url, fallback) {
+  try {
+    return await fetchJson(fetcher, url);
+  } catch {
+    return fallback;
+  }
+}
+
 export async function loadSpotData({ fetcher = fetch } = {}) {
-  const [surflineDb, meoDb, mappingDb, driveDb] = await Promise.all([
+  const [surflineDb, meoDb, mappingDb, driveDb, coastExposureDb, spotMetadataDb] = await Promise.all([
     fetchJson(fetcher, SURFLINE_SPOTS_URL),
     fetchJson(fetcher, MEO_SPOTS_URL),
     fetchJson(fetcher, MEO_SURFLINE_MATCHES_URL),
-    fetchJson(fetcher, LISBON_DRIVE_ESTIMATES_URL)
+    fetchJson(fetcher, LISBON_DRIVE_ESTIMATES_URL),
+    fetchOptionalJson(fetcher, COAST_EXPOSURES_URL, EMPTY_SPOT_DATA.coastExposureDb),
+    fetchOptionalJson(fetcher, SPOT_METADATA_ENRICHMENT_URL, EMPTY_SPOT_DATA.spotMetadataDb)
   ]);
 
-  return normalizeSpotData({ surflineDb, meoDb, mappingDb, driveDb });
+  return normalizeSpotData({ surflineDb, meoDb, mappingDb, driveDb, coastExposureDb, spotMetadataDb });
 }

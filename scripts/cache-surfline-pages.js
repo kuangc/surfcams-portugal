@@ -110,14 +110,24 @@ async function readCacheMeta(metaPath) {
 async function fetchSurflinePage(spot) {
   const response = await fetch(spot.url, {
     headers: {
-      "accept": "text/html,application/xhtml+xml",
-      "user-agent": "surfcams-portugal mapping review"
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "accept-language": "en-US,en;q=0.9,pt;q=0.8",
+      "cache-control": "no-cache",
+      "pragma": "no-cache",
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     }
   });
   const html = await response.text();
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch ${spot.id} (${spot.url}): HTTP ${response.status}`);
+    const error = new Error(`Failed to fetch ${spot.id} (${spot.url}): HTTP ${response.status}`);
+    error.status = response.status;
+    error.body = html;
+    throw error;
   }
 
   return {
@@ -127,6 +137,28 @@ async function fetchSurflinePage(spot) {
   };
 }
 
+async function readCachedPage({ htmlPath, metaPath, meta, cacheStatus, fetchError = null }) {
+  try {
+    return {
+      html: normalizeCachedHtml(await fs.readFile(htmlPath, "utf8")),
+      status: meta?.status ?? null,
+      fetchedAt: meta?.fetchedAt ?? null,
+      generatedAt: meta?.generatedAt ?? null,
+      cacheStatus,
+      fetchError,
+      htmlPath,
+      metaPath
+    };
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+async function writePageMeta(metaPath, meta) {
+  await fs.writeFile(metaPath, `${JSON.stringify(meta, null, 2)}\n`);
+}
+
 async function loadPage(spot) {
   const htmlPath = path.join(cacheDir, `${spot.id}.html`);
   const metaPath = path.join(cacheDir, `${spot.id}.json`);
@@ -134,57 +166,77 @@ async function loadPage(spot) {
   const cacheMatchesUrl = meta?.url === spot.url;
 
   if (!options.refresh && cacheMatchesUrl) {
-    try {
-      return {
-        html: normalizeCachedHtml(await fs.readFile(htmlPath, "utf8")),
-        status: meta.status,
-        fetchedAt: meta.fetchedAt,
-        cacheStatus: "cached",
-        htmlPath,
-        metaPath
-      };
-    } catch (error) {
-      if (error.code !== "ENOENT") throw error;
-    }
+    const cached = await readCachedPage({
+      htmlPath,
+      metaPath,
+      meta,
+      cacheStatus: meta.cacheStatus || "cached"
+    });
+    if (cached) return cached;
   }
 
   if (!options.refresh) {
-    try {
-      return {
-        html: normalizeCachedHtml(await fs.readFile(htmlPath, "utf8")),
-        status: meta?.status ?? null,
-        fetchedAt: meta?.fetchedAt ?? null,
-        cacheStatus: meta ? "cached-url-mismatch" : "cached-html",
-        htmlPath,
-        metaPath
-      };
-    } catch (error) {
-      if (error.code !== "ENOENT") throw error;
-    }
+    const cached = await readCachedPage({
+      htmlPath,
+      metaPath,
+      meta,
+      cacheStatus: meta ? "cached-url-mismatch" : "cached-html"
+    });
+    if (cached) return cached;
   }
 
   if (options.offline) {
     throw new Error(`Missing cache for ${spot.id}; rerun without --offline to fetch ${spot.url}`);
   }
 
-  const fetched = await fetchSurflinePage(spot);
-  await fs.writeFile(htmlPath, fetched.html);
-  await fs.writeFile(
-    metaPath,
-    `${JSON.stringify({
+  try {
+    const fetched = await fetchSurflinePage(spot);
+    await fs.writeFile(htmlPath, fetched.html);
+    await writePageMeta(metaPath, {
       id: spot.id,
       url: spot.url,
       status: fetched.status,
-      fetchedAt: fetched.fetchedAt
-    }, null, 2)}\n`
-  );
+      fetchedAt: fetched.fetchedAt,
+      cacheStatus: "fetched"
+    });
 
-  return {
-    ...fetched,
-    cacheStatus: "fetched",
-    htmlPath,
-    metaPath
-  };
+    return {
+      ...fetched,
+      cacheStatus: "fetched",
+      fetchError: null,
+      htmlPath,
+      metaPath
+    };
+  } catch (error) {
+    const cached = await readCachedPage({
+      htmlPath,
+      metaPath,
+      meta,
+      cacheStatus: "cached-fetch-failed",
+      fetchError: error.message
+    });
+    if (cached && !cached.html.includes("x-surfcams-cache-kind")) {
+      await writePageMeta(metaPath, {
+        id: spot.id,
+        url: spot.url,
+        status: cached.status,
+        fetchedAt: cached.fetchedAt,
+        generatedAt: cached.generatedAt,
+        cacheStatus: "cached-fetch-failed",
+        retainedCachedHtml: true,
+        fetchError: {
+          message: error.message,
+          status: error.status ?? null
+        }
+      });
+      return {
+        ...cached,
+        cacheStatus: "cached-fetch-failed",
+        fetchError: error.message
+      };
+    }
+    throw error;
+  }
 }
 
 function compareMappedMatches(a, b) {
@@ -281,7 +333,6 @@ function buildMarkdown(review) {
     ].join(" | "));
   });
 
-  lines.push("");
   return `${lines.join("\n")}\n`;
 }
 
@@ -312,7 +363,9 @@ async function main() {
       cacheMetaPath: relativePath(page.metaPath),
       cacheStatus: page.cacheStatus,
       httpStatus: page.status,
-      fetchedAt: page.fetchedAt
+      fetchedAt: page.fetchedAt,
+      generatedAt: page.generatedAt ?? null,
+      fetchError: page.fetchError ?? null
     });
   }
 

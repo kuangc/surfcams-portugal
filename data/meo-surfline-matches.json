@@ -1,27 +1,23 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-06-09",
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-11T22:47:13.268Z",
   "closeRuleProposal": {
-    "id": "exact-or-nearby-surfline-spots-for-same-outing",
-    "description": "Exact/name match first, then nearby Surfline spots that a Lisbon surfer would reasonably compare in the same outing corridor. Typical physical radius is 0-12km for Cascais, Caparica, Peniche and Ericeira clusters; Sesimbra also includes Surfline's nearby alternatives because it is a sheltered bay whose reported surf height can diverge sharply from exposed beaches.",
+    "id": "curated-or-nearest-cached-surfline-spots-for-meo-location",
+    "description": "Preserve curated MEO-to-Surfline corridor mappings first, then generate conservative nearest-neighbor mappings from cached Surfline spots for MEO locations. Coordinate-only matches are marked needs-review for hand curation.",
+    "maxPrimaryDistanceKm": 1.2,
+    "maxNamePrimaryDistanceKm": 3,
+    "maxCorridorDistanceKm": 8,
     "needsUserCalibration": true
   },
+  "source": {
+    "meoSpots": "data/meo-spots.json",
+    "surflineSpots": "data/surfline-spots.json"
+  },
+  "total": 89,
+  "curated": 11,
+  "generated": 78,
+  "needsReview": 21,
   "matches": [
-    {
-      "meoSpotId": "sao-pedro-do-estoril",
-      "surflineSpotIds": [
-        "surfline-sao-pedro-do-estoril",
-        "surfline-carcavelos",
-        "surfline-parede"
-      ],
-      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
-      "distancesKm": {
-        "surfline-sao-pedro-do-estoril": 0,
-        "surfline-carcavelos": 3.2,
-        "surfline-parede": 1.7
-      },
-      "notes": "Exact Surfline page plus nearby Cascais-line references."
-    },
     {
       "meoSpotId": "praia-de-carcavelos",
       "surflineSpotIds": [
@@ -31,45 +27,31 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-carcavelos": 0,
-        "surfline-parede": 3.9,
-        "surfline-sao-pedro-do-estoril": 3.2
+        "surfline-carcavelos": 0.2,
+        "surfline-parede": 1.8,
+        "surfline-sao-pedro-do-estoril": 3.3
       },
-      "notes": "Exact Surfline page plus neighboring Cascais-line spots."
-    },
-    {
-      "meoSpotId": "parede",
-      "surflineSpotIds": [
-        "surfline-parede",
-        "surfline-sao-pedro-do-estoril",
-        "surfline-carcavelos"
-      ],
-      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
-      "distancesKm": {
-        "surfline-parede": 0,
-        "surfline-sao-pedro-do-estoril": 1.7,
-        "surfline-carcavelos": 3.9
-      },
-      "notes": "Exact Surfline page plus adjacent São Pedro and Carcavelos references."
-    },
-    {
-      "meoSpotId": "costa-da-caparica-riviera",
-      "surflineSpotIds": [
-        "surfline-praia-da-rainha",
-        "surfline-castelo",
-        "surfline-praia-do-barbas",
-        "surfline-costa-da-caparica",
-        "surfline-fonte-da-telha"
-      ],
-      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
-      "distancesKm": {
-        "surfline-praia-da-rainha": 0.1,
-        "surfline-castelo": 0.8,
-        "surfline-praia-do-barbas": 1.5,
-        "surfline-costa-da-caparica": 3.8,
-        "surfline-fonte-da-telha": 5.3
-      },
-      "notes": "Riviera is closest to Surfline's Praia da Rainha page; Castelo, Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives."
+      "notes": "Exact Surfline page plus neighboring Cascais-line spots.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "distanceKm": 3.3,
+          "nameScore": 0
+        }
+      ]
     },
     {
       "meoSpotId": "costa-da-caparica",
@@ -82,32 +64,537 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-costa-da-caparica": 0.8,
-        "surfline-praia-da-rainha": 3.7,
-        "surfline-castelo": 4.4,
-        "surfline-praia-do-barbas": 4.9,
-        "surfline-fonte-da-telha": 8.5
+        "surfline-costa-da-caparica": 0.7,
+        "surfline-praia-da-rainha": 4,
+        "surfline-castelo": 4.3,
+        "surfline-praia-do-barbas": 0.2,
+        "surfline-fonte-da-telha": 9
       },
-      "notes": "Main Caparica Beachcam page maps to the corrected Surfline Caparica report first, then nearby south-Caparica alternates including Castelo."
+      "notes": "Main Caparica Beachcam page maps to the corrected Surfline Caparica report first, then nearby south-Caparica alternates including Castelo.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 0.7,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "distanceKm": 4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "distanceKm": 4.3,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 9,
+          "nameScore": 0
+        }
+      ]
     },
     {
-      "meoSpotId": "costa-da-caparica-cds",
+      "meoSpotId": "praia-do-norte",
       "surflineSpotIds": [
-        "surfline-costa-da-caparica",
-        "surfline-praia-da-rainha",
-        "surfline-castelo",
-        "surfline-praia-do-barbas",
-        "surfline-fonte-da-telha"
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-do-guincho",
+      "surflineSpotIds": [
+        "surfline-praia-do-guincho",
+        "surfline-praia-da-crismina",
+        "surfline-praia-do-abano",
+        "surfline-praia-das-moitas",
+        "surfline-praia-da-ursa"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-guincho": 0.5,
+        "surfline-praia-da-crismina": 0.5,
+        "surfline-praia-do-abano": 1.5,
+        "surfline-praia-das-moitas": 6.4,
+        "surfline-praia-da-ursa": 7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-guincho",
+          "surflineName": "Praia Do Guincho",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-abano",
+          "surflineName": "Praia do Abano",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 6.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-grande",
+      "surflineSpotIds": [
+        "surfline-praia-grande",
+        "surfline-praia-pequena",
+        "surfline-praia-da-adraga",
+        "surfline-praia-das-macas",
+        "surfline-praia-da-ursa"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-grande": 0.4,
+        "surfline-praia-pequena": 0.6,
+        "surfline-praia-da-adraga": 1.4,
+        "surfline-praia-das-macas": 1.4,
+        "surfline-praia-da-ursa": 3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-grande",
+          "surflineName": "Praia Grande",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-pequena",
+          "surflineName": "Praia Pequena",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-adraga",
+          "surflineName": "Praia da Adraga",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "peniche-supertubos",
+      "surflineSpotIds": [
+        "surfline-supertubos",
+        "surfline-molhe-leste",
+        "surfline-cerro",
+        "surfline-baia",
+        "surfline-consolacao"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-supertubos": 0.4,
+        "surfline-molhe-leste": 0.7,
+        "surfline-cerro": 1.9,
+        "surfline-baia": 2.2,
+        "surfline-consolacao": 2.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-supertubos",
+          "surflineName": "Supertubos",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-molhe-leste",
+          "surflineName": "Molhe Leste",
+          "distanceKm": 0.7,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-cerro",
+          "surflineName": "Cerro",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-consolacao",
+          "surflineName": "Consolação",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-da-nazare",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "santa-cruz",
+      "surflineSpotIds": [
+        "surfline-santa-cruz",
+        "surfline-praia-formosa",
+        "surfline-praia-das-amoeiras",
+        "surfline-praia-de-santa-rita",
+        "surfline-praia-azul"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-santa-cruz": 0.6,
+        "surfline-praia-formosa": 1.8,
+        "surfline-praia-das-amoeiras": 2.5,
+        "surfline-praia-de-santa-rita": 3,
+        "surfline-praia-azul": 3.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-santa-cruz",
+          "surflineName": "Santa Cruz",
+          "distanceKm": 0.6,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-formosa",
+          "surflineName": "Praia Formosa",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-amoeiras",
+          "surflineName": "Praia das Amoeiras",
+          "distanceKm": 2.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-santa-rita",
+          "surflineName": "Praia de Santa Rita",
+          "distanceKm": 3,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-azul",
+          "surflineName": "Praia Azul",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Santa Cruz is 0.6km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "lagide-e-baia",
+      "surflineSpotIds": [
+        "surfline-lagide",
+        "surfline-cantinho-da-baia",
+        "surfline-baia",
+        "surfline-baleal"
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-costa-da-caparica": 0.7,
-        "surfline-praia-da-rainha": 3.6,
-        "surfline-castelo": 4.3,
-        "surfline-praia-do-barbas": 4.8,
-        "surfline-fonte-da-telha": 8.4
+        "surfline-lagide": 0.3,
+        "surfline-cantinho-da-baia": 0.3,
+        "surfline-baia": 1.8,
+        "surfline-baleal": 0.3
       },
-      "notes": "CDS south page shares the same Caparica Surfline cluster, including Castelo."
+      "notes": "One MEO camera represents the Lagide/Cantinho/Baía/Baleal cluster.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-lagide",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-cantinho-da-baia",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baleal",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "ribeira-dilhas",
+      "surflineSpotIds": [
+        "surfline-ribeira-d-ilhas",
+        "surfline-reef",
+        "surfline-pedra-branca",
+        "surfline-cave",
+        "surfline-matadouro"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-ribeira-d-ilhas": 0.5,
+        "surfline-reef": 0.8,
+        "surfline-pedra-branca": 1,
+        "surfline-cave": 1.2,
+        "surfline-matadouro": 1.4
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "surflineName": "Ribeira D’Ilhas",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cave",
+          "surflineName": "Cave",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "peniche-baleal-panoramica",
+      "surflineSpotIds": [
+        "surfline-cantinho-da-baia",
+        "surfline-baleal",
+        "surfline-lagide",
+        "surfline-baia",
+        "surfline-almagreira"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-cantinho-da-baia": 0.2,
+        "surfline-baleal": 0.7,
+        "surfline-lagide": 0.8,
+        "surfline-baia": 1.4,
+        "surfline-almagreira": 2.5
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-cantinho-da-baia",
+          "surflineName": "Cantinho da Baía",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baleal",
+          "surflineName": "Baleal",
+          "distanceKm": 0.7,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-lagide",
+          "surflineName": "Lagide",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-almagreira",
+          "surflineName": "Almagreira",
+          "distanceKm": 2.5,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "foz-do-arelho",
+      "surflineSpotIds": [
+        "surfline-foz-do-arelho",
+        "surfline-belgas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-foz-do-arelho": 0.3,
+        "surfline-belgas": 4.4
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-foz-do-arelho",
+          "surflineName": "Foz do Arelho",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-belgas",
+          "surflineName": "Belgas",
+          "distanceKm": 4.4,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Foz do Arelho is 0.3km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-praia-nova",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-da-saude",
+        "surfline-praia-da-cornelia",
+        "surfline-praia-do-barbas",
+        "surfline-marcelino"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.9,
+        "surfline-praia-da-saude": 0.9,
+        "surfline-praia-da-cornelia": 1.2,
+        "surfline-praia-do-barbas": 1.2,
+        "surfline-marcelino": 1.5
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.9,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-cornelia",
+          "surflineName": "Praia da Cornelia",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.9km away with name score 1.00."
     },
     {
       "meoSpotId": "fonte-da-telha",
@@ -120,13 +607,181 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-fonte-da-telha": 0.1,
+        "surfline-fonte-da-telha": 0.2,
         "surfline-castelo": 4.6,
-        "surfline-praia-da-rainha": 5.5,
-        "surfline-praia-do-barbas": 6.8,
-        "surfline-costa-da-caparica": 8.5
+        "surfline-praia-da-rainha": 4.9,
+        "surfline-praia-do-barbas": 8.7,
+        "surfline-costa-da-caparica": 8.2
       },
-      "notes": "Exact Fonte page plus the practical Caparica alternatives, with Castelo as the nearest northern Surfline page."
+      "notes": "Exact Fonte page plus the practical Caparica alternatives, with Castelo as the nearest northern Surfline page.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "distanceKm": 4.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "distanceKm": 4.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "distanceKm": 8.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 8.2,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "costa-de-caparica-sao-joao-cova-do-vapor",
+      "surflineSpotIds": [
+        "surfline-sao-joao-da-caparica",
+        "surfline-cova-do-vapor",
+        "surfline-marcelino",
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-joao-da-caparica": 0.3,
+        "surfline-cova-do-vapor": 1.2,
+        "surfline-marcelino": 1.2,
+        "surfline-praia-do-barbas": 1.4,
+        "surfline-costa-da-caparica": 1.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-cova-do-vapor",
+          "surflineName": "Cova Do Vapor",
+          "distanceKm": 1.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 1.9,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.3km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "sao-pedro-do-estoril",
+      "surflineSpotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos",
+        "surfline-parede"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-sao-pedro-do-estoril": 0.1,
+        "surfline-carcavelos": 3.2,
+        "surfline-parede": 1.5
+      },
+      "notes": "Exact Surfline page plus nearby Cascais-line references.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "costa-da-caparica-riviera",
+      "surflineSpotIds": [
+        "surfline-praia-da-rainha",
+        "surfline-castelo",
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica",
+        "surfline-fonte-da-telha"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-praia-da-rainha": 0.4,
+        "surfline-castelo": 0.7,
+        "surfline-praia-do-barbas": 3.4,
+        "surfline-costa-da-caparica": 3.1,
+        "surfline-fonte-da-telha": 5.4
+      },
+      "notes": "Riviera is closest to Surfline's Praia da Rainha page; Castelo, Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "distanceKm": 0.7,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "distanceKm": 3.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 3.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 5.4,
+          "nameScore": 0
+        }
+      ]
     },
     {
       "meoSpotId": "surfline-castelo",
@@ -139,30 +794,157 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-castelo": 0,
-        "surfline-praia-da-rainha": 0.8,
-        "surfline-praia-do-barbas": 2.3,
+        "surfline-castelo": 0.1,
+        "surfline-praia-da-rainha": 0.4,
+        "surfline-praia-do-barbas": 4.2,
         "surfline-fonte-da-telha": 4.6,
-        "surfline-costa-da-caparica": 4.4
+        "surfline-costa-da-caparica": 3.8
       },
-      "notes": "First-class Surfline-only Castelo spot plus the practical Caparica corridor references."
+      "notes": "First-class Surfline-only Castelo spot plus the practical Caparica corridor references.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-castelo",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "distanceKm": 4.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 4.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 3.8,
+          "nameScore": 1
+        }
+      ]
     },
     {
-      "meoSpotId": "lagide-e-baia",
+      "meoSpotId": "ericeira-praia-do-sul",
       "surflineSpotIds": [
-        "surfline-lagide",
-        "surfline-cantinho-da-baia",
-        "surfline-baia",
-        "surfline-baleal"
+        "surfline-praia-da-baleia",
+        "surfline-praia-do-sul",
+        "surfline-foz-do-lizandro",
+        "surfline-matadouro",
+        "surfline-pedra-branca"
       ],
-      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
-        "surfline-lagide": 0,
-        "surfline-cantinho-da-baia": 0.5,
-        "surfline-baia": 1.1,
-        "surfline-baleal": 0.4
+        "surfline-praia-da-baleia": 0.3,
+        "surfline-praia-do-sul": 0.4,
+        "surfline-foz-do-lizandro": 1.4,
+        "surfline-matadouro": 2.2,
+        "surfline-pedra-branca": 2.7
       },
-      "notes": "One MEO camera represents the Lagide/Cantinho/Baía/Baleal cluster."
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-baleia",
+          "surflineName": "Praia da Baleia",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-sul",
+          "surflineName": "Praia do Sul",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-foz-do-lizandro",
+          "surflineName": "Foz do Lizandro",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 2.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia da Baleia is 0.3km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "sao-martinho-do-porto",
+      "surflineSpotIds": [
+        "surfline-sao-martinho-do-porto"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-martinho-do-porto": 0.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-martinho-do-porto",
+          "surflineName": "São Martinho do Porto",
+          "distanceKm": 0.6,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São Martinho do Porto is 0.6km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "areia-branca",
+      "surflineSpotIds": [
+        "surfline-praia-da-areia-branca",
+        "surfline-praia-dos-frades",
+        "surfline-consolacao"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-da-areia-branca": 0.1,
+        "surfline-praia-dos-frades": 4.4,
+        "surfline-consolacao": 6.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-areia-branca",
+          "surflineName": "Praia Da Areia Branca",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-dos-frades",
+          "surflineName": "Praia dos Frades",
+          "distanceKm": 4.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-consolacao",
+          "surflineName": "Consolação",
+          "distanceKm": 6.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Da Areia Branca is 0.1km away with name score 1.00."
     },
     {
       "meoSpotId": "praia-sesimbra",
@@ -173,11 +955,923 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-sesimbra": 0,
-        "surfline-fonte-da-telha": 15.6,
-        "surfline-costa-da-caparica": 24.7
+        "surfline-sesimbra": 0.8,
+        "surfline-fonte-da-telha": 16.7,
+        "surfline-costa-da-caparica": 25
       },
-      "notes": "Sesimbra is a protected bay, so exposed nearby alternatives are useful as a sanity check."
+      "notes": "Sesimbra is a protected bay, so exposed nearby alternatives are useful as a sanity check.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sesimbra",
+          "distanceKm": 0.8,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 16.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 25,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "praia-do-norte-canhao-nazare",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "carcavelos-calhau",
+      "surflineSpotIds": [
+        "surfline-carcavelos",
+        "surfline-praia-de-torre",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-parede"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-carcavelos": 0.5,
+        "surfline-praia-de-torre": 0.8,
+        "surfline-praia-da-laje": 1.7,
+        "surfline-santo-amaro": 1.8,
+        "surfline-parede": 2.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-dos-pescadores",
+      "surflineSpotIds": [
+        "surfline-praia-do-sul",
+        "surfline-praia-da-baleia",
+        "surfline-matadouro",
+        "surfline-pedra-branca",
+        "surfline-reef"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-sul": 0.6,
+        "surfline-praia-da-baleia": 1.1,
+        "surfline-matadouro": 1.3,
+        "surfline-pedra-branca": 1.8,
+        "surfline-reef": 2.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-sul",
+          "surflineName": "Praia do Sul",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-baleia",
+          "surflineName": "Praia da Baleia",
+          "distanceKm": 1.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 2.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Sul is 0.6km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-da-torre",
+      "surflineSpotIds": [
+        "surfline-praia-de-torre",
+        "surfline-carcavelos",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-paco-de-arcos"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-de-torre": 0,
+        "surfline-carcavelos": 1.3,
+        "surfline-praia-da-laje": 1.3,
+        "surfline-santo-amaro": 1.3,
+        "surfline-paco-de-arcos": 2.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 0,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-paco-de-arcos",
+          "surflineName": "Paco de Arcos",
+          "distanceKm": 2.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia de Torre is 0km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-de-santa-rita",
+      "surflineSpotIds": [
+        "surfline-praia-de-santa-rita",
+        "surfline-praia-do-porto-novo",
+        "surfline-santa-cruz",
+        "surfline-praia-formosa",
+        "surfline-praia-das-amoeiras"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-de-santa-rita": 0.5,
+        "surfline-praia-do-porto-novo": 0.5,
+        "surfline-santa-cruz": 4.1,
+        "surfline-praia-formosa": 5.3,
+        "surfline-praia-das-amoeiras": 6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-de-santa-rita",
+          "surflineName": "Praia de Santa Rita",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-porto-novo",
+          "surflineName": "Praia do Porto Novo",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santa-cruz",
+          "surflineName": "Santa Cruz",
+          "distanceKm": 4.1,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-formosa",
+          "surflineName": "Praia Formosa",
+          "distanceKm": 5.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-amoeiras",
+          "surflineName": "Praia das Amoeiras",
+          "distanceKm": 6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia de Santa Rita is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-tarquinio",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-do-barbas",
+        "surfline-marcelino",
+        "surfline-praia-da-saude",
+        "surfline-sao-joao-da-caparica"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.4,
+        "surfline-praia-do-barbas": 0.4,
+        "surfline-marcelino": 0.7,
+        "surfline-praia-da-saude": 1.7,
+        "surfline-sao-joao-da-caparica": 1.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 1.9,
+          "nameScore": 0.5
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-de-sao-torpes",
+      "surflineSpotIds": [
+        "surfline-sao-torpes",
+        "surfline-praia-da-vieirinha",
+        "surfline-praia-do-burrinho",
+        "surfline-sines"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-torpes": 0.2,
+        "surfline-praia-da-vieirinha": 3.6,
+        "surfline-praia-do-burrinho": 5.4,
+        "surfline-sines": 8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-torpes",
+          "surflineName": "Sao Torpes",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-vieirinha",
+          "surflineName": "Praia da Vieirinha",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-burrinho",
+          "surflineName": "Praia do Burrinho",
+          "distanceKm": 5.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sines",
+          "surflineName": "Sines",
+          "distanceKm": 8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "santa-cruz-praia-azul",
+      "surflineSpotIds": [
+        "surfline-praia-azul",
+        "surfline-praia-das-amoeiras",
+        "surfline-praia-formosa",
+        "surfline-praia-porto-chao",
+        "surfline-santa-cruz"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-azul": 0.6,
+        "surfline-praia-das-amoeiras": 1.6,
+        "surfline-praia-formosa": 2.3,
+        "surfline-praia-porto-chao": 2.6,
+        "surfline-santa-cruz": 3.5
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-azul",
+          "surflineName": "Praia Azul",
+          "distanceKm": 0.6,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-amoeiras",
+          "surflineName": "Praia das Amoeiras",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-formosa",
+          "surflineName": "Praia Formosa",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-porto-chao",
+          "surflineName": "Praia Porto Chão",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santa-cruz",
+          "surflineName": "Santa Cruz",
+          "distanceKm": 3.5,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-grande-sul",
+      "surflineSpotIds": [
+        "surfline-praia-grande",
+        "surfline-praia-da-adraga",
+        "surfline-praia-pequena",
+        "surfline-praia-das-macas",
+        "surfline-praia-da-ursa"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-grande": 0.5,
+        "surfline-praia-da-adraga": 1,
+        "surfline-praia-pequena": 1,
+        "surfline-praia-das-macas": 1.8,
+        "surfline-praia-da-ursa": 2.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-grande",
+          "surflineName": "Praia Grande",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-adraga",
+          "surflineName": "Praia da Adraga",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-pequena",
+          "surflineName": "Praia Pequena",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "foz-do-lizandro",
+      "surflineSpotIds": [
+        "surfline-foz-do-lizandro",
+        "surfline-sao-juliao",
+        "surfline-praia-da-baleia",
+        "surfline-praia-do-sul",
+        "surfline-praia-da-vigia"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-foz-do-lizandro": 0.3,
+        "surfline-sao-juliao": 1.2,
+        "surfline-praia-da-baleia": 1.4,
+        "surfline-praia-do-sul": 1.9,
+        "surfline-praia-da-vigia": 3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-foz-do-lizandro",
+          "surflineName": "Foz do Lizandro",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-juliao",
+          "surflineName": "São Julião",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-baleia",
+          "surflineName": "Praia da Baleia",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-sul",
+          "surflineName": "Praia do Sul",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-vigia",
+          "surflineName": "Praia da Vigia",
+          "distanceKm": 3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Foz do Lizandro is 0.3km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-do-peixe-baia-de-cascais",
+      "surflineSpotIds": [
+        "surfline-praia-das-moitas",
+        "surfline-estoril",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-praia-da-crismina"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-das-moitas": 1,
+        "surfline-estoril": 2.2,
+        "surfline-sao-pedro-do-estoril": 4.4,
+        "surfline-parede": 5.8,
+        "surfline-praia-da-crismina": 6.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 4.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 5.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 6.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia das Moitas is 1km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-do-guincho-norte",
+      "surflineSpotIds": [
+        "surfline-praia-do-guincho",
+        "surfline-praia-do-abano",
+        "surfline-praia-da-crismina",
+        "surfline-praia-da-ursa",
+        "surfline-praia-das-moitas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-guincho": 0.3,
+        "surfline-praia-do-abano": 0.8,
+        "surfline-praia-da-crismina": 1.1,
+        "surfline-praia-da-ursa": 6.4,
+        "surfline-praia-das-moitas": 6.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-guincho",
+          "surflineName": "Praia Do Guincho",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-abano",
+          "surflineName": "Praia do Abano",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 1.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 6.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 6.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.3km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "parede",
+      "surflineSpotIds": [
+        "surfline-parede",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-parede": 0.1,
+        "surfline-sao-pedro-do-estoril": 1.6,
+        "surfline-carcavelos": 1.7
+      },
+      "notes": "Exact Surfline page plus adjacent São Pedro and Carcavelos references.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-parede",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "ericeira",
+      "surflineSpotIds": [
+        "surfline-pedra-branca",
+        "surfline-matadouro",
+        "surfline-reef",
+        "surfline-ribeira-d-ilhas",
+        "surfline-cave"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-pedra-branca": 0.2,
+        "surfline-matadouro": 0.4,
+        "surfline-reef": 0.5,
+        "surfline-ribeira-d-ilhas": 1.1,
+        "surfline-cave": 2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "surflineName": "Ribeira D’Ilhas",
+          "distanceKm": 1.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cave",
+          "surflineName": "Cave",
+          "distanceKm": 2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Pedra Branca is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "santo-amaro",
+      "surflineSpotIds": [
+        "surfline-santo-amaro",
+        "surfline-praia-da-laje",
+        "surfline-paco-de-arcos",
+        "surfline-praia-de-torre",
+        "surfline-carcavelos"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-santo-amaro": 0.2,
+        "surfline-praia-da-laje": 0.2,
+        "surfline-paco-de-arcos": 1.4,
+        "surfline-praia-de-torre": 1.4,
+        "surfline-carcavelos": 2.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-paco-de-arcos",
+          "surflineName": "Paco de Arcos",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Santo Amaro is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-das-macas",
+      "surflineSpotIds": [
+        "surfline-praia-das-macas",
+        "surfline-praia-pequena",
+        "surfline-praia-grande",
+        "surfline-praia-dos-moleiros",
+        "surfline-praia-da-adraga"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-das-macas": 0.3,
+        "surfline-praia-pequena": 0.8,
+        "surfline-praia-grande": 1.6,
+        "surfline-praia-dos-moleiros": 2.6,
+        "surfline-praia-da-adraga": 2.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 0.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-pequena",
+          "surflineName": "Praia Pequena",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-grande",
+          "surflineName": "Praia Grande",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-dos-moleiros",
+          "surflineName": "Praia dos Moleiros",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-adraga",
+          "surflineName": "Praia da Adraga",
+          "distanceKm": 2.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "lagoa-de-albufeira",
+      "surflineSpotIds": [
+        "surfline-lagoa-de-albufeira",
+        "surfline-bicas",
+        "surfline-fonte-da-telha"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-lagoa-de-albufeira": 0.5,
+        "surfline-bicas": 4.9,
+        "surfline-fonte-da-telha": 7.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-lagoa-de-albufeira",
+          "surflineName": "Lagoa de Albufeira",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-bicas",
+          "surflineName": "Bicas",
+          "distanceKm": 4.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "surflineName": "Fonte da Telha",
+          "distanceKm": 7.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Lagoa de Albufeira is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-cds",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-da-rainha",
+        "surfline-castelo",
+        "surfline-praia-do-barbas",
+        "surfline-fonte-da-telha"
+      ],
+      "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.6,
+        "surfline-praia-da-rainha": 3.9,
+        "surfline-castelo": 4.2,
+        "surfline-praia-do-barbas": 0.1,
+        "surfline-fonte-da-telha": 8.9
+      },
+      "notes": "CDS south page shares the same Caparica Surfline cluster, including Castelo.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "distanceKm": 0.6,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "distanceKm": 3.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "distanceKm": 4.2,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "distanceKm": 0.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "distanceKm": 8.9,
+          "nameScore": 0
+        }
+      ]
     },
     {
       "meoSpotId": "sao-juliao",
@@ -189,12 +1883,2365 @@
       ],
       "proposedCloseRule": "exact-or-nearby-surfline-spots-for-same-outing",
       "distancesKm": {
-        "surfline-sao-juliao": 0,
-        "surfline-foz-do-lizandro": 1.4,
-        "surfline-praia-do-sul": 3.6,
-        "surfline-ribeira-d-ilhas": 8.2
+        "surfline-sao-juliao": 0.2,
+        "surfline-foz-do-lizandro": 1.3,
+        "surfline-praia-do-sul": 3,
+        "surfline-ribeira-d-ilhas": 6.3
       },
-      "notes": "Exact São Julião page plus Ericeira-area options in the same outing corridor."
+      "notes": "Exact São Julião page plus Ericeira-area options in the same outing corridor.",
+      "source": "curated",
+      "confidence": "curated",
+      "reviewStatus": "curated",
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-juliao",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-foz-do-lizandro",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-sul",
+          "distanceKm": 3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "distanceKm": 6.3,
+          "nameScore": 0
+        }
+      ]
+    },
+    {
+      "meoSpotId": "fonte-da-telha-sul",
+      "surflineSpotIds": [
+        "surfline-fonte-da-telha",
+        "surfline-praia-do-rei",
+        "surfline-praia-do-pescador",
+        "surfline-castelo",
+        "surfline-praia-da-rainha"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-fonte-da-telha": 1.1,
+        "surfline-praia-do-rei": 4.9,
+        "surfline-praia-do-pescador": 5.3,
+        "surfline-castelo": 5.7,
+        "surfline-praia-da-rainha": 6.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "surflineName": "Fonte da Telha",
+          "distanceKm": 1.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-rei",
+          "surflineName": "Praia do Rei",
+          "distanceKm": 4.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-pescador",
+          "surflineName": "Praia do Pescador",
+          "distanceKm": 5.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "surflineName": "Costa da Caparica | Costelo (Irmao)",
+          "distanceKm": 5.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "surflineName": "Praia da Rainha",
+          "distanceKm": 6.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Fonte da Telha is 1.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "paco-de-arcos",
+      "surflineSpotIds": [
+        "surfline-paco-de-arcos",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-praia-de-caxias",
+        "surfline-praia-de-torre"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-paco-de-arcos": 0.2,
+        "surfline-praia-da-laje": 1.5,
+        "surfline-santo-amaro": 1.5,
+        "surfline-praia-de-caxias": 1.8,
+        "surfline-praia-de-torre": 2.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-paco-de-arcos",
+          "surflineName": "Paco de Arcos",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-caxias",
+          "surflineName": "Praia de Caxias",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 2.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Paco de Arcos is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "cresmina",
+      "surflineSpotIds": [
+        "surfline-praia-da-crismina",
+        "surfline-praia-do-guincho",
+        "surfline-praia-do-abano",
+        "surfline-praia-das-moitas",
+        "surfline-praia-da-ursa"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-da-crismina": 0.3,
+        "surfline-praia-do-guincho": 1,
+        "surfline-praia-do-abano": 2,
+        "surfline-praia-das-moitas": 6.3,
+        "surfline-praia-da-ursa": 7.5
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-guincho",
+          "surflineName": "Praia Do Guincho",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-abano",
+          "surflineName": "Praia do Abano",
+          "distanceKm": 2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 6.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 7.5,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia da Crismina is 0.3km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-das-bicas",
+      "surflineSpotIds": [
+        "surfline-bicas",
+        "surfline-praia-dos-lagosteiros",
+        "surfline-lagoa-de-albufeira"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-bicas": 0.2,
+        "surfline-praia-dos-lagosteiros": 4.9,
+        "surfline-lagoa-de-albufeira": 5.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-bicas",
+          "surflineName": "Bicas",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-dos-lagosteiros",
+          "surflineName": "Praia dos Lagosteiros",
+          "distanceKm": 4.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-lagoa-de-albufeira",
+          "surflineName": "Lagoa de Albufeira",
+          "distanceKm": 5.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Bicas is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-da-consolacao",
+      "surflineSpotIds": [
+        "surfline-supertubos",
+        "surfline-molhe-leste",
+        "surfline-cerro",
+        "surfline-baia",
+        "surfline-consolacao"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-supertubos": 0.4,
+        "surfline-molhe-leste": 0.7,
+        "surfline-cerro": 1.9,
+        "surfline-baia": 2.2,
+        "surfline-consolacao": 2.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-supertubos",
+          "surflineName": "Supertubos",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-molhe-leste",
+          "surflineName": "Molhe Leste",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cerro",
+          "surflineName": "Cerro",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-consolacao",
+          "surflineName": "Consolação",
+          "distanceKm": 2.6,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-do-carvalhal",
+      "surflineSpotIds": [
+        "surfline-praia-do-pego"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-pego": 1.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-pego",
+          "surflineName": "Praia do Pego",
+          "distanceKm": 1.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Pego is 1.1km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "tamariz",
+      "surflineSpotIds": [
+        "surfline-estoril",
+        "surfline-praia-das-moitas",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-carcavelos"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-estoril": 0.5,
+        "surfline-praia-das-moitas": 0.9,
+        "surfline-sao-pedro-do-estoril": 2.7,
+        "surfline-parede": 4.3,
+        "surfline-carcavelos": 6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 2.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 4.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Estoril is 0.5km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "portinho-da-arrabida",
+      "surflineSpotIds": [
+        "surfline-portinho-da-arrabida"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-portinho-da-arrabida": 0.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-portinho-da-arrabida",
+          "surflineName": "Portinho da Arrabida",
+          "distanceKm": 0.8,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Portinho da Arrabida is 0.8km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-da-conceicao-e-duquesa",
+      "surflineSpotIds": [
+        "surfline-praia-das-moitas",
+        "surfline-estoril",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-praia-da-crismina"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-das-moitas": 0.5,
+        "surfline-estoril": 1.8,
+        "surfline-sao-pedro-do-estoril": 4.1,
+        "surfline-parede": 5.6,
+        "surfline-praia-da-crismina": 6.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 4.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 5.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 6.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia das Moitas is 0.5km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "matadouro",
+      "surflineSpotIds": [
+        "surfline-matadouro",
+        "surfline-pedra-branca",
+        "surfline-reef",
+        "surfline-ribeira-d-ilhas",
+        "surfline-praia-do-sul"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-matadouro": 0.1,
+        "surfline-pedra-branca": 0.6,
+        "surfline-reef": 0.9,
+        "surfline-ribeira-d-ilhas": 1.5,
+        "surfline-praia-do-sul": 1.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "surflineName": "Ribeira D’Ilhas",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-sul",
+          "surflineName": "Praia do Sul",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Matadouro is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "almograve",
+      "surflineSpotIds": [
+        "surfline-sao-torpes",
+        "surfline-praia-da-vieirinha",
+        "surfline-praia-do-burrinho",
+        "surfline-sines"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-torpes": 0.2,
+        "surfline-praia-da-vieirinha": 3.6,
+        "surfline-praia-do-burrinho": 5.4,
+        "surfline-sines": 8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-torpes",
+          "surflineName": "Sao Torpes",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-vieirinha",
+          "surflineName": "Praia da Vieirinha",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-burrinho",
+          "surflineName": "Praia do Burrinho",
+          "distanceKm": 5.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sines",
+          "surflineName": "Sines",
+          "distanceKm": 8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-das-avencas",
+      "surflineSpotIds": [
+        "surfline-parede",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos",
+        "surfline-estoril",
+        "surfline-praia-de-torre"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-parede": 0.6,
+        "surfline-sao-pedro-do-estoril": 1,
+        "surfline-carcavelos": 2.3,
+        "surfline-estoril": 3.2,
+        "surfline-praia-de-torre": 3.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Parede is 0.6km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "costa-de-caparica-praia-do-norte",
+      "surflineSpotIds": [
+        "surfline-marcelino",
+        "surfline-praia-do-barbas",
+        "surfline-sao-joao-da-caparica",
+        "surfline-costa-da-caparica",
+        "surfline-cova-do-vapor"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-marcelino": 0.5,
+        "surfline-praia-do-barbas": 0.7,
+        "surfline-sao-joao-da-caparica": 0.8,
+        "surfline-costa-da-caparica": 1.2,
+        "surfline-cova-do-vapor": 1.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 0.8,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 1.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-cova-do-vapor",
+          "surflineName": "Cova Do Vapor",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Marcelino is 0.5km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "ericeira-sao-lourenco",
+      "surflineSpotIds": [
+        "surfline-sao-lourenco",
+        "surfline-coxos",
+        "surfline-cave",
+        "surfline-ribeira-d-ilhas",
+        "surfline-reef"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-lourenco": 0.4,
+        "surfline-coxos": 1.4,
+        "surfline-cave": 1.8,
+        "surfline-ribeira-d-ilhas": 2.6,
+        "surfline-reef": 3.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-lourenco",
+          "surflineName": "São Lourenço",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-coxos",
+          "surflineName": "Coxos",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cave",
+          "surflineName": "Cave",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "surflineName": "Ribeira D’Ilhas",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 3.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-pequena",
+      "surflineSpotIds": [
+        "surfline-praia-pequena",
+        "surfline-praia-das-macas",
+        "surfline-praia-grande",
+        "surfline-praia-da-adraga",
+        "surfline-praia-dos-moleiros"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-pequena": 0.1,
+        "surfline-praia-das-macas": 0.7,
+        "surfline-praia-grande": 0.8,
+        "surfline-praia-da-adraga": 2.1,
+        "surfline-praia-dos-moleiros": 3.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-pequena",
+          "surflineName": "Praia Pequena",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-grande",
+          "surflineName": "Praia Grande",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-adraga",
+          "surflineName": "Praia da Adraga",
+          "distanceKm": 2.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-dos-moleiros",
+          "surflineName": "Praia dos Moleiros",
+          "distanceKm": 3.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Pequena is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "sao-joao-do-estoril",
+      "surflineSpotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-estoril",
+        "surfline-carcavelos",
+        "surfline-praia-das-moitas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "nearby",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-pedro-do-estoril": 0.1,
+        "surfline-parede": 1.5,
+        "surfline-estoril": 2.3,
+        "surfline-carcavelos": 3.2,
+        "surfline-praia-das-moitas": 3.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 0.1,
+          "nameScore": 0.67
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 2.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 3.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.67."
+    },
+    {
+      "meoSpotId": "penichesupertubosestatica",
+      "surflineSpotIds": [
+        "surfline-supertubos",
+        "surfline-molhe-leste",
+        "surfline-cerro",
+        "surfline-baia",
+        "surfline-consolacao"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-supertubos": 0.4,
+        "surfline-molhe-leste": 0.7,
+        "surfline-cerro": 1.9,
+        "surfline-baia": 2.2,
+        "surfline-consolacao": 2.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-supertubos",
+          "surflineName": "Supertubos",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-molhe-leste",
+          "surflineName": "Molhe Leste",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cerro",
+          "surflineName": "Cerro",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-consolacao",
+          "surflineName": "Consolação",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "bafureira",
+      "surflineSpotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-estoril",
+        "surfline-carcavelos",
+        "surfline-praia-das-moitas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-pedro-do-estoril": 0.1,
+        "surfline-parede": 1.5,
+        "surfline-estoril": 2.3,
+        "surfline-carcavelos": 3.2,
+        "surfline-praia-das-moitas": 3.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 0.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 3.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-das-moitas",
+      "surflineSpotIds": [
+        "surfline-estoril",
+        "surfline-praia-das-moitas",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-carcavelos"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-estoril": 0.5,
+        "surfline-praia-das-moitas": 0.9,
+        "surfline-sao-pedro-do-estoril": 2.7,
+        "surfline-parede": 4.3,
+        "surfline-carcavelos": 6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 0.9,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 2.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 4.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Estoril is 0.5km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "vila-nova-de-milfontes-franquia",
+      "surflineSpotIds": [
+        "surfline-sao-torpes",
+        "surfline-praia-da-vieirinha",
+        "surfline-praia-do-burrinho",
+        "surfline-sines"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-torpes": 0.2,
+        "surfline-praia-da-vieirinha": 3.6,
+        "surfline-praia-do-burrinho": 5.4,
+        "surfline-sines": 8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-torpes",
+          "surflineName": "Sao Torpes",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-vieirinha",
+          "surflineName": "Praia da Vieirinha",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-burrinho",
+          "surflineName": "Praia do Burrinho",
+          "distanceKm": 5.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sines",
+          "surflineName": "Sines",
+          "distanceKm": 8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "nazare-porto-de-abrigo",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 2.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 2.9,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 2.9km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "peniche-lagide-estatica",
+      "surflineSpotIds": [
+        "surfline-lagide",
+        "surfline-baleal",
+        "surfline-cantinho-da-baia",
+        "surfline-almagreira",
+        "surfline-baia"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-lagide": 0,
+        "surfline-baleal": 0.2,
+        "surfline-cantinho-da-baia": 0.6,
+        "surfline-almagreira": 1.9,
+        "surfline-baia": 2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-lagide",
+          "surflineName": "Lagide",
+          "distanceKm": 0,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-baleal",
+          "surflineName": "Baleal",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cantinho-da-baia",
+          "surflineName": "Cantinho da Baía",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-almagreira",
+          "surflineName": "Almagreira",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Lagide is 0km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo-baia",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "penichemolhelesteestatica",
+      "surflineSpotIds": [
+        "surfline-supertubos",
+        "surfline-molhe-leste",
+        "surfline-cerro",
+        "surfline-baia",
+        "surfline-consolacao"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-supertubos": 0.4,
+        "surfline-molhe-leste": 0.7,
+        "surfline-cerro": 1.9,
+        "surfline-baia": 2.2,
+        "surfline-consolacao": 2.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-supertubos",
+          "surflineName": "Supertubos",
+          "distanceKm": 0.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-molhe-leste",
+          "surflineName": "Molhe Leste",
+          "distanceKm": 0.7,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-cerro",
+          "surflineName": "Cerro",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-consolacao",
+          "surflineName": "Consolação",
+          "distanceKm": 2.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "ribeira-dilhas-estatica",
+      "surflineSpotIds": [
+        "surfline-ribeira-d-ilhas",
+        "surfline-reef",
+        "surfline-pedra-branca",
+        "surfline-cave",
+        "surfline-matadouro"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-ribeira-d-ilhas": 0.4,
+        "surfline-reef": 0.7,
+        "surfline-pedra-branca": 0.9,
+        "surfline-cave": 1.2,
+        "surfline-matadouro": 1.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-ribeira-d-ilhas",
+          "surflineName": "Ribeira D’Ilhas",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-reef",
+          "surflineName": "Reef",
+          "distanceKm": 0.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-pedra-branca",
+          "surflineName": "Pedra Branca",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cave",
+          "surflineName": "Cave",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-matadouro",
+          "surflineName": "Matadouro",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-de-caparica-sao-joao-estatica",
+      "surflineSpotIds": [
+        "surfline-sao-joao-da-caparica",
+        "surfline-marcelino",
+        "surfline-praia-do-barbas",
+        "surfline-cova-do-vapor",
+        "surfline-costa-da-caparica"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-joao-da-caparica": 0.4,
+        "surfline-marcelino": 0.9,
+        "surfline-praia-do-barbas": 1.2,
+        "surfline-cova-do-vapor": 1.4,
+        "surfline-costa-da-caparica": 1.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-cova-do-vapor",
+          "surflineName": "Cova Do Vapor",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 1.6,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.4km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "peniche-lagide-cantinho-da-baia-estatica",
+      "surflineSpotIds": [
+        "surfline-cantinho-da-baia",
+        "surfline-baleal",
+        "surfline-lagide",
+        "surfline-baia",
+        "surfline-almagreira"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-cantinho-da-baia": 0.2,
+        "surfline-baleal": 0.3,
+        "surfline-lagide": 0.4,
+        "surfline-baia": 1.6,
+        "surfline-almagreira": 2.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-cantinho-da-baia",
+          "surflineName": "Cantinho da Baía",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-baleal",
+          "surflineName": "Baleal",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-lagide",
+          "surflineName": "Lagide",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-baia",
+          "surflineName": "Meio da Baía",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-almagreira",
+          "surflineName": "Almagreira",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo-panoramica",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-do-guincho-estatica",
+      "surflineSpotIds": [
+        "surfline-praia-do-guincho",
+        "surfline-praia-da-crismina",
+        "surfline-praia-do-abano",
+        "surfline-praia-da-ursa",
+        "surfline-praia-das-moitas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-guincho": 0.2,
+        "surfline-praia-da-crismina": 0.9,
+        "surfline-praia-do-abano": 1,
+        "surfline-praia-da-ursa": 6.6,
+        "surfline-praia-das-moitas": 6.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-guincho",
+          "surflineName": "Praia Do Guincho",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-abano",
+          "surflineName": "Praia do Abano",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 6.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 6.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "sao-pedro-do-estoril-bico-estatica",
+      "surflineSpotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-estoril",
+        "surfline-carcavelos",
+        "surfline-praia-das-moitas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-pedro-do-estoril": 0.1,
+        "surfline-parede": 1.5,
+        "surfline-estoril": 2.3,
+        "surfline-carcavelos": 3.2,
+        "surfline-praia-das-moitas": 3.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 2.3,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 3.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "paco-de-arcos-estatica",
+      "surflineSpotIds": [
+        "surfline-paco-de-arcos",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-praia-de-caxias",
+        "surfline-praia-de-torre"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-paco-de-arcos": 0.2,
+        "surfline-praia-da-laje": 1.5,
+        "surfline-santo-amaro": 1.5,
+        "surfline-praia-de-caxias": 1.8,
+        "surfline-praia-de-torre": 2.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-paco-de-arcos",
+          "surflineName": "Paco de Arcos",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-caxias",
+          "surflineName": "Praia de Caxias",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 2.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Paco de Arcos is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "santo-amaro-estatica",
+      "surflineSpotIds": [
+        "surfline-santo-amaro",
+        "surfline-praia-da-laje",
+        "surfline-paco-de-arcos",
+        "surfline-praia-de-torre",
+        "surfline-carcavelos"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-santo-amaro": 0.2,
+        "surfline-praia-da-laje": 0.2,
+        "surfline-paco-de-arcos": 1.4,
+        "surfline-praia-de-torre": 1.4,
+        "surfline-carcavelos": 2.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 0.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-paco-de-arcos",
+          "surflineName": "Paco de Arcos",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Santo Amaro is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-praia-nova-estatica",
+      "surflineSpotIds": [
+        "surfline-costa-da-caparica",
+        "surfline-praia-da-saude",
+        "surfline-praia-da-cornelia",
+        "surfline-praia-do-barbas",
+        "surfline-marcelino"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-costa-da-caparica": 0.9,
+        "surfline-praia-da-saude": 0.9,
+        "surfline-praia-da-cornelia": 1.2,
+        "surfline-praia-do-barbas": 1.2,
+        "surfline-marcelino": 1.5
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.9,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 0.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-cornelia",
+          "surflineName": "Praia da Cornelia",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.9km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "carcavelos-norte-estatica",
+      "surflineSpotIds": [
+        "surfline-carcavelos",
+        "surfline-praia-de-torre",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-parede"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-carcavelos": 0.5,
+        "surfline-praia-de-torre": 0.8,
+        "surfline-praia-da-laje": 1.7,
+        "surfline-santo-amaro": 1.8,
+        "surfline-parede": 2.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-nova-praia",
+      "surflineSpotIds": [
+        "surfline-praia-da-saude",
+        "surfline-praia-da-cornelia",
+        "surfline-costa-da-caparica",
+        "surfline-praia-do-barbas",
+        "surfline-marcelino"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-da-saude": 0.5,
+        "surfline-praia-da-cornelia": 0.8,
+        "surfline-costa-da-caparica": 1.2,
+        "surfline-praia-do-barbas": 1.6,
+        "surfline-marcelino": 1.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 0.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-cornelia",
+          "surflineName": "Praia da Cornelia",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 1.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 1.9,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia da Saude is 0.5km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "carcavelos-calhau-estatica",
+      "surflineSpotIds": [
+        "surfline-carcavelos",
+        "surfline-praia-de-torre",
+        "surfline-praia-da-laje",
+        "surfline-santo-amaro",
+        "surfline-parede"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-carcavelos": 0.5,
+        "surfline-praia-de-torre": 0.8,
+        "surfline-praia-da-laje": 1.7,
+        "surfline-santo-amaro": 1.8,
+        "surfline-parede": 2.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 0.5,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 0.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-santo-amaro",
+          "surflineName": "Santo Amaro",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 2.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-do-magoito",
+      "surflineSpotIds": [
+        "surfline-praia-do-magoito",
+        "surfline-praia-da-aguda",
+        "surfline-praia-dos-moleiros",
+        "surfline-praia-da-samarra",
+        "surfline-praia-das-macas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-magoito": 0.1,
+        "surfline-praia-da-aguda": 1.5,
+        "surfline-praia-dos-moleiros": 2.1,
+        "surfline-praia-da-samarra": 3.9,
+        "surfline-praia-das-macas": 4.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-magoito",
+          "surflineName": "Praia do Magoito",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-aguda",
+          "surflineName": "Praia da Aguda",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-dos-moleiros",
+          "surflineName": "Praia dos Moleiros",
+          "distanceKm": 2.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-samarra",
+          "surflineName": "Praia da Samarra",
+          "distanceKm": 3.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 4.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Magoito is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-de-sao-torpes-estatica",
+      "surflineSpotIds": [
+        "surfline-sao-torpes",
+        "surfline-praia-da-vieirinha",
+        "surfline-praia-do-burrinho",
+        "surfline-sines"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-torpes": 0.2,
+        "surfline-praia-da-vieirinha": 3.6,
+        "surfline-praia-do-burrinho": 5.4,
+        "surfline-sines": 8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-torpes",
+          "surflineName": "Sao Torpes",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-vieirinha",
+          "surflineName": "Praia da Vieirinha",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-burrinho",
+          "surflineName": "Praia do Burrinho",
+          "distanceKm": 5.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sines",
+          "surflineName": "Sines",
+          "distanceKm": 8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "parede-estatica",
+      "surflineSpotIds": [
+        "surfline-parede",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-carcavelos",
+        "surfline-praia-de-torre",
+        "surfline-praia-da-laje"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-parede": 0.1,
+        "surfline-sao-pedro-do-estoril": 1.6,
+        "surfline-carcavelos": 1.7,
+        "surfline-praia-de-torre": 2.9,
+        "surfline-praia-da-laje": 3.6
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 1.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-carcavelos",
+          "surflineName": "Carcavelos",
+          "distanceKm": 1.7,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-de-torre",
+          "surflineName": "Praia de Torre",
+          "distanceKm": 2.9,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-laje",
+          "surflineName": "Praia da Laje",
+          "distanceKm": 3.6,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Parede is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costa-de-caparica-praia-da-sereia-morena",
+      "surflineSpotIds": [
+        "surfline-praia-do-rei",
+        "surfline-praia-do-pescador",
+        "surfline-castelo",
+        "surfline-praia-da-rainha",
+        "surfline-fonte-da-telha"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-rei": 0.6,
+        "surfline-praia-do-pescador": 1,
+        "surfline-castelo": 1.4,
+        "surfline-praia-da-rainha": 1.8,
+        "surfline-fonte-da-telha": 3.2
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-rei",
+          "surflineName": "Praia do Rei",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-pescador",
+          "surflineName": "Praia do Pescador",
+          "distanceKm": 1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-castelo",
+          "surflineName": "Costa da Caparica | Costelo (Irmao)",
+          "distanceKm": 1.4,
+          "nameScore": 0.33
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-rainha",
+          "surflineName": "Praia da Rainha",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-fonte-da-telha",
+          "surflineName": "Fonte da Telha",
+          "distanceKm": 3.2,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Rei is 0.6km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-tarquinio-fixa",
+      "surflineSpotIds": [
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica",
+        "surfline-marcelino",
+        "surfline-sao-joao-da-caparica",
+        "surfline-praia-da-saude"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-barbas": 0.3,
+        "surfline-costa-da-caparica": 0.4,
+        "surfline-marcelino": 0.6,
+        "surfline-sao-joao-da-caparica": 1.8,
+        "surfline-praia-da-saude": 1.8
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.4,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.6,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 1.8,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 1.8,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Barbas is 0.3km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "praia-das-moitas-estatica",
+      "surflineSpotIds": [
+        "surfline-praia-das-moitas",
+        "surfline-estoril",
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede",
+        "surfline-praia-da-crismina"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-das-moitas": 0.1,
+        "surfline-estoril": 1.3,
+        "surfline-sao-pedro-do-estoril": 3.5,
+        "surfline-parede": 5.1,
+        "surfline-praia-da-crismina": 6.7
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-das-moitas",
+          "surflineName": "Praia das Moitas",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-estoril",
+          "surflineName": "Estoril",
+          "distanceKm": 1.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-sao-pedro-do-estoril",
+          "surflineName": "São Pedro do Estoril",
+          "distanceKm": 3.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-parede",
+          "surflineName": "Parede",
+          "distanceKm": 5.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-crismina",
+          "surflineName": "Praia da Crismina",
+          "distanceKm": 6.7,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia das Moitas is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "costadecaparicacdssulestatica",
+      "surflineSpotIds": [
+        "surfline-praia-do-barbas",
+        "surfline-marcelino",
+        "surfline-costa-da-caparica",
+        "surfline-sao-joao-da-caparica",
+        "surfline-praia-da-saude"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-do-barbas": 0.1,
+        "surfline-marcelino": 0.3,
+        "surfline-costa-da-caparica": 0.6,
+        "surfline-sao-joao-da-caparica": 1.4,
+        "surfline-praia-da-saude": 2.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 0.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.6,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 1.4,
+          "nameScore": 0.33
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-saude",
+          "surflineName": "Praia da Saude",
+          "distanceKm": 2.1,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia do Barbas is 0.1km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "costa-da-caparica-cds-norte-estatica",
+      "surflineSpotIds": [
+        "surfline-marcelino",
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica",
+        "surfline-sao-joao-da-caparica",
+        "surfline-cova-do-vapor"
+      ],
+      "source": "generated-nearest",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-marcelino": 0.3,
+        "surfline-praia-do-barbas": 0.3,
+        "surfline-costa-da-caparica": 0.7,
+        "surfline-sao-joao-da-caparica": 1.3,
+        "surfline-cova-do-vapor": 2.3
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 0.3,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 0.7,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 1.3,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-cova-do-vapor",
+          "surflineName": "Cova Do Vapor",
+          "distanceKm": 2.3,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Marcelino is 0.3km away with name score 0.00."
+    },
+    {
+      "meoSpotId": "costadecaparicapraianorteestatica",
+      "surflineSpotIds": [
+        "surfline-sao-joao-da-caparica",
+        "surfline-cova-do-vapor",
+        "surfline-marcelino",
+        "surfline-praia-do-barbas",
+        "surfline-costa-da-caparica"
+      ],
+      "source": "generated-nearest",
+      "confidence": "nearby",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-sao-joao-da-caparica": 0.3,
+        "surfline-cova-do-vapor": 1.2,
+        "surfline-marcelino": 1.2,
+        "surfline-praia-do-barbas": 1.4,
+        "surfline-costa-da-caparica": 1.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-sao-joao-da-caparica",
+          "surflineName": "São João da Caparica",
+          "distanceKm": 0.3,
+          "nameScore": 0.5
+        },
+        {
+          "surflineSpotId": "surfline-cova-do-vapor",
+          "surflineName": "Cova Do Vapor",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-marcelino",
+          "surflineName": "Marcelino",
+          "distanceKm": 1.2,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-do-barbas",
+          "surflineName": "Praia do Barbas",
+          "distanceKm": 1.4,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-costa-da-caparica",
+          "surflineName": "Costa da Caparica",
+          "distanceKm": 1.9,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.3km away with name score 0.50."
+    },
+    {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
+      "surflineSpotIds": [
+        "surfline-nazare"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-nazare": 0.1
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-nazare",
+          "surflineName": "Nazaré",
+          "distanceKm": 0.1,
+          "nameScore": 1
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+    },
+    {
+      "meoSpotId": "praia-da-adraga",
+      "surflineSpotIds": [
+        "surfline-praia-da-adraga",
+        "surfline-praia-da-ursa",
+        "surfline-praia-grande",
+        "surfline-praia-pequena",
+        "surfline-praia-das-macas"
+      ],
+      "source": "generated-nearest",
+      "confidence": "spot",
+      "reviewStatus": "generated",
+      "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
+      "distancesKm": {
+        "surfline-praia-da-adraga": 0.2,
+        "surfline-praia-da-ursa": 1.5,
+        "surfline-praia-grande": 1.5,
+        "surfline-praia-pequena": 2.1,
+        "surfline-praia-das-macas": 2.9
+      },
+      "matchEvidence": [
+        {
+          "surflineSpotId": "surfline-praia-da-adraga",
+          "surflineName": "Praia da Adraga",
+          "distanceKm": 0.2,
+          "nameScore": 1
+        },
+        {
+          "surflineSpotId": "surfline-praia-da-ursa",
+          "surflineName": "Praia da Ursa",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-grande",
+          "surflineName": "Praia Grande",
+          "distanceKm": 1.5,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-pequena",
+          "surflineName": "Praia Pequena",
+          "distanceKm": 2.1,
+          "nameScore": 0
+        },
+        {
+          "surflineSpotId": "surfline-praia-das-macas",
+          "surflineName": "Praia das Maçãs",
+          "distanceKm": 2.9,
+          "nameScore": 0
+        }
+      ],
+      "notes": "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
     }
   ]
 }
