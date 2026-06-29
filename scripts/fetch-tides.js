@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { normalizeGeomarExtremes } from "../src/tide-data.js";
+import { buildDaylightByPort, normalizeGeomarExtremes } from "../src/tide-data.js";
 
 const CAMERA_DB_PATH = "data/beachcam-cameras.json";
 const TIDE_CACHE_PATH = "data/portugal-tides.json";
@@ -319,6 +319,9 @@ async function main() {
     throw new Error("No Geomar tide gauges resolved; refusing to write an empty tide cache.");
   }
   const eventsByPort = await fetchEventsByPort(Object.keys(stations), eventStartDate, eventEndDate);
+  const daylightByPort = buildDaylightByPort(stations, eventStartDate, eventEndDate, {
+    timeZone: TIME_ZONE
+  });
 
   const cache = {
     schemaVersion: 1,
@@ -337,6 +340,7 @@ async function main() {
     },
     cameraStations,
     stations,
+    daylightByPort,
     eventsByPort
   };
 

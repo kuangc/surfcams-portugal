@@ -86,17 +86,39 @@ export function formatWaterSummary(camera, { tideSnapshot = null, timeZone = "Eu
     }
   ];
 
-  if (tideSnapshot?.nextHigh) {
+  if (tideSnapshot?.nextDaylightHigh) {
     tideMetrics.push(
       {
         key: "next-high",
-        label: "Next high",
-        value: formatTideEventTime(tideSnapshot.nextHigh, timeZone),
+        label: "Daylight high",
+        value: formatTideEventTime(tideSnapshot.nextDaylightHigh, timeZone),
         icon: "⇡",
         tone: "good",
         detail: tideSnapshot?.station?.portName ? `${tideSnapshot.station.portName} tide gauge` : ""
       }
     );
+  }
+
+  if (tideSnapshot?.firstLight) {
+    tideMetrics.push({
+      key: "first-light",
+      label: "First light",
+      value: formatTideEventTime(tideSnapshot.firstLight, timeZone),
+      icon: "☀",
+      tone: "caution",
+      detail: "Civil dawn"
+    });
+  }
+
+  if (tideSnapshot?.lastLight) {
+    tideMetrics.push({
+      key: "last-light",
+      label: "Last light",
+      value: formatTideEventTime(tideSnapshot.lastLight, timeZone),
+      icon: "◐",
+      tone: "neutral",
+      detail: "Civil dusk"
+    });
   }
 
   return tideMetrics;

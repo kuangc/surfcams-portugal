@@ -103,7 +103,7 @@ test("formatWaterSummary exposes shared sea temperature and tide status without 
   assert.deepEqual(summary.map((item) => item.icon), ["≋", "↓"]);
 });
 
-test("formatWaterSummary shows official next high tide when a tide snapshot is available", () => {
+test("formatWaterSummary shows official daylight tide and light markers when a tide snapshot is available", () => {
   const summary = formatWaterSummary(camera, {
     tideSnapshot: {
       stateLabel: "Falling",
@@ -113,13 +113,29 @@ test("formatWaterSummary shows official next high tide when a tide snapshot is a
       nextHigh: {
         timeUtc: "2026-06-10T22:27:00.000Z",
         heightM: 3
+      },
+      nextDaylightHigh: {
+        timeUtc: "2026-06-11T11:05:00.000Z",
+        heightM: 3.01
+      },
+      firstLight: {
+        timeUtc: "2026-06-10T04:38:00.000Z"
+      },
+      lastLight: {
+        timeUtc: "2026-06-10T20:37:00.000Z"
       }
     }
   });
 
-  assert.deepEqual(summary.map((item) => item.key), ["sea-temp", "tide-now", "next-high"]);
+  assert.deepEqual(summary.map((item) => item.key), ["sea-temp", "tide-now", "next-high", "first-light", "last-light"]);
   assert.equal(summary.find((item) => item.key === "tide-now").value, "Falling");
-  assert.equal(summary.find((item) => item.key === "next-high").label, "Next high");
-  assert.equal(summary.find((item) => item.key === "next-high").value, "11:27pm");
+  assert.equal(summary.find((item) => item.key === "next-high").label, "Daylight high");
+  assert.equal(summary.find((item) => item.key === "next-high").value, "12:05pm");
   assert.equal(summary.find((item) => item.key === "next-high").detail, "Cascais tide gauge");
+  assert.equal(summary.find((item) => item.key === "first-light").label, "First light");
+  assert.equal(summary.find((item) => item.key === "first-light").value, "5:38am");
+  assert.equal(summary.find((item) => item.key === "first-light").icon, "☀");
+  assert.equal(summary.find((item) => item.key === "last-light").label, "Last light");
+  assert.equal(summary.find((item) => item.key === "last-light").value, "9:37pm");
+  assert.equal(summary.find((item) => item.key === "last-light").icon, "◐");
 });

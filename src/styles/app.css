@@ -188,7 +188,7 @@ button:disabled {
 
 .water-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   gap: 12px;
   margin: 0 0 14px;
   padding: 12px 0;
@@ -453,6 +453,16 @@ video {
 .metric-icon[data-tone="muted"] {
   background: #d5d8d6;
   color: var(--muted);
+}
+
+.metric-icon[data-key="first-light"] {
+  background: #f2c600;
+  color: #4a3500;
+}
+
+.metric-icon[data-key="last-light"] {
+  background: #d9dfdd;
+  color: #41504d;
 }
 
 .provider-logo {
