@@ -1,7 +1,8 @@
 # Surfline Spot Promotion & Fresh Conditions — Design Spec
 
-Date: 2026-07-06 · Status: v3 — complete. Review decisions + 44-spot promotion selection folded in
-(33 promote-now / 11 deferred under the trusted-cam gate); awaiting final approval → implementation plan
+Date: 2026-07-06 · Status: v4 — complete. Review decisions + 44-spot selection folded in
+(36 at-spot-cam / 6 stretch-cam / 2 deferred); Surfline native cams + stretch view added;
+awaiting final approval → implementation plan
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
 
 ## 1. Goal
@@ -120,18 +121,20 @@ Seed list = the user's map selection of **44 spots** (2026-07-06), with the user
 and graduate automatically once their cam association is curated (file-level policy
 `promoteOnlyWithTrustedCam: true`; the build logs deferrals).
 
-Promote now (33): nazare, baleal, lagide, cantinho-da-baia, supertubos, consolacao, santa-cruz,
-ribeira-d-ilhas, reef, pedra-branca, matadouro, praia-do-sul, foz-do-lizandro, sao-juliao,
-praia-das-macas, praia-pequena, praia-grande, praia-da-adraga, praia-do-guincho,
-sao-pedro-do-estoril, paco-de-arcos, parede, praia-da-laje, santo-amaro, carcavelos, praia-de-torre,
-praia-do-barbas, praia-da-rainha, **castelo** (curated exception: the Riviera cam's curated row
-deliberately covers both Rainha and Castelo — one panoramic cam, two breaks — and castelo is the
-existing hand-promoted prototype), fonte-da-telha, lagoa-de-albufeira, bicas, sesimbra.
+Promote with an **at-spot cam** (36 — trusted MEO stream, Surfline native cam, or both): nazare,
+baleal, lagide, cantinho-da-baia, supertubos, consolacao, santa-cruz, ribeira-d-ilhas, reef,
+pedra-branca, matadouro, praia-do-sul, foz-do-lizandro, sao-juliao, praia-das-macas, praia-pequena,
+praia-grande, praia-da-adraga, praia-do-guincho, sao-pedro-do-estoril, paco-de-arcos, parede,
+praia-da-laje, santo-amaro, carcavelos, praia-de-torre, cova-do-vapor, sao-joao-da-caparica,
+praia-do-barbas, costa-da-caparica, praia-da-rainha, castelo, fonte-da-telha, lagoa-de-albufeira,
+bicas, sesimbra.
 
-Deferred pending cam curation (11): cave, praia-da-ursa, praia-de-caxias, cova-do-vapor,
-sao-joao-da-caparica, marcelino, costa-da-caparica, praia-da-saude, praia-da-cornelia,
-praia-do-pescador, praia-do-rei — mostly the Caparica ambiguity strip (§5.8) plus three
-genuinely-different-cove cases (Cave, Ursa, Caxias).
+Promote with **stretch cams only** (6 — same-beach nearby cams, honestly labeled; §5.8 stretch
+semantics): marcelino, praia-da-saude, praia-da-cornelia, praia-do-pescador, praia-do-rei,
+praia-de-caxias.
+
+Deferred pending cam curation (2): cave, praia-da-ursa — different coves from their nearest cams,
+no Surfline cam; graduate if curation decides the neighboring cam genuinely frames them.
 
 A build check fails if an id is not in `surfline-spots.json`. Promotion is a product decision file —
 deliberately separate from the factual matches file — and is **re-editable at any time** via the
@@ -143,7 +146,9 @@ For each promoted id, emit a camera-DB-compatible record:
 
 - `id` = the existing `surfline-*` id (favorites continuity; `surfline-castelo` keeps working),
   `name`, `lat`, `lon`, `region` (nearest matched MEO region, else breadcrumb-derived), `hasStream: false`,
-  `surfline: { spotId, pageUrl }`, `surfMetadata` (breakType, best.*, coastExposure, guideSummary),
+  `surfline: { spotId, pageUrl }`, `surflineCams: [{ title, stillUrl }]` (still shown on view in the
+  detail panel, never polled), `stretchCamIds` (ordered same-beach cams for stretch spots),
+  `surfMetadata` (breakType, best.*, coastExposure, guideSummary),
   `linkedCamId` = nearest MEO stream cam with a **trusted association** per the §5.8 name-first rule
   (detail view shows that cam's stream above the Surfline report link; no trusted cam → report-only),
   `promoted: true`.
@@ -262,12 +267,30 @@ pin distance is ≤ 0.2 km. Everything else (however close) goes to the curation
 alone never implies the cam shows that break. `build-meo-surfline-matches.js`'s close rule is
 regenerated accordingly.
 
-**Curated rows carry two semantics** that M1 must split: today a curated row is an *outing corridor*
-("exact Surfline page plus neighbors"). Cam-at-spot trust flows only to the row's primary
-(nearest-distance) id; other corridor members need name/distance/curation like anyone else. During
-M1 curation, curated rows gain an explicit `camCoverage: [surflineSpotIds]` field so a panoramic cam
-can be marked as genuinely showing multiple breaks (the Riviera cam → Rainha + Castelo case) without
-loosening the rule.
+**Curated rows are author-trusted for all their members.** A human wrote them (the Riviera row
+deliberately lists Rainha *and* Castelo — one panoramic cam on the Irmão restaurant, two breaks), so
+every member is a trusted cam link; among multiple trusted candidates the nearest wins, with curated
+and name-match ranked equally. (An earlier draft trusted only the row's nearest member, which
+wrongly demoted Castelo — the user's favorite spot — and proved the reading too strict.) During M1
+curation, curated rows still gain an explicit `camCoverage: [surflineSpotIds]` field so cam
+semantics become data rather than convention.
+
+**Surfline native cams count as at-spot cams.** Cached pages expose per-spot `cameras[]`
+(title + public still-image URL) that the pipeline currently ignores — 27 of the 89 spots seen in
+cache have ≥1 Surfline cam (Nazaré 3, Carcavelos 3, Costa da Caparica 3, Castelo 1, Cova do Vapor 1,
+São João 1, Fonte da Telha 2, Supertubos 2…). `build-surfline-spots.js` extracts them into
+`staticMetadata.surflineCams`; a spot with a Surfline cam passes the "good cam" gate even with no
+trusted MEO stream (the report view shows the cam; the still is embeddable). Stills are fetched
+on-view only, never polled.
+
+**Stretch semantics for continuous beaches.** The Caparica strip (Cova do Vapor → Fonte da Telha)
+is one ~10 km beach the user wants visible as a unit — "see which spot seems best, via MEO or
+Surfline". Strip spots therefore promote with `camCoverage: "stretch"`: each carries an ordered list
+of nearby strip cams (MEO streams + Surfline stills) labeled honestly ("Nova Praia cam · 0.5 km N"),
+never presented as at-spot. The UI gets a **stretch view**: a "Caparica stretch" chip on any strip
+spot opens all strip cams + spot conditions north→south in one scan. Caxias joins the Linha
+seafront the same way (no cam at Caxias on either provider; the user's "big-day Caxias check" is the
+Paço de Arcos cam 1.8 km east on the same seawall — labeled as such).
 
 **Caparica/Fonte-da-Telha ambiguity zone (user warning).** On the strip (lat 38.55–38.69,
 lon −9.30…−9.15) names share regional stems — "Costa da/de Caparica…", "Fonte da Telha…" — and
@@ -328,8 +351,9 @@ therefore a routine data-only commit, available any time — never a one-shot de
 ## 8. Rollout
 
 1. **M1 — mapping & data:** regenerate matches under the §5.8 name-first close rule; apply-feedback
-   importer; curate the demoted/needs-review queue; conditions extractor + units fix; promotion
-   manifest + build (map selection as seed); persistent promotion map page (§5.9).
+   importer; curate the demoted/needs-review queue; conditions extractor + units fix; **Surfline
+   native cam extraction (`staticMetadata.surflineCams`)**; promotion manifest + build (map
+   selection as seed, stretch semantics); persistent promotion map page (§5.9).
 2. **M2 — app:** forecast-sources resolution + rating changes + provenance chips; promoted spots
    merged, favoritable, on Explore map; fence + freshness gates on Might-be-good.
 3. **M3 — refresh:** step 0 probe workflow (report pages + KBYG from a runner); then scheduled GH
@@ -351,8 +375,14 @@ Resolved by user review:
 4. **Fence:** lat 38.40–39.65 with lon ≤ −9.05 — Sesimbra kept, Arrábida/Setúbal pocket out.
 
 5. **Promotion list received (2026-07-06):** 44 spots; per the user's "only promote with good cams —
-   feel free to override" instruction, the trusted-cam gate splits them 33 promote-now / 11 deferred
-   (§5.1). Deferred spots graduate via the curation queue.
+   feel free to override" instruction plus the follow-up "I want that long stretch of beach visible",
+   the gate splits them 36 at-spot-cam / 6 stretch-cam / 2 deferred (§5.1).
 6. **Caparica naming hazard** flagged by user → ambiguity-zone handling in §5.8.
+7. **Castelo pause → rule fix:** requiring an exception for the user's favorite spot exposed the
+   primary-only reading of curated rows as too strict; curated rows are now author-trusted for all
+   members (§5.8), and Surfline's native Castelo cam (Irmão restaurant) independently confirms it.
+8. **Caxias finding:** no cam at Caxias on either provider (Surfline page: 0 cams); the big-day
+   check is the Paço de Arcos cam on the same seawall — Caxias promotes as a stretch spot with that
+   labeling rather than being dropped.
 
 No remaining inputs — spec is complete pending final approval to start implementation planning.
