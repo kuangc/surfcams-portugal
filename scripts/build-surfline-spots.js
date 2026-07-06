@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CENTRAL_LISBON, haversineKm } from "../src/spot-data.js";
+import { extractSurflineCams } from "./lib/surfline-extract.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CACHE_DIR = path.join(ROOT, ".cache", "surfline", "pages");
@@ -89,6 +90,12 @@ function breadcrumbNames(breadcrumb = []) {
 
 function firstNonEmptyArray(...values) {
   return values.find((value) => Array.isArray(value) && value.length) || [];
+}
+
+function longestArray(...values) {
+  return values
+    .filter((value) => Array.isArray(value))
+    .reduce((longest, value) => (value.length > longest.length ? value : longest), []);
 }
 
 function cleanBreakTypes(value) {
@@ -179,6 +186,11 @@ function addCandidate(candidatesByRemoteId, record, {
     ),
     breakType: bestBreakType(record, travelDetails, existingSpot, previous),
     travelDetails,
+    surflineCams: longestArray(
+      extractSurflineCams(record),
+      existingSpot?.staticMetadata?.surflineCams,
+      previous?.staticMetadata?.surflineCams
+    ),
     coastExposure: offshoreDirection === null
       ? null
       : {
@@ -289,6 +301,7 @@ async function main() {
       "breakType",
       "abilityLevels",
       "boardTypes",
+      "surflineCams",
       "coastExposure"
     ],
     refreshConcepts: DEFAULT_REFRESH_CONCEPTS,
