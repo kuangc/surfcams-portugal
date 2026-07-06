@@ -6,9 +6,17 @@ export function feetToMeters(ft) {
 export function knotsToKmh(kts) {
   return Number.isFinite(kts) ? round1(kts * 1.852) : null;
 }
+export function fahrenheitToCelsius(f) {
+  return Number.isFinite(f) ? Math.round(((f - 32) * 5) / 9 * 10) / 10 : null;
+}
 
 export function parseNextDataState(html) {
-  const match = String(html).match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  let text = String(html);
+  const trimmed = text.trim();
+  if (trimmed.startsWith('"')) {
+    try { text = JSON.parse(trimmed); } catch { /* keep original */ }
+  }
+  const match = text.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
   if (!match) return null;
   try {
     return JSON.parse(match[1])?.props?.pageProps?.ssrReduxState ?? null;
@@ -24,7 +32,7 @@ export function extractSurflineCams(spotRecord) {
 }
 
 function ratingValue(rating) {
-  const order = ["POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
+  const order = ["VERY_POOR", "POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
   const idx = order.indexOf(String(rating || "").toUpperCase());
   return idx >= 0 ? idx : null;
 }
@@ -49,7 +57,7 @@ function normalizeRecord(spot, forecast, sourceKind, fetchedAt) {
     swells: (forecast?.swells || []).filter((s) => Number.isFinite(s?.height)).map((s) => ({
       hM: feetToMeters(s.height), periodS: s.period ?? null, dirDeg: s.direction ?? null
     })),
-    waterTempC: forecast?.waterTemp?.min ?? null
+    waterTempC: fahrenheitToCelsius(forecast?.waterTemp?.min)
   };
 }
 
