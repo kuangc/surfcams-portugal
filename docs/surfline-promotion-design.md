@@ -1,8 +1,7 @@
 # Surfline Spot Promotion & Fresh Conditions — Design Spec
 
-Date: 2026-07-06 · Status: draft v2 — review decisions folded in (name-first matching, GH-Action-first
-refresh, fence lon guard, POOR veto); pending only the map-based promotion list (user has picked 32,
-transmission pending)
+Date: 2026-07-06 · Status: v3 — complete. Review decisions + 44-spot promotion selection folded in
+(33 promote-now / 11 deferred under the trusted-cam gate); awaiting final approval → implementation plan
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
 
 ## 1. Goal
@@ -116,9 +115,25 @@ free, no key) rather than Surfline.
   "promoted": [ { "surflineSpotId": "surfline-supertubos", "note": "" } ] }
 ```
 
-Seed list = the user's map selection (32 spots picked 2026-07-06; ids pending transmission via the
-map's "Use selection"/JSON export, which supersedes the earlier recommended-21 default). A build
-check fails if an id is not in `surfline-spots.json`. Promotion is a product decision file —
+Seed list = the user's map selection of **44 spots** (2026-07-06), with the user's gate applied:
+**only spots with a trusted cam are promoted**; the rest stay in the manifest as wanted-but-deferred
+and graduate automatically once their cam association is curated (file-level policy
+`promoteOnlyWithTrustedCam: true`; the build logs deferrals).
+
+Promote now (33): nazare, baleal, lagide, cantinho-da-baia, supertubos, consolacao, santa-cruz,
+ribeira-d-ilhas, reef, pedra-branca, matadouro, praia-do-sul, foz-do-lizandro, sao-juliao,
+praia-das-macas, praia-pequena, praia-grande, praia-da-adraga, praia-do-guincho,
+sao-pedro-do-estoril, paco-de-arcos, parede, praia-da-laje, santo-amaro, carcavelos, praia-de-torre,
+praia-do-barbas, praia-da-rainha, **castelo** (curated exception: the Riviera cam's curated row
+deliberately covers both Rainha and Castelo — one panoramic cam, two breaks — and castelo is the
+existing hand-promoted prototype), fonte-da-telha, lagoa-de-albufeira, bicas, sesimbra.
+
+Deferred pending cam curation (11): cave, praia-da-ursa, praia-de-caxias, cova-do-vapor,
+sao-joao-da-caparica, marcelino, costa-da-caparica, praia-da-saude, praia-da-cornelia,
+praia-do-pescador, praia-do-rei — mostly the Caparica ambiguity strip (§5.8) plus three
+genuinely-different-cove cases (Cave, Ursa, Caxias).
+
+A build check fails if an id is not in `surfline-spots.json`. Promotion is a product decision file —
 deliberately separate from the factual matches file — and is **re-editable at any time** via the
 persistent map page (§5.9); the seed is a starting roster, not a one-shot choice.
 
@@ -239,10 +254,27 @@ existing drive-distance sort, then Surfline rating desc. Limit stays `MONITOR_CA
 The 18 in-fence `needs-review` mappings block Surfline data for their cams. Close the loop:
 
 **Name-first trust rule (user decision).** A cam↔spot association is *trusted* when the cam is AT
-the spot: names roughly match — `nameScore ≥ 0.5`, with a 3 km sanity cap that only absorbs bad geo
-pins — **or**, when names don't match, the pin distance is ≤ 0.2 km. Curated rows always trust.
-Everything else (however close) goes to the curation queue; proximity alone never implies the cam
-shows that break. `build-meo-surfline-matches.js`'s close rule is regenerated accordingly.
+the spot: names roughly match — `nameScore ≥ 0.5` **or slug-normalized containment** (strip
+diacritics/punctuation: catches `ribeira-dilhas` ↔ `Ribeira D'Ilhas`, `praia-do-sul` ↔
+`ericeira-praia-do-sul`) — with a 3 km sanity cap that only absorbs bad geo pins (e.g. Surfline's
+Consolação pin sits 2.6 km from the cam that is at the break) — **or**, when names don't match, the
+pin distance is ≤ 0.2 km. Everything else (however close) goes to the curation queue; proximity
+alone never implies the cam shows that break. `build-meo-surfline-matches.js`'s close rule is
+regenerated accordingly.
+
+**Curated rows carry two semantics** that M1 must split: today a curated row is an *outing corridor*
+("exact Surfline page plus neighbors"). Cam-at-spot trust flows only to the row's primary
+(nearest-distance) id; other corridor members need name/distance/curation like anyone else. During
+M1 curation, curated rows gain an explicit `camCoverage: [surflineSpotIds]` field so a panoramic cam
+can be marked as genuinely showing multiple breaks (the Riviera cam → Rainha + Castelo case) without
+loosening the rule.
+
+**Caparica/Fonte-da-Telha ambiguity zone (user warning).** On the strip (lat 38.55–38.69,
+lon −9.30…−9.15) names share regional stems — "Costa da/de Caparica…", "Fonte da Telha…" — and
+differ only by suffix (NORTE, CDS, Nova, Tarquínio, Sereia/Morena), so n-gram scores are inflated
+for wrong pairs and deflated for right ones. **Name-based auto-trust is disabled in the zone**; only
+curated rows or ≤ 0.2 km qualify, and the name scorer treats regional stems as stopwords so suffixes
+carry the signal. Practical effect: the strip resolves via the curation queue, which is the point.
 
 Effect on current data: 41 of 73 in-fence Surfline spots auto-trust (38 by name, 3 by ≤200 m);
 50 of 62 in-fence stream cams keep a trusted source. Three current `needs-review` rows auto-resolve
@@ -318,7 +350,9 @@ Resolved by user review:
 3. **Rating:** Surfline `POOR` hard-vetoes, hardcoded v1.
 4. **Fence:** lat 38.40–39.65 with lon ≤ −9.05 — Sesimbra kept, Arrábida/Setúbal pocket out.
 
-Remaining input:
+5. **Promotion list received (2026-07-06):** 44 spots; per the user's "only promote with good cams —
+   feel free to override" instruction, the trusted-cam gate splits them 33 promote-now / 11 deferred
+   (§5.1). Deferred spots graduate via the curation queue.
+6. **Caparica naming hazard** flagged by user → ambiguity-zone handling in §5.8.
 
-1. **Promotion list:** the 32-spot map selection still needs transmitting (map "Use selection"
-   button or JSON paste); it becomes the manifest seed verbatim and stays editable via §5.9.
+No remaining inputs — spec is complete pending final approval to start implementation planning.
