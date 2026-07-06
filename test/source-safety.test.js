@@ -33,6 +33,39 @@ test("CDN dependencies are pinned to explicit versions", () => {
   assert.match(indexSource, /rel="icon"/);
 });
 
+test("home screen install metadata points to generated app icons", () => {
+  assert.match(indexSource, /<link rel="manifest" href="\.\/manifest\.webmanifest">/);
+  assert.match(indexSource, /<link rel="apple-touch-icon" href="\.\/apple-touch-icon\.png">/);
+  assert.match(indexSource, /<meta name="theme-color" content="#08756f">/);
+  assert.match(packageSource, /"build-pwa-icons":\s*"node scripts\/generate-pwa-icons\.js"/);
+  assert.ok(fs.existsSync("manifest.webmanifest"), "manifest.webmanifest exists");
+
+  const manifest = JSON.parse(fs.readFileSync("manifest.webmanifest", "utf8"));
+  assert.equal(manifest.name, "Surfcams Portugal");
+  assert.equal(manifest.short_name, "Surfcams");
+  assert.equal(manifest.start_url, "./");
+  assert.equal(manifest.scope, "./");
+  assert.equal(manifest.display, "standalone");
+  assert.equal(manifest.theme_color, "#08756f");
+  assert.equal(manifest.background_color, "#f7fbfb");
+
+  const iconSizes = new Map(manifest.icons.map((icon) => [icon.src, icon.sizes]));
+  assert.equal(iconSizes.get("./icons/icon-192.png"), "192x192");
+  assert.equal(iconSizes.get("./icons/icon-512.png"), "512x512");
+
+  for (const [iconPath, expectedSize] of [
+    ["icons/icon-192.png", 192],
+    ["icons/icon-512.png", 512],
+    ["apple-touch-icon.png", 180]
+  ]) {
+    assert.ok(fs.existsSync(iconPath), `${iconPath} exists`);
+    const icon = fs.readFileSync(iconPath);
+    assert.equal(icon.subarray(1, 4).toString("ascii"), "PNG", `${iconPath} is a PNG`);
+    assert.equal(icon.readUInt32BE(16), expectedSize, `${iconPath} width`);
+    assert.equal(icon.readUInt32BE(20), expectedSize, `${iconPath} height`);
+  }
+});
+
 test("v3 source has monitor-first routing and no v2 monitor overlay", () => {
   assert.match(indexSource, /id="monitorScreen"[^>]*data-active="true"/);
   assert.doesNotMatch(indexSource, /id="monitorDeck"/);

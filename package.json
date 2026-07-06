@@ -8,6 +8,7 @@
     "dev": "node scripts/dev-server.js",
     "test": "node --test \"test/*.test.js\"",
     "embed-data": "node scripts/embed-camera-db.js",
+    "build-pwa-icons": "node scripts/generate-pwa-icons.js",
     "build-surfline-spots": "node scripts/build-surfline-spots.js",
     "build-meo-surfline-matches": "node scripts/build-meo-surfline-matches.js",
     "build-spot-data": "node scripts/build-spot-data.js",
