@@ -1,6 +1,8 @@
 # Surfline Spot Promotion & Fresh Conditions — Design Spec
 
-Date: 2026-07-06 · Status: draft, pending user review + map-based promotion selection
+Date: 2026-07-06 · Status: draft v2 — review decisions folded in (name-first matching, GH-Action-first
+refresh, fence lon guard, POOR veto); pending only the map-based promotion list (user has picked 32,
+transmission pending)
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
 
 ## 1. Goal
@@ -16,8 +18,8 @@ much better. This design:
 3. Refreshes that data **politely**: one small scheduled daily fetch for a bounded "fresh set" inside
    the geographic fence, plus an **on-load client refresh** (Open-Meteo marine model) for everything
    outside the fence or stale.
-4. Constrains "Might be good" proposals to a **geographic fence: Nazaré (39.65°N) → Sesimbra (38.40°N)**
-   and to spots with fresh forecast provenance.
+4. Constrains "Might be good" proposals to a **geographic fence: Nazaré (39.65°N) → Sesimbra
+   (38.40°N), west coast only (lon ≤ −9.05°)** and to spots with fresh forecast provenance.
 
 ## 2. Current state (evidence)
 
@@ -42,22 +44,25 @@ much better. This design:
 
 ## 3. Geographic fence
 
-Latitude band, inclusive: **south 38.40° (Sesimbra) → north 39.65° (Nazaré/Praia do Norte)**.
-Longitude is unconstrained (all coastal spots in band; inland river cams are excluded from
-suggestion logic by requiring a Surfline mapping or promotion).
+Latitude band, inclusive: **south 38.40° (Sesimbra) → north 39.65° (Nazaré/Praia do Norte)**, plus a
+longitude guard **lon ≤ −9.05°**. The guard keeps Sesimbra, Espichel, and the Meco/Bicas stretch while
+excluding the Arrábida/Setúbal/Tróia pocket (user decision: Sesimbra is the only spot of interest down
+there). Inland river cams fall out automatically. Nazaré (−9.086) and Sesimbra (−9.097) both pass.
 
-Counts from current data:
+Counts from current data (fence v2):
 
 | Set | In fence | Total |
 |---|---|---|
-| Surfline spots (normalized catalog) | **74** (all with primary cached page) | 80 |
-| MEO spots | 96 (67 with live stream) | 190 |
-| MEO→Surfline mapping rows | **84** (11 curated · 55 generated · 18 needs-review) | 89 |
-| Surfline spots with a stream-cam MEO match | 71 of 74 | — |
-| Surfline spots with no cam (report-only candidates) | 3 (`sao-lourenco`, `coxos`, `praia-da-cruz-quebrada`) | — |
-| Out of fence (all south: Pego→Burrinho) | — | 6 |
+| Surfline spots (normalized catalog) | **73** (all with primary cached page) | 80 |
+| MEO spots | 89 (62 with live stream) | 190 |
+| MEO→Surfline mapping rows | **83** (11 curated · 54 generated · 18 needs-review) | 89 |
+| Surfline spots with a **trusted** cam under the §5.8 name-first rule | 41 of 73 (38 by name, 3 by ≤200 m) | — |
+| Surfline spots with no cam at all (report-only candidates) | 3 (`sao-lourenco`, `coxos`, `praia-da-cruz-quebrada`) | — |
+| Out of fence | — | 7 (6 south of Sesimbra + `portinho-da-arrabida`) |
 
-Fence constants live in `src/config.js` (`SUGGESTION_FENCE = { north: 39.65, south: 38.40 }`).
+In-fence stream cams that get a trusted Surfline source under the same rule: **50 of 62**.
+Fence constants live in `src/config.js`
+(`SUGGESTION_FENCE = { north: 39.65, south: 38.40, westOfLon: -9.05 }`).
 
 ## 4. Approaches considered
 
@@ -75,9 +80,11 @@ no immediate user-visible gain. Rejected for v1; approach A leaves a migration p
 Surfline data. Fails the requirement: cam-less quality spots (Coxos, São Lourenço) can never be
 favorited or proposed. Rejected.
 
-Refresh transport options: local scheduled headed-Chrome CDP (recommended — the only path proven to
-bypass Cloudflare, per CLAUDE.md), GitHub-Actions plain HTTP (known 403 risk; optional experiment,
-off by default), client-direct Surfline (impossible: CORS + Cloudflare), third-party CORS proxies
+Refresh transport options: **GitHub Actions fetcher (primary — user decision: scheduling reliability,
+logs, and failure alerting beat a laptop cron)**, gated on a feasibility probe since datacenter IPs
+may hit the same Cloudflare 403 seen locally — the probe tests both report pages and the
+`services.surfline.com` KBYG JSON API; local headed-Chrome CDP (the proven path, kept as tested
+fallback); client-direct Surfline (impossible: CORS + Cloudflare); third-party CORS proxies
 (rejected: impolite, leaks traffic). On-load client refresh uses **Open-Meteo Marine** (CORS-open,
 free, no key) rather than Surfline.
 
@@ -109,12 +116,11 @@ free, no key) rather than Surfline.
   "promoted": [ { "surflineSpotId": "surfline-supertubos", "note": "" } ] }
 ```
 
-Seed list = the user's map selection (recommended default: 21 spots — nazare, baleal, lagide,
-cantinho-da-baia, supertubos, consolacao, santa-cruz, ribeira-d-ilhas, coxos, foz-do-lizandro,
-sao-juliao, praia-grande, praia-do-guincho, carcavelos, sao-pedro-do-estoril, costa-da-caparica,
-castelo, fonte-da-telha, lagoa-de-albufeira, bicas, sesimbra). A build check fails if an id is not
-in `surfline-spots.json`. Promotion is a product decision file — deliberately separate from the
-factual matches file.
+Seed list = the user's map selection (32 spots picked 2026-07-06; ids pending transmission via the
+map's "Use selection"/JSON export, which supersedes the earlier recommended-21 default). A build
+check fails if an id is not in `surfline-spots.json`. Promotion is a product decision file —
+deliberately separate from the factual matches file — and is **re-editable at any time** via the
+persistent map page (§5.9); the seed is a starting roster, not a one-shot choice.
 
 ### 5.2 Promoted spot records — `scripts/build-promoted-spots.js` → `data/promoted-spots.json`
 
@@ -123,8 +129,9 @@ For each promoted id, emit a camera-DB-compatible record:
 - `id` = the existing `surfline-*` id (favorites continuity; `surfline-castelo` keeps working),
   `name`, `lat`, `lon`, `region` (nearest matched MEO region, else breadcrumb-derived), `hasStream: false`,
   `surfline: { spotId, pageUrl }`, `surfMetadata` (breakType, best.*, coastExposure, guideSummary),
-  `linkedCamId` = nearest matched MEO stream cam within 1.5 km whose mapping is not `needs-review`
-  (detail view shows that cam's stream above the Surfline report link), `promoted: true`.
+  `linkedCamId` = nearest MEO stream cam with a **trusted association** per the §5.8 name-first rule
+  (detail view shows that cam's stream above the Surfline report link; no trusted cam → report-only),
+  `promoted: true`.
 - Client merge in `loadCameraDb()` (`src/camera-data.js`): promoted records are appended;
   **if an id collides with an embedded camera entry the promoted record wins** (this absorbs and
   retires the hand-edited `surfline-castelo` row without touching crawler output).
@@ -156,15 +163,16 @@ keeps owning static metadata; a new `scripts/extract-surfline-conditions.js` own
 `{ waveMinM, waveMaxM, windKmh, windDirDeg, periodS, swellDirDeg, rating?, source, fetchedAt, ageHours }`
 with provenance precedence:
 
-1. **`surfline-fresh`** — spot is promoted, or is a MEO cam whose mapping is curated/generated
-   (never `needs-review`) with distance ≤ 1.5 km; conditions entry exists with age < 36 h.
+1. **`surfline-fresh`** — spot is promoted, or is a MEO cam with a **trusted Surfline association**
+   (§5.8 name-first rule); conditions entry exists with age < 36 h.
    Wave = Surfline `surfMinM..surfMaxM`; rating carried through.
 2. **`live-model`** — on-load Open-Meteo result from localStorage (age < 2 h).
 3. **`meo-static`** — today's behavior (embedded crawl strings), explicitly labeled stale.
 
 `rateSurfSpot()` changes to consume this object (wave-range check uses min/max overlap with
 preferences instead of a single number; Surfline `rating ≥ FAIR` becomes a positive signal,
-`POOR` vetoes `isRecommended`). The UI conditions strip gains a provenance chip:
+`POOR` vetoes `isRecommended` — hardcoded constant in the rating function for v1, one line, no
+preference surface). The UI conditions strip gains a provenance chip:
 `Surfline · 6h` / `Model · now` / `MEO · Jun 7`. `surfSizeScale` preference stays but defaults to
 no-op for `surfline-fresh` (it exists to correct MEO bias, which Surfline data doesn't have).
 
@@ -185,7 +193,7 @@ Surfline conditions are older than 36 h, any unmatched cam):
 - Seam left for a future `surfline-live` provider (e.g. a personal Cloudflare Worker proxy with KV
   caching) — out of scope v1; revisit only if Open-Meteo proves insufficient.
 
-### 5.6 Daily polite refresh — local scheduled runner (new: `scripts/refresh-surfline-daily.sh` + launchd plist)
+### 5.6 Daily polite refresh — scheduled runner (GH Action primary, local CDP fallback)
 
 - **Fresh set** = promoted spots ∪ Surfline matches of current default favorites ∪ in-fence
   might-be-good candidates. Fetch **primary pages only for a minimal covering set**: every cached
@@ -193,14 +201,29 @@ Surfline conditions are older than 36 h, any unmatched cam):
   in-fence spots (set-cover computed from `sourceRecords`; verify nearby snapshot completeness in
   implementation — if nearby records lack a needed field, fall back to primary fetches for promoted
   spots only).
-- Politeness budget: ≤ 20 page requests/day, batch 4, ≥ 300 ms delay + jitter (existing
-  `cache-surfline-browser` flags), one retry max, random start minute inside a 06:00–07:00 local
-  window (before the morning surf check), abort-and-keep-stale on repeated failures.
-- Pipeline per run: CDP fetch → `extract-surfline-conditions` → `build-surfline-spots` (static drift)
+- Politeness budget (transport-independent): ≤ 20 requests/day, batch 4, ≥ 300 ms delay + jitter,
+  one retry max, random start minute inside a 06:00–07:00 Lisbon window (before the morning surf
+  check), abort-and-keep-stale on repeated failures.
+- Pipeline per run: fetch → `extract-surfline-conditions` → `build-surfline-spots` (static drift)
   → commit only `data/surfline-conditions.json` (+ static files when changed) with a conventional
   `chore(data): refresh surfline conditions` message → push (GH Pages redeploys).
-- Host: the user's Mac via launchd (headed Chrome is the only Cloudflare-proven path; CI stays
-  tide-only). An optional GH-Action HTTP variant can be added later as an experiment, disabled by default.
+- **Host & transport: GitHub Actions scheduled workflow (primary — user decision: reliable
+  scheduling, run logs, built-in failure alerting).** Gated on **M3 step 0, a manual
+  `workflow_dispatch` probe** that tests from a runner, committing nothing: (a) report-page HTTP
+  fetch, (b) the `services.surfline.com` KBYG JSON API. Repo evidence says local direct fetches hit
+  Cloudflare 403; datacenter IPs may fare worse — hence probe before schedule. All scripts are
+  runnable and tested locally first (same npm entrypoints). If the probe fails both paths, fall back
+  to the user's Mac via launchd driving the proven headed-Chrome CDP flow.
+- **Fail-safe invariants (either transport):** validate every payload before writing cache
+  (`__NEXT_DATA__` present / JSON schema match); never synthesize placeholder provider HTML
+  (existing CLAUDE.md rule); if valid results < 80% of the fresh set, keep last-good data and exit
+  nonzero so the run is a loud failure; commit only validated diffs.
+- **Logging & alerting:** per-spot fetch status table written to `$GITHUB_STEP_SUMMARY` each run;
+  failed scheduled runs email the workflow actor (GitHub default notifications); plus a freshness
+  guard step that opens/updates a pinned "surfline conditions stale" issue whenever newest
+  `fetchedAt` > 48 h — this catches *silent* stoppage too (GitHub auto-disables cron after 60 days
+  of repo inactivity; the daily data commits themselves keep the repo active). The in-app staleness
+  banner (below) is the last line of defense.
 - Staleness surfacing: app shows the provenance chip age; Monitor shows a subtle "conditions data
   from Jun 11" banner when the newest Surfline conditions are > 48 h old.
 
@@ -215,11 +238,37 @@ existing drive-distance sort, then Surfline rating desc. Limit stays `MONITOR_CA
 
 The 18 in-fence `needs-review` mappings block Surfline data for their cams. Close the loop:
 
+**Name-first trust rule (user decision).** A cam↔spot association is *trusted* when the cam is AT
+the spot: names roughly match — `nameScore ≥ 0.5`, with a 3 km sanity cap that only absorbs bad geo
+pins — **or**, when names don't match, the pin distance is ≤ 0.2 km. Curated rows always trust.
+Everything else (however close) goes to the curation queue; proximity alone never implies the cam
+shows that break. `build-meo-surfline-matches.js`'s close rule is regenerated accordingly.
+
+Effect on current data: 41 of 73 in-fence Surfline spots auto-trust (38 by name, 3 by ≤200 m);
+50 of 62 in-fence stream cams keep a trusted source. Three current `needs-review` rows auto-resolve
+(consolação and baleal by name, cantinho-da-baía @0.2 km); ~17 loose corridor associations demote to
+the queue (e.g. `estoril←tamariz@0.5 km`, `cave←ribeira-dilhas@1.2 km`). Known scorer weaknesses to
+fix or hand-curate fast: same-beach pairs the current `nameScore` misses, like
+`praia-do-sul←ericeira-praia-do-sul` and the `crismina←cresmina` spelling variant.
+
+Workflow:
+
 - Keep using `docs/surfline-needs-review.html` for judgment calls; add
   `scripts/apply-mapping-feedback.js` that ingests the page's exported feedback JSON and writes
   accepted picks into `data/meo-surfline-matches.json` as `source: "curated"` rows (rejected →
   `reviewStatus: "rejected"`, excluded from runtime), then reruns the downstream builds.
-- Promotion does not wait on this; it only affects which MEO cams get `surfline-fresh` provenance.
+- Promotion does not wait on this; it only affects which MEO cams get `surfline-fresh` provenance
+  and which promoted spots get a `linkedCamId`.
+
+### 5.9 Persistent promotion map page — `docs/surfline-promotion-map.html` (new)
+
+The chat map widget used for the first selection round becomes a repo artifact, mirroring the
+needs-review page pattern: `scripts/build-promotion-map-html.js` renders a self-contained page from
+the live data files — coast map + all in-fence Surfline spots, tier-colored by trusted-cam status,
+with the **current manifest state pre-checked**. Toggling spots produces an updated
+`surfline-promotions.json` body to copy/download; the same page lists the untrusted-association
+queue for quick confirm/reject export into `apply-mapping-feedback.js`. Re-curating promotions is
+therefore a routine data-only commit, available any time — never a one-shot decision.
 
 ## 6. Error handling
 
@@ -236,29 +285,40 @@ The 18 in-fence `needs-review` mappings block Surfline data for their cams. Clos
   needs-review), age math, unit conversions (3 ft → 0.9 m, 10 kts → 18.5 km/h).
 - `test/promoted-spots.test.js`: merge/collision (castelo override), favorites round-trip with
   promoted ids, linkedCam selection rules.
-- `test/monitor-cameras.test.js`: fence gating (39.66 excluded, 39.65/38.40 included), freshness
-  gating, promoted spots eligible.
+- `test/monitor-cameras.test.js`: fence gating (lat 39.66 excluded, 39.65/38.40 included; lon −9.04
+  excluded, −9.06 included), freshness gating, promoted spots eligible.
+- Name-first trust rule table: name-match @2.6 km → trusted; no-name @0.3 km → untrusted;
+  no-name @0.15 km → trusted; curated always trusted.
 - Extraction: fixture cached page (committed test fixture, not live fetch) → conditions record
   snapshot; nearby-record completeness assertion.
 - Existing 13 test files keep passing unchanged (rateSurfSpot keeps a back-compat wrapper).
 
 ## 8. Rollout
 
-1. **M1 — mapping & data:** apply-feedback importer; curate the 18 in-fence needs-review rows;
-   conditions extractor + units fix; promotion manifest + build (map selection as seed).
+1. **M1 — mapping & data:** regenerate matches under the §5.8 name-first close rule; apply-feedback
+   importer; curate the demoted/needs-review queue; conditions extractor + units fix; promotion
+   manifest + build (map selection as seed); persistent promotion map page (§5.9).
 2. **M2 — app:** forecast-sources resolution + rating changes + provenance chips; promoted spots
    merged, favoritable, on Explore map; fence + freshness gates on Might-be-good.
-3. **M3 — refresh:** launchd daily runner (set-cover fetch, commit, push); staleness banner;
+3. **M3 — refresh:** step 0 probe workflow (report pages + KBYG from a runner); then scheduled GH
+   Action with politeness budget, validate-before-commit, step summaries, failure alerting, and the
+   48 h freshness-guard issue — or launchd CDP fallback if the probe fails; staleness banner;
    on-load Open-Meteo refresher.
 4. Out of scope v1: Surfline live proxy, dual-entity refactor, per-user fence config, drive-time
    work (issue #1), service worker/offline.
 
-## 9. Open questions (for review)
+## 9. Decisions from review (2026-07-06) + remaining input
 
-1. **Promotion list:** confirm/adjust the map selection (seed = 21 recommended above).
-2. **Runner host:** OK to run the daily refresh from your Mac via launchd (recommended), or prefer
-   attempting a GH-Action HTTP fetcher first despite the 403 risk?
-3. **Rating semantics:** should Surfline `POOR` hard-veto "Good for us" even when your size/wind
-   preferences pass (recommended: yes)?
-4. **Fence bounds:** 38.40–39.65 inclusive matches "Nazaré→Sesimbra". Portinho da Arrábida (38.47,
-   lon −8.99) is inside by latitude — keep or exclude the Arrábida/Setúbal pocket?
+Resolved by user review:
+
+1. **Matching:** name-first trust rule (§5.8) — the cam must be AT the spot; distance tolerance
+   exists only to absorb bad geo pins when names match; no-name tolerance ≤ 0.2 km.
+2. **Runner:** GH Actions primary with probe + fail-safe + logging/alerting (§5.6); local CDP as
+   tested fallback. Everything dry-runs locally before scheduling.
+3. **Rating:** Surfline `POOR` hard-vetoes, hardcoded v1.
+4. **Fence:** lat 38.40–39.65 with lon ≤ −9.05 — Sesimbra kept, Arrábida/Setúbal pocket out.
+
+Remaining input:
+
+1. **Promotion list:** the 32-spot map selection still needs transmitting (map "Use selection"
+   button or JSON paste); it becomes the manifest seed verbatim and stays editable via §5.9.
