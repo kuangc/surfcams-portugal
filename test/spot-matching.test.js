@@ -4,7 +4,8 @@ import {
   normalizeSlugName,
   slugNamesMatch,
   inCaparicaAmbiguityZone,
-  evaluateAssociation
+  evaluateAssociation,
+  NAME_MATCH_MAX_KM
 } from "../scripts/lib/spot-matching.js";
 
 test("normalizeSlugName strips diacritics, punctuation, case", () => {
@@ -54,4 +55,15 @@ test("evaluateAssociation: name-first rule", () => {
   assert.deepEqual(
     evaluateAssociation({ nameScore: 0, distanceKm: 0.7, curated: true, camLat: 38.61, camLon: -9.21 }),
     { trusted: true, why: "curated" });
+});
+
+test("evaluateAssociation boundary values", () => {
+  // exactly at the name-match distance cap -> still trusted
+  assert.deepEqual(
+    evaluateAssociation({ nameScore: 0.9, distanceKm: NAME_MATCH_MAX_KM, curated: false, camLat: 39.32, camLon: -9.36 }),
+    { trusted: true, why: "name" });
+  // just past the cap, no proximity fallback -> untrusted
+  assert.deepEqual(
+    evaluateAssociation({ nameScore: 0.9, distanceKm: NAME_MATCH_MAX_KM + 0.001, curated: false, camLat: 39.32, camLon: -9.36 }),
+    { trusted: false, why: "untrusted" });
 });
