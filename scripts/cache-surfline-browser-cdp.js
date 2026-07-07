@@ -14,7 +14,7 @@ const options = {
   port: Number(readArg("--port") || 9223),
   batchSize: Number(readArg("--batch-size") || 2),
   delayMs: Number(readArg("--delay-ms") || 400),
-  ids: new Set(readArg("--ids")?.split(",").map((id) => id.trim()).filter(Boolean) || [])
+  ids: new Set((readArg("--only") || readArg("--ids"))?.split(",").map((id) => id.trim()).filter(Boolean) || [])
 };
 
 function readArg(name) {

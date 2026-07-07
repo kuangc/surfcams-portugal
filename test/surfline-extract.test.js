@@ -46,6 +46,8 @@ test("extractConditionsRecords normalizes primary + nearby, FT->m, KTS->kmh", ()
   assert.equal(nearby.rating, "POOR");
   assert.equal(nearby.ratingValue, 1);
   assert.equal(nearby.surfMaxM, 0.6);
+  assert.equal(nearby.swells[0]?.periodS, 11);
+  assert.equal(nearby.waterTempC, 15.6);
 });
 
 test("null and malformed inputs degrade to null/empty", () => {

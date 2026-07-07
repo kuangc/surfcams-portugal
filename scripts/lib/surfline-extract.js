@@ -40,6 +40,8 @@ function ratingValue(rating) {
 function normalizeRecord(spot, forecast, sourceKind, fetchedAt) {
   const wave = forecast?.waveHeight || spot?.waveHeight || null;
   const wind = forecast?.wind || spot?.wind || null;
+  const swells = (forecast?.swells ?? spot?.swells) || [];
+  const waterTemp = forecast?.waterTemp ?? spot?.waterTemp;
   const conditions = forecast?.conditions?.value ?? spot?.conditions?.value ?? null;
   const rating = conditions ? String(conditions).toUpperCase() : null;
   return {
@@ -54,10 +56,10 @@ function normalizeRecord(spot, forecast, sourceKind, fetchedAt) {
     surfMaxM: feetToMeters(wave?.max),
     windKmh: knotsToKmh(wind?.speed),
     windDirDeg: Number.isFinite(wind?.direction) ? wind.direction : null,
-    swells: (forecast?.swells || []).filter((s) => Number.isFinite(s?.height)).map((s) => ({
+    swells: swells.filter((s) => Number.isFinite(s?.height)).map((s) => ({
       hM: feetToMeters(s.height), periodS: s.period ?? null, dirDeg: s.direction ?? null
     })),
-    waterTempC: fahrenheitToCelsius(forecast?.waterTemp?.min)
+    waterTempC: fahrenheitToCelsius(waterTemp?.min)
   };
 }
 

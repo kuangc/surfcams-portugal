@@ -1,29 +1,93 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { shouldReplace, passesValidityFloor, parseCliArgs } from "../scripts/extract-surfline-conditions.js";
+import * as conditionsModule from "../scripts/extract-surfline-conditions.js";
 
-test("shouldReplace: primary always beats nearby, regardless of age", () => {
-  const existingNearbyNewer = { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" };
-  const candidatePrimaryOlder = { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" };
-  assert.equal(shouldReplace(existingNearbyNewer, candidatePrimaryOlder), true);
+const { shouldReplace, passesValidityFloor, parseCliArgs } = conditionsModule;
+
+test("shouldReplace: same-kind newer records win for primary and nearby", () => {
+  assert.equal(conditionsModule.NEARBY_FRESHNESS_OVERRIDE_HOURS, 6);
+
+  const cases = [
+    {
+      name: "same-kind primary newer wins",
+      existing: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "2026-07-06T09:00:00Z" },
+      expected: true
+    },
+    {
+      name: "same-kind nearby newer wins",
+      existing: { sourceKind: "nearby", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" },
+      expected: true
+    }
+  ];
+
+  for (const { name, existing, candidate, expected } of cases) {
+    assert.equal(shouldReplace(existing, candidate), expected, name);
+  }
 });
 
-test("shouldReplace: nearby never displaces an existing primary, even when newer", () => {
-  const existingPrimaryOlder = { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" };
-  const candidateNearbyNewer = { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" };
-  assert.equal(shouldReplace(existingPrimaryOlder, candidateNearbyNewer), false);
+test("shouldReplace: same-kind invalid dates do not win", () => {
+  const cases = [
+    {
+      name: "same-kind invalid candidate date does not win",
+      existing: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "not-a-date" },
+      expected: false
+    },
+    {
+      name: "same-kind invalid existing date does not win",
+      existing: { sourceKind: "primary", fetchedAt: "not-a-date" },
+      candidate: { sourceKind: "primary", fetchedAt: "2026-07-06T09:00:00Z" },
+      expected: false
+    }
+  ];
+
+  for (const { name, existing, candidate, expected } of cases) {
+    assert.equal(shouldReplace(existing, candidate), expected, name);
+  }
 });
 
-test("shouldReplace: same kind, newer wins (primary vs primary)", () => {
-  const existingPrimaryOlder = { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" };
-  const candidatePrimaryNewer = { sourceKind: "primary", fetchedAt: "2026-07-06T09:00:00Z" };
-  assert.equal(shouldReplace(existingPrimaryOlder, candidatePrimaryNewer), true);
+test("shouldReplace: primary candidate beats nearby existing", () => {
+  const cases = [
+    {
+      name: "primary candidate beats nearby existing",
+      existing: { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      expected: true
+    }
+  ];
+
+  for (const { name, existing, candidate, expected } of cases) {
+    assert.equal(shouldReplace(existing, candidate), expected, name);
+  }
 });
 
-test("shouldReplace: same kind, newer wins (nearby vs nearby)", () => {
-  const existingNearbyOlder = { sourceKind: "nearby", fetchedAt: "2026-07-06T06:00:00Z" };
-  const candidateNearbyNewer = { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" };
-  assert.equal(shouldReplace(existingNearbyOlder, candidateNearbyNewer), true);
+test("shouldReplace: nearby candidate needs more than six hours freshness over primary", () => {
+  const cases = [
+    {
+      name: "nearby candidate five hours newer than primary is kept out",
+      existing: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "nearby", fetchedAt: "2026-07-06T11:00:00Z" },
+      expected: false
+    },
+    {
+      name: "nearby candidate seven hours newer than primary wins",
+      existing: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "nearby", fetchedAt: "2026-07-06T13:00:00Z" },
+      expected: true
+    },
+    {
+      name: "nearby candidate missing fetchedAt does not beat primary",
+      existing: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      candidate: { sourceKind: "nearby" },
+      expected: false
+    }
+  ];
+
+  for (const { name, existing, candidate, expected } of cases) {
+    assert.equal(shouldReplace(existing, candidate), expected, name);
+  }
 });
 
 test("passesValidityFloor: 8/10 pages parsed with conditions passes", () => {

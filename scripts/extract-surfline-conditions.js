@@ -7,6 +7,8 @@ import { parseNextDataState, extractConditionsRecords } from "./lib/surfline-ext
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SURFLINE_DB_PATH = path.join(ROOT, "data", "surfline-spots.json");
 const MIN_VALID_RATIO = 0.5; // structural validity floor for a full-cache extraction
+export const NEARBY_FRESHNESS_OVERRIDE_HOURS = 6;
+const HOUR_MS = 60 * 60 * 1000;
 
 export function parseCliArgs(argv, { knownFlags = ["--cache-dir", "--out"] } = {}) {
   const values = {};
@@ -29,11 +31,30 @@ export function parseCliArgs(argv, { knownFlags = ["--cache-dir", "--out"] } = {
   return { values, errors };
 }
 
-// primary beats nearby; newer beats older (within the same kind)
+function timestampMs(value) {
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+// Replacement contract:
+// - same sourceKind: candidate wins only with a strictly newer valid fetchedAt.
+// - primary candidate beats nearby existing.
+// - nearby candidate beats primary existing only when more than
+//   NEARBY_FRESHNESS_OVERRIDE_HOURS newer.
 export function shouldReplace(existing, candidate) {
   if (!existing) return true;
-  if (candidate.sourceKind === "primary" && existing.sourceKind !== "primary") return true;
-  if (candidate.sourceKind === existing.sourceKind && String(candidate.fetchedAt) > String(existing.fetchedAt)) return true;
+  if (candidate.sourceKind === existing.sourceKind) {
+    const candidateMs = timestampMs(candidate.fetchedAt);
+    const existingMs = timestampMs(existing.fetchedAt);
+    return candidateMs !== null && existingMs !== null && candidateMs > existingMs;
+  }
+  if (candidate.sourceKind === "primary" && existing.sourceKind === "nearby") return true;
+  if (candidate.sourceKind === "nearby" && existing.sourceKind === "primary") {
+    const candidateMs = timestampMs(candidate.fetchedAt);
+    const existingMs = timestampMs(existing.fetchedAt);
+    if (candidateMs === null || existingMs === null) return false;
+    return candidateMs - existingMs > NEARBY_FRESHNESS_OVERRIDE_HOURS * HOUR_MS;
+  }
   return false;
 }
 

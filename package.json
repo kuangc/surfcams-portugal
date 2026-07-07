@@ -19,6 +19,7 @@
     "build-promoted-spots": "node scripts/build-promoted-spots.js",
     "build-promotion-map": "node scripts/build-promotion-map-html.js",
     "extract-surfline-conditions": "node scripts/extract-surfline-conditions.js",
+    "refresh-surfline": "node scripts/refresh-surfline-conditions.js",
     "fetch-tides": "node scripts/fetch-tides.js",
     "cache-surfline": "node scripts/cache-surfline-pages.js",
     "cache-surfline-browser": "node scripts/cache-surfline-browser-cdp.js",
