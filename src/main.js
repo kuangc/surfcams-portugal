@@ -525,10 +525,11 @@ function createSurflineControl(camera) {
 function createConditionStrip(camera, { showName = false, compact = false, showSurfline = !compact } = {}) {
   const strip = document.createElement("div");
   strip.className = compact ? "condition-strip condition-strip--compact" : "condition-strip";
-  strip.setAttribute("aria-label", `${camera.name} / ${formatConditionLine(camera, state.preferences)}`);
+  const resolved = getConditions(camera);
+  strip.setAttribute("aria-label", `${camera.name} / ${formatConditionLine(camera, state.preferences, resolved)}`);
   const driveEstimate = findDriveEstimate(camera, state.spotData);
   const chips = new Map(
-    formatConditionChips(camera, state.preferences, { driveEstimate })
+    formatConditionChips(camera, state.preferences, { driveEstimate }, resolved)
       .map((chip) => [chip.key, chip])
   );
 
@@ -562,7 +563,6 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
     if (chip) metricsRow.appendChild(createConditionToken(chip));
   });
 
-  const resolved = getConditions(camera);
   const chip = document.createElement("span");
   chip.className = `provenance-chip provenance-${resolved.source}`;
   chip.textContent = resolved.source === "surfline-fresh"

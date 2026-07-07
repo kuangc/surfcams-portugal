@@ -29,6 +29,24 @@ test("first class cameras include live feeds and explicit Surfline-only spots", 
   assert.equal(castelo.name, "Costa da Caparica | Costelo (Irmao)");
 });
 
+test("first class cameras include promoted streamless spots", () => {
+  const cameras = firstClassCameras({ cameras: [
+    { id: "live-cam", hasStream: true },
+    { id: "promoted-only", hasStream: false, promoted: true }
+  ]});
+
+  assert.deepEqual(cameras.map((camera) => camera.id), ["live-cam", "promoted-only"]);
+});
+
+test("first class cameras exclude plain streamless spots", () => {
+  const cameras = firstClassCameras({ cameras: [
+    { id: "plain-streamless", hasStream: false, promoted: false, firstClass: false },
+    { id: "explicit-first-class", hasStream: false, firstClass: true }
+  ]});
+
+  assert.deepEqual(cameras.map((camera) => camera.id), ["explicit-first-class"]);
+});
+
 test("loadCameraDb merges private stream overrides into embedded cameras", async () => {
   const streamUrl = "https://cams.surfline.example/castelo/playlist.m3u8";
   const documentRef = {

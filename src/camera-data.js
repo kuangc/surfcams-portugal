@@ -81,7 +81,7 @@ export function availableCameras(cameraDb) {
 }
 
 export function firstClassCameras(cameraDb) {
-  return cameraDb.cameras.filter((camera) => camera.hasStream || camera.firstClass);
+  return cameraDb.cameras.filter((camera) => camera.hasStream || camera.firstClass || camera.promoted);
 }
 
 export function mergePromotedSpots(cameraDb, promotedDb) {
