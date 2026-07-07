@@ -8,19 +8,25 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SURFLINE_DB_PATH = path.join(ROOT, "data", "surfline-spots.json");
 const MIN_VALID_RATIO = 0.5; // structural validity floor for a full-cache extraction
 
-const args = process.argv.slice(2);
-
-function readArg(name) {
-  const exact = args.find((arg) => arg.startsWith(`${name}=`));
-  if (exact) return exact.slice(name.length + 1);
-  const index = args.indexOf(name);
-  return index === -1 ? null : args[index + 1];
-}
-
-function unknownArgument() {
-  const known = new Set(["--cache-dir", "--out"]);
-  return args.find((arg) => arg.startsWith("--")
-    && ![...known].some((name) => arg === name || arg.startsWith(`${name}=`)));
+export function parseCliArgs(argv, { knownFlags = ["--cache-dir", "--out"] } = {}) {
+  const values = {};
+  const errors = [];
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    const eq = arg.match(/^(--[^=]+)=(.*)$/);
+    const flag = eq ? eq[1] : arg;
+    if (!flag.startsWith("--")) { errors.push(`Unexpected argument: ${arg}`); continue; }
+    if (!knownFlags.includes(flag)) { errors.push(`Unknown argument: ${flag}`); continue; }
+    let value = eq ? eq[2] : argv[i + 1];
+    if (!eq) i += 1;
+    if (value === undefined || value === "" || String(value).startsWith("--")) {
+      errors.push(`Missing value for ${flag}`);
+      if (!eq && String(value || "").startsWith("--")) i -= 1; // don't swallow the next flag
+      continue;
+    }
+    values[flag] = value;
+  }
+  return { values, errors };
 }
 
 // primary beats nearby; newer beats older (within the same kind)
@@ -36,15 +42,17 @@ export function passesValidityFloor(pagesParsed, fileCount, conditionCount, rati
 }
 
 async function main() {
-  const badArg = unknownArgument();
-  if (badArg) {
-    console.error(`Unknown argument: ${badArg}`);
+  const { values, errors } = parseCliArgs(process.argv.slice(2));
+  if (errors.length) {
+    for (const e of errors) console.error(e);
     process.exitCode = 1;
     return;
   }
 
-  const CACHE_DIR = readArg("--cache-dir") || path.join(ROOT, ".cache", "surfline", "pages");
-  const OUT_FILE = readArg("--out") || path.join(ROOT, "data", "surfline-conditions.json");
+  const DEFAULT_CACHE_DIR = path.join(ROOT, ".cache", "surfline", "pages");
+  const DEFAULT_OUT_FILE = path.join(ROOT, "data", "surfline-conditions.json");
+  const CACHE_DIR = values["--cache-dir"] ? path.resolve(values["--cache-dir"]) : DEFAULT_CACHE_DIR;
+  const OUT_FILE = values["--out"] ? path.resolve(values["--out"]) : DEFAULT_OUT_FILE;
 
   const surflineDb = JSON.parse(await fs.readFile(SURFLINE_DB_PATH, "utf8"));
   const idByRemote = new Map(surflineDb.spots.map((s) => [s.remoteSpotId, s.id]));

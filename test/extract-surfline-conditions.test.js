@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { shouldReplace, passesValidityFloor } from "../scripts/extract-surfline-conditions.js";
+import { shouldReplace, passesValidityFloor, parseCliArgs } from "../scripts/extract-surfline-conditions.js";
 
 test("shouldReplace: primary always beats nearby, regardless of age", () => {
   const existingNearbyNewer = { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" };
@@ -36,4 +36,15 @@ test("passesValidityFloor: 4/10 pages parsed fails the ratio floor", () => {
 
 test("passesValidityFloor: zero conditions fails even with all pages parsed", () => {
   assert.equal(passesValidityFloor(10, 10, 0), false);
+});
+
+test("parseCliArgs: forms, dangling values, unknown flags", () => {
+  assert.deepEqual(parseCliArgs(["--out=/tmp/x.json"]).values, { "--out": "/tmp/x.json" });
+  assert.deepEqual(parseCliArgs(["--out", "/tmp/x.json"]).values, { "--out": "/tmp/x.json" });
+  assert.deepEqual(parseCliArgs(["--out"]).errors, ["Missing value for --out"]);
+  assert.deepEqual(parseCliArgs(["--out="]).errors, ["Missing value for --out"]);
+  const swallowed = parseCliArgs(["--cache-dir", "--out", "/tmp/x.json"]);
+  assert.ok(swallowed.errors.includes("Missing value for --cache-dir"));
+  assert.deepEqual(swallowed.values, { "--out": "/tmp/x.json" });
+  assert.deepEqual(parseCliArgs(["--bogus", "x"]).errors, ["Unknown argument: --bogus", "Unexpected argument: x"]);
 });
