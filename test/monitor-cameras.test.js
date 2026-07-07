@@ -5,7 +5,8 @@ import { DEFAULT_SURF_PREFERENCES } from "../src/surf-preferences.js";
 import {
   monitorCameraSlots,
   mightBeGoodCameras,
-  inSuggestionFence
+  inSuggestionFence,
+  bestNearMiss
 } from "../src/monitor-cameras.js";
 
 const cameras = [
@@ -139,4 +140,24 @@ test("mightBeGoodCameras without getConditions proposes nothing", () => {
   const cameras = [{ id: "in", lat: 38.7, lon: -9.3, forecast: { wave: "1.0 m", wind: "10Km/h", windDirection: "north" }, detailMetrics: { "Período das ondas": "8s" } }];
   const prefs = { minSurfHeightM: 0.3, maxSurfHeightM: 1.5, maxWindSpeedKmh: 18, minPeriodSeconds: 5, allowLightWind: true, preferOffshore: true, surfSizeScale: 1 };
   assert.deepEqual(mightBeGoodCameras(cameras, new Set(), prefs, 7, {}), []);
+});
+
+test("bestNearMiss surfaces the closest rejected fresh candidate", () => {
+  const mk = (id, lat, lon) => ({ id, lat, lon, name: id, surfMetadata: { coastExposure: { bearing: 270 } } });
+  const cameras = [mk("tiny", 38.7, -9.3), mk("tinier", 38.7, -9.3), mk("stale", 38.7, -9.3)];
+  const conditions = {
+    tiny: { source: "surfline-fresh", waveMinM: 0.2, waveMaxM: 0.3, windKmh: 10, windDirDeg: 20, periodS: null, swellDirDeg: null, rating: "POOR_TO_FAIR", ageHours: 1, fetchedAt: "x" },
+    tinier: { source: "surfline-fresh", waveMinM: 0, waveMaxM: 0.1, windKmh: 10, windDirDeg: 20, periodS: 8, swellDirDeg: null, rating: "POOR", ageHours: 1, fetchedAt: "x" },
+    stale: { source: "meo-static", waveMinM: 2.0, waveMaxM: 2.0, windKmh: 10, windDirDeg: null, periodS: 8, swellDirDeg: null, rating: null, ageHours: null, fetchedAt: null }
+  };
+  const prefs = { minSurfHeightM: 0.3, maxSurfHeightM: 1.5, maxWindSpeedKmh: 18, minPeriodSeconds: 5, allowLightWind: true, preferOffshore: true, surfSizeScale: 1 };
+  const near = bestNearMiss(cameras, new Set(), prefs, { getConditions: (c) => conditions[c.id] });
+  assert.equal(near.camera.id, "tiny"); // biggest fresh wave wins; stale excluded
+  assert.equal(near.resolved.waveMaxM, 0.3);
+});
+
+test("bestNearMiss returns null when nothing is fresh", () => {
+  const cameras = [{ id: "a", lat: 38.7, lon: -9.3 }];
+  const prefs = { minSurfHeightM: 0.3, maxSurfHeightM: 1.5, maxWindSpeedKmh: 18, minPeriodSeconds: 5, allowLightWind: true, preferOffshore: true, surfSizeScale: 1 };
+  assert.equal(bestNearMiss(cameras, new Set(), prefs, {}), null);
 });

@@ -20,7 +20,7 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
-import { inSuggestionFence, mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
+import { bestNearMiss, inSuggestionFence, mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
   applySpotMetadataToCameraDb,
   emptySpotData,
@@ -437,7 +437,14 @@ function renderMonitor() {
   if (!slots.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    empty.textContent = "No spots match the current might-be-good model.";
+    let emptyText = "No spots match the current might-be-good model.";
+    if (state.monitorMode === "might-be-good") {
+      const nearMiss = bestNearMiss(state.cameras, state.favoriteIds, state.preferences, { getConditions });
+      emptyText = nearMiss
+        ? `Nothing in your ${state.preferences.minSurfHeightM}\u2013${state.preferences.maxSurfHeightM}m window right now \u2014 best fresh reading: ${nearMiss.camera.name} ${nearMiss.resolved.waveMinM}\u2013${nearMiss.resolved.waveMaxM}m${nearMiss.resolved.rating ? ` (${nearMiss.resolved.rating.toLowerCase().replace(/_/g, " ")})` : ""}.`
+        : "No fresh Surfline conditions available yet \u2014 run the daily refresh.";
+    }
+    empty.textContent = emptyText;
     els.monitorGrid.appendChild(empty);
   } else {
     slots.forEach((slot, index) => {
