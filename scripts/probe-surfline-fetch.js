@@ -38,7 +38,11 @@ const lines = ["| kind | spot | status | payload valid |", "|---|---|---|---|",
   ...results.map((r) => `| ${r.kind} | ${r.id} | ${r.status} | ${r.valid} |`)];
 console.log(lines.join("\n"));
 if (process.env.GITHUB_STEP_SUMMARY) {
-  await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+  try {
+    await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+  } catch {
+    // best-effort summary write; the probe must always exit 0
+  }
 }
 const pageOk = results.filter((r) => r.kind === "page" && r.valid).length;
 const kbygOk = results.filter((r) => r.kind === "kbyg" && r.valid).length;
