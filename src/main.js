@@ -22,6 +22,7 @@ import {
   findSurflineMatches,
   loadSpotData
 } from "./spot-data.js";
+import { stretchMembers } from "./stretch-view.js";
 import {
   DEFAULT_SURF_PREFERENCES,
   loadSurfPreferences,
@@ -55,6 +56,8 @@ const state = {
   selectedExploreCamera: null,
   explorePlayer: null,
   reportLinkEl: null,
+  stretchChipEl: null,
+  stretchPanelEl: null,
   map: null,
   mapHasInitialFit: false
 };
@@ -798,6 +801,128 @@ function renderReportLink(camera) {
   state.reportLinkEl = link;
 }
 
+function ratingTone(rating) {
+  const normalized = String(rating || "").toUpperCase();
+  if (["GOOD", "VERY_GOOD", "EPIC"].includes(normalized)) return "good";
+  if (["POOR", "VERY_POOR"].includes(normalized)) return "poor";
+  if (["POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD"].includes(normalized)) return "caution";
+  return "muted";
+}
+
+function ratingLabel(rating) {
+  return String(rating || "No rating").replaceAll("_", " ");
+}
+
+function createStretchSpotTile(spot) {
+  const tile = document.createElement("article");
+  tile.className = "stretch-tile";
+  tile.dataset.kind = "spot";
+
+  if (spot.stillUrl) {
+    const image = document.createElement("img");
+    image.className = "stretch-tile__image";
+    image.loading = "lazy";
+    image.src = spot.stillUrl;
+    image.alt = `${spot.name} Surfline still`;
+    tile.appendChild(image);
+  }
+
+  const body = document.createElement("div");
+  body.className = "stretch-tile__body";
+
+  const name = document.createElement("span");
+  name.className = "stretch-tile__name";
+  name.textContent = spot.name;
+
+  const rating = document.createElement("span");
+  rating.className = "stretch-tile__rating";
+
+  const dot = document.createElement("span");
+  dot.className = "stretch-tile__rating-dot";
+  dot.dataset.tone = ratingTone(spot.conditions?.rating);
+
+  const label = document.createElement("span");
+  label.className = "stretch-tile__rating-label";
+  label.textContent = ratingLabel(spot.conditions?.rating);
+
+  rating.append(dot, label);
+  body.append(name, rating);
+  tile.appendChild(body);
+  return tile;
+}
+
+function createStretchCamTile(camera) {
+  const tile = document.createElement("button");
+  tile.className = "stretch-tile";
+  tile.dataset.kind = "cam";
+  tile.type = "button";
+  tile.setAttribute("aria-current", String(camera.id === state.selectedExploreCamera?.id));
+
+  const body = document.createElement("div");
+  body.className = "stretch-tile__body";
+
+  const name = document.createElement("span");
+  name.className = "stretch-tile__name";
+  name.textContent = camera.name;
+
+  const label = document.createElement("span");
+  label.className = "stretch-tile__meta";
+  label.textContent = "MEO cam";
+
+  body.append(name, label);
+  tile.appendChild(body);
+  tile.addEventListener("click", () => selectExploreCamera(camera, { pan: true, scroll: true }));
+  return tile;
+}
+
+function createStretchPanel(members) {
+  const panel = document.createElement("div");
+  panel.className = "stretch-panel";
+  panel.setAttribute("aria-label", members.stretchName);
+
+  members.spots.forEach((spot) => {
+    panel.appendChild(createStretchSpotTile(spot));
+  });
+
+  members.cams.forEach((camera) => {
+    panel.appendChild(createStretchCamTile(camera));
+  });
+
+  return panel;
+}
+
+function renderStretchView(camera) {
+  state.stretchPanelEl?.remove();
+  state.stretchPanelEl = null;
+  state.stretchChipEl?.remove();
+  state.stretchChipEl = null;
+
+  const members = camera ? stretchMembers(camera, state.spotData, byId()) : null;
+  if (!members) return;
+
+  const chip = document.createElement("button");
+  chip.className = "stretch-chip";
+  chip.type = "button";
+  chip.textContent = `⟷ ${members.stretchName}`;
+  chip.setAttribute("aria-expanded", "false");
+  chip.addEventListener("click", () => {
+    if (state.stretchPanelEl) {
+      state.stretchPanelEl.remove();
+      state.stretchPanelEl = null;
+      chip.setAttribute("aria-expanded", "false");
+      return;
+    }
+
+    const panel = createStretchPanel(members);
+    chip.insertAdjacentElement("afterend", panel);
+    state.stretchPanelEl = panel;
+    chip.setAttribute("aria-expanded", "true");
+  });
+
+  els.detailConditionStrip.insertAdjacentElement("afterend", chip);
+  state.stretchChipEl = chip;
+}
+
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
   els.detailConditionStrip.textContent = "";
@@ -810,6 +935,7 @@ function renderExploreSelection(camera) {
     syncFavoriteToggle(els.detailFavorite, null);
     renderSlCamBadge(null);
     renderReportLink(null);
+    renderStretchView(null);
     renderMarkers();
     state.explorePlayer.clear();
     return;
@@ -822,6 +948,7 @@ function renderExploreSelection(camera) {
   renderSlCamBadge(camera);
   renderReportLink(camera);
   els.detailConditionStrip.appendChild(createConditionStrip(camera));
+  renderStretchView(camera);
   updateExploreRowSelection(camera.id);
   renderMarkers();
   playExploreCamera(camera);

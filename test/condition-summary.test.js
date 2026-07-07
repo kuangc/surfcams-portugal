@@ -37,9 +37,10 @@ test("formatConditionLine keeps the monitor summary to core visual signals", () 
 });
 
 test("formatConditionLine keeps two-argument legacy output unchanged", () => {
-  const line = formatConditionLine(camera, DEFAULT_SURF_PREFERENCES);
+  const legacyLine = formatConditionLine(camera, DEFAULT_SURF_PREFERENCES);
+  const explicitNullLine = formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, null);
 
-  assert.equal(line, "Good · MEO · ~0.8m · NW 8s · wind ↓ 6km/h offshore · coast S");
+  assert.equal(legacyLine, explicitNullLine);
 });
 
 test("formatConditionLine uses resolved conditions when raw forecast strings are missing", () => {

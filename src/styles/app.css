@@ -837,6 +837,133 @@ video {
   color: #ffffff;
 }
 
+.stretch-chip {
+  justify-self: start;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--surface-muted);
+  color: var(--teal-dark);
+  font-size: 0.8rem;
+  font-weight: 880;
+}
+
+.stretch-chip:hover,
+.stretch-chip:focus-visible,
+.stretch-chip[aria-expanded="true"] {
+  border-color: var(--teal);
+  outline: none;
+}
+
+.stretch-chip[aria-expanded="true"] {
+  background: #e5f2ef;
+}
+
+.stretch-panel {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0 6px;
+  scroll-snap-type: x proximity;
+}
+
+.stretch-tile {
+  display: grid;
+  flex: 0 0 160px;
+  min-height: 96px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  scroll-snap-align: start;
+  text-align: left;
+}
+
+button.stretch-tile {
+  padding: 0;
+}
+
+button.stretch-tile:hover,
+button.stretch-tile:focus-visible,
+button.stretch-tile[aria-current="true"] {
+  border-color: var(--teal);
+  outline: none;
+}
+
+button.stretch-tile[aria-current="true"] {
+  background: #e5f2ef;
+}
+
+.stretch-tile__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--video);
+  object-fit: cover;
+}
+
+.stretch-tile__body {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 9px;
+}
+
+.stretch-tile__name {
+  overflow: hidden;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.14;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stretch-tile__rating,
+.stretch-tile__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 830;
+  line-height: 1.1;
+}
+
+.stretch-tile__rating-dot {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #d5d8d6;
+}
+
+.stretch-tile__rating-dot[data-tone="good"] {
+  background: #18dd38;
+}
+
+.stretch-tile__rating-dot[data-tone="caution"] {
+  background: #f2c600;
+}
+
+.stretch-tile__rating-dot[data-tone="poor"] {
+  background: #ef2a22;
+}
+
+.stretch-tile__rating-dot[data-tone="muted"] {
+  background: #d5d8d6;
+}
+
+.stretch-tile__rating-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .favorite-toggle {
   display: grid;
   place-items: center;
