@@ -15,6 +15,7 @@
     "build-coast-exposures": "node scripts/build-coast-exposures.js",
     "build-spot-metadata-enrichment": "node scripts/build-spot-metadata-enrichment.js",
     "build-surfline-needs-review": "node scripts/build-surfline-needs-review-html.js",
+    "build-promoted-spots": "node scripts/build-promoted-spots.js",
     "extract-surfline-conditions": "node scripts/extract-surfline-conditions.js",
     "fetch-tides": "node scripts/fetch-tides.js",
     "cache-surfline": "node scripts/cache-surfline-pages.js",
