@@ -1,0 +1,7 @@
+[
+  {
+    "meoSpotId": "almograve",
+    "decision": "reject",
+    "notes": "MEO cam pin is corrupt: sits at São Torpes (37.9254, -8.8065), 30.1 km from actual Almograve (37.655, -8.803). Proximity match to surfline-sao-torpes is a geo-pin artifact; the cam does not show São Torpes. Rejected 2026-07-07."
+  }
+]

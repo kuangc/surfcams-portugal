@@ -1,0 +1,2512 @@
+{
+ "schemaVersion": 1,
+ "generatedAt": "2026-07-07T05:42:00.143Z",
+ "total": 42,
+ "deferred": [
+  {
+   "surflineSpotId": "surfline-cave",
+   "reason": "no trusted cam, no surfline cam, not on a stretch"
+  },
+  {
+   "surflineSpotId": "surfline-praia-da-ursa",
+   "reason": "no trusted cam, no surfline cam, not on a stretch"
+  }
+ ],
+ "promoted": [
+  {
+   "id": "surfline-nazare",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Nazaré",
+   "lat": 39.60484,
+   "lon": -9.08567,
+   "region": "nazare",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-do-norte",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "58bdfa7882d034001252e3d8",
+    "pageUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Nazare Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazareov/latest_small.jpg"
+    },
+    {
+     "title": "PT - Nazare Close Up",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazarecloseup/latest_small.jpg"
+    },
+    {
+     "title": "PT - Nazare",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazare/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Swell season extends from October through March, although it tends to get colder and stormier the further into winter you go.",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Works on all tides, but is best on a mid incoming tide.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Overhead to infinity.",
+      "value": [
+       "4-12"
+      ]
+     },
+     "windDirection": {
+      "description": "Light to moderate wind from the E to SE is best.",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE",
+       "SSE"
+      ]
+     },
+     "swellDirection": {
+      "description": "W through NW works, with WNW swells receiving the most constructive interference from the offshore canyon.",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+    "coastExposure": {
+     "bearing": 270,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-nazare"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-baleal",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Baleal",
+   "lat": 39.37464,
+   "lon": -9.33822,
+   "region": "peniche",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "lagide-e-baia",
+   "linkedCamDistanceKm": 0.3,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bc6",
+    "pageUrl": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Baleal",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baleal/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "Autumn and Spring -- wind and weather can be issues in the Winter.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Mid to lower tide typically best.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Head-high.",
+      "value": [
+       "2-7"
+      ]
+     },
+     "windDirection": {
+      "description": "Northeast for Baleal and southeast or even south for Lagide and Ferrel.",
+      "value": [
+       "ESE",
+       "SE",
+       "SSE",
+       "S",
+       "SSW"
+      ]
+     },
+     "swellDirection": {
+      "description": "WNW",
+      "value": [
+       "NW",
+       "NNW",
+       "N"
+      ]
+     }
+    },
+    "guideSummary": "Peniche/Baleal surf hub with Lagide and open beachbreak nearby.",
+    "coastExposure": {
+     "bearing": 345,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-baleal"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-lagide",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Lagide",
+   "lat": 39.37432,
+   "lon": -9.33561,
+   "region": "peniche",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "lagide-e-baia",
+   "linkedCamDistanceKm": 0.3,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "58bdf3a70cec4200133464f2",
+    "pageUrl": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Lagide",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-lagide/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Lefts",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "Consistent spot, best September to November and March to May.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Best low to mid tide.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Waist high to overhead.",
+      "value": [
+       "4-7"
+      ]
+     },
+     "windDirection": {
+      "description": "S, SE",
+      "value": [
+       "ESE",
+       "SE",
+       "SSE",
+       "S",
+       "SSW"
+      ]
+     },
+     "swellDirection": {
+      "description": "N, NW, W.",
+      "value": [
+       "NW",
+       "NNW",
+       "N"
+      ]
+     }
+    },
+    "guideSummary": "Northern Baleal reef/point area with lefts over shallow rocks.",
+    "coastExposure": {
+     "bearing": 345,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-lagide"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-cantinho-da-baia",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Cantinho da Baía",
+   "lat": 39.36971,
+   "lon": -9.33952,
+   "region": "peniche",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "peniche-baleal-panoramica",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5a1c9e91cbecc0001bb480c8",
+    "pageUrl": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Cantinho da Baia Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiaoverview/latest_small.jpg"
+    },
+    {
+     "title": "PT - Cantinho da Baia",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiacantinho/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Consistent spot, best September to November and March to May.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "All tides - there is a small section of high tide rocks north of cafe.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist high to overhead.",
+      "value": [
+       "2-8"
+      ]
+     },
+     "windDirection": {
+      "description": "NE to SE",
+      "value": [
+       "S",
+       "SSW",
+       "SW"
+      ]
+     },
+     "swellDirection": {
+      "description": "N, NW",
+      "value": [
+       "NW",
+       "NNW"
+      ]
+     }
+    },
+    "guideSummary": "Corner of the bay that likes northerly to northwesterly swell and clean east-side winds.",
+    "coastExposure": {
+     "bearing": 15,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-cantinho-da-baia"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-supertubos",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Supertubos",
+   "lat": 39.34222,
+   "lon": -9.36445,
+   "region": "peniche",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "peniche-supertubos",
+   "linkedCamDistanceKm": 0.4,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bc3",
+    "pageUrl": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Supertubos Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubosoverview/latest_small.jpg"
+    },
+    {
+     "title": "PT - Supertubos",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubos/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "September-February. ",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Mid to high typically best.",
+      "value": [
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Head-high to double overhead.",
+      "value": [
+       "5-12"
+      ]
+     },
+     "windDirection": {
+      "description": "Northeast or east best, but it is protected somewhat from northerly winds.",
+      "value": [
+       "NE",
+       "ENE",
+       "E",
+       "ESE"
+      ]
+     },
+     "swellDirection": {
+      "description": "W and WNW swells. Too much north and the swells are shadowed.",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW"
+      ]
+     }
+    },
+    "guideSummary": "Supertubos is one of the best waves in Europe. There's one main peak with a super-fast (though makeable) left, and a somewhat shorter right, and one other peak down the beach that's not quite as perfect but still way better than your average day at most beachbreaks.\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+    "coastExposure": {
+     "bearing": 270,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-supertubos"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-consolacao",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Consolação",
+   "lat": 39.32285,
+   "lon": -9.36146,
+   "region": "peniche",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-da-consolacao",
+   "linkedCamDistanceKm": 2.6,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5a53f6e5a8b6a9001b017369",
+    "pageUrl": "https://www.surfline.com/surf-report/consolacao/5a53f6e5a8b6a9001b017369"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [
+     "Reef",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "October to March.",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Mid tide brings out the point’s best shape.",
+      "value": [
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Shoulder high to triple overhead. ",
+      "value": [
+       "6-10"
+      ]
+     },
+     "windDirection": {
+      "description": "E/NE.",
+      "value": [
+       "NNE",
+       "NE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW/W. ",
+      "value": [
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "Consolação is the fortress-adorned headland at the southern end of Supertubos beach. It delivers nice, heavy waves on both sides: a reefy, although somewhat fat, right-hand pointbreak, and a heavy, more stacked up sand-bottomed left. The right is a local favorite when the swell wraps around the headland and can hold size up to triple overhead. The left needs bigger swells to come to life and is a more volatile and dependable on sand placement on the bottom. ",
+    "coastExposure": {
+     "bearing": 245,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-consolacao"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-santa-cruz",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Santa Cruz",
+   "lat": 39.14163,
+   "lon": -9.37922,
+   "region": "costa-oeste",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "santa-cruz",
+   "linkedCamDistanceKm": 0.6,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "584204204e65fad6a77099d9",
+    "pageUrl": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Works year round but best in clean swells September to November.",
+      "value": [
+       "Autumn"
+      ]
+     },
+     "tide": {
+      "description": "All tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High"
+      ]
+     },
+     "size": {
+      "description": "Waist high to double overhead.",
+      "value": [
+       "5-12"
+      ]
+     },
+     "windDirection": {
+      "description": "SE, E",
+      "value": [
+       "NE",
+       "ENE",
+       "E",
+       "ESE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW to SW",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW"
+      ]
+     }
+    },
+    "guideSummary": "A long stretch of sand that produces some thumping barrels and reeling peaks. Home to a series of sandbanks and sand covered reefs - it even has a sand covered shipwreck from a boat that sank just after WW2. A good place to escape the crowds. Susceptible to wind so best on an offshore day.",
+    "coastExposure": {
+     "bearing": 270,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-santa-cruz"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-ribeira-d-ilhas",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Ribeira D’Ilhas",
+   "lat": 38.98878,
+   "lon": -9.42327,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "ribeira-dilhas",
+   "linkedCamDistanceKm": 0.5,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bc2",
+    "pageUrl": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Ribeira d'Ilhas",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhas/latest_small.jpg"
+    },
+    {
+     "title": "PT - Ribeira d'Ilhas Close-Up",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhascloseup/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "September to May.",
+      "value": [
+       "Autumn",
+       "Winter",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "All tides.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High"
+      ]
+     },
+     "size": {
+      "description": "Thigh high to double overhead plus.",
+      "value": [
+       "5-10"
+      ]
+     },
+     "windDirection": {
+      "description": "E, SE",
+      "value": [
+       "NE",
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW"
+      ]
+     }
+    },
+    "guideSummary": "Right-hand Ericeira point/reef bay that can run long in the right swell.",
+    "coastExposure": {
+     "bearing": 330,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-ribeira-d-ilhas"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-reef",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Reef",
+   "lat": 38.98297,
+   "lon": -9.42478,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "ericeira",
+   "linkedCamDistanceKm": 0.5,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bc1",
+    "pageUrl": "https://www.surfline.com/surf-report/reef/5842041f4e65fad6a7708bc1"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Reef",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-reef/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "Autumn and Spring -- wind and weather can be issues in the Winter.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Medium tide is generally best.",
+      "value": [
+       "Medium_Low"
+      ]
+     },
+     "size": {
+      "description": "Head-high to several feet overhead, or bigger.",
+      "value": [
+       "4-7"
+      ]
+     },
+     "windDirection": {
+      "description": "East.",
+      "value": [
+       "NE",
+       "ENE",
+       "E",
+       "ESE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW to W swells.",
+      "value": [
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "The Reef is a little finger of lava that sticks out at the far south tip of the Ribeira Bay. North swells come in from deep water, peak up on an outside rock and fold over themselves down the line in one of the fastest, and most dangerous, tubes around. </br></br>There are no cutback sections, really, and very little room for error. If you blow the drop, you're up on sharp, dry reef. But if you're able to snag one off the locals and make the ledgey drop from behind the peak, you're in for a fantastic four-second view. Just remember to avoid going for that floater on the inside section.</br></br>There are a few other waves close by, if you're not in the mood for tight tubes and reef dances: Piedra Branca (White Rock) is a hollow, high-tide left about 100 yards south. There's a slightly mushy right just south of the Reef, and on bigger swells, a left breaks off the north edge.\n<br>\n<br>\n*ERICEIRA WORLD SURFING RESERVE*\n<br> Reef sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. <a href=\"https://bit.ly/4cC9MEh\" target=\"_blank\" rel=\"noopener\">Here's why this break matters</a>. ",
+    "coastExposure": {
+     "bearing": 293,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-reef"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-pedra-branca",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Pedra Branca",
+   "lat": 38.98009,
+   "lon": -9.42396,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "ericeira",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "584204204e65fad6a77096ae",
+    "pageUrl": "https://www.surfline.com/surf-report/pedra-branca/584204204e65fad6a77096ae"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Pedra Branca",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pedrabranca/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Lefts",
+     "Reef",
+     "Slab"
+    ],
+    "best": {
+     "season": {
+      "description": "Best September to May.",
+      "value": [
+       "Autumn",
+       "Winter",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Can work through the tides when big but best mid to high.",
+      "value": [
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Shoulder high to double overhead.",
+      "value": [
+       "2-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E",
+      "value": [
+       "E"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW, W",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW",
+       "NW",
+       "NNW"
+      ]
+     }
+    },
+    "guideSummary": "Pedra Branca, or White Rock, is not only one of the most famous breaks in the area, it is also the most prominent. It's highly visible and exposed to swell and wind. On smaller days there's a fun, if shallow lefthand wall that peels along this flat rock slab. However, when Autumn swells kick in, it can be transformed into a powerful pit. \n<br>\n<br>\n*ERICEIRA WORLD SURFING RESERVE*\n<br> Pedro Branca sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. <a href=\"https://bit.ly/4cC9MEh\" target=\"_blank\" rel=\"noopener\">Here's why this break matters</a>. ",
+    "coastExposure": {
+     "bearing": 289,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-pedra-branca"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-matadouro",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Matadouro",
+   "lat": 38.97556,
+   "lon": -9.42174,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "matadouro",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "64bbfc3868c6112c8d112deb",
+    "pageUrl": "https://www.surfline.com/surf-report/matadouro/64bbfc3868c6112c8d112deb"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [
+     "Point",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "September to April.",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Mid to high tide helps soften the reef.",
+      "value": [
+       "Medium_High",
+       "High",
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Waist high to overhead. ",
+      "value": [
+       "2-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E/NE",
+      "value": [
+       "ENE",
+       "E",
+       "ESE"
+      ]
+     },
+     "swellDirection": {
+      "description": "Prefers a NW swell with E–NE winds, but still works with west swell and light north breezes.",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "Matadouro is a reef-meets-point setup that offers a mix of mellow sections and faster walls. It’s forgiving for beginners at lower tide and lively enough for more advanced surfers. It’s a popular spot, especially with local groms and schools, so the vibe can shift between chill and competitive. Stay mobile, be patient, and look for overlooked inside runners.\n<br>\n<br>\n*ERICEIRA WORLD SURFING RESERVE*\n<br> Matadouro sits in a protected surf ecosystem — preserving the coastline, culture, and access that keep it working. <a href=\"https://bit.ly/4cC9MEh\" target=\"_blank\" rel=\"noopener\">Here's why this break matters</a>. ",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-matadouro"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-do-sul",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia do Sul",
+   "lat": 38.95891,
+   "lon": -9.41822,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "ericeira-praia-do-sul",
+   "linkedCamDistanceKm": 0.4,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5fb2c2da7057d993d9d2caa3",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Praia do Sul",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiadosulericeira/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Point",
+     "Beach_Break",
+     "Reef"
+    ],
+    "best": {
+     "season": {
+      "description": "December - February",
+      "value": [
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "All tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist to double overhead plus.",
+      "value": [
+       "4-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E, SE",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "N, NW",
+      "value": [
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "Sheltered Ericeira corner that can work in larger north or northwest swells.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-do-sul"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-foz-do-lizandro",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Foz do Lizandro",
+   "lat": 38.94403,
+   "lon": -9.41865,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "foz-do-lizandro",
+   "linkedCamDistanceKm": 0.3,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bbd",
+    "pageUrl": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Foz do Lizandro",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandro/latest_small.jpg"
+    },
+    {
+     "title": "PT - Foz do Lizandro Front",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandrofront/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Autumn and spring -- wind and weather can be issues in the winter.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Past low towards medium tides generally best.",
+      "value": [
+       "Medium_Low"
+      ]
+     },
+     "size": {
+      "description": "Chest high to a few feet overhead.",
+      "value": [
+       "4-8"
+      ]
+     },
+     "windDirection": {
+      "description": "East.",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW to WNW swells.",
+      "value": [
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "Ericeira-area rivermouth beachbreak with shifting peaks.",
+    "coastExposure": {
+     "bearing": 289,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-foz-do-lizandro"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-sao-juliao",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "São Julião",
+   "lat": 38.93263,
+   "lon": -9.42251,
+   "region": "mafra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "sao-juliao",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9cda4878ebfad81e2b72",
+    "pageUrl": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "September to April but works year-round.",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Mid tide is the sweet spot, but higher tides can produce fun bowls on the inside.",
+      "value": [
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist high to overhead. ",
+      "value": [
+       "3-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E/NE.",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "Best on NW swell and light E wind, but still surfable with W swell and variable winds under 10 kt.",
+      "value": [
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "Big open beach that catches more swell than many nearby Ericeira spots.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-sao-juliao"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-das-macas",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia das Maçãs",
+   "lat": 38.82667,
+   "lon": -9.47201,
+   "region": "sintra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-das-macas",
+   "linkedCamDistanceKm": 0.3,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "601853a64071addd994eeb43",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-das-macas/601853a64071addd994eeb43"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-das-macas"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-pequena",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia Pequena",
+   "lat": 38.82006,
+   "lon": -9.47561,
+   "region": "sintra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-pequena",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "584204214e65fad6a7709d28",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Praia Pequena",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiapequena/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 280,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-praia-pequena"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-grande",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia Grande",
+   "lat": 38.81535,
+   "lon": -9.48151,
+   "region": "sintra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-grande",
+   "linkedCamDistanceKm": 0.4,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708e62",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Praia Grande",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiagrande/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Best September to November and March to May.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "All tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist to head high.",
+      "value": [
+       "2-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E, SE",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "N to SW",
+      "value": [
+       "W",
+       "WNW",
+       "NW",
+       "NNW"
+      ]
+     }
+    },
+    "guideSummary": "Low to mid tide is best, with peaks along the beach, high tide can be heavy with sections of shore dump. Line-ups will be busy when good, but there's room to spread out and Praia Pequena - an extension of the beach to the north - often holds quieter waves. Best in an easterly wind as it is exposed and still afternoons can often see localised onshores.",
+    "coastExposure": {
+     "bearing": 280,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-praia-grande"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-da-adraga",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia da Adraga",
+   "lat": 38.80361,
+   "lon": -9.48605,
+   "region": "sintra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-da-adraga",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9d054878eb35041e35bb",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-da-adraga/640b9d054878eb35041e35bb"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-da-adraga"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-do-guincho",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia Do Guincho",
+   "lat": 38.73426,
+   "lon": -9.47531,
+   "region": "cascais",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-do-guincho-norte",
+   "linkedCamDistanceKm": 0.3,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708e64",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Praia Guincho Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-guincho/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Best September to November and March to May.",
+      "value": [
+       "Autumn",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "Works on all tides but best on a low to medium tide.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Waist to double overhead.",
+      "value": [
+       "2-8"
+      ]
+     },
+     "windDirection": {
+      "description": "E, SE",
+      "value": [
+       "ENE",
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW to SW",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW",
+       "NW"
+      ]
+     }
+    },
+    "guideSummary": "A favoured spot for Lisbon surfers when swell doesn't wrap into the city breaks, Guincho is a long, open beach that is rarely flat, but it's also exposed to wind - hence its popularity as a summertime windsurfing haunt. It does produce quality waves though, working best on lower tides.",
+    "coastExposure": {
+     "bearing": 280,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-praia-do-guincho"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-de-caxias",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia de Caxias",
+   "lat": 38.6985,
+   "lon": -9.2796,
+   "region": "oeiras",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "640b9d60606c45bbe5f4841b",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-de-caxias/640b9d60606c45bbe5f4841b"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-de-caxias"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-sao-pedro-do-estoril",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "São Pedro do Estoril",
+   "lat": 38.6935,
+   "lon": -9.3697,
+   "region": "cascais",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "sao-pedro-do-estoril",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9d679b6fab7dac307b39",
+    "pageUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-sao-pedro-do-estoril"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-paco-de-arcos",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Paco de Arcos",
+   "lat": 38.689118,
+   "lon": -9.29619,
+   "region": "oeiras",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "paco-de-arcos",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "584204214e65fad6a7709d0c",
+    "pageUrl": "https://www.surfline.com/surf-report/paco-de-arcos/584204214e65fad6a7709d0c"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Paco de Arcos",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pacodearcos/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-paco-de-arcos"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-parede",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Parede",
+   "lat": 38.685308,
+   "lon": -9.35436,
+   "region": "cascais",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "parede",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9d6db6d769d0c8951b5b",
+    "pageUrl": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "Cascais-line spot listed between São Pedro and Carcavelos.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-parede"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-da-laje",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia da Laje",
+   "lat": 38.6838,
+   "lon": -9.3125,
+   "region": "oeiras",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "santo-amaro",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "640b9d10de81d566960e2892",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-da-laje/640b9d10de81d566960e2892"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-da-laje"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-santo-amaro",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Santo Amaro",
+   "lat": 38.683313,
+   "lon": -9.31098,
+   "region": "oeiras",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "santo-amaro",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "584204214e65fad6a7709d13",
+    "pageUrl": "https://www.surfline.com/surf-report/santo-amaro/584204214e65fad6a7709d13"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Santo Amaro",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-santoamaro/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-santo-amaro"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-carcavelos",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Carcavelos",
+   "lat": 38.67869246746279,
+   "lon": -9.33685,
+   "region": "cascais",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-de-carcavelos",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708bc0",
+    "pageUrl": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Carcavelos Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"
+    },
+    {
+     "title": "PT - Carcavelos Reef",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosreef/latest_small.jpg"
+    },
+    {
+     "title": "PT - Carcavelos FPS",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelos/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Autumn is best but there are days in the Winter and Spring. Much slower in the Summer.",
+      "value": [
+       "Autumn",
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Medium-low, but it'll break on all tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium"
+      ]
+     },
+     "size": {
+      "description": "Head-high to several feet overhead.",
+      "value": [
+       "4-10"
+      ]
+     },
+     "windDirection": {
+      "description": "North.",
+      "value": [
+       "NNW",
+       "N",
+       "NNE",
+       "NE"
+      ]
+     },
+     "swellDirection": {
+      "description": "W to WSW and even SW.",
+      "value": [
+       "SSW",
+       "SW",
+       "WSW",
+       "W"
+      ]
+     }
+    },
+    "guideSummary": "Lisbon-area beachbreak and reef cams near the Cascais rail line.",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-carcavelos"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-de-torre",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia de Torre",
+   "lat": 38.6757,
+   "lon": -9.3228,
+   "region": "oeiras",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-da-torre",
+   "linkedCamDistanceKm": 0,
+   "stretchId": "linha",
+   "stretchCamIds": [
+    "paco-de-arcos",
+    "santo-amaro",
+    "praia-da-torre",
+    "praia-de-carcavelos"
+   ],
+   "surfline": {
+    "spotId": "602d64e1d663ff28d7a951c2",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-de-torre/602d64e1d663ff28d7a951c2"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-de-torre"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-cova-do-vapor",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Cova Do Vapor",
+   "lat": 38.66104,
+   "lon": -9.26191,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "584204204e65fad6a77096ad",
+    "pageUrl": "https://www.surfline.com/surf-report/cova-do-vapor/584204204e65fad6a77096ad"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Cova Do Vapor",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-covadovapor/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break",
+     "Jetty"
+    ],
+    "best": {
+     "season": {
+      "description": "December to February .",
+      "value": [
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "All tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist to double overhead.",
+      "value": [
+       "2-7"
+      ]
+     },
+     "windDirection": {
+      "description": "E",
+      "value": [
+       "E",
+       "ESE",
+       "SE"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW to SW",
+      "value": [
+       "SW",
+       "WSW",
+       "W",
+       "WNW",
+       "NW",
+       "NNW",
+       "N"
+      ]
+     }
+    },
+    "guideSummary": "This sandy alcove, sandwiched between two, long, rocky groynes, looks across to Lisbon from the southern fringe of the Tejo / Tagus rivermouth. When a big swell hits, the accumulated sand throws up powerful, short, wedgy waves popular with a loyal bodyboarding crew. There is a right breaking off the northern groyne, as well as a left to the south. The waves are hollow and heavy. The swell angle is important as the rivermouth can cut out some of the size.",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-cova-do-vapor"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-sao-joao-da-caparica",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "São João da Caparica",
+   "lat": 38.65589,
+   "lon": -9.2526,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "5dbb587ff387900001fee288",
+    "pageUrl": "https://www.surfline.com/surf-report/sao-joao-da-caparica/5dbb587ff387900001fee288"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Sao Joao Caparica",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-saojoaocaparica/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 240,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-sao-joao-da-caparica"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-marcelino",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Marcelino",
+   "lat": 38.64612,
+   "lon": -9.24575,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "584204214e65fad6a7709d15",
+    "pageUrl": "https://www.surfline.com/surf-report/marcelino/584204214e65fad6a7709d15"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-marcelino"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-do-barbas",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia do Barbas",
+   "lat": 38.644758,
+   "lon": -9.24246,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "costa-da-caparica-cds",
+   "linkedCamDistanceKm": 0.1,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "584204214e65fad6a7709d16",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Barbas",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-barbas/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "Caparica beachbreak near the main Costa da Caparica report cluster.",
+    "coastExposure": {
+     "bearing": 188,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-praia-do-barbas"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-costa-da-caparica",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Costa da Caparica",
+   "lat": 38.64036,
+   "lon": -9.24275,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "costa-da-caparica-cds",
+   "linkedCamDistanceKm": 0.6,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "5842041f4e65fad6a7708e65",
+    "pageUrl": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Costa da Caparica Overview",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costadacaparicaoverview/latest_small.jpg"
+    },
+    {
+     "title": "PT - CDS Costa Caparica",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-cdscaparica/latest_small.jpg"
+    },
+    {
+     "title": "PT - Costa da Caparica",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costacaparica/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break",
+     "Jetty"
+    ],
+    "best": {
+     "season": {
+      "description": "Best September to May.",
+      "value": [
+       "Autumn",
+       "Winter",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "All tides.",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist to double overhead.",
+      "value": [
+       "2-10"
+      ]
+     },
+     "windDirection": {
+      "description": "NE, E",
+      "value": [
+       "NNE",
+       "NE",
+       "ENE",
+       "E"
+      ]
+     },
+     "swellDirection": {
+      "description": "Big NW or W, SW.",
+      "value": [
+       "S",
+       "SSW",
+       "SW",
+       "WSW",
+       "W"
+      ]
+     }
+    },
+    "guideSummary": "Caparica beachbreak corridor with many sandbank options.",
+    "coastExposure": {
+     "bearing": 260,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-costa-da-caparica"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-da-saude",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia da Saude",
+   "lat": 38.6294,
+   "lon": -9.2299,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "640b9d48b6d7692692951263",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-da-saude/640b9d48b6d7692692951263"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-da-saude"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-da-cornelia",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia da Cornelia",
+   "lat": 38.62753236844342,
+   "lon": -9.22752,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "5dbf6037eb8ddf00015a883f",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-da-cornelia/5dbf6037eb8ddf00015a883f"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": {
+     "bearing": 260,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-praia-da-cornelia"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-da-rainha",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia da Rainha",
+   "lat": 38.616,
+   "lon": -9.2192,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "costa-da-caparica-riviera",
+   "linkedCamDistanceKm": 0.4,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "602d65b2c30216a5fdf26598",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "Caparica beachbreak in the same southern Costa da Caparica corridor as Riviera and Praia do Barbas.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-da-rainha"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-castelo",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Costa da Caparica | Costelo (Irmao)",
+   "lat": 38.6130718914354,
+   "lon": -9.21753,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "costa-da-caparica-riviera",
+   "linkedCamDistanceKm": 0.7,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "584204204e65fad6a77099d8",
+    "pageUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Castelo",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-castelo/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Best September to May",
+      "value": [
+       "Autumn",
+       "Winter",
+       "Spring"
+      ]
+     },
+     "tide": {
+      "description": "All tides",
+      "value": [
+       "Low",
+       "Medium_Low",
+       "Medium",
+       "Medium_High",
+       "High"
+      ]
+     },
+     "size": {
+      "description": "Waist to head high",
+      "value": [
+       "3-8"
+      ]
+     },
+     "windDirection": {
+      "description": "NE, E",
+      "value": [
+       "NNE",
+       "NE",
+       "ENE",
+       "E"
+      ]
+     },
+     "swellDirection": {
+      "description": "NW, W, SW",
+      "value": [
+       "WSW",
+       "W"
+      ]
+     }
+    },
+    "guideSummary": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.",
+    "coastExposure": {
+     "bearing": 260,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-castelo"
+   },
+   "note": "existing hand-promoted prototype; Riviera/Irmao cam, curated"
+  },
+  {
+   "id": "surfline-praia-do-pescador",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia do Pescador",
+   "lat": 38.6092,
+   "lon": -9.2149,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "640b9d4ede81d58fdf0e363b",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-do-pescador/640b9d4ede81d58fdf0e363b"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-do-pescador"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-praia-do-rei",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Praia do Rei",
+   "lat": 38.6057,
+   "lon": -9.2138,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "stretch",
+   "linkedCamId": null,
+   "linkedCamDistanceKm": null,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "640b9d54de81d5217b0e37a6",
+    "pageUrl": "https://www.surfline.com/surf-report/praia-do-rei/640b9d54de81d5217b0e37a6"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-praia-do-rei"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-fonte-da-telha",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Fonte da Telha",
+   "lat": 38.57372110885146,
+   "lon": -9.19898,
+   "region": "almada",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "fonte-da-telha",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": "caparica",
+   "stretchCamIds": [
+    "costa-de-caparica-sao-joao-cova-do-vapor",
+    "costa-de-caparica-praia-do-norte",
+    "costa-da-caparica-cds",
+    "costa-da-caparica-tarquinio",
+    "costa-da-caparica-nova-praia",
+    "costa-da-caparica-riviera",
+    "costa-de-caparica-praia-da-sereia-morena",
+    "fonte-da-telha"
+   ],
+   "surfline": {
+    "spotId": "584204204e65fad6a77099d5",
+    "pageUrl": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
+   },
+   "surflineCams": [
+    {
+     "title": "PT - Fonta da Telha Front",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelhafront/latest_small.jpg"
+    },
+    {
+     "title": "PT - Fonte da Telha",
+     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelha/latest_small.jpg"
+    }
+   ],
+   "surfMetadata": {
+    "breakType": [
+     "Rights",
+     "Lefts",
+     "Beach_Break"
+    ],
+    "best": {
+     "season": {
+      "description": "Best December to February.",
+      "value": [
+       "Winter"
+      ]
+     },
+     "tide": {
+      "description": "Not dead low or dead high",
+      "value": [
+       "Medium_Low",
+       "Medium",
+       "Medium_High"
+      ]
+     },
+     "size": {
+      "description": "Waist to head high.",
+      "value": [
+       "2-10"
+      ]
+     },
+     "windDirection": {
+      "description": "NE, E",
+      "value": [
+       "NNE",
+       "NE",
+       "ENE",
+       "E"
+      ]
+     },
+     "swellDirection": {
+      "description": "Big NW or W, SW",
+      "value": [
+       "WSW",
+       "W"
+      ]
+     }
+    },
+    "guideSummary": "Southern Caparica/Fonte beachbreak option in the same outing corridor.",
+    "coastExposure": {
+     "bearing": 260,
+     "source": "surfline-offshoreDirection",
+     "confidence": "spot"
+    },
+    "sourceSpotId": "surfline-fonte-da-telha"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-lagoa-de-albufeira",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Lagoa de Albufeira",
+   "lat": 38.5089,
+   "lon": -9.1848,
+   "region": "sesimbra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "lagoa-de-albufeira",
+   "linkedCamDistanceKm": 0.5,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9cfe4878eb47751e344d",
+    "pageUrl": "https://www.surfline.com/surf-report/lagoa-de-albufeira/640b9cfe4878eb47751e344d"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-lagoa-de-albufeira"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-bicas",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Bicas",
+   "lat": 38.46404,
+   "lon": -9.19328,
+   "region": "sesimbra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-das-bicas",
+   "linkedCamDistanceKm": 0.2,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9cf8606c45e808f46d79",
+    "pageUrl": "https://www.surfline.com/surf-report/bicas/640b9cf8606c45e808f46d79"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-bicas"
+   },
+   "note": null
+  },
+  {
+   "id": "surfline-sesimbra",
+   "provider": "surfline-promoted",
+   "promoted": true,
+   "name": "Sesimbra",
+   "lat": 38.4413,
+   "lon": -9.0969,
+   "region": "sesimbra",
+   "hasStream": false,
+   "camCoverage": "spot",
+   "linkedCamId": "praia-sesimbra",
+   "linkedCamDistanceKm": 0.8,
+   "stretchId": null,
+   "stretchCamIds": [],
+   "surfline": {
+    "spotId": "640b9cf38284fe0e10b17b6d",
+    "pageUrl": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d"
+   },
+   "surflineCams": [],
+   "surfMetadata": {
+    "breakType": [],
+    "best": null,
+    "guideSummary": "Protected bay with several wave options and strong shelter from exposed Atlantic swell.",
+    "coastExposure": null,
+    "sourceSpotId": "surfline-sesimbra"
+   },
+   "note": null
+  }
+ ]
+}

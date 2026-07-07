@@ -97,7 +97,7 @@ function collectSurflineMetadataExposures(surflineDb) {
 
 function surflineExposureForMapping(mapping, surflineMetadataExposures) {
   if (!mapping) return null;
-  if (mapping.reviewStatus === "needs-review") return null;
+  if (mapping.reviewStatus === "needs-review" || mapping.reviewStatus === "rejected") return null;
 
   for (const [index, surflineSpotId] of mapping.surflineSpotIds.entries()) {
     const candidate = surflineMetadataExposures.get(surflineSpotId);

@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "test": "node --test \"test/*.test.js\"",
+    "probe-surfline": "node scripts/probe-surfline-fetch.js",
     "embed-data": "node scripts/embed-camera-db.js",
     "build-pwa-icons": "node scripts/generate-pwa-icons.js",
     "build-surfline-spots": "node scripts/build-surfline-spots.js",
@@ -15,6 +16,10 @@
     "build-coast-exposures": "node scripts/build-coast-exposures.js",
     "build-spot-metadata-enrichment": "node scripts/build-spot-metadata-enrichment.js",
     "build-surfline-needs-review": "node scripts/build-surfline-needs-review-html.js",
+    "build-promoted-spots": "node scripts/build-promoted-spots.js",
+    "build-promotion-map": "node scripts/build-promotion-map-html.js",
+    "extract-surfline-conditions": "node scripts/extract-surfline-conditions.js",
+    "refresh-surfline": "node scripts/refresh-surfline-conditions.js",
     "fetch-tides": "node scripts/fetch-tides.js",
     "cache-surfline": "node scripts/cache-surfline-pages.js",
     "cache-surfline-browser": "node scripts/cache-surfline-browser-cdp.js",

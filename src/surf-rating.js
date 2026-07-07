@@ -130,33 +130,119 @@ export function getConditionVectors(camera) {
   };
 }
 
-export function rateSurfSpot(camera, preferences) {
+function formatWaveLabel(waveMinM, waveMaxM) {
+  if (!Number.isFinite(waveMinM) || !Number.isFinite(waveMaxM)) return "unknown";
+  if (waveMinM === waveMaxM) return `~${waveMaxM.toFixed(1)}m`;
+  return `${waveMinM.toFixed(1)}–${waveMaxM.toFixed(1)}m`;
+}
+
+// Mirrors the canonical Surfline rating tier order (scripts/lib/surfline-extract.js ratingValue).
+export const SURFLINE_RATING_ORDER = ["VERY_POOR", "POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
+const FAIR_TIER = SURFLINE_RATING_ORDER.indexOf("FAIR");
+
+function isFairOrBetter(rating) {
+  const idx = SURFLINE_RATING_ORDER.indexOf(String(rating || "").toUpperCase());
+  return idx >= FAIR_TIER;
+}
+
+export function rateSurfSpot(camera, preferences, resolved = null) {
   const vectors = getConditionVectors(camera);
-  const rawWaveM = parseMetricNumber(camera.forecast?.wave || camera.detailMetrics?.Ondulação);
-  const waveM = rawWaveM === null ? null : rawWaveM * preferences.surfSizeScale;
-  const windSpeedKmh = parseMetricNumber(camera.forecast?.wind || camera.detailMetrics?.Vento);
-  const periodSeconds = parseMetricNumber(camera.detailMetrics?.["Período das ondas"]);
-  const waveInRange = waveM !== null && waveM >= preferences.minSurfHeightM && waveM <= preferences.maxSurfHeightM;
+
+  if (resolved === null) {
+    const rawWaveM = parseMetricNumber(camera.forecast?.wave || camera.detailMetrics?.Ondulação);
+    const waveM = rawWaveM === null ? null : rawWaveM * preferences.surfSizeScale;
+    const windSpeedKmh = parseMetricNumber(camera.forecast?.wind || camera.detailMetrics?.Vento);
+    const periodSeconds = parseMetricNumber(camera.detailMetrics?.["Período das ondas"]);
+    const waveInRange = waveM !== null && waveM >= preferences.minSurfHeightM && waveM <= preferences.maxSurfHeightM;
+    const lightWind = windSpeedKmh !== null && windSpeedKmh <= preferences.maxWindSpeedKmh;
+    const periodOk = periodSeconds !== null && periodSeconds >= preferences.minPeriodSeconds;
+    const windOk = vectors.wind.alignment === "offshore" || (preferences.allowLightWind && lightWind);
+    const isRecommended = waveInRange && windOk && periodOk;
+    const key = isRecommended ? "good" : waveInRange && (windOk || periodOk) ? "caution" : "poor";
+
+    return {
+      key,
+      label: key === "good" ? "Good for us" : key === "caution" ? "Caution" : "Poor for us",
+      isRecommended,
+      reason: waveInRange ? "Check the cam before trusting this model." : "Surf height outside your configured range.",
+      wave: {
+        meters: waveM,
+        label: waveM === null ? "unknown" : `~${waveM.toFixed(1)}m`
+      },
+      wind: {
+        speedKmh: windSpeedKmh,
+        label: windSpeedKmh === null ? "unknown wind" : `${formatCompactNumber(windSpeedKmh)}km/h`,
+        alignment: vectors.wind.alignment,
+        arrow: vectors.wind.arrow
+      },
+      swell: vectors.swell,
+      coast: vectors.coast,
+      period: {
+        seconds: periodSeconds,
+        label: periodSeconds === null ? "unknown" : `${formatCompactNumber(periodSeconds)}s`
+      },
+      tide: {
+        value: camera.forecast?.tide || "",
+        state: camera.forecast?.tideState || ""
+      },
+      confidence: {
+        key: vectors.coast.confidence,
+        label: CONFIDENCE_LABELS[vectors.coast.confidence] || CONFIDENCE_LABELS.unknown
+      },
+      provenance: { source: "meo-static", ageHours: null, fetchedAt: null },
+      surflineRating: null
+    };
+  }
+
+  const scale = resolved.source === "meo-static" ? preferences.surfSizeScale : 1;
+  const waveMinM = Number.isFinite(resolved.waveMinM) ? resolved.waveMinM * scale : null;
+  const waveMaxM = Number.isFinite(resolved.waveMaxM) ? resolved.waveMaxM * scale : null;
+  const windSpeedKmh = Number.isFinite(resolved.windKmh) ? resolved.windKmh : null;
+  const periodSeconds = Number.isFinite(resolved.periodS) ? resolved.periodS : null;
+
+  // Prefer the resolved numeric wind bearing over the parsed camera compass string.
+  const windAlignmentValue = Number.isFinite(resolved.windDirDeg)
+    ? windAlignment(resolved.windDirDeg, vectors.coast.bearing)
+    : vectors.wind.alignment;
+  const windArrowBearing = Number.isFinite(resolved.windDirDeg) ? (resolved.windDirDeg + 180) % 360 : vectors.wind.arrowBearing;
+  const windCompass = Number.isFinite(resolved.windDirDeg) ? compassFromBearing(resolved.windDirDeg) : vectors.wind.compass;
+
+  const waveInRange = Number.isFinite(waveMinM) && Number.isFinite(waveMaxM)
+    && waveMaxM >= preferences.minSurfHeightM && waveMinM <= preferences.maxSurfHeightM;
   const lightWind = windSpeedKmh !== null && windSpeedKmh <= preferences.maxWindSpeedKmh;
   const periodOk = periodSeconds !== null && periodSeconds >= preferences.minPeriodSeconds;
-  const windOk = vectors.wind.alignment === "offshore" || (preferences.allowLightWind && lightWind);
-  const isRecommended = waveInRange && windOk && periodOk;
-  const key = isRecommended ? "good" : waveInRange && (windOk || periodOk) ? "caution" : "poor";
+  const windOk = windAlignmentValue === "offshore" || (preferences.allowLightWind && lightWind);
+  let isRecommended = waveInRange && windOk && periodOk;
+  let key = isRecommended ? "good" : waveInRange && (windOk || periodOk) ? "caution" : "poor";
+
+  const isPoorRating = resolved.rating === "POOR" || resolved.rating === "VERY_POOR";
+  if (isPoorRating) {
+    isRecommended = false;
+    if (key === "good") key = "caution";
+  }
+
+  let reason = waveInRange ? "Check the cam before trusting this model." : "Surf height outside your configured range.";
+  if (isPoorRating) {
+    reason = `Surfline rates it ${resolved.rating}.`;
+  } else if (isFairOrBetter(resolved.rating)) {
+    reason = `Surfline rates it ${resolved.rating}.`;
+  }
 
   return {
     key,
     label: key === "good" ? "Good for us" : key === "caution" ? "Caution" : "Poor for us",
     isRecommended,
-    reason: waveInRange ? "Check the cam before trusting this model." : "Surf height outside your configured range.",
+    reason,
     wave: {
-      meters: waveM,
-      label: waveM === null ? "unknown" : `~${waveM.toFixed(1)}m`
+      meters: waveMaxM,
+      label: formatWaveLabel(waveMinM, waveMaxM)
     },
     wind: {
       speedKmh: windSpeedKmh,
       label: windSpeedKmh === null ? "unknown wind" : `${formatCompactNumber(windSpeedKmh)}km/h`,
-      alignment: vectors.wind.alignment,
-      arrow: vectors.wind.arrow
+      alignment: windAlignmentValue,
+      arrow: formatArrow(windArrowBearing),
+      compass: windCompass
     },
     swell: vectors.swell,
     coast: vectors.coast,
@@ -171,6 +257,12 @@ export function rateSurfSpot(camera, preferences) {
     confidence: {
       key: vectors.coast.confidence,
       label: CONFIDENCE_LABELS[vectors.coast.confidence] || CONFIDENCE_LABELS.unknown
-    }
+    },
+    provenance: {
+      source: resolved.source,
+      ageHours: resolved.ageHours ?? null,
+      fetchedAt: resolved.fetchedAt ?? null
+    },
+    surflineRating: resolved.rating ?? null
   };
 }

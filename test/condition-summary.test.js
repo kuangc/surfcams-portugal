@@ -36,6 +36,42 @@ test("formatConditionLine keeps the monitor summary to core visual signals", () 
   assert.equal(line, "Good · MEO · ~0.8m · NW 8s · wind ↓ 6km/h offshore · coast S");
 });
 
+test("formatConditionLine keeps two-argument legacy output unchanged", () => {
+  const legacyLine = formatConditionLine(camera, DEFAULT_SURF_PREFERENCES);
+  const explicitNullLine = formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, null);
+
+  assert.equal(legacyLine, explicitNullLine);
+});
+
+test("formatConditionLine uses resolved conditions when raw forecast strings are missing", () => {
+  const resolvedCamera = {
+    id: "praia-de-carcavelos",
+    name: "Carcavelos",
+    region: "cascais",
+    forecast: {},
+    surfline: {
+      pageUrl: "https://www.surfline.com/surf-report/carcavelos"
+    },
+    detailMetrics: {}
+  };
+
+  const line = formatConditionLine(resolvedCamera, DEFAULT_SURF_PREFERENCES, {
+    source: "surfline-fresh",
+    waveMinM: 0.9,
+    waveMaxM: 1.5,
+    windKmh: 11,
+    windDirDeg: 20,
+    periodS: 12,
+    swellDirDeg: 225,
+    rating: "GOOD",
+    ageHours: 5,
+    fetchedAt: "x"
+  });
+
+  assert.match(line, /0\.9/);
+  assert.doesNotMatch(line, /unknown/);
+});
+
 test("formatSpotMetadata exposes richer favorite and explore details", () => {
   const metadata = formatSpotMetadata(camera, DEFAULT_SURF_PREFERENCES);
 

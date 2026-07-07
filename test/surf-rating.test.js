@@ -125,3 +125,115 @@ test("getConditionVectors prefers camera exposure metadata over static fallbacks
   assert.equal(vectors.coast.source, "surfline-metadata");
   assert.equal(vectors.wind.alignment, "offshore");
 });
+
+const resolvedPrefs = {
+  minSurfHeightM: 0.3,
+  maxSurfHeightM: 1.5,
+  maxWindSpeedKmh: 18,
+  minPeriodSeconds: 5,
+  preferOffshore: true,
+  allowLightWind: true,
+  surfSizeScale: 1
+};
+
+test("surfline-fresh: wave range overlap and rating carried", () => {
+  const resolved = {
+    source: "surfline-fresh",
+    waveMinM: 0.9,
+    waveMaxM: 1.8,
+    windKmh: 10,
+    windDirDeg: 20,
+    periodS: 12,
+    swellDirDeg: 225,
+    rating: "GOOD",
+    ageHours: 5,
+    fetchedAt: "x"
+  };
+  const camera = { id: "surfline-supertubos", surfMetadata: { coastExposure: { bearing: 270 } } };
+  const rating = rateSurfSpot(camera, resolvedPrefs, resolved);
+  assert.equal(rating.isRecommended, true); // [0.9,1.8] overlaps [0.3,1.5]; wind 10<=18 light; period 12>=5
+  assert.equal(rating.provenance.source, "surfline-fresh");
+  assert.equal(rating.wave.label, "0.9–1.8m");
+});
+
+test("POOR hard-vetoes even when numbers pass", () => {
+  const resolved = {
+    source: "surfline-fresh",
+    waveMinM: 0.9,
+    waveMaxM: 1.2,
+    windKmh: 8,
+    windDirDeg: 20,
+    periodS: 10,
+    swellDirDeg: 225,
+    rating: "POOR",
+    ageHours: 5,
+    fetchedAt: "x"
+  };
+  const rating = rateSurfSpot(
+    { id: "x", surfMetadata: { coastExposure: { bearing: 270 } } },
+    resolvedPrefs,
+    resolved
+  );
+  assert.equal(rating.isRecommended, false);
+  assert.notEqual(rating.key, "good");
+});
+
+test("VERY_POOR also hard-vetoes", () => {
+  const resolved = {
+    source: "surfline-fresh",
+    waveMinM: 0.9,
+    waveMaxM: 1.2,
+    windKmh: 8,
+    windDirDeg: 20,
+    periodS: 10,
+    swellDirDeg: 225,
+    rating: "VERY_POOR",
+    ageHours: 5,
+    fetchedAt: "x"
+  };
+  const rating = rateSurfSpot(
+    { id: "x", surfMetadata: { coastExposure: { bearing: 270 } } },
+    resolvedPrefs,
+    resolved
+  );
+  assert.equal(rating.isRecommended, false);
+  assert.notEqual(rating.key, "good");
+});
+
+test("surfSizeScale only applies to meo-static", () => {
+  const scaled = { ...resolvedPrefs, surfSizeScale: 0.5 };
+  const meoCam = {
+    id: "c",
+    region: "cascais",
+    forecast: { wave: "2.0 m", wind: "10Km/h", windDirection: "north" },
+    detailMetrics: { "Período das ondas": "8s" }
+  };
+  const meoRating = rateSurfSpot(meoCam, scaled); // legacy 2-arg path: 2.0*0.5=1.0 in range
+  assert.equal(meoRating.wave.meters, 1);
+  const resolved = {
+    source: "surfline-fresh",
+    waveMinM: 2.0,
+    waveMaxM: 2.0,
+    windKmh: 10,
+    windDirDeg: 20,
+    periodS: 8,
+    swellDirDeg: null,
+    rating: "FAIR",
+    ageHours: 1,
+    fetchedAt: "x"
+  };
+  const slRating = rateSurfSpot(meoCam, scaled, resolved);
+  assert.equal(slRating.isRecommended, false); // 2.0m unscaled, outside [0.3,1.5]
+});
+
+test("two-arg legacy path reports meo-static provenance", () => {
+  const meoCam = {
+    id: "c",
+    region: "cascais",
+    forecast: { wave: "1.0 m", wind: "10Km/h", windDirection: "north" },
+    detailMetrics: { "Período das ondas": "8s" }
+  };
+  const rating = rateSurfSpot(meoCam, resolvedPrefs);
+  assert.equal(rating.provenance.source, "meo-static");
+  assert.equal(rating.provenance.ageHours, null);
+});

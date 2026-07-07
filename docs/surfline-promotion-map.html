@@ -1,0 +1,2151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surfline Promotion Map</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #1c2522;
+      background: #f4f7f5;
+    }
+    body { margin: 0; }
+    header.page-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #d8e0db;
+      background: #ffffff;
+    }
+    header.page-header .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 20px auto 48px;
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(280px, 420px);
+      gap: 20px;
+    }
+    h1, h2, h3 { margin: 0; line-height: 1.2; }
+    .page-header p { margin: 4px 0 0; color: #53635d; }
+    button, input, textarea {
+      font: inherit;
+      border: 1px solid #b9c7c0;
+      border-radius: 6px;
+      background: #fff;
+      color: #1c2522;
+    }
+    button {
+      padding: 9px 12px;
+      cursor: pointer;
+      background: #1f6f58;
+      color: #fff;
+      border-color: #1f6f58;
+    }
+    button.secondary {
+      background: #fff;
+      color: #1f6f58;
+    }
+    .map-panel, .list-panel, .export-panel, .review-panel {
+      padding: 18px;
+      border: 1px solid #d7e0dc;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .map-panel svg { width: 100%; height: auto; display: block; }
+    .fence-label { font-size: 11px; fill: #777; }
+    .spot-dot { cursor: pointer; transition: r 0.1s ease; }
+    .spot-dot:hover { r: 7; }
+    .spot-dot.selected { stroke: #16302a; stroke-width: 3; }
+    .list-panel { max-height: 640px; overflow-y: auto; }
+    .lat-band h3 { margin: 14px 0 6px; color: #53635d; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .lat-band:first-child h3 { margin-top: 0; }
+    .spot-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px 10px;
+      align-items: center;
+      padding: 6px 4px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .spot-row:hover { background: #f2f6f4; }
+    .spot-row.selected { background: #e6f2ee; }
+    .spot-row-main { display: flex; align-items: center; gap: 8px; }
+    .spot-id, .deferred-reason, .linked-cam { grid-column: 2; color: #5d6c66; }
+    .badge {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 650;
+    }
+    .badge-spot { background: #e3f6ec; color: #1f6f58; }
+    .badge-stretch { background: #fdf0da; color: #92600a; }
+    .badge-deferred { background: #ececec; color: #666; }
+    .badge-none { background: #e6eefb; color: #2a5db0; }
+    fieldset { display: flex; gap: 14px; margin: 10px 0; padding: 0; border: 0; }
+    fieldset label { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+    label { display: grid; gap: 6px; font-weight: 650; }
+    label > input, label > textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px 10px;
+      font-weight: 400;
+    }
+    textarea { resize: vertical; min-height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+    .review-card {
+      margin: 0 0 14px;
+      padding: 14px;
+      border: 1px solid #e0e7e3;
+      border-radius: 6px;
+      background: #fbfcfb;
+    }
+    .review-card header { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+    .review-card p { margin: 4px 0; color: #444; }
+    .export-panel[hidden], .review-panel[hidden] { display: none; }
+    .export-panel { grid-column: 1 / -1; }
+    .review-panel { grid-column: 1 / -1; }
+    .export-status { margin: 8px 0 0; color: #53635d; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>Surfline Promotion Map</h1>
+      <p id="selectionCount">44 of 73 selected</p>
+    </div>
+    <div class="actions">
+      <button id="selectAll" type="button" class="secondary">Select all</button>
+      <button id="clearAll" type="button" class="secondary">Clear</button>
+      <button id="resetManifest" type="button" class="secondary">Reset spot selection</button>
+      <button id="exportManifest" type="button">Export manifest</button>
+    </div>
+  </header>
+  <main>
+    <section class="map-panel">
+      <svg viewBox="15.87 -5.58 202.89 731.16" xmlns="http://www.w3.org/2000/svg" id="coastMap" role="img" aria-label="Coast map of in-fence Surfline spots">
+    <line x1="0" y1="11.16" x2="202.88931542595205" y2="11.16" stroke="#999" stroke-width="1" stroke-dasharray="6,5" />
+    <text x="6" y="5.16" class="fence-label">north fence 39.65°</text>
+    <line x1="0" y1="708.84" x2="202.88931542595205" y2="708.84" stroke="#999" stroke-width="1" stroke-dasharray="6,5" />
+    <text x="6" y="702.84" class="fence-label">south fence 38.4°</text>
+    <circle class="spot-dot" data-id="surfline-nazare" cx="205.74" cy="36.37" r="5" fill="#2a7"><title>Nazaré (surfline-nazare) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-martinho-do-porto" cx="180.32" cy="92.56" r="5" fill="#59d"><title>São Martinho do Porto (surfline-sao-martinho-do-porto) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-foz-do-arelho" cx="141.96" cy="131.03" r="5" fill="#59d"><title>Foz do Arelho (surfline-foz-do-arelho) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-belgas" cx="126.44" cy="146.89" r="5" fill="#59d"><title>Belgas (surfline-belgas) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-almagreira" cx="106.21" cy="162.24" r="5" fill="#59d"><title>Almagreira (surfline-almagreira) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-baleal" cx="96.20" cy="164.85" r="5" fill="#2a7"><title>Baleal (surfline-baleal) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-lagide" cx="97.33" cy="165.03" r="5" fill="#2a7"><title>Lagide (surfline-lagide) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-cantinho-da-baia" cx="95.63" cy="167.60" r="5" fill="#2a7"><title>Cantinho da Baía (surfline-cantinho-da-baia) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-baia" cx="88.72" cy="170.41" r="5" fill="#59d"><title>Meio da Baía (surfline-baia) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-cerro" cx="83.29" cy="171.62" r="5" fill="#59d"><title>Cerro (surfline-cerro) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-molhe-leste" cx="82.77" cy="178.52" r="5" fill="#59d"><title>Molhe Leste (surfline-molhe-leste) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-supertubos" cx="84.82" cy="182.95" r="5" fill="#2a7"><title>Supertubos (surfline-supertubos) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-consolacao" cx="86.12" cy="193.76" r="5" fill="#2a7"><title>Consolação (surfline-consolacao) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-dos-frades" cx="93.01" cy="203.60" r="5" fill="#59d"><title>Praia dos Frades (surfline-praia-dos-frades) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-areia-branca" cx="96.75" cy="225.81" r="5" fill="#59d"><title>Praia Da Areia Branca (surfline-praia-da-areia-branca) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-porto-novo" cx="88.22" cy="274.35" r="5" fill="#59d"><title>Praia do Porto Novo (surfline-praia-do-porto-novo) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-de-santa-rita" cx="86.61" cy="278.78" r="5" fill="#59d"><title>Praia de Santa Rita (surfline-praia-de-santa-rita) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-santa-cruz" cx="78.41" cy="294.90" r="5" fill="#2a7"><title>Santa Cruz (surfline-santa-cruz) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-formosa" cx="75.66" cy="300.40" r="5" fill="#59d"><title>Praia Formosa (surfline-praia-formosa) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-das-amoeiras" cx="73.94" cy="303.16" r="5" fill="#59d"><title>Praia das Amoeiras (surfline-praia-das-amoeiras) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-azul" cx="71.36" cy="308.34" r="5" fill="#59d"><title>Praia Azul (surfline-praia-azul) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-porto-chao" cx="64.50" cy="321.89" r="5" fill="#59d"><title>Praia Porto Chão (surfline-praia-porto-chao) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-lourenco" cx="58.76" cy="365.99" r="5" fill="#59d"><title>São Lourenço (surfline-sao-lourenco) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-coxos" cx="57.04" cy="373.24" r="5" fill="#59d"><title>Coxos (surfline-coxos) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-cave" cx="57.72" cy="375.83" r="5" fill="none" stroke="#888" stroke-width="2"><title>Cave (surfline-cave) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-ribeira-d-ilhas" cx="59.31" cy="380.22" r="5" fill="#2a7"><title>Ribeira D’Ilhas (surfline-ribeira-d-ilhas) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-reef" cx="58.65" cy="383.46" r="5" fill="#2a7"><title>Reef (surfline-reef) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-pedra-branca" cx="59.01" cy="385.07" r="5" fill="#2a7"><title>Pedra Branca (surfline-pedra-branca) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-matadouro" cx="59.97" cy="387.59" r="5" fill="#2a7"><title>Matadouro (surfline-matadouro) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-sul" cx="61.50" cy="396.89" r="5" fill="#2a7"><title>Praia do Sul (surfline-praia-do-sul) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-baleia" cx="61.59" cy="399.12" r="5" fill="#59d"><title>Praia da Baleia (surfline-praia-da-baleia) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-foz-do-lizandro" cx="61.31" cy="405.19" r="5" fill="#2a7"><title>Foz do Lizandro (surfline-foz-do-lizandro) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-juliao" cx="59.64" cy="411.56" r="5" fill="#2a7"><title>São Julião (surfline-sao-juliao) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-vigia" cx="56.70" cy="420.02" r="5" fill="#59d"><title>Praia da Vigia (surfline-praia-da-vigia) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-samarra" cx="53.11" cy="430.65" r="5" fill="#59d"><title>Praia da Samarra (surfline-praia-da-samarra) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-magoito" cx="47.70" cy="449.94" r="5" fill="#59d"><title>Praia do Magoito (surfline-praia-do-magoito) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-aguda" cx="45.15" cy="456.49" r="5" fill="#59d"><title>Praia da Aguda (surfline-praia-da-aguda) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-dos-moleiros" cx="43.91" cy="459.30" r="5" fill="#59d"><title>Praia dos Moleiros (surfline-praia-dos-moleiros) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-das-macas" cx="38.17" cy="470.70" r="5" fill="#2a7"><title>Praia das Maçãs (surfline-praia-das-macas) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-pequena" cx="36.60" cy="474.39" r="5" fill="#2a7"><title>Praia Pequena (surfline-praia-pequena) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-grande" cx="34.05" cy="477.01" r="5" fill="#2a7"><title>Praia Grande (surfline-praia-grande) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-adraga" cx="32.08" cy="483.57" r="5" fill="#2a7"><title>Praia da Adraga (surfline-praia-da-adraga) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-ursa" cx="28.88" cy="490.71" r="5" fill="none" stroke="#888" stroke-width="2"><title>Praia da Ursa (surfline-praia-da-ursa) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-abano" cx="37.53" cy="517.49" r="5" fill="#59d"><title>Praia do Abano (surfline-praia-do-abano) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-guincho" cx="36.73" cy="522.27" r="5" fill="#2a7"><title>Praia Do Guincho (surfline-praia-do-guincho) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-crismina" cx="35.30" cy="526.41" r="5" fill="#59d"><title>Praia da Crismina (surfline-praia-da-crismina) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-das-moitas" cx="65.15" cy="540.50" r="5" fill="#59d"><title>Praia das Moitas (surfline-praia-das-moitas) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-cruz-quebrada" cx="133.51" cy="541.67" r="5" fill="#59d"><title>Praia da Cruz Quebrada (surfline-praia-da-cruz-quebrada) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-estoril" cx="71.76" cy="541.71" r="5" fill="#59d"><title>Estoril (surfline-estoril) — no coverage</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-de-caxias" cx="121.63" cy="542.23" r="5" fill="#e90"><title>Praia de Caxias (surfline-praia-de-caxias) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-pedro-do-estoril" cx="82.54" cy="545.02" r="5" fill="#2a7"><title>São Pedro do Estoril (surfline-sao-pedro-do-estoril) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-paco-de-arcos" cx="114.43" cy="547.47" r="5" fill="#2a7"><title>Paco de Arcos (surfline-paco-de-arcos) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-parede" cx="89.20" cy="549.60" r="5" fill="#2a7"><title>Parede (surfline-parede) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-laje" cx="107.35" cy="550.44" r="5" fill="#2a7"><title>Praia da Laje (surfline-praia-da-laje) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-santo-amaro" cx="108.01" cy="550.71" r="5" fill="#2a7"><title>Santo Amaro (surfline-santo-amaro) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-carcavelos" cx="96.79" cy="553.29" r="5" fill="#2a7"><title>Carcavelos (surfline-carcavelos) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-de-torre" cx="102.89" cy="554.96" r="5" fill="#2a7"><title>Praia de Torre (surfline-praia-de-torre) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-cova-do-vapor" cx="129.30" cy="563.14" r="5" fill="#2a7"><title>Cova Do Vapor (surfline-cova-do-vapor) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-joao-da-caparica" cx="133.34" cy="566.01" r="5" fill="#2a7"><title>São João da Caparica (surfline-sao-joao-da-caparica) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-marcelino" cx="136.31" cy="571.47" r="5" fill="#e90"><title>Marcelino (surfline-marcelino) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-barbas" cx="137.73" cy="572.23" r="5" fill="#2a7"><title>Praia do Barbas (surfline-praia-do-barbas) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-costa-da-caparica" cx="137.61" cy="574.68" r="5" fill="#2a7"><title>Costa da Caparica (surfline-costa-da-caparica) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-saude" cx="143.18" cy="580.80" r="5" fill="#e90"><title>Praia da Saude (surfline-praia-da-saude) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-cornelia" cx="144.22" cy="581.84" r="5" fill="#e90"><title>Praia da Cornelia (surfline-praia-da-cornelia) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-da-rainha" cx="147.82" cy="588.28" r="5" fill="#2a7"><title>Praia da Rainha (surfline-praia-da-rainha) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-castelo" cx="148.55" cy="589.91" r="5" fill="#2a7"><title>Costa da Caparica | Costelo (Irmao) (surfline-castelo) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-pescador" cx="149.69" cy="592.07" r="5" fill="#e90"><title>Praia do Pescador (surfline-praia-do-pescador) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-do-rei" cx="150.17" cy="594.03" r="5" fill="#e90"><title>Praia do Rei (surfline-praia-do-rei) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-fonte-da-telha" cx="156.59" cy="611.88" r="5" fill="#2a7"><title>Fonte da Telha (surfline-fonte-da-telha) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-lagoa-de-albufeira" cx="162.75" cy="648.06" r="5" fill="#2a7"><title>Lagoa de Albufeira (surfline-lagoa-de-albufeira) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-bicas" cx="159.07" cy="673.09" r="5" fill="#2a7"><title>Bicas (surfline-bicas) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-sesimbra" cx="200.87" cy="685.79" r="5" fill="#2a7"><title>Sesimbra (surfline-sesimbra) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-praia-dos-lagosteiros" cx="149.73" cy="695.67" r="5" fill="#59d"><title>Praia dos Lagosteiros (surfline-praia-dos-lagosteiros) — no coverage</title></circle>
+  </svg>
+    </section>
+    <section class="list-panel" id="spotList">
+      
+      <section class="lat-band">
+        <h3>39.6° – 39.7°</h3>
+        
+        <label class="spot-row" data-id="surfline-nazare">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-nazare" checked>
+          <span class="spot-row-main">
+            <strong>Nazaré</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-nazare</small>
+          <small class="linked-cam">cam: praia-do-norte</small>
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.5° – 39.6°</h3>
+        
+        <label class="spot-row" data-id="surfline-sao-martinho-do-porto">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-martinho-do-porto">
+          <span class="spot-row-main">
+            <strong>São Martinho do Porto</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-sao-martinho-do-porto</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.4° – 39.5°</h3>
+        
+        <label class="spot-row" data-id="surfline-foz-do-arelho">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-foz-do-arelho">
+          <span class="spot-row-main">
+            <strong>Foz do Arelho</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-foz-do-arelho</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-belgas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-belgas">
+          <span class="spot-row-main">
+            <strong>Belgas</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-belgas</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.3° – 39.4°</h3>
+        
+        <label class="spot-row" data-id="surfline-almagreira">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-almagreira">
+          <span class="spot-row-main">
+            <strong>Almagreira</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-almagreira</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-baleal">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-baleal" checked>
+          <span class="spot-row-main">
+            <strong>Baleal</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-baleal</small>
+          <small class="linked-cam">cam: lagide-e-baia</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-lagide">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-lagide" checked>
+          <span class="spot-row-main">
+            <strong>Lagide</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-lagide</small>
+          <small class="linked-cam">cam: lagide-e-baia</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-cantinho-da-baia">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-cantinho-da-baia" checked>
+          <span class="spot-row-main">
+            <strong>Cantinho da Baía</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-cantinho-da-baia</small>
+          <small class="linked-cam">cam: peniche-baleal-panoramica</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-baia">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-baia">
+          <span class="spot-row-main">
+            <strong>Meio da Baía</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-baia</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-cerro">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-cerro">
+          <span class="spot-row-main">
+            <strong>Cerro</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-cerro</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-molhe-leste">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-molhe-leste">
+          <span class="spot-row-main">
+            <strong>Molhe Leste</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-molhe-leste</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-supertubos">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-supertubos" checked>
+          <span class="spot-row-main">
+            <strong>Supertubos</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-supertubos</small>
+          <small class="linked-cam">cam: peniche-supertubos</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-consolacao">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-consolacao" checked>
+          <span class="spot-row-main">
+            <strong>Consolação</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-consolacao</small>
+          <small class="linked-cam">cam: praia-da-consolacao</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-dos-frades">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-dos-frades">
+          <span class="spot-row-main">
+            <strong>Praia dos Frades</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-dos-frades</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.2° – 39.3°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-da-areia-branca">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-areia-branca">
+          <span class="spot-row-main">
+            <strong>Praia Da Areia Branca</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-areia-branca</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.1° – 39.2°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-do-porto-novo">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-porto-novo">
+          <span class="spot-row-main">
+            <strong>Praia do Porto Novo</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-porto-novo</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-de-santa-rita">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-de-santa-rita">
+          <span class="spot-row-main">
+            <strong>Praia de Santa Rita</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-de-santa-rita</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-santa-cruz">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-santa-cruz" checked>
+          <span class="spot-row-main">
+            <strong>Santa Cruz</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-santa-cruz</small>
+          <small class="linked-cam">cam: santa-cruz</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-formosa">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-formosa">
+          <span class="spot-row-main">
+            <strong>Praia Formosa</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-formosa</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-das-amoeiras">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-das-amoeiras">
+          <span class="spot-row-main">
+            <strong>Praia das Amoeiras</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-das-amoeiras</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-azul">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-azul">
+          <span class="spot-row-main">
+            <strong>Praia Azul</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-azul</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>39.0° – 39.1°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-porto-chao">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-porto-chao">
+          <span class="spot-row-main">
+            <strong>Praia Porto Chão</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-porto-chao</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-sao-lourenco">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-lourenco">
+          <span class="spot-row-main">
+            <strong>São Lourenço</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-sao-lourenco</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-coxos">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-coxos">
+          <span class="spot-row-main">
+            <strong>Coxos</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-coxos</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.9° – 39.0°</h3>
+        
+        <label class="spot-row" data-id="surfline-cave">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-cave" checked>
+          <span class="spot-row-main">
+            <strong>Cave</strong>
+            <span class="badge badge-deferred">deferred</span>
+          </span>
+          <small class="spot-id">surfline-cave</small>
+          
+          <small class="deferred-reason">no trusted cam, no surfline cam, not on a stretch</small>
+        </label>
+
+        <label class="spot-row" data-id="surfline-ribeira-d-ilhas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-ribeira-d-ilhas" checked>
+          <span class="spot-row-main">
+            <strong>Ribeira D’Ilhas</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-ribeira-d-ilhas</small>
+          <small class="linked-cam">cam: ribeira-dilhas</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-reef">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-reef" checked>
+          <span class="spot-row-main">
+            <strong>Reef</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-reef</small>
+          <small class="linked-cam">cam: ericeira</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-pedra-branca">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-pedra-branca" checked>
+          <span class="spot-row-main">
+            <strong>Pedra Branca</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-pedra-branca</small>
+          <small class="linked-cam">cam: ericeira</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-matadouro">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-matadouro" checked>
+          <span class="spot-row-main">
+            <strong>Matadouro</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-matadouro</small>
+          <small class="linked-cam">cam: matadouro</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-sul">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-sul" checked>
+          <span class="spot-row-main">
+            <strong>Praia do Sul</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-sul</small>
+          <small class="linked-cam">cam: ericeira-praia-do-sul</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-baleia">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-baleia">
+          <span class="spot-row-main">
+            <strong>Praia da Baleia</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-baleia</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-foz-do-lizandro">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-foz-do-lizandro" checked>
+          <span class="spot-row-main">
+            <strong>Foz do Lizandro</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-foz-do-lizandro</small>
+          <small class="linked-cam">cam: foz-do-lizandro</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-sao-juliao">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-juliao" checked>
+          <span class="spot-row-main">
+            <strong>São Julião</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-sao-juliao</small>
+          <small class="linked-cam">cam: sao-juliao</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-vigia">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-vigia">
+          <span class="spot-row-main">
+            <strong>Praia da Vigia</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-vigia</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.8° – 38.9°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-da-samarra">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-samarra">
+          <span class="spot-row-main">
+            <strong>Praia da Samarra</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-samarra</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-magoito">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-magoito">
+          <span class="spot-row-main">
+            <strong>Praia do Magoito</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-magoito</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-aguda">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-aguda">
+          <span class="spot-row-main">
+            <strong>Praia da Aguda</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-aguda</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-dos-moleiros">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-dos-moleiros">
+          <span class="spot-row-main">
+            <strong>Praia dos Moleiros</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-dos-moleiros</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-das-macas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-das-macas" checked>
+          <span class="spot-row-main">
+            <strong>Praia das Maçãs</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-das-macas</small>
+          <small class="linked-cam">cam: praia-das-macas</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-pequena">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-pequena" checked>
+          <span class="spot-row-main">
+            <strong>Praia Pequena</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-pequena</small>
+          <small class="linked-cam">cam: praia-pequena</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-grande">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-grande" checked>
+          <span class="spot-row-main">
+            <strong>Praia Grande</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-grande</small>
+          <small class="linked-cam">cam: praia-grande</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-adraga">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-adraga" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Adraga</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-adraga</small>
+          <small class="linked-cam">cam: praia-da-adraga</small>
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.7° – 38.8°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-da-ursa">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-ursa" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Ursa</strong>
+            <span class="badge badge-deferred">deferred</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-ursa</small>
+          
+          <small class="deferred-reason">no trusted cam, no surfline cam, not on a stretch</small>
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-abano">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-abano">
+          <span class="spot-row-main">
+            <strong>Praia do Abano</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-abano</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-guincho">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-guincho" checked>
+          <span class="spot-row-main">
+            <strong>Praia Do Guincho</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-guincho</small>
+          <small class="linked-cam">cam: praia-do-guincho-norte</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-crismina">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-crismina">
+          <span class="spot-row-main">
+            <strong>Praia da Crismina</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-crismina</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-das-moitas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-das-moitas">
+          <span class="spot-row-main">
+            <strong>Praia das Moitas</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-das-moitas</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.6° – 38.7°</h3>
+        
+        <label class="spot-row" data-id="surfline-praia-da-cruz-quebrada">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-cruz-quebrada">
+          <span class="spot-row-main">
+            <strong>Praia da Cruz Quebrada</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-cruz-quebrada</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-estoril">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-estoril">
+          <span class="spot-row-main">
+            <strong>Estoril</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-estoril</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-de-caxias">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-de-caxias" checked>
+          <span class="spot-row-main">
+            <strong>Praia de Caxias</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-praia-de-caxias</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-sao-pedro-do-estoril">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-pedro-do-estoril" checked>
+          <span class="spot-row-main">
+            <strong>São Pedro do Estoril</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-sao-pedro-do-estoril</small>
+          <small class="linked-cam">cam: sao-pedro-do-estoril</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-paco-de-arcos">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-paco-de-arcos" checked>
+          <span class="spot-row-main">
+            <strong>Paco de Arcos</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-paco-de-arcos</small>
+          <small class="linked-cam">cam: paco-de-arcos</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-parede">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-parede" checked>
+          <span class="spot-row-main">
+            <strong>Parede</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-parede</small>
+          <small class="linked-cam">cam: parede</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-laje">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-laje" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Laje</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-laje</small>
+          <small class="linked-cam">cam: santo-amaro</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-santo-amaro">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-santo-amaro" checked>
+          <span class="spot-row-main">
+            <strong>Santo Amaro</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-santo-amaro</small>
+          <small class="linked-cam">cam: santo-amaro</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-carcavelos">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-carcavelos" checked>
+          <span class="spot-row-main">
+            <strong>Carcavelos</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-carcavelos</small>
+          <small class="linked-cam">cam: praia-de-carcavelos</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-de-torre">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-de-torre" checked>
+          <span class="spot-row-main">
+            <strong>Praia de Torre</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-de-torre</small>
+          <small class="linked-cam">cam: praia-da-torre</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-cova-do-vapor">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-cova-do-vapor" checked>
+          <span class="spot-row-main">
+            <strong>Cova Do Vapor</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-cova-do-vapor</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-sao-joao-da-caparica">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-joao-da-caparica" checked>
+          <span class="spot-row-main">
+            <strong>São João da Caparica</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-sao-joao-da-caparica</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-marcelino">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-marcelino" checked>
+          <span class="spot-row-main">
+            <strong>Marcelino</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-marcelino</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-barbas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-barbas" checked>
+          <span class="spot-row-main">
+            <strong>Praia do Barbas</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-barbas</small>
+          <small class="linked-cam">cam: costa-da-caparica-cds</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-costa-da-caparica">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-costa-da-caparica" checked>
+          <span class="spot-row-main">
+            <strong>Costa da Caparica</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-costa-da-caparica</small>
+          <small class="linked-cam">cam: costa-da-caparica-cds</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-saude">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-saude" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Saude</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-saude</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-cornelia">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-cornelia" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Cornelia</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-cornelia</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-da-rainha">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-da-rainha" checked>
+          <span class="spot-row-main">
+            <strong>Praia da Rainha</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-praia-da-rainha</small>
+          <small class="linked-cam">cam: costa-da-caparica-riviera</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-castelo">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-castelo" checked>
+          <span class="spot-row-main">
+            <strong>Costa da Caparica | Costelo (Irmao)</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-castelo</small>
+          <small class="linked-cam">cam: costa-da-caparica-riviera</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-pescador">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-pescador" checked>
+          <span class="spot-row-main">
+            <strong>Praia do Pescador</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-pescador</small>
+          
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-do-rei">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-do-rei" checked>
+          <span class="spot-row-main">
+            <strong>Praia do Rei</strong>
+            <span class="badge badge-stretch">stretch</span>
+          </span>
+          <small class="spot-id">surfline-praia-do-rei</small>
+          
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.5° – 38.6°</h3>
+        
+        <label class="spot-row" data-id="surfline-fonte-da-telha">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-fonte-da-telha" checked>
+          <span class="spot-row-main">
+            <strong>Fonte da Telha</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-fonte-da-telha</small>
+          <small class="linked-cam">cam: fonte-da-telha</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-lagoa-de-albufeira">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-lagoa-de-albufeira" checked>
+          <span class="spot-row-main">
+            <strong>Lagoa de Albufeira</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-lagoa-de-albufeira</small>
+          <small class="linked-cam">cam: lagoa-de-albufeira</small>
+          
+        </label>
+      </section>
+
+      <section class="lat-band">
+        <h3>38.4° – 38.5°</h3>
+        
+        <label class="spot-row" data-id="surfline-bicas">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-bicas" checked>
+          <span class="spot-row-main">
+            <strong>Bicas</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-bicas</small>
+          <small class="linked-cam">cam: praia-das-bicas</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-sesimbra">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-sesimbra" checked>
+          <span class="spot-row-main">
+            <strong>Sesimbra</strong>
+            <span class="badge badge-spot">spot</span>
+          </span>
+          <small class="spot-id">surfline-sesimbra</small>
+          <small class="linked-cam">cam: praia-sesimbra</small>
+          
+        </label>
+
+        <label class="spot-row" data-id="surfline-praia-dos-lagosteiros">
+          <input type="checkbox" class="spot-checkbox" data-id="surfline-praia-dos-lagosteiros">
+          <span class="spot-row-main">
+            <strong>Praia dos Lagosteiros</strong>
+            <span class="badge badge-none">no coverage</span>
+          </span>
+          <small class="spot-id">surfline-praia-dos-lagosteiros</small>
+          
+          
+        </label>
+      </section>
+    </section>
+    <section class="export-panel" id="exportPanel" hidden>
+      <header>
+        <h2>Manifest JSON</h2>
+      </header>
+      <textarea id="manifestJson" readonly spellcheck="false" aria-label="Exported surfline-promotions.json"></textarea>
+      <p class="export-status" id="exportStatus">Export JSON generated below.</p>
+    </section>
+    <section class="review-panel">
+      <h2>Review queue</h2>
+      <p>Wanted spots whose cam coverage is not a direct "spot" match, alongside the nearest stream-carrying MEO cam.</p>
+      <p>Accepting a candidate marks it curated — the spot graduates to at-spot coverage on the next data rebuild.</p>
+      
+      <article class="review-card" data-surfline-id="surfline-cave" data-review-id="surfline-cave">
+        <header>
+          <h3>Cave</h3>
+          <p>surfline-cave</p>
+        </header>
+        <p><span class="badge badge-none">no coverage yet</span></p>
+        <p>Nearest cam: <strong>ribeira-dilhas</strong> · 1.2km · status: generated</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-cave" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-cave" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-da-ursa" data-review-id="surfline-praia-da-ursa">
+        <header>
+          <h3>Praia da Ursa</h3>
+          <p>surfline-praia-da-ursa</p>
+        </header>
+        <p><span class="badge badge-none">no coverage yet</span></p>
+        <p>Nearest cam: <strong>praia-da-adraga</strong> · 1.5km · status: generated</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-da-ursa" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-da-ursa" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-marcelino" data-review-id="surfline-marcelino">
+        <header>
+          <h3>Marcelino</h3>
+          <p>surfline-marcelino</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-de-caparica-praia-do-norte</strong> · 0.5km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-marcelino" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-marcelino" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-da-saude" data-review-id="surfline-praia-da-saude">
+        <header>
+          <h3>Praia da Saude</h3>
+          <p>surfline-praia-da-saude</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-da-caparica-nova-praia</strong> · 0.5km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-da-saude" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-da-saude" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-do-rei" data-review-id="surfline-praia-do-rei">
+        <header>
+          <h3>Praia do Rei</h3>
+          <p>surfline-praia-do-rei</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-de-caparica-praia-da-sereia-morena</strong> · 0.6km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-do-rei" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-do-rei" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-da-cornelia" data-review-id="surfline-praia-da-cornelia">
+        <header>
+          <h3>Praia da Cornelia</h3>
+          <p>surfline-praia-da-cornelia</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-da-caparica-nova-praia</strong> · 0.8km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-da-cornelia" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-da-cornelia" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-do-pescador" data-review-id="surfline-praia-do-pescador">
+        <header>
+          <h3>Praia do Pescador</h3>
+          <p>surfline-praia-do-pescador</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-de-caparica-praia-da-sereia-morena</strong> · 1km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-do-pescador" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-do-pescador" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-praia-de-caxias" data-review-id="surfline-praia-de-caxias">
+        <header>
+          <h3>Praia de Caxias</h3>
+          <p>surfline-praia-de-caxias</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>paco-de-arcos</strong> · 1.8km · status: generated</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-praia-de-caxias" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-praia-de-caxias" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+      <button id="exportFeedback" type="button">Export feedback</button>
+      <section class="export-panel" id="feedbackPanel" hidden>
+        <textarea id="feedbackJson" readonly spellcheck="false" aria-label="Exported apply-mapping-feedback JSON"></textarea>
+      </section>
+    </section>
+  </main>
+  <script id="promotionMapData" type="application/json">{
+  "spots": [
+    {
+      "id": "surfline-nazare",
+      "name": "Nazaré",
+      "lat": 39.60484,
+      "lon": -9.08567,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-do-norte"
+    },
+    {
+      "id": "surfline-sao-martinho-do-porto",
+      "name": "São Martinho do Porto",
+      "lat": 39.50417,
+      "lon": -9.14429,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-foz-do-arelho",
+      "name": "Foz do Arelho",
+      "lat": 39.43523,
+      "lon": -9.23271,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-belgas",
+      "name": "Belgas",
+      "lat": 39.40682,
+      "lon": -9.26849,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-almagreira",
+      "name": "Almagreira",
+      "lat": 39.37932,
+      "lon": -9.31514,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-baleal",
+      "name": "Baleal",
+      "lat": 39.37464,
+      "lon": -9.33822,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "lagide-e-baia"
+    },
+    {
+      "id": "surfline-lagide",
+      "name": "Lagide",
+      "lat": 39.37432,
+      "lon": -9.33561,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "lagide-e-baia"
+    },
+    {
+      "id": "surfline-cantinho-da-baia",
+      "name": "Cantinho da Baía",
+      "lat": 39.36971,
+      "lon": -9.33952,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "peniche-baleal-panoramica"
+    },
+    {
+      "id": "surfline-baia",
+      "name": "Meio da Baía",
+      "lat": 39.36468,
+      "lon": -9.35545,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-cerro",
+      "name": "Cerro",
+      "lat": 39.36251,
+      "lon": -9.36797,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-molhe-leste",
+      "name": "Molhe Leste",
+      "lat": 39.35015,
+      "lon": -9.36917,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-supertubos",
+      "name": "Supertubos",
+      "lat": 39.34222,
+      "lon": -9.36445,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "peniche-supertubos"
+    },
+    {
+      "id": "surfline-consolacao",
+      "name": "Consolação",
+      "lat": 39.32285,
+      "lon": -9.36146,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-da-consolacao"
+    },
+    {
+      "id": "surfline-praia-dos-frades",
+      "name": "Praia dos Frades",
+      "lat": 39.30522,
+      "lon": -9.34557,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-areia-branca",
+      "name": "Praia Da Areia Branca",
+      "lat": 39.26542,
+      "lon": -9.33694,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-porto-novo",
+      "name": "Praia do Porto Novo",
+      "lat": 39.17846,
+      "lon": -9.35662,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-de-santa-rita",
+      "name": "Praia de Santa Rita",
+      "lat": 39.17052,
+      "lon": -9.36032,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-santa-cruz",
+      "name": "Santa Cruz",
+      "lat": 39.14163,
+      "lon": -9.37922,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "santa-cruz"
+    },
+    {
+      "id": "surfline-praia-formosa",
+      "name": "Praia Formosa",
+      "lat": 39.13178,
+      "lon": -9.38558,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-das-amoeiras",
+      "name": "Praia das Amoeiras",
+      "lat": 39.12683,
+      "lon": -9.38954,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-azul",
+      "name": "Praia Azul",
+      "lat": 39.11755,
+      "lon": -9.39549,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-porto-chao",
+      "name": "Praia Porto Chão",
+      "lat": 39.09328,
+      "lon": -9.41131,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-sao-lourenco",
+      "name": "São Lourenço",
+      "lat": 39.01427,
+      "lon": -9.42453,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-coxos",
+      "name": "Coxos",
+      "lat": 39.00128,
+      "lon": -9.42849,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-cave",
+      "name": "Cave",
+      "lat": 38.99663,
+      "lon": -9.42693,
+      "camCoverage": null,
+      "deferredReason": "no trusted cam, no surfline cam, not on a stretch",
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-ribeira-d-ilhas",
+      "name": "Ribeira D’Ilhas",
+      "lat": 38.98878,
+      "lon": -9.42327,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "ribeira-dilhas"
+    },
+    {
+      "id": "surfline-reef",
+      "name": "Reef",
+      "lat": 38.98297,
+      "lon": -9.42478,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "ericeira"
+    },
+    {
+      "id": "surfline-pedra-branca",
+      "name": "Pedra Branca",
+      "lat": 38.98009,
+      "lon": -9.42396,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "ericeira"
+    },
+    {
+      "id": "surfline-matadouro",
+      "name": "Matadouro",
+      "lat": 38.97556,
+      "lon": -9.42174,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "matadouro"
+    },
+    {
+      "id": "surfline-praia-do-sul",
+      "name": "Praia do Sul",
+      "lat": 38.95891,
+      "lon": -9.41822,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "ericeira-praia-do-sul"
+    },
+    {
+      "id": "surfline-praia-da-baleia",
+      "name": "Praia da Baleia",
+      "lat": 38.95491,
+      "lon": -9.41801,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-foz-do-lizandro",
+      "name": "Foz do Lizandro",
+      "lat": 38.94403,
+      "lon": -9.41865,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "foz-do-lizandro"
+    },
+    {
+      "id": "surfline-sao-juliao",
+      "name": "São Julião",
+      "lat": 38.93263,
+      "lon": -9.42251,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "sao-juliao"
+    },
+    {
+      "id": "surfline-praia-da-vigia",
+      "name": "Praia da Vigia",
+      "lat": 38.91747,
+      "lon": -9.42927,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-samarra",
+      "name": "Praia da Samarra",
+      "lat": 38.89842,
+      "lon": -9.43755,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-magoito",
+      "name": "Praia do Magoito",
+      "lat": 38.86386,
+      "lon": -9.45003,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-aguda",
+      "name": "Praia da Aguda",
+      "lat": 38.85212,
+      "lon": -9.45591,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-dos-moleiros",
+      "name": "Praia dos Moleiros",
+      "lat": 38.84708,
+      "lon": -9.45876,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-das-macas",
+      "name": "Praia das Maçãs",
+      "lat": 38.82667,
+      "lon": -9.47201,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-das-macas"
+    },
+    {
+      "id": "surfline-praia-pequena",
+      "name": "Praia Pequena",
+      "lat": 38.82006,
+      "lon": -9.47561,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-pequena"
+    },
+    {
+      "id": "surfline-praia-grande",
+      "name": "Praia Grande",
+      "lat": 38.81535,
+      "lon": -9.48151,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-grande"
+    },
+    {
+      "id": "surfline-praia-da-adraga",
+      "name": "Praia da Adraga",
+      "lat": 38.80361,
+      "lon": -9.48605,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-da-adraga"
+    },
+    {
+      "id": "surfline-praia-da-ursa",
+      "name": "Praia da Ursa",
+      "lat": 38.79081,
+      "lon": -9.49342,
+      "camCoverage": null,
+      "deferredReason": "no trusted cam, no surfline cam, not on a stretch",
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-abano",
+      "name": "Praia do Abano",
+      "lat": 38.74283,
+      "lon": -9.47347,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-guincho",
+      "name": "Praia Do Guincho",
+      "lat": 38.73426,
+      "lon": -9.47531,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-do-guincho-norte"
+    },
+    {
+      "id": "surfline-praia-da-crismina",
+      "name": "Praia da Crismina",
+      "lat": 38.72685,
+      "lon": -9.47862,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-das-moitas",
+      "name": "Praia das Moitas",
+      "lat": 38.7016,
+      "lon": -9.4098,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-cruz-quebrada",
+      "name": "Praia da Cruz Quebrada",
+      "lat": 38.6995,
+      "lon": -9.2522,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-estoril",
+      "name": "Estoril",
+      "lat": 38.699432,
+      "lon": -9.394559,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-de-caxias",
+      "name": "Praia de Caxias",
+      "lat": 38.6985,
+      "lon": -9.2796,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-sao-pedro-do-estoril",
+      "name": "São Pedro do Estoril",
+      "lat": 38.6935,
+      "lon": -9.3697,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "sao-pedro-do-estoril"
+    },
+    {
+      "id": "surfline-paco-de-arcos",
+      "name": "Paco de Arcos",
+      "lat": 38.689118,
+      "lon": -9.29619,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "paco-de-arcos"
+    },
+    {
+      "id": "surfline-parede",
+      "name": "Parede",
+      "lat": 38.685308,
+      "lon": -9.35436,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "parede"
+    },
+    {
+      "id": "surfline-praia-da-laje",
+      "name": "Praia da Laje",
+      "lat": 38.6838,
+      "lon": -9.3125,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "santo-amaro"
+    },
+    {
+      "id": "surfline-santo-amaro",
+      "name": "Santo Amaro",
+      "lat": 38.683313,
+      "lon": -9.31098,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "santo-amaro"
+    },
+    {
+      "id": "surfline-carcavelos",
+      "name": "Carcavelos",
+      "lat": 38.67869246746279,
+      "lon": -9.33685,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-de-carcavelos"
+    },
+    {
+      "id": "surfline-praia-de-torre",
+      "name": "Praia de Torre",
+      "lat": 38.6757,
+      "lon": -9.3228,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-da-torre"
+    },
+    {
+      "id": "surfline-cova-do-vapor",
+      "name": "Cova Do Vapor",
+      "lat": 38.66104,
+      "lon": -9.26191,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-sao-joao-da-caparica",
+      "name": "São João da Caparica",
+      "lat": 38.65589,
+      "lon": -9.2526,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-marcelino",
+      "name": "Marcelino",
+      "lat": 38.64612,
+      "lon": -9.24575,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-barbas",
+      "name": "Praia do Barbas",
+      "lat": 38.644758,
+      "lon": -9.24246,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "costa-da-caparica-cds"
+    },
+    {
+      "id": "surfline-costa-da-caparica",
+      "name": "Costa da Caparica",
+      "lat": 38.64036,
+      "lon": -9.24275,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "costa-da-caparica-cds"
+    },
+    {
+      "id": "surfline-praia-da-saude",
+      "name": "Praia da Saude",
+      "lat": 38.6294,
+      "lon": -9.2299,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-cornelia",
+      "name": "Praia da Cornelia",
+      "lat": 38.62753236844342,
+      "lon": -9.22752,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-da-rainha",
+      "name": "Praia da Rainha",
+      "lat": 38.616,
+      "lon": -9.2192,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "costa-da-caparica-riviera"
+    },
+    {
+      "id": "surfline-castelo",
+      "name": "Costa da Caparica | Costelo (Irmao)",
+      "lat": 38.6130718914354,
+      "lon": -9.21753,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "costa-da-caparica-riviera"
+    },
+    {
+      "id": "surfline-praia-do-pescador",
+      "name": "Praia do Pescador",
+      "lat": 38.6092,
+      "lon": -9.2149,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-praia-do-rei",
+      "name": "Praia do Rei",
+      "lat": 38.6057,
+      "lon": -9.2138,
+      "camCoverage": "stretch",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": null
+    },
+    {
+      "id": "surfline-fonte-da-telha",
+      "name": "Fonte da Telha",
+      "lat": 38.57372110885146,
+      "lon": -9.19898,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "fonte-da-telha"
+    },
+    {
+      "id": "surfline-lagoa-de-albufeira",
+      "name": "Lagoa de Albufeira",
+      "lat": 38.5089,
+      "lon": -9.1848,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "lagoa-de-albufeira"
+    },
+    {
+      "id": "surfline-bicas",
+      "name": "Bicas",
+      "lat": 38.46404,
+      "lon": -9.19328,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-das-bicas"
+    },
+    {
+      "id": "surfline-sesimbra",
+      "name": "Sesimbra",
+      "lat": 38.4413,
+      "lon": -9.0969,
+      "camCoverage": "spot",
+      "deferredReason": null,
+      "wanted": true,
+      "linkedCamId": "praia-sesimbra"
+    },
+    {
+      "id": "surfline-praia-dos-lagosteiros",
+      "name": "Praia dos Lagosteiros",
+      "lat": 38.4236,
+      "lon": -9.2148,
+      "camCoverage": null,
+      "deferredReason": null,
+      "wanted": false,
+      "linkedCamId": null
+    }
+  ],
+  "reviewQueue": [
+    {
+      "surflineSpotId": "surfline-cave",
+      "spotName": "Cave",
+      "nearestCamId": "ribeira-dilhas",
+      "distanceKm": 1.2,
+      "reviewStatus": "generated",
+      "camCoverage": null
+    },
+    {
+      "surflineSpotId": "surfline-praia-da-ursa",
+      "spotName": "Praia da Ursa",
+      "nearestCamId": "praia-da-adraga",
+      "distanceKm": 1.5,
+      "reviewStatus": "generated",
+      "camCoverage": null
+    },
+    {
+      "surflineSpotId": "surfline-marcelino",
+      "spotName": "Marcelino",
+      "nearestCamId": "costa-de-caparica-praia-do-norte",
+      "distanceKm": 0.5,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
+      "surflineSpotId": "surfline-praia-da-saude",
+      "spotName": "Praia da Saude",
+      "nearestCamId": "costa-da-caparica-nova-praia",
+      "distanceKm": 0.5,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
+      "surflineSpotId": "surfline-praia-do-rei",
+      "spotName": "Praia do Rei",
+      "nearestCamId": "costa-de-caparica-praia-da-sereia-morena",
+      "distanceKm": 0.6,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
+      "surflineSpotId": "surfline-praia-da-cornelia",
+      "spotName": "Praia da Cornelia",
+      "nearestCamId": "costa-da-caparica-nova-praia",
+      "distanceKm": 0.8,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
+      "surflineSpotId": "surfline-praia-do-pescador",
+      "spotName": "Praia do Pescador",
+      "nearestCamId": "costa-de-caparica-praia-da-sereia-morena",
+      "distanceKm": 1,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
+      "surflineSpotId": "surfline-praia-de-caxias",
+      "spotName": "Praia de Caxias",
+      "nearestCamId": "paco-de-arcos",
+      "distanceKm": 1.8,
+      "reviewStatus": "generated",
+      "camCoverage": "stretch"
+    }
+  ],
+  "notesById": {
+    "surfline-castelo": "existing hand-promoted prototype; Riviera/Irmao cam, curated"
+  },
+  "promoteOnlyWithTrustedCam": true,
+  "generatedAt": "2026-07-07T05:42:52.993Z",
+  "fence": {
+    "north": 39.65,
+    "south": 38.4,
+    "westOfLon": -9.05
+  }
+}</script>
+  <script>
+    const bootstrap = JSON.parse(document.querySelector("#promotionMapData").textContent);
+    const wantedManifest = new Set(bootstrap.spots.filter((s) => s.wanted).map((s) => s.id));
+    const selected = new Set(wantedManifest);
+
+    function isSelected(id) { return selected.has(id); }
+
+    function syncDot(id) {
+      const dot = document.querySelector('.spot-dot[data-id="' + CSS.escape(id) + '"]');
+      if (dot) dot.classList.toggle("selected", isSelected(id));
+    }
+
+    function syncRow(id) {
+      const row = document.querySelector('.spot-row[data-id="' + CSS.escape(id) + '"]');
+      if (row) row.classList.toggle("selected", isSelected(id));
+      const checkbox = document.querySelector('.spot-checkbox[data-id="' + CSS.escape(id) + '"]');
+      if (checkbox) checkbox.checked = isSelected(id);
+    }
+
+    function syncAll() {
+      for (const spot of bootstrap.spots) {
+        syncDot(spot.id);
+        syncRow(spot.id);
+      }
+      updateCount();
+    }
+
+    function updateCount() {
+      document.querySelector("#selectionCount").textContent = selected.size + " of " + bootstrap.spots.length + " selected";
+    }
+
+    function toggle(id) {
+      if (selected.has(id)) selected.delete(id); else selected.add(id);
+      syncDot(id);
+      syncRow(id);
+      updateCount();
+    }
+
+    document.querySelectorAll(".spot-dot").forEach((dot) => {
+      dot.addEventListener("click", () => toggle(dot.dataset.id));
+    });
+    document.querySelectorAll(".spot-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => toggle(checkbox.dataset.id));
+    });
+
+    document.querySelector("#selectAll").addEventListener("click", () => {
+      for (const spot of bootstrap.spots) selected.add(spot.id);
+      syncAll();
+    });
+    document.querySelector("#clearAll").addEventListener("click", () => {
+      selected.clear();
+      syncAll();
+    });
+    document.querySelector("#resetManifest").addEventListener("click", () => {
+      selected.clear();
+      for (const id of wantedManifest) selected.add(id);
+      syncAll();
+    });
+
+    const exportPanel = document.querySelector("#exportPanel");
+    const manifestJson = document.querySelector("#manifestJson");
+    const exportStatus = document.querySelector("#exportStatus");
+
+    function exportManifest() {
+      const promoted = bootstrap.spots
+        .filter((spot) => selected.has(spot.id))
+        .map((spot) => {
+          const note = bootstrap.notesById[spot.id];
+          return note ? { surflineSpotId: spot.id, note } : { surflineSpotId: spot.id };
+        });
+      const payload = {
+        schemaVersion: 1,
+        updatedAt: new Date().toISOString().slice(0, 10),
+        promoteOnlyWithTrustedCam: bootstrap.promoteOnlyWithTrustedCam,
+        promoted
+      };
+      manifestJson.value = JSON.stringify(payload, null, 2) + "\n";
+      exportPanel.hidden = false;
+      exportStatus.textContent = "Export JSON generated below.";
+      manifestJson.focus();
+      manifestJson.select();
+    }
+
+    document.querySelector("#exportManifest").addEventListener("click", exportManifest);
+
+    const feedbackPanel = document.querySelector("#feedbackPanel");
+    const feedbackJson = document.querySelector("#feedbackJson");
+
+    function exportFeedback() {
+      const feedback = [];
+      document.querySelectorAll(".review-card").forEach((card) => {
+        const surflineSpotId = card.dataset.surflineId;
+        const item = bootstrap.reviewQueue.find((entry) => entry.surflineSpotId === surflineSpotId);
+        const decisionInput = card.querySelector('input[data-field="decision"]:checked');
+        if (!decisionInput) return;
+        const decision = decisionInput.value;
+        const notes = card.querySelector('[data-field="notes"]').value.trim();
+        feedback.push({
+          meoSpotId: item ? item.nearestCamId : null,
+          decision,
+          selectedSurflineSpotId: surflineSpotId,
+          notes
+        });
+      });
+      feedbackJson.value = JSON.stringify(feedback, null, 2) + "\n";
+      feedbackPanel.hidden = false;
+      feedbackJson.focus();
+      feedbackJson.select();
+    }
+
+    document.querySelector("#exportFeedback").addEventListener("click", exportFeedback);
+
+    syncAll();
+  </script>
+</body>
+</html>

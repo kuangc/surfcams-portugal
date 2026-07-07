@@ -3,7 +3,10 @@ import {
   LISBON_DRIVE_ESTIMATES_URL,
   MEO_SPOTS_URL,
   MEO_SURFLINE_MATCHES_URL,
+  PROMOTED_SPOTS_URL,
   SPOT_METADATA_ENRICHMENT_URL,
+  STRETCHES_URL,
+  SURFLINE_CONDITIONS_URL,
   SURFLINE_SPOTS_URL
 } from "./config.js";
 
@@ -19,7 +22,10 @@ const EMPTY_SPOT_DATA = {
   mappingDb: { matches: [] },
   driveDb: { origin: CENTRAL_LISBON, estimates: [] },
   coastExposureDb: { exposures: [] },
-  spotMetadataDb: { entries: [] }
+  spotMetadataDb: { entries: [] },
+  promotedDb: { promoted: [], deferred: [] },
+  conditionsDb: { conditions: {} },
+  stretchesDb: { stretches: [] }
 };
 
 function toMap(items = [], key = "id") {
@@ -134,13 +140,33 @@ function routedMinutes(estimate, routeDistanceKm) {
     : estimateDrivingMinutesFromSeconds(estimate.durationSeconds);
 }
 
+function toStretchBySpotIdMap(stretches = []) {
+  const stretchBySpotId = new Map();
+  for (const stretch of stretches) {
+    for (const spotId of stretch.surflineSpotIds || []) {
+      stretchBySpotId.set(spotId, stretch);
+    }
+  }
+  for (const stretch of stretches) {
+    for (const camId of stretch.meoCamIds || []) {
+      if (!stretchBySpotId.has(camId)) {
+        stretchBySpotId.set(camId, stretch);
+      }
+    }
+  }
+  return stretchBySpotId;
+}
+
 export function normalizeSpotData({
   surflineDb = EMPTY_SPOT_DATA.surflineDb,
   meoDb = EMPTY_SPOT_DATA.meoDb,
   mappingDb = EMPTY_SPOT_DATA.mappingDb,
   driveDb = EMPTY_SPOT_DATA.driveDb,
   coastExposureDb = EMPTY_SPOT_DATA.coastExposureDb,
-  spotMetadataDb = EMPTY_SPOT_DATA.spotMetadataDb
+  spotMetadataDb = EMPTY_SPOT_DATA.spotMetadataDb,
+  promotedDb = EMPTY_SPOT_DATA.promotedDb,
+  conditionsDb = EMPTY_SPOT_DATA.conditionsDb,
+  stretchesDb = EMPTY_SPOT_DATA.stretchesDb
 } = EMPTY_SPOT_DATA) {
   const safeSurflineDb = surflineDb || EMPTY_SPOT_DATA.surflineDb;
   const safeMeoDb = meoDb || EMPTY_SPOT_DATA.meoDb;
@@ -148,12 +174,17 @@ export function normalizeSpotData({
   const safeDriveDb = driveDb || EMPTY_SPOT_DATA.driveDb;
   const safeCoastExposureDb = coastExposureDb || EMPTY_SPOT_DATA.coastExposureDb;
   const safeSpotMetadataDb = spotMetadataDb || EMPTY_SPOT_DATA.spotMetadataDb;
+  const safePromotedDb = promotedDb || EMPTY_SPOT_DATA.promotedDb;
+  const safeConditionsDb = conditionsDb || EMPTY_SPOT_DATA.conditionsDb;
+  const safeStretchesDb = stretchesDb || EMPTY_SPOT_DATA.stretchesDb;
   const surflineById = toMap(safeSurflineDb.spots);
   const meoById = toMap(safeMeoDb.spots);
   const matchesByMeoId = toMap(safeMappingDb.matches, "meoSpotId");
   const driveByMeoId = toMap(safeDriveDb.estimates, "meoSpotId");
   const coastExposureById = toMap(safeCoastExposureDb.exposures);
   const spotMetadataById = toMap(safeSpotMetadataDb.entries);
+  const conditionsById = new Map(Object.entries(safeConditionsDb.conditions || {}));
+  const stretchBySpotId = toStretchBySpotIdMap(safeStretchesDb.stretches);
 
   return {
     surflineDb: safeSurflineDb,
@@ -162,12 +193,18 @@ export function normalizeSpotData({
     driveDb: safeDriveDb,
     coastExposureDb: safeCoastExposureDb,
     spotMetadataDb: safeSpotMetadataDb,
+    promotedDb: safePromotedDb,
+    conditionsDb: safeConditionsDb,
+    stretchesDb: safeStretchesDb,
     surflineById,
     meoById,
     matchesByMeoId,
     driveByMeoId,
     coastExposureById,
-    spotMetadataById
+    spotMetadataById,
+    conditionsById,
+    stretchBySpotId,
+    stretches: safeStretchesDb.stretches || []
   };
 }
 
@@ -179,7 +216,7 @@ export function findSurflineMatches(camera, normalizedSpotData) {
   const id = normalizeId(camera);
   const mapping = normalizedSpotData?.matchesByMeoId?.get(id);
   if (!mapping) return [];
-  if (mapping.reviewStatus === "needs-review") return [];
+  if (mapping.reviewStatus === "needs-review" || mapping.reviewStatus === "rejected") return [];
 
   return mapping.surflineSpotIds
     .map((surflineSpotId) => normalizedSpotData.surflineById.get(surflineSpotId))
@@ -261,14 +298,37 @@ async function fetchOptionalJson(fetcher, url, fallback) {
 }
 
 export async function loadSpotData({ fetcher = fetch } = {}) {
-  const [surflineDb, meoDb, mappingDb, driveDb, coastExposureDb, spotMetadataDb] = await Promise.all([
+  const [
+    surflineDb,
+    meoDb,
+    mappingDb,
+    driveDb,
+    coastExposureDb,
+    spotMetadataDb,
+    promotedDb,
+    conditionsDb,
+    stretchesDb
+  ] = await Promise.all([
     fetchJson(fetcher, SURFLINE_SPOTS_URL),
     fetchJson(fetcher, MEO_SPOTS_URL),
     fetchJson(fetcher, MEO_SURFLINE_MATCHES_URL),
     fetchJson(fetcher, LISBON_DRIVE_ESTIMATES_URL),
     fetchOptionalJson(fetcher, COAST_EXPOSURES_URL, EMPTY_SPOT_DATA.coastExposureDb),
-    fetchOptionalJson(fetcher, SPOT_METADATA_ENRICHMENT_URL, EMPTY_SPOT_DATA.spotMetadataDb)
+    fetchOptionalJson(fetcher, SPOT_METADATA_ENRICHMENT_URL, EMPTY_SPOT_DATA.spotMetadataDb),
+    fetchOptionalJson(fetcher, PROMOTED_SPOTS_URL, EMPTY_SPOT_DATA.promotedDb),
+    fetchOptionalJson(fetcher, SURFLINE_CONDITIONS_URL, EMPTY_SPOT_DATA.conditionsDb),
+    fetchOptionalJson(fetcher, STRETCHES_URL, EMPTY_SPOT_DATA.stretchesDb)
   ]);
 
-  return normalizeSpotData({ surflineDb, meoDb, mappingDb, driveDb, coastExposureDb, spotMetadataDb });
+  return normalizeSpotData({
+    surflineDb,
+    meoDb,
+    mappingDb,
+    driveDb,
+    coastExposureDb,
+    spotMetadataDb,
+    promotedDb,
+    conditionsDb,
+    stretchesDb
+  });
 }

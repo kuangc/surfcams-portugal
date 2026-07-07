@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "stretches": [
+    {
+      "id": "caparica",
+      "name": "Caparica stretch",
+      "surflineSpotIds": ["surfline-cova-do-vapor", "surfline-sao-joao-da-caparica", "surfline-marcelino", "surfline-praia-do-barbas", "surfline-costa-da-caparica", "surfline-praia-da-saude", "surfline-praia-da-cornelia", "surfline-praia-da-rainha", "surfline-castelo", "surfline-praia-do-pescador", "surfline-praia-do-rei", "surfline-fonte-da-telha"],
+      "meoCamIds": ["costa-de-caparica-sao-joao-cova-do-vapor", "costa-de-caparica-praia-do-norte", "costa-da-caparica-cds", "costa-da-caparica-tarquinio", "costa-da-caparica-nova-praia", "costa-da-caparica-riviera", "costa-de-caparica-praia-da-sereia-morena", "fonte-da-telha"]
+    },
+    {
+      "id": "linha",
+      "name": "Linha seafront",
+      "surflineSpotIds": ["surfline-praia-da-cruz-quebrada", "surfline-praia-de-caxias", "surfline-paco-de-arcos", "surfline-praia-da-laje", "surfline-santo-amaro", "surfline-carcavelos", "surfline-praia-de-torre"],
+      "meoCamIds": ["paco-de-arcos", "santo-amaro", "praia-da-torre", "praia-de-carcavelos"]
+    }
+  ]
+}

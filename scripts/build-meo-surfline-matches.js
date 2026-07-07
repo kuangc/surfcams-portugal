@@ -2,8 +2,9 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { haversineKm } from "../src/spot-data.js";
+import { classifyGeneratedMatch } from "./lib/spot-matching.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MEO_DB_PATH = path.join(ROOT, "data", "meo-spots.json");
@@ -102,27 +103,32 @@ function acceptsPrimary(candidate) {
     || (candidate.distanceKm <= MAX_NAME_PRIMARY_DISTANCE_KM && candidate.nameScore >= 0.5);
 }
 
-function generatedConfidence(candidate) {
-  if (candidate.nameScore >= 0.75) return "spot";
-  if (candidate.nameScore >= 0.35) return "nearby";
-  return "coordinate-nearby";
-}
-
-function generatedReviewStatus(candidate) {
-  return candidate.nameScore >= 0.35 ? "generated" : "needs-review";
-}
-
 function distancesForCandidates(candidates) {
   return Object.fromEntries(candidates.map((candidate) => [candidate.spot.id, candidate.distanceKm]));
 }
 
-function isCuratedMatch(match) {
+export function isCuratedMatch(match) {
   return match?.source === "curated"
     || match?.source === "manual"
     || match?.reviewStatus === "curated";
 }
 
-function enrichCuratedMatch(match, meoById, surflineById) {
+export function isRejectedMatch(match) {
+  return match?.reviewStatus === "rejected";
+}
+
+// Rows that must survive regeneration verbatim (distances re-enriched, everything else untouched):
+// curated (human-accepted) and rejected (human-declined) are both terminal human decisions.
+export function isPreservedMatch(match) {
+  return isCuratedMatch(match) || isRejectedMatch(match);
+}
+
+// Shared by curated and rejected rows: both are terminal human decisions that must
+// survive regeneration verbatim. Only distancesKm/matchEvidence are re-derived (in case
+// the underlying spot databases shifted); source/confidence/reviewStatus are `||` fallbacks
+// that only apply when the field is unset, so an already-set "rejected" reviewStatus (or any
+// other already-set field) passes through untouched.
+function enrichPreservedMatch(match, meoById, surflineById) {
   const meoSpot = meoById.get(match.meoSpotId);
   const distancesKm = { ...(match.distancesKm || {}) };
   const matchEvidence = [];
@@ -159,12 +165,21 @@ function generatedMatch(meoSpot, surflineSpots) {
     .filter((candidate) => candidate.distanceKm <= MAX_CORRIDOR_DISTANCE_KM)
     .slice(0, MAX_MATCHES_PER_MEO_SPOT);
 
+  const { reviewStatus, confidence } = classifyGeneratedMatch({
+    nameScore: primary.nameScore,
+    distanceKm: primary.distanceKm,
+    camLat: meoSpot.lat,
+    camLon: meoSpot.lon,
+    surflineName: primary.spot.name,
+    meoName: `${meoSpot.id} ${meoSpot.name}`
+  });
+
   return {
     meoSpotId: meoSpot.id,
     surflineSpotIds: selected.map((candidate) => candidate.spot.id),
     source: "generated-nearest",
-    confidence: generatedConfidence(primary),
-    reviewStatus: generatedReviewStatus(primary),
+    confidence,
+    reviewStatus,
     proposedCloseRule: "nearest-cached-surfline-spots-for-same-meo-location",
     distancesKm: distancesForCandidates(selected),
     matchEvidence: selected.map((candidate) => ({
@@ -189,15 +204,17 @@ async function main() {
 
   const meoById = new Map((meoDb.spots || []).map((spot) => [spot.id, spot]));
   const surflineById = new Map((surflineDb.spots || []).map((spot) => [spot.id, spot]));
-  const curatedByMeoId = new Map((existingMappingDb.matches || [])
-    .filter(isCuratedMatch)
-    .map((match) => [match.meoSpotId, enrichCuratedMatch(match, meoById, surflineById)]));
+  // Curated (human-accepted) and rejected (human-declined) rows are both preserved verbatim
+  // across regeneration; only the auto-generation pass is skipped for their MEO spot.
+  const preservedByMeoId = new Map((existingMappingDb.matches || [])
+    .filter(isPreservedMatch)
+    .map((match) => [match.meoSpotId, enrichPreservedMatch(match, meoById, surflineById)]));
 
   const matches = [];
   for (const meoSpot of meoDb.spots || []) {
-    const curated = curatedByMeoId.get(meoSpot.id);
-    if (curated) {
-      matches.push(curated);
+    const preserved = preservedByMeoId.get(meoSpot.id);
+    if (preserved) {
+      matches.push(preserved);
       continue;
     }
 
@@ -209,8 +226,8 @@ async function main() {
     schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     closeRuleProposal: {
-      id: "curated-or-nearest-cached-surfline-spots-for-meo-location",
-      description: "Preserve curated MEO-to-Surfline corridor mappings first, then generate conservative nearest-neighbor mappings from cached Surfline spots for MEO locations. Coordinate-only matches are marked needs-review for hand curation.",
+      id: "name-first-cam-at-spot",
+      description: "Preserve curated MEO-to-Surfline corridor mappings first. For generated rows, trust the primary (nearest) candidate when its name matches (nameScore>=0.5 or slug containment) within 3km, or when it's within 0.2km by proximity alone; the name path is disabled inside the Caparica ambiguity zone where shared regional name stems make matches unreliable. Primary candidates that clear neither bar are marked needs-review for hand curation.",
       maxPrimaryDistanceKm: MAX_PRIMARY_DISTANCE_KM,
       maxNamePrimaryDistanceKm: MAX_NAME_PRIMARY_DISTANCE_KM,
       maxCorridorDistanceKm: MAX_CORRIDOR_DISTANCE_KM,
@@ -224,6 +241,7 @@ async function main() {
     curated: matches.filter((match) => match.source === "curated").length,
     generated: matches.filter((match) => match.source === "generated-nearest").length,
     needsReview: matches.filter((match) => match.reviewStatus === "needs-review").length,
+    rejected: matches.filter((match) => match.reviewStatus === "rejected").length,
     matches
   };
 
@@ -231,7 +249,9 @@ async function main() {
   console.log(`Wrote ${matches.length} MEO-to-Surfline mappings to data/meo-surfline-matches.json.`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

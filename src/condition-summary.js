@@ -130,8 +130,8 @@ export function formatWaterSummary(camera, { tideSnapshot = null, timeZone = "Eu
   return tideMetrics;
 }
 
-export function formatConditionLine(camera, preferences) {
-  const rating = rateSurfSpot(camera, preferences);
+export function formatConditionLine(camera, preferences, resolved = null) {
+  const rating = rateSurfSpot(camera, preferences, resolved);
   const source = formatSource(camera);
   const swell = rating.swell.compass === "unknown" ? "swell ?" : rating.swell.compass;
   const period = rating.period.seconds === null ? "?s" : `${formatCompactNumber(rating.period.seconds)}s`;
@@ -141,8 +141,8 @@ export function formatConditionLine(camera, preferences) {
   return `${shortFitLabel(rating.key)} · ${source.label} · ${rating.wave.label} · ${swell} ${period} · ${wind} · ${coast}`;
 }
 
-export function formatConditionChips(camera, preferences, { driveEstimate = null } = {}) {
-  const rating = rateSurfSpot(camera, preferences);
+export function formatConditionChips(camera, preferences, { driveEstimate = null } = {}, resolved = null) {
+  const rating = rateSurfSpot(camera, preferences, resolved);
   const source = formatSource(camera);
   const swell = rating.swell.compass === "unknown" ? "swell ?" : rating.swell.compass;
   const period = rating.period.seconds === null ? "?s" : `${formatCompactNumber(rating.period.seconds)}s`;
@@ -205,8 +205,8 @@ export function formatConditionChips(camera, preferences, { driveEstimate = null
   ].filter(Boolean);
 }
 
-export function formatSpotMetadata(camera, preferences) {
-  const rating = rateSurfSpot(camera, preferences);
+export function formatSpotMetadata(camera, preferences, resolved = null) {
+  const rating = rateSurfSpot(camera, preferences, resolved);
 
   return [
     { label: "Surf", value: rating.wave.label },
