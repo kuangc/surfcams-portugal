@@ -1,4 +1,4 @@
-import { firstClassCameras, loadCameraDb } from "./camera-data.js";
+import { firstClassCameras, loadCameraDb, mergePromotedSpots } from "./camera-data.js";
 import {
   camerasForInitialBounds,
   camerasInBounds,
@@ -13,6 +13,7 @@ import {
 import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
+import { resolveConditions } from "./forecast-sources.js";
 import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
   applySpotMetadataToCameraDb,
@@ -46,12 +47,14 @@ const state = {
   cameras: [],
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
+  liveForecastCache: new Map(),
   monitorMode: "favorites",
   monitorPlayers: new Map(),
   markers: new Map(),
   markerLayer: null,
   selectedExploreCamera: null,
   explorePlayer: null,
+  reportLinkEl: null,
   map: null,
   mapHasInitialFit: false
 };
@@ -158,8 +161,28 @@ function manageSpotCameras() {
   return state.db?.cameras || state.cameras;
 }
 
+// The Explore screen has no sort control, so it renders state.cameras in whatever
+// order it receives them in. Sorting once here (coast app: north-to-south is a
+// meaningful base order) keeps promoted Surfline-only spots interleaved next to
+// their geographic neighbors instead of stuck at the end of the raw crawl order.
+// Stable sort: cameras with equal/missing latitude keep their relative order.
+function sortCamerasByLatitudeDescending(cameras) {
+  return [...cameras].sort((a, b) => {
+    const aLat = Number.isFinite(a.lat) ? a.lat : -Infinity;
+    const bLat = Number.isFinite(b.lat) ? b.lat : -Infinity;
+    return bLat - aLat;
+  });
+}
+
 function driveDistanceKm(camera) {
   return findDriveEstimate(camera, state.spotData)?.routeDistanceKm;
+}
+
+function getConditions(camera) {
+  return resolveConditions(camera, state.spotData, {
+    liveCache: state.liveForecastCache ?? null,
+    now: Date.now()
+  });
 }
 
 function favoriteManagerCameras() {
@@ -172,7 +195,7 @@ function favoriteManagerCameras() {
     maxDistanceKm: els.favoritesDistanceSelect.value,
     sort: els.favoritesSortSelect.value || "favorites",
     getConditionRank(camera) {
-      return rateSurfSpot(camera, state.preferences);
+      return rateSurfSpot(camera, state.preferences, getConditions(camera));
     },
     getDriveDistanceKm: driveDistanceKm
   });
@@ -335,7 +358,7 @@ function renderMonitor() {
 
   const slots = state.monitorMode === "favorites"
     ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm })
-    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences, undefined, { getDriveDistanceKm: driveDistanceKm })
+    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences, undefined, { getDriveDistanceKm: driveDistanceKm, getConditions })
       .map((camera) => ({ camera, empty: false }));
 
   els.monitorGrid.textContent = "";
@@ -538,6 +561,16 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
     const chip = chips.get(key);
     if (chip) metricsRow.appendChild(createConditionToken(chip));
   });
+
+  const resolved = getConditions(camera);
+  const chip = document.createElement("span");
+  chip.className = `provenance-chip provenance-${resolved.source}`;
+  chip.textContent = resolved.source === "surfline-fresh"
+    ? `Surfline · ${Math.round(resolved.ageHours)}h`
+    : resolved.source === "live-model" ? "Model · now" : "MEO · static";
+  chip.title = resolved.fetchedAt ? `fetched ${resolved.fetchedAt}` : "embedded crawl snapshot";
+  metricsRow.appendChild(chip);
+
   strip.appendChild(metricsRow);
 
   const routeRow = document.createElement("div");
@@ -638,9 +671,19 @@ function renderFavorites() {
   });
 }
 
+function linkedCamera(camera) {
+  if (!camera?.promoted || !camera.linkedCamId) return null;
+  return byId().get(camera.linkedCamId) || null;
+}
+
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
   if (isReportOnlyCamera(camera)) {
+    const linked = linkedCamera(camera);
+    if (linked?.streamUrl) {
+      state.explorePlayer.play(linked);
+      return;
+    }
     state.explorePlayer.clear();
     els.exploreFeedStatus.textContent = "Open Surfline report";
     return;
@@ -716,6 +759,45 @@ function updateExploreRowSelection(cameraId) {
   if (row) row.setAttribute("aria-current", "true");
 }
 
+function renderSlCamBadge(camera) {
+  els.detailName.parentElement?.querySelector(".sl-cam-badge")?.remove();
+  if (!camera?.surflineCams?.length) return;
+
+  const badge = document.createElement("span");
+  badge.className = "sl-cam-badge";
+  badge.textContent = "SL cam";
+  badge.title = camera.surflineCams.map((cam) => cam.title).filter(Boolean).join(", ");
+  els.detailName.insertAdjacentElement("afterend", badge);
+}
+
+function renderReportLink(camera) {
+  state.reportLinkEl?.remove();
+  state.reportLinkEl = null;
+  if (!isReportOnlyCamera(camera)) return;
+
+  const linked = linkedCamera(camera);
+  const link = document.createElement("div");
+  link.className = "explore-report-link";
+
+  if (linked) {
+    const caption = document.createElement("p");
+    caption.className = "explore-report-link__caption muted";
+    caption.textContent = `via ${linked.name} cam · ${camera.linkedCamDistanceKm}km`;
+    link.appendChild(caption);
+  }
+
+  const action = document.createElement("a");
+  action.className = "report-frame__action explore-report-link__action";
+  action.href = reportUrl(camera);
+  action.target = "_blank";
+  action.rel = "noopener noreferrer";
+  action.textContent = "Open Surfline report";
+  link.appendChild(action);
+
+  els.spotPanel.insertBefore(link, els.detailConditionStrip);
+  state.reportLinkEl = link;
+}
+
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
   els.detailConditionStrip.textContent = "";
@@ -726,6 +808,8 @@ function renderExploreSelection(camera) {
     els.detailLocation.textContent = "Choose a marker to watch.";
     els.detailFavorite.disabled = true;
     syncFavoriteToggle(els.detailFavorite, null);
+    renderSlCamBadge(null);
+    renderReportLink(null);
     renderMarkers();
     state.explorePlayer.clear();
     return;
@@ -735,6 +819,8 @@ function renderExploreSelection(camera) {
   els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
   els.detailFavorite.disabled = false;
   syncFavoriteToggle(els.detailFavorite, camera);
+  renderSlCamBadge(camera);
+  renderReportLink(camera);
   els.detailConditionStrip.appendChild(createConditionStrip(camera));
   updateExploreRowSelection(camera.id);
   renderMarkers();
@@ -773,11 +859,11 @@ function readConfigForm() {
 }
 
 function markerIcon(camera, active = false) {
-  const rating = rateSurfSpot(camera, state.preferences);
+  const rating = rateSurfSpot(camera, state.preferences, getConditions(camera));
 
   return L.divIcon({
     className: "",
-    html: `<span class="cam-marker" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}" data-fit="${rating.key}" data-live="${camera.hasStream}"></span>`,
+    html: `<span class="cam-marker" data-active="${active}" data-favorite="${state.favoriteIds.has(camera.id)}" data-fit="${rating.key}" data-live="${camera.hasStream}" data-promoted="${camera.promoted ? "1" : "0"}"></span>`,
     iconSize: active ? [28, 28] : [20, 20],
     iconAnchor: active ? [14, 14] : [10, 10],
     popupAnchor: [0, -12]
@@ -785,7 +871,7 @@ function markerIcon(camera, active = false) {
 }
 
 function isMightBeGood(camera) {
-  return rateSurfSpot(camera, state.preferences).isRecommended;
+  return rateSurfSpot(camera, state.preferences, getConditions(camera)).isRecommended;
 }
 
 function exploreCameras() {
@@ -987,9 +1073,12 @@ async function init() {
   ]);
 
   state.spotData = spotData;
-  state.db = applySpotMetadataToCameraDb(cameraDb, state.spotData);
+  state.db = mergePromotedSpots(
+    applySpotMetadataToCameraDb(cameraDb, spotData),
+    spotData.promotedDb
+  );
   state.tideData = tideData;
-  state.cameras = firstClassCameras(state.db);
+  state.cameras = sortCamerasByLatitudeDescending(firstClassCameras(state.db));
   state.favoriteIds = loadFavoriteIds(manageSpotCameras());
   state.preferences = loadSurfPreferences();
 
