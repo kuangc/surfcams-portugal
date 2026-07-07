@@ -48,12 +48,30 @@ test("shouldReplace: same-kind invalid dates do not win", () => {
   }
 });
 
-test("shouldReplace: primary candidate beats nearby existing", () => {
+test("shouldReplace: primary candidate beats nearby existing at comparable freshness only", () => {
   const cases = [
     {
-      name: "primary candidate beats nearby existing",
+      name: "primary candidate beats slightly newer nearby (within override window)",
       existing: { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" },
       candidate: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      expected: true
+    },
+    {
+      name: "stale primary does not displace nearby fresher by more than the override window",
+      existing: { sourceKind: "nearby", fetchedAt: "2026-07-06T13:00:01Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "2026-07-06T06:00:00Z" },
+      expected: false
+    },
+    {
+      name: "weeks-stale primary never displaces a fresh nearby (order independence)",
+      existing: { sourceKind: "nearby", fetchedAt: "2026-07-07T12:00:00Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "2026-06-11T12:00:00Z" },
+      expected: false
+    },
+    {
+      name: "primary with invalid fetchedAt keeps legacy preference",
+      existing: { sourceKind: "nearby", fetchedAt: "2026-07-06T09:00:00Z" },
+      candidate: { sourceKind: "primary", fetchedAt: "not-a-date" },
       expected: true
     }
   ];

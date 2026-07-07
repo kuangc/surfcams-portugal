@@ -36,11 +36,11 @@ function timestampMs(value) {
   return Number.isFinite(ms) ? ms : null;
 }
 
-// Replacement contract:
+// Replacement contract (order-independent across mixed-generation caches):
 // - same sourceKind: candidate wins only with a strictly newer valid fetchedAt.
-// - primary candidate beats nearby existing.
-// - nearby candidate beats primary existing only when more than
-//   NEARBY_FRESHNESS_OVERRIDE_HOURS newer.
+// - across kinds, primary is preferred at comparable freshness, but a nearby
+//   record more than NEARBY_FRESHNESS_OVERRIDE_HOURS fresher than the primary
+//   wins regardless of which record is seen first.
 export function shouldReplace(existing, candidate) {
   if (!existing) return true;
   if (candidate.sourceKind === existing.sourceKind) {
@@ -48,7 +48,12 @@ export function shouldReplace(existing, candidate) {
     const existingMs = timestampMs(existing.fetchedAt);
     return candidateMs !== null && existingMs !== null && candidateMs > existingMs;
   }
-  if (candidate.sourceKind === "primary" && existing.sourceKind === "nearby") return true;
+  if (candidate.sourceKind === "primary" && existing.sourceKind === "nearby") {
+    const candidateMs = timestampMs(candidate.fetchedAt);
+    const existingMs = timestampMs(existing.fetchedAt);
+    if (candidateMs === null || existingMs === null) return true;
+    return existingMs - candidateMs <= NEARBY_FRESHNESS_OVERRIDE_HOURS * HOUR_MS;
+  }
   if (candidate.sourceKind === "nearby" && existing.sourceKind === "primary") {
     const candidateMs = timestampMs(candidate.fetchedAt);
     const existingMs = timestampMs(existing.fetchedAt);
