@@ -77,6 +77,42 @@ test("mightBeGoodCameras sorts monitor candidates by nearest drive distance befo
   assert.deepEqual(result.map((camera) => camera.id), ["b", "a"]);
 });
 
+test("mightBeGoodCameras breaks equal drive-distance ties by higher Surfline rating", () => {
+  const tied = [
+    { id: "fair", lat: 38.7, lon: -9.3, surfMetadata: { coastExposure: { bearing: 270 } } },
+    { id: "good", lat: 38.7, lon: -9.3, surfMetadata: { coastExposure: { bearing: 270 } } }
+  ];
+  const conditions = {
+    fair: { source: "surfline-fresh", waveMinM: 0.9, waveMaxM: 1.2, windKmh: 10, windDirDeg: 20, periodS: 10, swellDirDeg: 280, rating: "FAIR", ageHours: 2, fetchedAt: "x" },
+    good: { source: "surfline-fresh", waveMinM: 0.9, waveMaxM: 1.2, windKmh: 10, windDirDeg: 20, periodS: 10, swellDirDeg: 280, rating: "GOOD", ageHours: 2, fetchedAt: "x" }
+  };
+  const prefs = { minSurfHeightM: 0.3, maxSurfHeightM: 1.5, maxWindSpeedKmh: 18, minPeriodSeconds: 5, allowLightWind: true, preferOffshore: true, surfSizeScale: 1 };
+  const result = mightBeGoodCameras(tied, new Set(), prefs, 7, {
+    getDriveDistanceKm: () => 20,
+    getConditions: (camera) => conditions[camera.id]
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["good", "fair"]);
+});
+
+test("mightBeGoodCameras breaks non-finite drive-distance ties by higher Surfline rating", () => {
+  const promoted = [
+    { id: "poor-to-fair", promoted: true, lat: 38.7, lon: -9.3, surfMetadata: { coastExposure: { bearing: 270 } } },
+    { id: "epic", promoted: true, lat: 38.7, lon: -9.3, surfMetadata: { coastExposure: { bearing: 270 } } }
+  ];
+  const conditions = {
+    "poor-to-fair": { source: "surfline-fresh", waveMinM: 0.9, waveMaxM: 1.2, windKmh: 10, windDirDeg: 20, periodS: 10, swellDirDeg: 280, rating: "POOR_TO_FAIR", ageHours: 2, fetchedAt: "x" },
+    epic: { source: "surfline-fresh", waveMinM: 0.9, waveMaxM: 1.2, windKmh: 10, windDirDeg: 20, periodS: 10, swellDirDeg: 280, rating: "EPIC", ageHours: 2, fetchedAt: "x" }
+  };
+  const prefs = { minSurfHeightM: 0.3, maxSurfHeightM: 1.5, maxWindSpeedKmh: 18, minPeriodSeconds: 5, allowLightWind: true, preferOffshore: true, surfSizeScale: 1 };
+  const result = mightBeGoodCameras(promoted, new Set(), prefs, 7, {
+    getDriveDistanceKm: () => null,
+    getConditions: (camera) => conditions[camera.id]
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["epic", "poor-to-fair"]);
+});
+
 test("inSuggestionFence: lat band and west-of-lon guard", () => {
   assert.equal(inSuggestionFence({ lat: 39.65, lon: -9.09 }), true);   // Nazaré
   assert.equal(inSuggestionFence({ lat: 38.40, lon: -9.10 }), true);   // Sesimbra edge

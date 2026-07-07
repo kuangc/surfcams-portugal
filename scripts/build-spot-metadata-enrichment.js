@@ -3,13 +3,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { evaluateAssociation } from "./lib/spot-matching.js";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
+const ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 const MEO_DB_PATH = path.join(ROOT, "data", "meo-spots.json");
 const SURFLINE_DB_PATH = path.join(ROOT, "data", "surfline-spots.json");
 const MAPPING_DB_PATH = path.join(ROOT, "data", "meo-surfline-matches.json");
 const COAST_EXPOSURE_PATH = path.join(ROOT, "data", "coast-exposures.json");
-const OUTPUT_PATH = path.join(ROOT, "data", "spot-metadata-enrichment.json");
+const DEFAULT_OUTPUT_PATH = path.join(ROOT, "data", "spot-metadata-enrichment.json");
+const OUTPUT_PATH = process.env.SPOT_ENRICHMENT_OUT
+  ? path.resolve(process.env.SPOT_ENRICHMENT_OUT)
+  : DEFAULT_OUTPUT_PATH;
 const USEFUL_METADATA_SCORE = 6;
 
 async function readJson(filePath) {
@@ -82,6 +87,43 @@ function bestSurflineSpot(mapping, surflineById) {
   })[0]?.spot || null;
 }
 
+function surflineNameFromId(surflineSpotId) {
+  return String(surflineSpotId || "").replace(/^surfline-/, "");
+}
+
+export function trustedConditionsSourceFor(mapping, meoSpot) {
+  const trustedCandidates = (mapping?.surflineSpotIds || [])
+    .map((surflineSpotId, index) => {
+      const evidence = matchEvidenceFor(mapping, surflineSpotId);
+      const distanceKm = mapping.distancesKm?.[surflineSpotId] ?? null;
+      const association = evaluateAssociation({
+        nameScore: evidence.nameScore || 0,
+        distanceKm,
+        curated: mapping.reviewStatus === "curated",
+        camLat: meoSpot?.lat ?? null,
+        camLon: meoSpot?.lon ?? null,
+        surflineName: surflineNameFromId(surflineSpotId),
+        meoName: `${meoSpot?.id || ""} ${meoSpot?.name || ""}`
+      });
+
+      return {
+        surflineSpotId,
+        distanceKm,
+        trusted: association.trusted,
+        index
+      };
+    })
+    .filter((candidate) => candidate.trusted);
+
+  return trustedCandidates.sort((a, b) => {
+    const aFinite = Number.isFinite(a.distanceKm);
+    const bFinite = Number.isFinite(b.distanceKm);
+    if (aFinite && bFinite && a.distanceKm !== b.distanceKm) return a.distanceKm - b.distanceKm;
+    if (aFinite !== bFinite) return aFinite ? -1 : 1;
+    return a.index - b.index;
+  })[0]?.surflineSpotId || null;
+}
+
 function compactSurflineMetadata(meoSpot, mapping, surflineSpot, coastExposure) {
   const staticMetadata = surflineSpot.staticMetadata || {};
   const travelDetails = staticMetadata.travelDetails || {};
@@ -92,6 +134,7 @@ function compactSurflineMetadata(meoSpot, mapping, surflineSpot, coastExposure) 
     confidence: mapping.confidence || "nearby",
     reviewStatus: mapping.reviewStatus || "generated",
     sourceSpotId: surflineSpot.id,
+    conditionsSourceSpotId: trustedConditionsSourceFor(mapping, meoSpot),
     sourceSpotName: surflineSpot.name,
     sourceDistanceKm: mapping.distancesKm?.[surflineSpot.id] ?? null,
     sourceUrl: surflineSpot.url,
@@ -182,10 +225,12 @@ async function main() {
   };
 
   await fs.writeFile(OUTPUT_PATH, `${JSON.stringify(db, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${entries.length} MEO spot metadata enrichment entries to data/spot-metadata-enrichment.json.`);
+  console.log(`Wrote ${entries.length} MEO spot metadata enrichment entries to ${path.relative(ROOT, OUTPUT_PATH)}.`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === SCRIPT_PATH) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

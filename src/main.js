@@ -20,7 +20,7 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
-import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
+import { inSuggestionFence, mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
   applySpotMetadataToCameraDb,
   emptySpotData,
@@ -1067,7 +1067,10 @@ function markerIcon(camera, active = false) {
 }
 
 function isMightBeGood(camera) {
-  return rateSurfSpot(camera, state.preferences, getConditions(camera)).isRecommended;
+  const resolved = getConditions(camera);
+  return inSuggestionFence(camera)
+    && resolved.source !== "meo-static"
+    && rateSurfSpot(camera, state.preferences, resolved).isRecommended;
 }
 
 function exploreCameras() {

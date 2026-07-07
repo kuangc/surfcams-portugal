@@ -11,8 +11,9 @@ const spotData = {
     ["surfline-stale-spot", { rating: "FAIR", surfMinM: 0.6, surfMaxM: 0.9, fetchedAt: "2026-06-11T12:00:00Z" }]
   ]),
   spotMetadataById: new Map([
-    ["cam-matched", { surfMetadata: { sourceSpotId: "surfline-fresh-spot", reviewStatus: "generated" } }],
-    ["cam-loose", { surfMetadata: { sourceSpotId: "surfline-fresh-spot", reviewStatus: "needs-review" } }]
+    ["cam-matched", { surfMetadata: { sourceSpotId: "surfline-fresh-spot", conditionsSourceSpotId: "surfline-fresh-spot", reviewStatus: "generated" } }],
+    ["cam-loose", { surfMetadata: { sourceSpotId: "surfline-fresh-spot", conditionsSourceSpotId: "surfline-fresh-spot", reviewStatus: "needs-review" } }],
+    ["cam-rich-no-trusted", { surfMetadata: { sourceSpotId: "surfline-fresh-spot", conditionsSourceSpotId: null, reviewStatus: "generated" } }]
   ])
 };
 
@@ -27,7 +28,7 @@ test("promoted spot with fresh conditions -> surfline-fresh", () => {
   assert.equal(Math.round(resolved.ageHours), 6);
 });
 
-test("matched meo cam resolves via enrichment sourceSpotId", () => {
+test("matched meo cam resolves via enrichment conditionsSourceSpotId", () => {
   const resolved = resolveConditions({ id: "cam-matched" }, spotData, { now: NOW });
   assert.equal(resolved.source, "surfline-fresh");
   assert.equal(resolved.windKmh, 11);
@@ -35,6 +36,11 @@ test("matched meo cam resolves via enrichment sourceSpotId", () => {
 
 test("needs-review enrichment never yields surfline-fresh", () => {
   const resolved = resolveConditions({ id: "cam-loose", forecast: { wave: "1.0 m" } }, spotData, { now: NOW });
+  assert.equal(resolved.source, "meo-static");
+});
+
+test("metadata sourceSpotId alone never yields surfline-fresh for non-promoted cams", () => {
+  const resolved = resolveConditions({ id: "cam-rich-no-trusted", forecast: { wave: "1.0 m" } }, spotData, { now: NOW });
   assert.equal(resolved.source, "meo-static");
 });
 

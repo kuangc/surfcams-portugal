@@ -137,7 +137,7 @@ function formatWaveLabel(waveMinM, waveMaxM) {
 }
 
 // Mirrors the canonical Surfline rating tier order (scripts/lib/surfline-extract.js ratingValue).
-const SURFLINE_RATING_ORDER = ["VERY_POOR", "POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
+export const SURFLINE_RATING_ORDER = ["VERY_POOR", "POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
 const FAIR_TIER = SURFLINE_RATING_ORDER.indexOf("FAIR");
 
 function isFairOrBetter(rating) {

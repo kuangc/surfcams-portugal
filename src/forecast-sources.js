@@ -9,9 +9,9 @@ function ageHoursSince(iso, now) {
 function surflineIdFor(camera, spotData) {
   if (camera.promoted || String(camera.id).startsWith("surfline-")) return camera.id;
   const meta = spotData.spotMetadataById?.get(camera.id)?.surfMetadata;
-  if (!meta?.sourceSpotId) return null;
+  if (!meta) return null;
   if (meta.reviewStatus === "needs-review" || meta.reviewStatus === "rejected") return null;
-  return meta.sourceSpotId;
+  return meta.conditionsSourceSpotId ?? null;
 }
 
 export function resolveConditions(camera, spotData, { liveCache = null, now = Date.now() } = {}) {

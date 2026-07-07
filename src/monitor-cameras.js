@@ -1,5 +1,5 @@
 import { MONITOR_CAMERA_LIMIT, SUGGESTION_FENCE } from "./config.js";
-import { rateSurfSpot } from "./surf-rating.js";
+import { rateSurfSpot, SURFLINE_RATING_ORDER } from "./surf-rating.js";
 
 function compareDistance(a, b, getDriveDistanceKm) {
   const aDistance = getDriveDistanceKm(a);
@@ -15,6 +15,20 @@ function compareDistance(a, b, getDriveDistanceKm) {
 function sortByDistance(cameras, getDriveDistanceKm) {
   if (typeof getDriveDistanceKm !== "function") return cameras;
   return [...cameras].sort((a, b) => compareDistance(a, b, getDriveDistanceKm));
+}
+
+function ratingRank(rating) {
+  const idx = SURFLINE_RATING_ORDER.indexOf(String(rating || "").toUpperCase());
+  return idx >= 0 ? idx : -1;
+}
+
+function compareMightBeGoodEntries(a, b, getDriveDistanceKm) {
+  const distanceDelta = typeof getDriveDistanceKm === "function"
+    ? compareDistance(a.camera, b.camera, getDriveDistanceKm)
+    : 0;
+  if (distanceDelta) return distanceDelta;
+
+  return ratingRank(b.resolved?.rating) - ratingRank(a.resolved?.rating);
 }
 
 export function monitorCameraSlots(
@@ -52,7 +66,7 @@ export function mightBeGoodCameras(
   limit = MONITOR_CAMERA_LIMIT,
   { getDriveDistanceKm = null, getConditions = null } = {}
 ) {
-  return sortByDistance(cameras
+  return cameras
     .filter((camera) => !favoriteIds.has(camera.id))
     .filter(inSuggestionFence)
     .map((camera) => {
@@ -61,6 +75,7 @@ export function mightBeGoodCameras(
     })
     .filter((entry) => entry.resolved && entry.resolved.source !== "meo-static")
     .filter((entry) => entry.rating.isRecommended)
-    .map((entry) => entry.camera), getDriveDistanceKm)
+    .sort((a, b) => compareMightBeGoodEntries(a, b, getDriveDistanceKm))
+    .map((entry) => entry.camera)
     .slice(0, limit);
 }
