@@ -32,6 +32,30 @@ test("stretchMembers lists cams and spots in stretch order with conditions", () 
   assert.equal(members.spots[0].stillUrl, "https://example.test/beta.jpg");
 });
 
+test("stretchMembers resolves stretch metadata from a cam member id", () => {
+  const stretch = {
+    id: "caparica",
+    name: "Caparica stretch",
+    surflineSpotIds: ["surfline-beta"],
+    meoCamIds: ["cam-strip"]
+  };
+  const spotData = {
+    stretchBySpotId: new Map([
+      ["surfline-beta", stretch],
+      ["cam-strip", stretch]
+    ]),
+    conditionsById: new Map()
+  };
+  const camerasById = new Map([
+    ["cam-strip", { id: "cam-strip", name: "Cam Strip" }],
+    ["surfline-beta", { id: "surfline-beta", name: "Surfline Beta" }]
+  ]);
+
+  const members = stretchMembers({ id: "cam-strip" }, spotData, camerasById);
+
+  assert.equal(members.stretchName, "Caparica stretch");
+});
+
 test("returns null for non-stretch spots", () => {
   const members = stretchMembers(
     { id: "surfline-outside", name: "Outside" },

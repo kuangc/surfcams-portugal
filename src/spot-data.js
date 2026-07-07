@@ -147,6 +147,13 @@ function toStretchBySpotIdMap(stretches = []) {
       stretchBySpotId.set(spotId, stretch);
     }
   }
+  for (const stretch of stretches) {
+    for (const camId of stretch.meoCamIds || []) {
+      if (!stretchBySpotId.has(camId)) {
+        stretchBySpotId.set(camId, stretch);
+      }
+    }
+  }
   return stretchBySpotId;
 }
 

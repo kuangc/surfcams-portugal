@@ -432,6 +432,7 @@ test("normalizeSpotData exposes conditionsById and stretchBySpotId", () => {
   });
   assert.equal(normalized.conditionsById.get("surfline-x").rating, "GOOD");
   assert.equal(normalized.stretchBySpotId.get("surfline-x").id, "caparica");
+  assert.equal(normalized.stretchBySpotId.get("cam-1").id, "caparica");
 });
 
 test("normalizeSpotData tolerates absent conditions and stretches", () => {
