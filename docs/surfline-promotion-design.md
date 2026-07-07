@@ -188,6 +188,10 @@ with provenance precedence:
 1. **`surfline-fresh`** — spot is promoted, or is a MEO cam with a **trusted Surfline association**
    (§5.8 name-first rule); conditions entry exists with age < 36 h.
    Wave = Surfline `surfMinM..surfMaxM`; rating carried through.
+   *Implementation note (final review):* enrichment carries two source fields —
+   `sourceSpotId` (metadata-richest member, static metadata only) and
+   `conditionsSourceSpotId` (nearest §5.8-trusted member, the only field live conditions may
+   attribute through; null → no Surfline attribution).
 2. **`live-model`** — on-load Open-Meteo result from localStorage (age < 2 h).
 3. **`meo-static`** — today's behavior (embedded crawl strings), explicitly labeled stale.
 
