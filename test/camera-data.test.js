@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-import { availableCameras, firstClassCameras, loadCameraDb } from "../src/camera-data.js";
+import { availableCameras, firstClassCameras, loadCameraDb, mergePromotedSpots } from "../src/camera-data.js";
 import { DEFAULT_FAVORITE_IDS, INITIAL_BOUNDS_IDS } from "../src/config.js";
 
 const db = JSON.parse(fs.readFileSync("data/beachcam-cameras.json", "utf8"));
@@ -100,4 +100,24 @@ test("initial map bounds have the requested north and south anchors", () => {
 
   assert.ok(INITIAL_BOUNDS_IDS.includes("peniche-baleal-panoramica"));
   assert.ok(INITIAL_BOUNDS_IDS.includes("praia-sesimbra"));
+});
+
+test("mergePromotedSpots appends and overrides on id collision", () => {
+  const cameraDb = { cameras: [
+    { id: "cam-1", name: "Cam 1" },
+    { id: "surfline-castelo", name: "old embedded hack", hasStream: false }
+  ]};
+  const promotedDb = { promoted: [
+    { id: "surfline-castelo", name: "Castelo", promoted: true, camCoverage: "spot" },
+    { id: "surfline-coxos", name: "Coxos", promoted: true, camCoverage: "spot" }
+  ]};
+  const out = mergePromotedSpots(cameraDb, promotedDb);
+  assert.equal(out.cameras.length, 3);
+  assert.equal(out.cameras.find((c) => c.id === "surfline-castelo").promoted, true);
+  assert.equal(out.cameras.find((c) => c.id === "surfline-castelo").name, "Castelo");
+});
+
+test("mergePromotedSpots tolerates missing promotedDb", () => {
+  const cameraDb = { cameras: [{ id: "cam-1" }] };
+  assert.equal(mergePromotedSpots(cameraDb, null).cameras.length, 1);
 });

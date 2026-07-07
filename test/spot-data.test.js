@@ -424,3 +424,18 @@ test("driving heuristic is deterministic for central Lisbon distances", () => {
   assert.equal(Math.round(cascaisDistance), 20);
   assert.equal(estimateDrivingMinutes(cascaisDistance, "urban-coast"), 45);
 });
+
+test("normalizeSpotData exposes conditionsById and stretchBySpotId", () => {
+  const normalized = normalizeSpotData({
+    conditionsDb: { conditions: { "surfline-x": { rating: "GOOD", fetchedAt: "2026-07-06T05:00:00Z" } } },
+    stretchesDb: { stretches: [{ id: "caparica", name: "Caparica stretch", surflineSpotIds: ["surfline-x"], meoCamIds: ["cam-1"] }] }
+  });
+  assert.equal(normalized.conditionsById.get("surfline-x").rating, "GOOD");
+  assert.equal(normalized.stretchBySpotId.get("surfline-x").id, "caparica");
+});
+
+test("normalizeSpotData tolerates absent conditions and stretches", () => {
+  const normalized = normalizeSpotData({});
+  assert.equal(normalized.conditionsById.size, 0);
+  assert.equal(normalized.stretchBySpotId.size, 0);
+});

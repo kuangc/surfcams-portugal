@@ -83,3 +83,13 @@ export function availableCameras(cameraDb) {
 export function firstClassCameras(cameraDb) {
   return cameraDb.cameras.filter((camera) => camera.hasStream || camera.firstClass);
 }
+
+export function mergePromotedSpots(cameraDb, promotedDb) {
+  const promoted = promotedDb?.promoted || [];
+  if (!promoted.length) return cameraDb;
+  const promotedIds = new Set(promoted.map((p) => p.id));
+  return {
+    ...cameraDb,
+    cameras: [...cameraDb.cameras.filter((c) => !promotedIds.has(c.id)), ...promoted]
+  };
+}
