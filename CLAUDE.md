@@ -62,3 +62,21 @@ npm test
 ```sh
 pkill -f "/private/tmp/surfline-cdp-profile-9333"
 ```
+
+### Daily conditions refresh
+
+With the headed Chrome session from step 1 running and past Cloudflare, run:
+
+```sh
+scripts/refresh-surfline-daily.sh
+```
+
+The daily runner checks for Chrome CDP on `:9333`, skips cleanly when it is unavailable, then refreshes conditions with the CDP transport: compute the set-cover plan (~3 pages), extract conditions, validate freshness, and create a data-only commit for `data/surfline-conditions.json` when it changed.
+
+Use the offline staleness guard directly with:
+
+```sh
+node scripts/check-conditions-freshness.js
+```
+
+The CI workflow exists for manual dispatch, but its schedule remains commented out until the runner probe validates a Surfline transport from GitHub runners.
