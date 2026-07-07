@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "provider": "surfcams-portugal",
-  "generatedAt": "2026-06-11T22:47:22.119Z",
+  "generatedAt": "2026-07-07T05:41:46.214Z",
   "method": "aggressive extraction from normalized Surfline metadata, MEO description cues, existing surf-rating fallbacks, and regional heuristics; hand-curate entries by editing coastExposure fields",
   "source": {
     "beachcamCameras": "data/beachcam-cameras.json",
@@ -108,7 +108,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-do-norte to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -148,7 +148,7 @@
           "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-do-guincho to surfline-praia-do-guincho at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -171,7 +171,7 @@
           "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-grande to surfline-praia-grande at 0.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -194,7 +194,7 @@
           "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from peniche-supertubos to surfline-supertubos at 0.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -217,7 +217,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-da-nazare to surfline-nazare at 1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -257,7 +257,7 @@
           "Surfline metadata surfline-santa-cruz Santa Cruz coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from santa-cruz to surfline-santa-cruz at 0.6km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Santa Cruz is 0.6km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -337,7 +337,7 @@
           "Surfline metadata surfline-ribeira-d-ilhas Ribeira D’Ilhas coastExposure.bearing=330",
           "Provider source: surfline-offshoreDirection",
           "Matched from ribeira-dilhas to surfline-ribeira-d-ilhas at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -349,13 +349,19 @@
       "region": "peniche",
       "municipality": "PENICHE",
       "coastExposure": {
-        "bearing": 300,
-        "compass": "NW",
-        "label": "West/Northwest exposure estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
+        "bearing": 15,
+        "compass": "N",
+        "label": "N-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-cantinho-da-baia",
+        "sourceDistanceKm": 0.2,
         "evidence": [
-          "Existing surf-rating fallback: West/Northwest exposure estimate"
+          "Surfline metadata surfline-cantinho-da-baia Cantinho da Baía coastExposure.bearing=15",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from peniche-baleal-panoramica to surfline-cantinho-da-baia at 0.2km",
+          "Mapping confidence: proximity",
+          "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 0.00."
         ],
         "reviewStatus": "generated"
       }
@@ -394,7 +400,7 @@
           "Surfline metadata surfline-belgas Belgas coastExposure.bearing=345",
           "Provider source: surfline-offshoreDirection",
           "Matched from foz-do-arelho to surfline-belgas at 4.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Foz do Arelho is 0.3km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -406,19 +412,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 260,
+        "bearing": 270,
         "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-costa-da-caparica",
-        "sourceDistanceKm": 0.9,
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-costa-da-caparica Costa da Caparica coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-da-caparica-praia-nova to surfline-costa-da-caparica at 0.9km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.9km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -571,19 +571,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 240,
-        "compass": "SW",
-        "label": "SW-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-sao-joao-da-caparica",
-        "sourceDistanceKm": 0.3,
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-sao-joao-da-caparica São João da Caparica coastExposure.bearing=240",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-de-caparica-sao-joao-cova-do-vapor to surfline-sao-joao-da-caparica at 0.3km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.3km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -810,7 +804,7 @@
           "Surfline metadata surfline-consolacao Consolação coastExposure.bearing=245",
           "Provider source: surfline-offshoreDirection",
           "Matched from areia-branca to surfline-consolacao at 6.7km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Da Areia Branca is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -884,7 +878,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-do-norte-canhao-nazare to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -907,7 +901,7 @@
           "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from carcavelos-calhau to surfline-carcavelos at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -998,7 +992,7 @@
           "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-da-torre to surfline-carcavelos at 1.3km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia de Torre is 0km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1021,7 +1015,7 @@
           "Surfline metadata surfline-santa-cruz Santa Cruz coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-de-santa-rita to surfline-santa-cruz at 4.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia de Santa Rita is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1033,19 +1027,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 260,
+        "bearing": 270,
         "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-costa-da-caparica",
-        "sourceDistanceKm": 0.4,
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-costa-da-caparica Costa da Caparica coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-da-caparica-tarquinio to surfline-costa-da-caparica at 0.4km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.4km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -1067,7 +1055,7 @@
           "Surfline metadata surfline-sao-torpes Sao Torpes coastExposure.bearing=250",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-de-sao-torpes to surfline-sao-torpes at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1090,7 +1078,7 @@
           "Surfline metadata surfline-praia-azul Praia Azul coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from santa-cruz-praia-azul to surfline-praia-azul at 0.6km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1130,7 +1118,7 @@
           "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-grande-sul to surfline-praia-grande at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1221,7 +1209,7 @@
           "Surfline metadata surfline-foz-do-lizandro Foz do Lizandro coastExposure.bearing=289",
           "Provider source: surfline-offshoreDirection",
           "Matched from foz-do-lizandro to surfline-foz-do-lizandro at 0.3km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Foz do Lizandro is 0.3km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1329,7 +1317,7 @@
           "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-do-guincho-norte to surfline-praia-do-guincho at 0.3km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.3km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1392,7 +1380,7 @@
           "Surfline metadata surfline-pedra-branca Pedra Branca coastExposure.bearing=289",
           "Provider source: surfline-offshoreDirection",
           "Matched from ericeira to surfline-pedra-branca at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Pedra Branca is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1415,7 +1403,7 @@
           "Surfline metadata surfline-santo-amaro Santo Amaro coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from santo-amaro to surfline-santo-amaro at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Santo Amaro is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1489,7 +1477,7 @@
           "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-das-macas to surfline-praia-pequena at 0.8km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1546,7 +1534,7 @@
           "Surfline metadata surfline-fonte-da-telha Fonte da Telha coastExposure.bearing=260",
           "Provider source: surfline-offshoreDirection",
           "Matched from lagoa-de-albufeira to surfline-fonte-da-telha at 7.6km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Lagoa de Albufeira is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -1655,19 +1643,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 260,
+        "bearing": 270,
         "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-fonte-da-telha",
-        "sourceDistanceKm": 1.1,
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-fonte-da-telha Fonte da Telha coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from fonte-da-telha-sul to surfline-fonte-da-telha at 1.1km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary Fonte da Telha is 1.1km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -1689,7 +1671,7 @@
           "Surfline metadata surfline-paco-de-arcos Paco de Arcos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from paco-de-arcos to surfline-paco-de-arcos at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Paco de Arcos is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2001,7 +1983,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from nazare-forte-sao-miguel-arcanjo to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2041,7 +2023,7 @@
           "Surfline metadata surfline-pedra-branca Pedra Branca coastExposure.bearing=289",
           "Provider source: surfline-offshoreDirection",
           "Matched from matadouro to surfline-pedra-branca at 0.6km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Matadouro is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2302,7 +2284,7 @@
           "Surfline metadata surfline-sao-lourenco São Lourenço coastExposure.bearing=282",
           "Provider source: surfline-offshoreDirection",
           "Matched from ericeira-sao-lourenco to surfline-sao-lourenco at 0.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2359,7 +2341,7 @@
           "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-pequena to surfline-praia-pequena at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Pequena is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2569,7 +2551,7 @@
           "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
           "Provider source: surfline-offshoreDirection",
           "Matched from sao-joao-do-estoril to surfline-estoril at 2.3km",
-          "Mapping confidence: nearby",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.67."
         ],
         "reviewStatus": "generated"
@@ -2609,7 +2591,7 @@
           "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from penichesupertubosestatica to surfline-supertubos at 0.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2621,13 +2603,19 @@
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
+        "bearing": 185,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-estoril",
+        "sourceDistanceKm": 2.3,
         "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from bafureira to surfline-estoril at 2.3km",
+          "Mapping confidence: proximity",
+          "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.00."
         ],
         "reviewStatus": "generated"
       }
@@ -2655,13 +2643,19 @@
       "region": "alentejo",
       "municipality": "ODEMIRA",
       "coastExposure": {
-        "bearing": 270,
+        "bearing": 250,
         "compass": "W",
-        "label": "West-facing Alentejo coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-sao-torpes",
+        "sourceDistanceKm": 0.2,
         "evidence": [
-          "Aggressive regional heuristic for alentejo"
+          "Surfline metadata surfline-sao-torpes Sao Torpes coastExposure.bearing=250",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from vila-nova-de-milfontes-franquia to surfline-sao-torpes at 0.2km",
+          "Mapping confidence: proximity",
+          "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 0.00."
         ],
         "reviewStatus": "generated"
       }
@@ -2700,7 +2694,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from nazare-porto-de-abrigo to surfline-nazare at 2.9km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 2.9km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2723,7 +2717,7 @@
           "Surfline metadata surfline-lagide Lagide coastExposure.bearing=345",
           "Provider source: surfline-offshoreDirection",
           "Matched from peniche-lagide-estatica to surfline-lagide at 0km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Lagide is 0km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2814,7 +2808,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from nazare-forte-sao-miguel-arcanjo-baia to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2871,7 +2865,7 @@
           "Surfline metadata surfline-ribeira-d-ilhas Ribeira D’Ilhas coastExposure.bearing=330",
           "Provider source: surfline-offshoreDirection",
           "Matched from ribeira-dilhas-estatica to surfline-ribeira-d-ilhas at 0.4km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2883,19 +2877,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 240,
-        "compass": "SW",
-        "label": "SW-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-sao-joao-da-caparica",
-        "sourceDistanceKm": 0.4,
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-sao-joao-da-caparica São João da Caparica coastExposure.bearing=240",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-de-caparica-sao-joao-estatica to surfline-sao-joao-da-caparica at 0.4km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.4km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -2917,7 +2905,7 @@
           "Surfline metadata surfline-cantinho-da-baia Cantinho da Baía coastExposure.bearing=15",
           "Provider source: surfline-offshoreDirection",
           "Matched from peniche-lagide-cantinho-da-baia-estatica to surfline-cantinho-da-baia at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2957,7 +2945,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from nazare-forte-sao-miguel-arcanjo-panoramica to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -2997,7 +2985,7 @@
           "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-do-guincho-estatica to surfline-praia-do-guincho at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3020,7 +3008,7 @@
           "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
           "Provider source: surfline-offshoreDirection",
           "Matched from sao-pedro-do-estoril-bico-estatica to surfline-estoril at 2.3km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3060,7 +3048,7 @@
           "Surfline metadata surfline-paco-de-arcos Paco de Arcos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from paco-de-arcos-estatica to surfline-paco-de-arcos at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Paco de Arcos is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3100,7 +3088,7 @@
           "Surfline metadata surfline-santo-amaro Santo Amaro coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from santo-amaro-estatica to surfline-santo-amaro at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Santo Amaro is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3146,19 +3134,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 260,
+        "bearing": 270,
         "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-costa-da-caparica",
-        "sourceDistanceKm": 0.9,
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-costa-da-caparica Costa da Caparica coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-da-caparica-praia-nova-estatica to surfline-costa-da-caparica at 0.9km",
-          "Mapping confidence: spot",
-          "Auto-remapped from cached Surfline coordinates; primary Costa da Caparica is 0.9km away with name score 1.00."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -3180,7 +3162,7 @@
           "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from carcavelos-norte-estatica to surfline-carcavelos at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3237,7 +3219,7 @@
           "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from carcavelos-calhau-estatica to surfline-carcavelos at 0.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3294,7 +3276,7 @@
           "Surfline metadata surfline-sao-torpes Sao Torpes coastExposure.bearing=250",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-de-sao-torpes-estatica to surfline-sao-torpes at 0.2km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3351,7 +3333,7 @@
           "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
           "Provider source: surfline-offshoreDirection",
           "Matched from parede-estatica to surfline-carcavelos at 1.7km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Parede is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3408,7 +3390,7 @@
           "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-das-moitas-estatica to surfline-estoril at 1.3km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia das Moitas is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3437,13 +3419,19 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
+        "bearing": 188,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-praia-do-barbas",
+        "sourceDistanceKm": 0.1,
         "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Surfline metadata surfline-praia-do-barbas Praia do Barbas coastExposure.bearing=188",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from costadecaparicacdssulestatica to surfline-praia-do-barbas at 0.1km",
+          "Mapping confidence: proximity",
+          "Auto-remapped from cached Surfline coordinates; primary Praia do Barbas is 0.1km away with name score 0.00."
         ],
         "reviewStatus": "generated"
       }
@@ -3522,19 +3510,13 @@
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
-        "bearing": 240,
-        "compass": "SW",
-        "label": "SW-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-sao-joao-da-caparica",
-        "sourceDistanceKm": 0.3,
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-sao-joao-da-caparica São João da Caparica coastExposure.bearing=240",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costadecaparicapraianorteestatica to surfline-sao-joao-da-caparica at 0.3km",
-          "Mapping confidence: nearby",
-          "Auto-remapped from cached Surfline coordinates; primary São João da Caparica is 0.3km away with name score 0.50."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -3556,7 +3538,7 @@
           "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
           "Provider source: surfline-offshoreDirection",
           "Matched from nazare-forte-sao-miguel-arcanjo-panoramica-1 to surfline-nazare at 0.1km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
@@ -3596,7 +3578,7 @@
           "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
           "Provider source: surfline-offshoreDirection",
           "Matched from praia-da-adraga to surfline-praia-grande at 1.5km",
-          "Mapping confidence: spot",
+          "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
         ],
         "reviewStatus": "generated"

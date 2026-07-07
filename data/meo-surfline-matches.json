@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-06-11T22:47:13.268Z",
+  "generatedAt": "2026-07-07T05:41:18.361Z",
   "closeRuleProposal": {
-    "id": "curated-or-nearest-cached-surfline-spots-for-meo-location",
-    "description": "Preserve curated MEO-to-Surfline corridor mappings first, then generate conservative nearest-neighbor mappings from cached Surfline spots for MEO locations. Coordinate-only matches are marked needs-review for hand curation.",
+    "id": "name-first-cam-at-spot",
+    "description": "Preserve curated MEO-to-Surfline corridor mappings first. For generated rows, trust the primary (nearest) candidate when its name matches (nameScore>=0.5 or slug containment) within 3km, or when it's within 0.2km by proximity alone; the name path is disabled inside the Caparica ambiguity zone where shared regional name stems make matches unreliable. Primary candidates that clear neither bar are marked needs-review for hand curation.",
     "maxPrimaryDistanceKm": 1.2,
     "maxNamePrimaryDistanceKm": 3,
     "maxCorridorDistanceKm": 8,
@@ -16,7 +16,8 @@
   "total": 89,
   "curated": 11,
   "generated": 78,
-  "needsReview": 21,
+  "needsReview": 23,
+  "rejected": 1,
   "matches": [
     {
       "meoSpotId": "praia-de-carcavelos",
@@ -108,7 +109,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -134,7 +135,7 @@
         "surfline-praia-da-ursa"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -188,7 +189,7 @@
         "surfline-praia-da-ursa"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -242,7 +243,7 @@
         "surfline-consolacao"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -292,7 +293,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -318,7 +319,7 @@
         "surfline-praia-azul"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -414,7 +415,7 @@
         "surfline-matadouro"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -468,8 +469,8 @@
         "surfline-almagreira"
       ],
       "source": "generated-nearest",
-      "confidence": "coordinate-nearby",
-      "reviewStatus": "needs-review",
+      "confidence": "proximity",
+      "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-cantinho-da-baia": 0.2,
@@ -519,7 +520,7 @@
         "surfline-belgas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -552,8 +553,8 @@
         "surfline-marcelino"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-costa-da-caparica": 0.9,
@@ -655,8 +656,8 @@
         "surfline-costa-da-caparica"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-joao-da-caparica": 0.3,
@@ -892,7 +893,7 @@
         "surfline-sao-martinho-do-porto"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -916,7 +917,7 @@
         "surfline-consolacao"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -987,7 +988,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1013,7 +1014,7 @@
         "surfline-parede"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1121,7 +1122,7 @@
         "surfline-paco-de-arcos"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1175,7 +1176,7 @@
         "surfline-praia-das-amoeiras"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1229,8 +1230,8 @@
         "surfline-sao-joao-da-caparica"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-costa-da-caparica": 0.4,
@@ -1282,7 +1283,7 @@
         "surfline-sines"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1329,7 +1330,7 @@
         "surfline-santa-cruz"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1383,7 +1384,7 @@
         "surfline-praia-da-ursa"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1437,7 +1438,7 @@
         "surfline-praia-da-vigia"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1545,7 +1546,7 @@
         "surfline-praia-das-moitas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1634,7 +1635,7 @@
         "surfline-cave"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1688,7 +1689,7 @@
         "surfline-carcavelos"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1742,7 +1743,7 @@
         "surfline-praia-da-adraga"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1794,7 +1795,7 @@
         "surfline-fonte-da-telha"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -1925,8 +1926,8 @@
         "surfline-praia-da-rainha"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-fonte-da-telha": 1.1,
@@ -1979,7 +1980,7 @@
         "surfline-praia-de-torre"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2085,7 +2086,7 @@
         "surfline-lagoa-de-albufeira"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2251,7 +2252,7 @@
         "surfline-portinho-da-arrabida"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2327,7 +2328,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2353,7 +2354,7 @@
         "surfline-praia-do-sul"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2406,8 +2407,8 @@
         "surfline-sines"
       ],
       "source": "generated-nearest",
-      "confidence": "coordinate-nearby",
-      "reviewStatus": "needs-review",
+      "confidence": "proximity",
+      "reviewStatus": "rejected",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-torpes": 0.2,
@@ -2418,25 +2419,21 @@
       "matchEvidence": [
         {
           "surflineSpotId": "surfline-sao-torpes",
-          "surflineName": "Sao Torpes",
           "distanceKm": 0.2,
           "nameScore": 0
         },
         {
           "surflineSpotId": "surfline-praia-da-vieirinha",
-          "surflineName": "Praia da Vieirinha",
           "distanceKm": 3.6,
           "nameScore": 0
         },
         {
           "surflineSpotId": "surfline-praia-do-burrinho",
-          "surflineName": "Praia do Burrinho",
           "distanceKm": 5.4,
           "nameScore": 0
         },
         {
           "surflineSpotId": "surfline-sines",
-          "surflineName": "Sines",
           "distanceKm": 8,
           "nameScore": 0
         }
@@ -2561,7 +2558,7 @@
         "surfline-reef"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2615,7 +2612,7 @@
         "surfline-praia-dos-moleiros"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2669,7 +2666,7 @@
         "surfline-praia-das-moitas"
       ],
       "source": "generated-nearest",
-      "confidence": "nearby",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2723,7 +2720,7 @@
         "surfline-consolacao"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2777,8 +2774,8 @@
         "surfline-praia-das-moitas"
       ],
       "source": "generated-nearest",
-      "confidence": "coordinate-nearby",
-      "reviewStatus": "needs-review",
+      "confidence": "proximity",
+      "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-pedro-do-estoril": 0.1,
@@ -2884,8 +2881,8 @@
         "surfline-sines"
       ],
       "source": "generated-nearest",
-      "confidence": "coordinate-nearby",
-      "reviewStatus": "needs-review",
+      "confidence": "proximity",
+      "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-torpes": 0.2,
@@ -2927,7 +2924,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -2953,7 +2950,7 @@
         "surfline-baia"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3003,7 +3000,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3083,7 +3080,7 @@
         "surfline-matadouro"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3137,8 +3134,8 @@
         "surfline-costa-da-caparica"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-joao-da-caparica": 0.4,
@@ -3191,7 +3188,7 @@
         "surfline-almagreira"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3241,7 +3238,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3267,7 +3264,7 @@
         "surfline-praia-das-moitas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3321,7 +3318,7 @@
         "surfline-praia-das-moitas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3375,7 +3372,7 @@
         "surfline-praia-de-torre"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3429,7 +3426,7 @@
         "surfline-carcavelos"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3483,8 +3480,8 @@
         "surfline-marcelino"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-costa-da-caparica": 0.9,
@@ -3537,7 +3534,7 @@
         "surfline-parede"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3645,7 +3642,7 @@
         "surfline-parede"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3699,7 +3696,7 @@
         "surfline-praia-das-macas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3752,7 +3749,7 @@
         "surfline-sines"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3799,7 +3796,7 @@
         "surfline-praia-da-laje"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -3961,7 +3958,7 @@
         "surfline-praia-da-crismina"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -4015,8 +4012,8 @@
         "surfline-praia-da-saude"
       ],
       "source": "generated-nearest",
-      "confidence": "coordinate-nearby",
-      "reviewStatus": "needs-review",
+      "confidence": "proximity",
+      "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-praia-do-barbas": 0.1,
@@ -4123,8 +4120,8 @@
         "surfline-costa-da-caparica"
       ],
       "source": "generated-nearest",
-      "confidence": "nearby",
-      "reviewStatus": "generated",
+      "confidence": "coordinate-nearby",
+      "reviewStatus": "needs-review",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
         "surfline-sao-joao-da-caparica": 0.3,
@@ -4173,7 +4170,7 @@
         "surfline-nazare"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
@@ -4199,7 +4196,7 @@
         "surfline-praia-das-macas"
       ],
       "source": "generated-nearest",
-      "confidence": "spot",
+      "confidence": "name",
       "reviewStatus": "generated",
       "proposedCloseRule": "nearest-cached-surfline-spots-for-same-meo-location",
       "distancesKm": {
