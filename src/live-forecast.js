@@ -45,7 +45,7 @@ export async function fetchLiveForecast(
       + "&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh&timezone=UTC&forecast_days=1";
     const [marine, wind] = await Promise.all([
       fetchJsonWithTimeout(fetchImpl, marineUrl),
-      fetchJsonWithTimeout(fetchImpl, windUrl)
+      fetchJsonWithTimeout(fetchImpl, windUrl).catch(() => null)
     ]);
     if (!marine?.hourly) return null;
 

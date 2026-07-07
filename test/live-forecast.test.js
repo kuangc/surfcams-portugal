@@ -115,3 +115,19 @@ test("marine missing hourly -> null, nothing cached", async () => {
   assert.equal(result, null);
   assert.equal(storage.getItem(key), null);
 });
+
+test("wind endpoint rejection degrades to marine-only result", async () => {
+  const bodies = forecastBodies();
+  const storage = fakeStorage();
+  const fetchImpl = async (url) => {
+    if (url.includes("marine-api")) {
+      return { ok: true, json: async () => bodies.marine };
+    }
+    throw new Error("wind endpoint down");
+  };
+  const result = await fetchLiveForecast({ id: "cam-w", lat: 38.7, lon: -9.3 }, { fetchImpl, storage, now: NOW });
+  assert.ok(result, "marine-only result expected despite wind rejection");
+  assert.equal(result.waveMinM, 1.2);
+  assert.equal(result.windKmh, null);
+  assert.equal(result.windDirDeg, null);
+});
