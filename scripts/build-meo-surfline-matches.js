@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { haversineKm } from "../src/spot-data.js";
+import { classifyGeneratedMatch } from "./lib/spot-matching.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MEO_DB_PATH = path.join(ROOT, "data", "meo-spots.json");
@@ -102,16 +103,6 @@ function acceptsPrimary(candidate) {
     || (candidate.distanceKm <= MAX_NAME_PRIMARY_DISTANCE_KM && candidate.nameScore >= 0.5);
 }
 
-function generatedConfidence(candidate) {
-  if (candidate.nameScore >= 0.75) return "spot";
-  if (candidate.nameScore >= 0.35) return "nearby";
-  return "coordinate-nearby";
-}
-
-function generatedReviewStatus(candidate) {
-  return candidate.nameScore >= 0.35 ? "generated" : "needs-review";
-}
-
 function distancesForCandidates(candidates) {
   return Object.fromEntries(candidates.map((candidate) => [candidate.spot.id, candidate.distanceKm]));
 }
@@ -159,12 +150,21 @@ function generatedMatch(meoSpot, surflineSpots) {
     .filter((candidate) => candidate.distanceKm <= MAX_CORRIDOR_DISTANCE_KM)
     .slice(0, MAX_MATCHES_PER_MEO_SPOT);
 
+  const { reviewStatus, confidence } = classifyGeneratedMatch({
+    nameScore: primary.nameScore,
+    distanceKm: primary.distanceKm,
+    camLat: meoSpot.lat,
+    camLon: meoSpot.lon,
+    surflineName: primary.spot.name,
+    meoName: `${meoSpot.id} ${meoSpot.name}`
+  });
+
   return {
     meoSpotId: meoSpot.id,
     surflineSpotIds: selected.map((candidate) => candidate.spot.id),
     source: "generated-nearest",
-    confidence: generatedConfidence(primary),
-    reviewStatus: generatedReviewStatus(primary),
+    confidence,
+    reviewStatus,
     proposedCloseRule: "nearest-cached-surfline-spots-for-same-meo-location",
     distancesKm: distancesForCandidates(selected),
     matchEvidence: selected.map((candidate) => ({
@@ -209,8 +209,8 @@ async function main() {
     schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     closeRuleProposal: {
-      id: "curated-or-nearest-cached-surfline-spots-for-meo-location",
-      description: "Preserve curated MEO-to-Surfline corridor mappings first, then generate conservative nearest-neighbor mappings from cached Surfline spots for MEO locations. Coordinate-only matches are marked needs-review for hand curation.",
+      id: "name-first-cam-at-spot",
+      description: "Preserve curated MEO-to-Surfline corridor mappings first. For generated rows, trust the primary (nearest) candidate when its name matches (nameScore>=0.5 or slug containment) within 3km, or when it's within 0.2km by proximity alone; the name path is disabled inside the Caparica ambiguity zone where shared regional name stems make matches unreliable. Primary candidates that clear neither bar are marked needs-review for hand curation.",
       maxPrimaryDistanceKm: MAX_PRIMARY_DISTANCE_KM,
       maxNamePrimaryDistanceKm: MAX_NAME_PRIMARY_DISTANCE_KM,
       maxCorridorDistanceKm: MAX_CORRIDOR_DISTANCE_KM,

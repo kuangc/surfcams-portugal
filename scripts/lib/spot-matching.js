@@ -40,3 +40,9 @@ export function evaluateAssociation({
   if (finiteDistance && distanceKm <= PROXIMITY_MAX_KM) return { trusted: true, why: "proximity" };
   return { trusted: false, why: "untrusted" };
 }
+
+export function classifyGeneratedMatch(input) {
+  const { trusted, why } = evaluateAssociation({ ...input, curated: false });
+  if (trusted) return { reviewStatus: "generated", confidence: why };
+  return { reviewStatus: "needs-review", confidence: "coordinate-nearby" };
+}

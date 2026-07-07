@@ -5,6 +5,7 @@ import {
   slugNamesMatch,
   inCaparicaAmbiguityZone,
   evaluateAssociation,
+  classifyGeneratedMatch,
   NAME_MATCH_MAX_KM
 } from "../scripts/lib/spot-matching.js";
 
@@ -66,4 +67,15 @@ test("evaluateAssociation boundary values", () => {
   assert.deepEqual(
     evaluateAssociation({ nameScore: 0.9, distanceKm: NAME_MATCH_MAX_KM + 0.001, curated: false, camLat: 39.32, camLon: -9.36 }),
     { trusted: false, why: "untrusted" });
+});
+
+test("classifyGeneratedMatch maps trust to reviewStatus/confidence", () => {
+  assert.deepEqual(classifyGeneratedMatch({ nameScore: 0.8, distanceKm: 0.4, camLat: 39.34, camLon: -9.36 }),
+    { reviewStatus: "generated", confidence: "name" });
+  assert.deepEqual(classifyGeneratedMatch({ nameScore: 0, distanceKm: 0.15, camLat: 39.37, camLon: -9.34 }),
+    { reviewStatus: "generated", confidence: "proximity" });
+  assert.deepEqual(classifyGeneratedMatch({ nameScore: 0.9, distanceKm: 0.5, camLat: 38.64, camLon: -9.24 }),
+    { reviewStatus: "needs-review", confidence: "coordinate-nearby" }); // Caparica zone
+  assert.deepEqual(classifyGeneratedMatch({ nameScore: 0, distanceKm: 0.9, camLat: 38.98, camLon: -9.42 }),
+    { reviewStatus: "needs-review", confidence: "coordinate-nearby" });
 });
