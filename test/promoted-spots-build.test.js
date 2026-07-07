@@ -58,3 +58,27 @@ test("surfline native cam alone passes the gate", () => {
   assert.equal(alpha.camCoverage, "spot"); // via surflineCams
   assert.equal(alpha.linkedCamId, null);
 });
+
+test("rejected rows are excluded even when nearest", () => {
+  const rejectedDb = { matches: [
+    { meoSpotId: "cam-strip", surflineSpotIds: ["surfline-alpha"], reviewStatus: "rejected", source: "generated-nearest",
+      distancesKm: { "surfline-alpha": 0.05 }, matchEvidence: [{ surflineSpotId: "surfline-alpha", distanceKm: 0.05, nameScore: 1 }] },
+    { meoSpotId: "cam-alpha", surflineSpotIds: ["surfline-alpha"], reviewStatus: "generated", source: "generated-nearest",
+      distancesKm: { "surfline-alpha": 0.1 }, matchEvidence: [{ surflineSpotId: "surfline-alpha", distanceKm: 0.1, nameScore: 1 }] }
+  ]};
+  const out = buildPromotedSpots({ surflineDb, meoDb, matchesDb: rejectedDb, stretches, promotions });
+  const alpha = out.promoted.find((s) => s.id === "surfline-alpha");
+  assert.equal(alpha.linkedCamId, "cam-alpha"); // rejected cam-strip@0.05 skipped despite being nearest (0.05 would win via proximity)
+});
+
+test("curated rows trust members regardless of name score or distance", () => {
+  // cam-strip sits in the Caparica ambiguity zone at 0.5km with nameScore 0 — untrusted if generated, trusted because curated
+  const curatedDb = { matches: [
+    { meoSpotId: "cam-strip", surflineSpotIds: ["surfline-gamma"], reviewStatus: "curated", source: "curated",
+      distancesKm: { "surfline-gamma": 0.5 }, matchEvidence: [{ surflineSpotId: "surfline-gamma", distanceKm: 0.5, nameScore: 0 }] }
+  ]};
+  const out = buildPromotedSpots({ surflineDb, meoDb, matchesDb: curatedDb, stretches, promotions });
+  const gamma = out.promoted.find((s) => s.id === "surfline-gamma");
+  assert.equal(gamma.camCoverage, "spot");
+  assert.equal(gamma.linkedCamId, "cam-strip");
+});
