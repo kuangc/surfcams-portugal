@@ -16,7 +16,7 @@ export function applyFeedback(db, feedback) {
       row.reviewStatus = "curated";
       row.surflineSpotIds = [item.selectedSurflineSpotId,
         ...row.surflineSpotIds.filter((id) => id !== item.selectedSurflineSpotId)];
-      if (item.notes) row.notes = item.notes;
+      if (item.notes !== undefined) row.notes = item.notes;
     } else if (item.decision === "reject") {
       row.reviewStatus = "rejected";
     }
@@ -38,7 +38,7 @@ async function main() {
   console.log(`Applied ${feedback.length} feedback decisions`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;

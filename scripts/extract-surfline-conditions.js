@@ -96,7 +96,7 @@ async function main() {
   console.log(`Wrote ${OUT_FILE}: ${payload.total} spots from ${pagesParsed} pages`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;
