@@ -156,6 +156,43 @@ button:disabled {
   line-height: 1.35;
 }
 
+.staleness-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(200, 145, 30, 0.42);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff8e0;
+  color: #5f4511;
+  font-size: 0.88rem;
+  font-weight: 820;
+  line-height: 1.35;
+}
+
+.staleness-banner__dismiss {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(95, 69, 17, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  color: #5f4511;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.staleness-banner__dismiss:hover,
+.staleness-banner__dismiss:focus-visible {
+  border-color: var(--gold);
+  outline: none;
+}
+
 .segmented-control {
   display: inline-flex;
   gap: 3px;

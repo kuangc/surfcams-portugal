@@ -10,10 +10,16 @@ import {
   formatConditionLine,
   formatWaterSummary
 } from "./condition-summary.js";
-import { DEFAULT_FAVORITE_IDS, HLS_SCRIPT_URL, INITIAL_BOUNDS_IDS } from "./config.js";
+import {
+  CONDITIONS_STALE_BANNER_HOURS,
+  DEFAULT_FAVORITE_IDS,
+  HLS_SCRIPT_URL,
+  INITIAL_BOUNDS_IDS
+} from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
-import { resolveConditions } from "./forecast-sources.js";
+import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
+import { fetchLiveForecast } from "./live-forecast.js";
 import { mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
 import {
   applySpotMetadataToCameraDb,
@@ -49,8 +55,11 @@ const state = {
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
   liveForecastCache: new Map(),
+  liveForecastPending: new Set(),
   monitorMode: "favorites",
   monitorPlayers: new Map(),
+  stalenessBannerDismissed: false,
+  stalenessBannerEl: null,
   markers: new Map(),
   markerLayer: null,
   selectedExploreCamera: null,
@@ -188,6 +197,25 @@ function getConditions(camera) {
   });
 }
 
+function requestLiveForecastForSelection(camera) {
+  if (!camera || getConditions(camera).source !== "meo-static") return;
+  if (state.liveForecastPending.has(camera.id)) return;
+
+  state.liveForecastPending.add(camera.id);
+  fetchLiveForecast(camera)
+    .then((live) => {
+      if (!live) return;
+
+      state.liveForecastCache.set(camera.id, live);
+      if (state.selectedExploreCamera?.id === camera.id) {
+        renderExploreSelection(state.selectedExploreCamera);
+      }
+    })
+    .finally(() => {
+      state.liveForecastPending.delete(camera.id);
+    });
+}
+
 function favoriteManagerCameras() {
   return filterCameras(manageSpotCameras(), {
     query: els.favoritesSearchInput.value,
@@ -278,6 +306,45 @@ function createEmptyMonitorTile(index) {
   return tile;
 }
 
+function clearStalenessBanner() {
+  state.stalenessBannerEl?.remove();
+  state.stalenessBannerEl = null;
+}
+
+function stalenessAgeLabel(ageHours) {
+  return ageHours === null ? "no Surfline conditions data" : `${Math.floor(ageHours / 24)}d old`;
+}
+
+function renderStalenessBanner() {
+  clearStalenessBanner();
+  if (state.stalenessBannerDismissed) return;
+
+  const ageHours = newestConditionsAgeHours(state.spotData, Date.now());
+  if (ageHours !== null && ageHours <= CONDITIONS_STALE_BANNER_HOURS) return;
+
+  const banner = document.createElement("div");
+  banner.className = "staleness-banner";
+  banner.setAttribute("role", "status");
+
+  const message = document.createElement("span");
+  message.textContent = `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}) — ratings fall back to model/MEO.`;
+
+  const dismiss = document.createElement("button");
+  dismiss.className = "staleness-banner__dismiss";
+  dismiss.type = "button";
+  dismiss.textContent = "×";
+  dismiss.title = "Dismiss stale conditions notice";
+  dismiss.setAttribute("aria-label", "Dismiss stale conditions notice");
+  dismiss.addEventListener("click", () => {
+    state.stalenessBannerDismissed = true;
+    clearStalenessBanner();
+  });
+
+  banner.append(message, dismiss);
+  els.monitorGrid.insertAdjacentElement("beforebegin", banner);
+  state.stalenessBannerEl = banner;
+}
+
 function isReportOnlyCamera(camera) {
   return !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
 }
@@ -358,6 +425,7 @@ function setMonitorMode(mode) {
 function renderMonitor() {
   clearMonitorPlayers();
   renderWaterSummaries();
+  renderStalenessBanner();
 
   const slots = state.monitorMode === "favorites"
     ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm })
@@ -952,6 +1020,7 @@ function renderExploreSelection(camera) {
   updateExploreRowSelection(camera.id);
   renderMarkers();
   playExploreCamera(camera);
+  requestLiveForecastForSelection(camera);
 }
 
 function formField(name) {
