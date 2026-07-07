@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "generatedAt": "2026-07-07T05:41:44.290Z",
+ "generatedAt": "2026-07-07T09:27:59.113Z",
  "unitsNormalized": {
   "surfHeight": "m",
   "windSpeed": "kmh"
@@ -3265,7 +3265,7 @@
    "name": "Praia da Rainha",
    "remoteSpotId": "602d65b2c30216a5fdf26598",
    "sourceKind": "primary",
-   "fetchedAt": null,
+   "fetchedAt": "2026-06-11T12:50:46.068Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "surfRawFt": [
@@ -3274,18 +3274,18 @@
    ],
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
-   "windKmh": 20.4,
-   "windDirDeg": 353.29358,
+   "windKmh": 1.9,
+   "windDirDeg": 204.15865,
    "swells": [
     {
-     "hM": 0.9,
+     "hM": 0.6,
      "periodS": 9,
-     "dirDeg": 287.3905
+     "dirDeg": 278.10278
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 16,
+     "dirDeg": 198.32227
     },
     {
      "hM": 0,
@@ -3308,7 +3308,7 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 16.7,
+   "waterTempC": 16.1,
    "id": "surfline-praia-da-rainha"
   },
   "surfline-castelo": {
