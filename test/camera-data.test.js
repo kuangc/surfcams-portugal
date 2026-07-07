@@ -139,3 +139,28 @@ test("mergePromotedSpots tolerates missing promotedDb", () => {
   const cameraDb = { cameras: [{ id: "cam-1" }] };
   assert.equal(mergePromotedSpots(cameraDb, null).cameras.length, 1);
 });
+
+test("mergePromotedSpots carries forward stream override fields on collision", () => {
+  const cameraDb = { cameras: [
+    { id: "surfline-castelo", name: "old embedded", hasStream: true, streamUrl: "https://hls.example/castelo.m3u8",
+      image: "https://img.example/castelo.jpg", streamOverride: true, livecamId: "", videoId: "" }
+  ]};
+  const promotedDb = { promoted: [
+    { id: "surfline-castelo", name: "Castelo", promoted: true, hasStream: false, camCoverage: "spot", linkedCamId: "riviera" }
+  ]};
+  const merged = mergePromotedSpots(cameraDb, promotedDb).cameras.find((c) => c.id === "surfline-castelo");
+  assert.equal(merged.promoted, true);
+  assert.equal(merged.name, "Castelo");
+  assert.equal(merged.streamUrl, "https://hls.example/castelo.m3u8");
+  assert.equal(merged.hasStream, true);
+  assert.equal(merged.image, "https://img.example/castelo.jpg");
+  assert.equal(merged.streamOverride, true);
+});
+
+test("mergePromotedSpots leaves stream-less promoted records report-only", () => {
+  const cameraDb = { cameras: [{ id: "cam-1", name: "Cam 1" }] };
+  const promotedDb = { promoted: [{ id: "surfline-coxos", name: "Coxos", promoted: true, hasStream: false }] };
+  const merged = mergePromotedSpots(cameraDb, promotedDb).cameras.find((c) => c.id === "surfline-coxos");
+  assert.equal(merged.hasStream, false);
+  assert.equal(merged.streamUrl ?? "", "");
+});

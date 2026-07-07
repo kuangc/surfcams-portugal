@@ -87,9 +87,23 @@ export function firstClassCameras(cameraDb) {
 export function mergePromotedSpots(cameraDb, promotedDb) {
   const promoted = promotedDb?.promoted || [];
   if (!promoted.length) return cameraDb;
+  const existingById = new Map(cameraDb.cameras.map((c) => [c.id, c]));
   const promotedIds = new Set(promoted.map((p) => p.id));
+  // Promoted records win on collision, but stream fields (e.g. from
+  // local-stream-overrides applied at load) must survive the replacement.
+  const merged = promoted.map((record) => {
+    const existing = existingById.get(record.id);
+    if (!existing) return record;
+    const streamUrl = record.streamUrl || existing.streamUrl || "";
+    const out = { ...record, streamUrl, hasStream: Boolean(streamUrl) };
+    if (!record.image && existing.image) out.image = existing.image;
+    if (!record.livecamId && existing.livecamId) out.livecamId = existing.livecamId;
+    if (!record.videoId && existing.videoId) out.videoId = existing.videoId;
+    if (existing.streamOverride) out.streamOverride = true;
+    return out;
+  });
   return {
     ...cameraDb,
-    cameras: [...cameraDb.cameras.filter((c) => !promotedIds.has(c.id)), ...promoted]
+    cameras: [...cameraDb.cameras.filter((c) => !promotedIds.has(c.id)), ...merged]
   };
 }
