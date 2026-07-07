@@ -8,6 +8,7 @@ The app opens directly to a map and score-ranked camera list, filters out unavai
 
 - Interactive Leaflet map of indexed Portugal cameras with live HLS feeds.
 - Surfline-style model rating labels for small-group sessions, using Beachcam wave, wind, period, tide, and spot/coast mechanics.
+- Promoted Surfline spots (Nazaré→Sesimbra) as first-class favoritable spots, rated from Surfline's own spot conditions when fresh — with a provenance chip showing whether numbers come from Surfline, a live model, or the static MEO snapshot.
 - "Good for us" filtering for in-window waves, offshore wind, and light-wind conditions.
 - Focused pre-click rows with rating, estimated surf size, and wind fit; detailed wind, swell, and exposure vectors live in the selected spot panel.
 - Favorites workflow with defaults for Estoril, Riviera, Sesimbra, São Julião, Fonte da Telha Norte, and Peniche Lagide.

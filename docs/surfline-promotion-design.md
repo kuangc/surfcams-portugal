@@ -1,8 +1,10 @@
 # Surfline Spot Promotion & Fresh Conditions — Design Spec
 
-Date: 2026-07-06 · Status: v4 — complete. Review decisions + 44-spot selection folded in
-(36 at-spot-cam / 6 stretch-cam / 2 deferred); Surfline native cams + stretch view added;
-awaiting final approval → implementation plan
+Date: 2026-07-06 · Status: implemented (2026-07-08). All milestones shipped on
+`kuang/gallant-hermann-bf3ab3`; the 36 at-spot-cam / 6 stretch-cam / 2 deferred split is enforced by
+`build-promoted-spots` against `data/surfline-promotions.json`. The scheduled CI refresh remains
+dispatch-only pending the runner probe (§5.6); the operative daily path is
+`scripts/refresh-surfline-daily.sh` over the headed-Chrome CDP transport.
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
 
 ## 1. Goal
