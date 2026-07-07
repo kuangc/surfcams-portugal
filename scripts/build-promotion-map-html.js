@@ -124,10 +124,16 @@ export async function buildPromotionMapModel({ surflineDb, promotions, promotedS
         spotName: spot.name,
         nearestCamId: candidate.nearestCamId,
         distanceKm: candidate.distanceKm,
-        reviewStatus: candidate.reviewStatus
+        reviewStatus: candidate.reviewStatus,
+        camCoverage: spot.camCoverage
       });
     }
+    // Zero-coverage spots surface first so they don't get buried among
+    // stretch-covered spots (which already have some coverage nearby).
+    // Array.prototype.sort is stable, so within each group the existing
+    // (distance-ascending) order is preserved.
     reviewQueue.sort((a, b) => a.distanceKm - b.distanceKm);
+    reviewQueue.sort((a, b) => (a.camCoverage === "stretch" ? 1 : 0) - (b.camCoverage === "stretch" ? 1 : 0));
   }
 
   return {
@@ -245,14 +251,21 @@ function renderCheckboxList(spots) {
       </section>`).join("\n");
 }
 
+function reviewCoverageBadge(camCoverage) {
+  return camCoverage === "stretch"
+    ? `<span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span>`
+    : `<span class="badge badge-none">no coverage yet</span>`;
+}
+
 function renderReviewCard(item) {
   const groupName = `review-${item.surflineSpotId}`;
   return `
-      <article class="review-card" data-surfline-id="${escapeHtml(item.surflineSpotId)}">
+      <article class="review-card" data-surfline-id="${escapeHtml(item.surflineSpotId)}" data-review-id="${escapeHtml(item.surflineSpotId)}">
         <header>
           <h3>${escapeHtml(item.spotName)}</h3>
           <p>${escapeHtml(item.surflineSpotId)}</p>
         </header>
+        <p>${reviewCoverageBadge(item.camCoverage)}</p>
         <p>Nearest cam: <strong>${escapeHtml(item.nearestCamId)}</strong> · ${escapeHtml(item.distanceKm)}km · status: ${escapeHtml(item.reviewStatus)}</p>
         <fieldset>
           <label><input type="radio" name="${escapeHtml(groupName)}" data-field="decision" value="accept"> Accept</label>
@@ -269,7 +282,18 @@ function renderReviewQueue(reviewQueue) {
   if (!reviewQueue.length) {
     return `<p>No review-queue items — every wanted spot with non-"spot" coverage has no nearby stream cam candidate, or promoted-spots.json has not been generated yet.</p>`;
   }
-  return reviewQueue.map(renderReviewCard).join("\n");
+  // Defensive sort: the CLI model assembly already orders zero-coverage
+  // spots first, but the renderer re-sorts (stably) so callers that pass
+  // an unsorted reviewQueue still get zero-coverage spots surfaced first.
+  const sorted = reviewQueue
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const aStretch = a.item.camCoverage === "stretch" ? 1 : 0;
+      const bStretch = b.item.camCoverage === "stretch" ? 1 : 0;
+      return aStretch - bStretch || a.index - b.index;
+    })
+    .map(({ item }) => item);
+  return sorted.map(renderReviewCard).join("\n");
 }
 
 export function renderPromotionMapHtml(model) {
@@ -414,7 +438,7 @@ export function renderPromotionMapHtml(model) {
     <div class="actions">
       <button id="selectAll" type="button" class="secondary">Select all</button>
       <button id="clearAll" type="button" class="secondary">Clear</button>
-      <button id="resetManifest" type="button" class="secondary">Reset to manifest</button>
+      <button id="resetManifest" type="button" class="secondary">Reset spot selection</button>
       <button id="exportManifest" type="button">Export manifest</button>
     </div>
   </header>
@@ -435,6 +459,7 @@ export function renderPromotionMapHtml(model) {
     <section class="review-panel">
       <h2>Review queue</h2>
       <p>Wanted spots whose cam coverage is not a direct "spot" match, alongside the nearest stream-carrying MEO cam.</p>
+      <p>Accepting a candidate marks it curated — the spot graduates to at-spot coverage on the next data rebuild.</p>
       ${renderReviewQueue(model.reviewQueue)}
       <button id="exportFeedback" type="button">Export feedback</button>
       <section class="export-panel" id="feedbackPanel" hidden>
