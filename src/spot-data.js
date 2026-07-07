@@ -179,7 +179,7 @@ export function findSurflineMatches(camera, normalizedSpotData) {
   const id = normalizeId(camera);
   const mapping = normalizedSpotData?.matchesByMeoId?.get(id);
   if (!mapping) return [];
-  if (mapping.reviewStatus === "needs-review") return [];
+  if (mapping.reviewStatus === "needs-review" || mapping.reviewStatus === "rejected") return [];
 
   return mapping.surflineSpotIds
     .map((surflineSpotId) => normalizedSpotData.surflineById.get(surflineSpotId))

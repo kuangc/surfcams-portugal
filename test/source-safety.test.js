@@ -204,9 +204,11 @@ test("surfline spot build normalizes cached provider metadata within Lisbon radi
   assert.match(buildSurflineSpotsSource, /distanceFromLisbonKm/);
 });
 
-test("MEO Surfline remap preserves curated joins before generated nearest joins", () => {
+test("MEO Surfline remap preserves curated and rejected joins before generated nearest joins", () => {
   assert.match(packageSource, /"build-meo-surfline-matches":\s*"node scripts\/build-meo-surfline-matches\.js"/);
-  assert.match(buildMeoSurflineMatchesSource, /curatedByMeoId/);
+  assert.match(buildMeoSurflineMatchesSource, /preservedByMeoId/);
+  assert.match(buildMeoSurflineMatchesSource, /isPreservedMatch/);
+  assert.match(buildMeoSurflineMatchesSource, /reviewStatus === "rejected"/);
   assert.match(buildMeoSurflineMatchesSource, /source === "curated"/);
   assert.match(buildMeoSurflineMatchesSource, /generated-nearest/);
   assert.match(buildMeoSurflineMatchesSource, /needs-review/);

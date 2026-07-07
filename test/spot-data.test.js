@@ -256,9 +256,9 @@ test("spot metadata enrichment carries Surfline surf mechanics onto MEO-keyed en
 
   assert.equal(enrichmentById.has("almograve"), false);
 
-  const covaDoVapor = enrichmentById.get("costa-de-caparica-sao-joao-cova-do-vapor");
-  assert.equal(covaDoVapor.surfMetadata.sourceSpotId, "surfline-cova-do-vapor");
-  assert.ok(covaDoVapor.surfMetadata.breakType.includes("Jetty"));
+  const caparicaCds = enrichmentById.get("costa-da-caparica");
+  assert.equal(caparicaCds.surfMetadata.sourceSpotId, "surfline-costa-da-caparica");
+  assert.ok(caparicaCds.surfMetadata.breakType.includes("Jetty"));
 });
 
 test("applySpotMetadataToCameraDb enriches cameras with Surfline metadata and coast exposure", () => {
@@ -292,8 +292,8 @@ test("surfline breakType values do not contain board-type enums", () => {
 
 test("needs-review mappings are collected into a local feedback HTML interface", () => {
   assert.match(needsReviewHtml, /id="needsReviewApp"/);
-  assert.match(needsReviewHtml, /data-review-id="almograve"/);
-  assert.match(needsReviewHtml, /surfline-sao-torpes/);
+  assert.match(needsReviewHtml, /data-review-id="costa-da-caparica-tarquinio"/);
+  assert.match(needsReviewHtml, /surfline-costa-da-caparica/);
   assert.match(needsReviewHtml, /Match score/);
   assert.match(needsReviewHtml, /data-match-score="/);
   assert.match(needsReviewHtml, /<textarea/);
@@ -307,12 +307,12 @@ test("needs-review mappings are collected into a local feedback HTML interface",
   assert.doesNotMatch(needsReviewHtml, /manualValue/);
   assert.doesNotMatch(needsReviewHtml, /URL\.createObjectURL/);
 
-  const balealCard = needsReviewHtml.match(/data-review-id="peniche-baleal-panoramica"[\s\S]*?<\/article>/)?.[0] || "";
-  const balealIndex = balealCard.indexOf('value="surfline-baleal" checked');
-  const cantinhoIndex = balealCard.indexOf('value="surfline-cantinho-da-baia"');
-  assert.ok(balealIndex >= 0, "Baleal should be the default selected Surfline candidate");
-  assert.ok(cantinhoIndex >= 0, "Cantinho should still be shown as a candidate");
-  assert.ok(balealIndex < cantinhoIndex, "candidate list should be sorted by weighted match score");
+  const tarquinioCard = needsReviewHtml.match(/data-review-id="costa-da-caparica-tarquinio"[\s\S]*?<\/article>/)?.[0] || "";
+  const caparicaIndex = tarquinioCard.indexOf('value="surfline-costa-da-caparica" checked');
+  const barbasIndex = tarquinioCard.indexOf('value="surfline-praia-do-barbas"');
+  assert.ok(caparicaIndex >= 0, "Costa da Caparica should be the default selected Surfline candidate");
+  assert.ok(barbasIndex >= 0, "Praia do Barbas should still be shown as a candidate");
+  assert.ok(caparicaIndex < barbasIndex, "candidate list should be sorted by weighted match score");
 });
 
 test("applyCoastExposuresToCameraDb enriches cameras without mutating the source database", () => {
@@ -366,7 +366,17 @@ test("findDriveEstimate prefers routed distance and duration when directions dat
 test("needs-review Surfline mappings are excluded from runtime match lookup", () => {
   assert.equal(
     mappingDb.matches.some((match) => (
-      match.meoSpotId === "almograve" && match.reviewStatus === "needs-review"
+      match.meoSpotId === "costa-da-caparica-tarquinio" && match.reviewStatus === "needs-review"
+    )),
+    true
+  );
+  assert.deepEqual(findSurflineMatches({ id: "costa-da-caparica-tarquinio" }, normalized), []);
+});
+
+test("rejected Surfline mappings are excluded from runtime match lookup", () => {
+  assert.equal(
+    mappingDb.matches.some((match) => (
+      match.meoSpotId === "almograve" && match.reviewStatus === "rejected"
     )),
     true
   );

@@ -146,7 +146,7 @@ async function main() {
   for (const meoSpot of meoDb.spots || []) {
     const mapping = mappingByMeoId.get(meoSpot.id);
     if (!mapping) continue;
-    if (mapping.reviewStatus === "needs-review") continue;
+    if (mapping.reviewStatus === "needs-review" || mapping.reviewStatus === "rejected") continue;
 
     const surflineSpot = bestSurflineSpot(mapping, surflineById);
     if (!surflineSpot) continue;
