@@ -2,9 +2,11 @@
 
 Date: 2026-07-06 · Status: implemented (2026-07-08). All milestones shipped on
 `kuang/gallant-hermann-bf3ab3`; the 36 at-spot-cam / 6 stretch-cam / 2 deferred split is enforced by
-`build-promoted-spots` against `data/surfline-promotions.json`. The scheduled CI refresh remains
-dispatch-only pending the runner probe (§5.6); the operative daily path is
-`scripts/refresh-surfline-daily.sh` over the headed-Chrome CDP transport.
+`build-promoted-spots` against `data/surfline-promotions.json`. The scheduled CI refresh is now live
+(§5.6): `probe-surfline-browser.yml` proved a real headful Chrome on a GitHub runner clears
+Surfline's Cloudflare from a datacenter IP, so `update-surfline-conditions.yml` runs the in-browser
+CDP refresh daily; `scripts/refresh-surfline-daily.sh` (headed Chrome on a home IP) is retained as a
+documented fallback.
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
 
 ## 1. Goal

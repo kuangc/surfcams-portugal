@@ -82,4 +82,4 @@ Use the offline staleness guard directly with:
 node scripts/check-conditions-freshness.js
 ```
 
-The CI workflow exists for manual dispatch, but its schedule remains commented out until the runner probe validates a Surfline transport from GitHub runners.
+The CI workflow (`update-surfline-conditions.yml`) now runs the refresh on a daily schedule directly from GitHub-hosted runners: it launches a real headful Chrome under xvfb and uses the same in-browser CDP fetch path, which `probe-surfline-browser.yml` proved passes Surfline's Cloudflare from a datacenter IP. `scripts/refresh-surfline-daily.sh` (headed Chrome on a home IP) remains the documented fallback if Cloudflare ever tightens against runner IPs — re-run the browser probe to check.
