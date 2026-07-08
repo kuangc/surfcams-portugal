@@ -24,7 +24,8 @@
     "cache-surfline": "node scripts/cache-surfline-pages.js",
     "cache-surfline-browser": "node scripts/cache-surfline-browser-cdp.js",
     "crawl": "node scripts/crawl-beachcam.cjs",
-    "extract-feed": "node scripts/extract-beachcam-feed.cjs"
+    "extract-feed": "node scripts/extract-beachcam-feed.cjs",
+    "probe-surfline-browser": "node scripts/probe-surfline-browser.js"
   },
   "keywords": [
     "surf",

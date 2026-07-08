@@ -1,0 +1,59 @@
+name: Probe surfline (real browser)
+
+# One-off experiment: can a REAL headful Chrome, running on a GitHub-hosted
+# runner's datacenter IP, get past Surfline's Cloudflare the way the local
+# daily refresh does on a home IP? Reproduces the exact CDP-in-browser fetch
+# path the refresh depends on. Manual dispatch only; reports, never commits.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Resolve Chrome binary
+        id: chrome
+        run: |
+          BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium-browser || true)"
+          echo "bin=$BIN" >> "$GITHUB_OUTPUT"
+          echo "Chrome binary: ${BIN:-NONE}"
+          [ -n "$BIN" ] && "$BIN" --version || echo "no chrome on runner"
+
+      - name: Launch headful Chrome (xvfb) on a Surfline report
+        run: |
+          xvfb-run --auto-servernum "${{ steps.chrome.outputs.bin }}" \
+            --remote-debugging-address=127.0.0.1 \
+            --remote-debugging-port=9333 \
+            --remote-allow-origins='*' \
+            --user-data-dir=/tmp/surfline-cdp-profile \
+            --no-first-run --no-default-browser-check \
+            --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --window-size=1280,800 \
+            --new-window "https://www.surfline.com/surf-report/praia-da-cruz-quebrada/640b9d294878ebc4c91e3d61" \
+            > /tmp/chrome.log 2>&1 &
+          echo "launched Chrome pid $!"
+
+      - name: Wait for CDP endpoint
+        run: |
+          for i in $(seq 1 40); do
+            if curl -sf --max-time 2 http://127.0.0.1:9333/json/version >/dev/null; then
+              echo "CDP up:"; curl -s http://127.0.0.1:9333/json/version; exit 0
+            fi
+            sleep 1
+          done
+          echo "CDP endpoint never came up"; exit 0
+
+      - name: Browser probe (report page + KBYG, in-browser)
+        run: node scripts/probe-surfline-browser.js --port=9333 --maxWaitMs=100000
+
+      - name: Chrome log (diagnostics)
+        if: always()
+        run: tail -n 40 /tmp/chrome.log 2>/dev/null || echo "no chrome log"
