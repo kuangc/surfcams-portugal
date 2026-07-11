@@ -311,6 +311,45 @@ test("compiled fixtures preserve guide-only, conflict, and user-observation beha
   assert.match(sesimbra.sections.flatMap((section) => section.claims).map((claim) => claim.summary).join(" "), /2 m primary swell/i);
 });
 
+test("Explore water summary clears for a guide and restores for a real spot", () => {
+  const monitorWaterSummary = { name: "monitor", textContent: "", hidden: true };
+  const favoritesWaterSummary = { name: "favorites", textContent: "", hidden: true };
+  const detailWaterSummary = { name: "detail", textContent: "", hidden: true };
+  const calls = [];
+  const context = {
+    state: { selectedExploreCamera: { id: "real", adviceGuideOnly: false } },
+    els: { monitorWaterSummary, favoritesWaterSummary, detailWaterSummary },
+    renderWaterSummary(container) {
+      calls.push(container.name);
+      container.textContent = "Sea 17°C · Tide rising · Last light 9pm";
+      container.hidden = false;
+    }
+  };
+  vm.runInNewContext(`${functionSource("renderWaterSummaries")}\nglobalThis.run = renderWaterSummaries;`, context);
+
+  context.run();
+  assert.equal(detailWaterSummary.hidden, false);
+  assert.match(detailWaterSummary.textContent, /Sea 17°C/);
+
+  context.state.selectedExploreCamera = { id: "surfline-cave", adviceGuideOnly: true };
+  context.run();
+  assert.equal(detailWaterSummary.hidden, true);
+  assert.equal(detailWaterSummary.textContent, "");
+  assert.doesNotMatch(detailWaterSummary.textContent, /Sea|Tide|light/i);
+  assert.match(monitorWaterSummary.textContent, /Sea 17°C/);
+  assert.match(favoritesWaterSummary.textContent, /Sea 17°C/);
+
+  context.state.selectedExploreCamera = { id: "real", adviceGuideOnly: false };
+  context.run();
+  assert.equal(detailWaterSummary.hidden, false);
+  assert.match(detailWaterSummary.textContent, /Sea 17°C/);
+  assert.deepEqual(calls, [
+    "monitor", "favorites", "detail",
+    "monitor", "favorites",
+    "monitor", "favorites", "detail"
+  ]);
+});
+
 test("advice UI remains display-only and monitor ordering remains byte-equivalent", () => {
   assert.doesNotMatch(mainSource, /rateSurfSpot\([^)]*(?:lens|advice|claim|playbook)/);
   assert.doesNotMatch(mainSource, /(?:waveMinM|waveMaxM|providerSpotSurfMinM|providerSpotSurfMaxM)\s*[+*]?=/);

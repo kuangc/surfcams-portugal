@@ -519,11 +519,14 @@ function renderWaterSummary(container) {
 }
 
 function renderWaterSummaries() {
-  [
-    els.monitorWaterSummary,
-    els.favoritesWaterSummary,
-    els.detailWaterSummary
-  ].forEach(renderWaterSummary);
+  [els.monitorWaterSummary, els.favoritesWaterSummary].forEach(renderWaterSummary);
+
+  if (state.selectedExploreCamera?.adviceGuideOnly) {
+    els.detailWaterSummary.textContent = "";
+    els.detailWaterSummary.hidden = true;
+    return;
+  }
+  renderWaterSummary(els.detailWaterSummary);
 }
 
 function createProviderLogo(source, label) {
