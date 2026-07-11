@@ -15,6 +15,7 @@ import {
 import {
   addClaim,
   addEvidence,
+  applyClaimEditorPatch,
   buildDynamicReviewSpots,
   deleteClaim,
   deleteEvidence,
@@ -24,6 +25,7 @@ import {
   initializeWorkingState,
   isSafeExternalUrl,
   mergeClaims,
+  MAX_REVIEW_PAYLOAD_BYTES,
   pendingCount,
   createReviewRuntime,
   recoverAutosave,
@@ -35,7 +37,8 @@ import {
   splitClaim,
   updateClaim,
   updateEvidence,
-  updateResearchRow
+  updateResearchRow,
+  validateReviewDocument
 } from "../scripts/lib/spot-advice-review.js";
 import {
   buildSpotAdviceReviewFiles,
@@ -159,7 +162,7 @@ test("material edits reset rejected and draft claims in both editor and apply-ti
   assert.equal(candidate.advice[0].calculationCandidate, false);
 });
 
-test("nonmaterial edits preserve publication state while explicit review can publish a draft", () => {
+test("nonmaterial edits preserve publication state while a material draft cannot republish against its old baseline", () => {
   const state = stateFixture();
   const claim = state.document.advice[0];
   const expiry = updateClaim(state, claim.id, { revalidateAfter: "2027-01-01" });
@@ -173,8 +176,28 @@ test("nonmaterial edits preserve publication state while explicit review can pub
   const drafted = updateClaim(expiry, claim.id, { summary: `${claim.summary} Edited.` });
   const reviewedAt = "2026-07-12T10:00:00.000Z";
   const published = updateClaim(drafted, claim.id, { publicationStatus: "published", reviewedAt });
-  assert.equal(published.document.advice.find((item) => item.id === claim.id).publicationStatus, "published");
-  assert.equal(published.document.advice.find((item) => item.id === claim.id).reviewedAt, reviewedAt);
+  assert.equal(published.document.advice.find((item) => item.id === claim.id).publicationStatus, "draft");
+  assert.equal(published.document.advice.find((item) => item.id === claim.id).reviewedAt, null);
+});
+
+test("material edits cannot be republished until a second canonical review pass and export equals apply output", () => {
+  let state = stateFixture();
+  const id = "research-praia-da-rainha-tide";
+  state = updateClaim(state, id, { summary: "Rainha material edit awaiting a new pass." });
+  state = updateClaim(state, id, { publicationStatus: "published", reviewedAt: "2026-07-12T10:00:00.000Z" });
+  assert.equal(state.document.advice.find((claim) => claim.id === id).publicationStatus, "draft");
+  assert.equal(state.document.advice.find((claim) => claim.id === id).reviewedAt, null);
+  const feedback = exportFeedback(state);
+  assert.deepEqual(prepareFeedbackCandidate(state.canonicalDocument, feedback), feedback.document);
+
+  const { canonicalPath } = tempCanonical();
+  const applied = applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() });
+  assert.deepEqual(applied.document, feedback.document);
+  assert.deepEqual(readJson(canonicalPath), feedback.document);
+
+  let secondPass = initializeWorkingState(applied.document, digestDocument(applied.document));
+  secondPass = updateClaim(secondPass, id, { publicationStatus: "published", reviewedAt: "2026-07-13T10:00:00.000Z" });
+  assert.equal(secondPass.document.advice.find((claim) => claim.id === id).publicationStatus, "published");
 });
 
 test("claim CRUD, evidence CRUD, split, merge, and re-scope keep review state coherent", () => {
@@ -318,12 +341,17 @@ test("review model and HTML expose all 44 spots, filters, cockpit panes, and edi
   assert.equal(model.spots.length, 44);
   const html = renderSpotAdviceReviewHtml(model);
   assert.equal((html.match(/data-spot-id=/g) || []).length, 44);
+  assert.equal((html.match(/aria-current="false"/g) || []).length, 44);
+  assert.match(html, /id="pending-count"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(html, /id="autosave-status"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.match(html, /\[hidden\]\s*\{[^}]*display\s*:\s*none\s*!important/i);
   assert.match(html, /data-spot-id="surfline-nazare"[\s\S]*?research complete[\s\S]*?direct found/i);
   const scripts = [...html.matchAll(/<script(?: [^>]*)?>([\s\S]*?)<\/script>/g)];
   const executable = scripts.find((match) => !match[0].includes('type="application/json"'))?.[1];
   assert.ok(executable);
   assert.doesNotThrow(() => new Function(executable.replace(/^\s*import[\s\S]*?;\s*/, "")));
+  assert.match(executable, /setAttribute\("aria-current"/);
+  assert.match(executable, /ariaPressed|aria-pressed/);
   for (const marker of [
     "filter-area", "filter-scope", "filter-topic", "filter-confidence", "filter-publication", "filter-consensus", "filter-expiry", "filter-missing-direct",
     "research outcome", "direct evidence", "coverage", "conflicts", "claim-editor", "evidence-editor", "Split claim", "Merge claim", "Re-scope",
@@ -459,6 +487,86 @@ test("merge and re-scope clean all memberships and produce Task2-valid browser-s
   assert.match(html, /function refreshSpotRows/);
 });
 
+test("Save Claim scope changes route through membership-safe editor patch behavior", () => {
+  let state = stateFixture();
+  state = addClaim(state, draftClaim("browser-scope-save"), { directSpotId: "surfline-nazare" });
+  state.document.spotResearch[1].inheritedApprovals = [{ claimId: "browser-scope-save", claimDigest: "0".repeat(64) }];
+  state = applyClaimEditorPatch(state, "browser-scope-save", {
+    scope: { type: "spot", id: "surfline-baleal" },
+    summary: "Scope changed through Save Claim."
+  });
+  assert.ok(!state.document.spotResearch[0].directClaimIds.includes("browser-scope-save"));
+  assert.ok(state.document.spotResearch[1].directClaimIds.includes("browser-scope-save"));
+  assert.ok(state.document.spotResearch.every((row) => !(row.inheritedApprovals ?? []).some((approval) => approval.claimId === "browser-scope-save")));
+  assert.doesNotThrow(() => compileSpotAdvice(exportFeedback(state).document, fixtureContext()));
+  const html = renderSpotAdviceReviewHtml(buildSpotAdviceReviewModel({ document: fixtureDocument(), context: fixtureContext() }));
+  assert.match(html, /applyClaimEditorPatch/);
+});
+
+function browserValidationContext() {
+  const context = fixtureContext();
+  return {
+    spotIds: context.promotions.promoted.map((row) => row.surflineSpotId),
+    stretches: context.stretches
+  };
+}
+
+test("browser validation blocks deleting inference inputs and the last evidence without replacing runtime state", () => {
+  const validationContext = browserValidationContext();
+  const state = stateFixture();
+  const runtime = createReviewRuntime({
+    canonicalDocument: state.canonicalDocument,
+    baseDigest: state.baseDigest,
+    storage: { getItem: () => null, setItem() {}, removeItem() {} },
+    validationContext
+  });
+  const before = runtime.state().document;
+  assert.throws(() => runtime.replaceState(deleteClaim(runtime.state(), "user-caxias-minimum-primary-swell")), /inference|input/i);
+  assert.deepEqual(runtime.state().document, before);
+  assert.throws(() => runtime.replaceState(deleteEvidence(runtime.state(), "research-nazare-swell", 0)), /evidence/i);
+  assert.deepEqual(runtime.state().document, before);
+});
+
+test("deep bounded import and stored recovery reject malformed matching-digest documents without changing state", () => {
+  const state = stateFixture();
+  const validationContext = browserValidationContext();
+  const malformed = exportFeedback(state);
+  malformed.document.advice[0].scope = null;
+  assert.throws(() => importFeedback(state, malformed, { validationContext }), /scope/i);
+  assert.deepEqual(state.document, state.canonicalDocument);
+
+  const oversized = JSON.stringify(exportFeedback(state));
+  assert.ok(Buffer.byteLength(oversized) < MAX_REVIEW_PAYLOAD_BYTES);
+  assert.throws(() => importFeedback(state, oversized, { validationContext, maxBytes: 100 }), /large|size/i);
+
+  const key = state.autosaveKey;
+  const storage = { getItem: (candidate) => candidate === key ? JSON.stringify({ ...malformed, editorDrafts: {}, savedAt: null }) : null, setItem() { throw new Error("must not overwrite malformed recovery"); }, removeItem() {} };
+  const runtime = createReviewRuntime({ canonicalDocument: state.canonicalDocument, baseDigest: state.baseDigest, storage, validationContext });
+  assert.deepEqual(runtime.state().document, state.canonicalDocument);
+  assert.equal(runtime.pendingCount(), 0);
+});
+
+test("browser validator accepts the canonical document and rejects null scopes", () => {
+  const document = fixtureDocument();
+  assert.doesNotThrow(() => validateReviewDocument(document, browserValidationContext()));
+  document.advice[0].scope = null;
+  assert.throws(() => validateReviewDocument(document, browserValidationContext()), /scope/i);
+});
+
+test("browser validator rejects stale and geographically inapplicable inherited approvals", () => {
+  const stale = fixtureDocument();
+  const inherited = stale.spotResearch.find((row) => row.inheritedApprovals?.length);
+  inherited.inheritedApprovals[0].claimDigest = "0".repeat(64);
+  assert.throws(() => validateReviewDocument(stale, browserValidationContext()), /approval digest/i);
+
+  const inapplicable = fixtureDocument();
+  inapplicable.spotResearch[0].inheritedApprovals = [{
+    claimId: "user-caparica-high-tide",
+    claimDigest: digestClaim(inapplicable.advice.find((claim) => claim.id === "user-caparica-high-tide"))
+  }];
+  assert.throws(() => validateReviewDocument(inapplicable, browserValidationContext()), /inapplicable|membership/i);
+});
+
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {
   const document = fixtureDocument();
   document.spotResearch[0].checkedSources.push({
@@ -533,13 +641,45 @@ function tempFiles(dir) {
   return fs.readdirSync(dir).filter((name) => name.includes(".tmp"));
 }
 
+function canonicalLockPath(canonicalPath) {
+  return path.join(path.dirname(canonicalPath), `.${path.basename(canonicalPath)}.lock`);
+}
+
 test("atomic feedback rejects stale digest without writing", () => {
-  const { canonicalPath } = tempCanonical();
+  const { dir, canonicalPath } = tempCanonical();
   const before = fs.readFileSync(canonicalPath, "utf8");
   const feedback = feedbackFor(JSON.parse(before));
   feedback.baseDigest = "0".repeat(64);
   assert.throws(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() }), /stale|digest/i);
   assert.equal(fs.readFileSync(canonicalPath, "utf8"), before);
+  assert.deepEqual(tempFiles(dir), []);
+  assert.equal(fs.existsSync(canonicalLockPath(canonicalPath)), false);
+});
+
+test("exclusive apply lock allows only one simultaneous feedback apply and leaves no lock or temp files", async () => {
+  const { dir, canonicalPath } = tempCanonical();
+  const canonical = readJson(canonicalPath);
+  const feedback = feedbackFor(canonical);
+  const results = await Promise.allSettled([
+    Promise.resolve().then(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() })),
+    Promise.resolve().then(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() }))
+  ]);
+  assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
+  assert.equal(results.filter((result) => result.status === "rejected").length, 1);
+  assert.deepEqual(tempFiles(dir), []);
+  assert.equal(fs.existsSync(canonicalLockPath(canonicalPath)), false);
+});
+
+test("pre-existing exclusive apply lock blocks before digest read and preserves canonical", () => {
+  const { dir, canonicalPath } = tempCanonical();
+  const before = fs.readFileSync(canonicalPath, "utf8");
+  const lockPath = canonicalLockPath(canonicalPath);
+  fs.writeFileSync(lockPath, "held");
+  assert.throws(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(JSON.parse(before)), context: fixtureContext() }), /lock|busy|EEXIST/i);
+  assert.equal(fs.readFileSync(canonicalPath, "utf8"), before);
+  assert.deepEqual(tempFiles(dir), []);
+  assert.equal(fs.readFileSync(lockPath, "utf8"), "held");
+  fs.unlinkSync(lockPath);
 });
 
 test("atomic feedback catches a concurrent canonical change immediately before rename", () => {

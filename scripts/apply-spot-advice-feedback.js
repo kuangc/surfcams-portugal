@@ -52,39 +52,61 @@ export function applyFeedback({
   context,
   fileSystem = fs,
   beforeRename = () => {},
-  temporaryPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${randomUUID()}.tmp`)
+  temporaryPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${randomUUID()}.tmp`),
+  lockPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.lock`)
 }) {
-  const initialText = fileSystem.readFileSync(canonicalPath, "utf8");
-  const canonical = JSON.parse(initialText);
-  const initialDigest = digestDocument(canonical);
-  const candidate = prepareFeedbackCandidate(canonical, feedback);
-  validateSpotAdvice(candidate, context);
-  const expected = canonicalJson(candidate);
-  const temporaryPath = temporaryPathFactory(canonicalPath);
-  let descriptor = null;
-  let createdTemporary = false;
+  const lockPath = lockPathFactory(canonicalPath);
+  let lockDescriptor = null;
+  let createdLock = false;
   try {
-    descriptor = fileSystem.openSync(temporaryPath, "wx");
-    createdTemporary = true;
-    fileSystem.writeFileSync(descriptor, expected, "utf8");
-    fileSystem.fsyncSync(descriptor);
-    fileSystem.closeSync(descriptor);
-    descriptor = null;
-    beforeRename({ canonicalPath, temporaryPath, initialDigest });
-    const current = JSON.parse(fileSystem.readFileSync(canonicalPath, "utf8"));
-    const currentDigest = digestDocument(current);
-    if (currentDigest !== initialDigest) throw new Error(`canonical document changed concurrently before rename: expected digest ${initialDigest}, received ${currentDigest}`);
-    fileSystem.renameSync(temporaryPath, canonicalPath);
-    createdTemporary = false;
-    return { baseDigest: initialDigest, digest: digestDocument(candidate), document: candidate };
+    try {
+      lockDescriptor = fileSystem.openSync(lockPath, "wx");
+      createdLock = true;
+    } catch (error) {
+      if (error?.code === "EEXIST") throw new Error(`spot advice feedback lock is busy: ${lockPath}`);
+      throw error;
+    }
+    const initialText = fileSystem.readFileSync(canonicalPath, "utf8");
+    const canonical = JSON.parse(initialText);
+    const initialDigest = digestDocument(canonical);
+    const candidate = prepareFeedbackCandidate(canonical, feedback);
+    validateSpotAdvice(candidate, context);
+    const expected = canonicalJson(candidate);
+    const temporaryPath = temporaryPathFactory(canonicalPath);
+    let descriptor = null;
+    let createdTemporary = false;
+    try {
+      descriptor = fileSystem.openSync(temporaryPath, "wx");
+      createdTemporary = true;
+      fileSystem.writeFileSync(descriptor, expected, "utf8");
+      fileSystem.fsyncSync(descriptor);
+      fileSystem.closeSync(descriptor);
+      descriptor = null;
+      beforeRename({ canonicalPath, temporaryPath, initialDigest, lockPath });
+      const current = JSON.parse(fileSystem.readFileSync(canonicalPath, "utf8"));
+      const currentDigest = digestDocument(current);
+      if (currentDigest !== initialDigest) throw new Error(`canonical document changed concurrently before rename: expected digest ${initialDigest}, received ${currentDigest}`);
+      fileSystem.renameSync(temporaryPath, canonicalPath);
+      createdTemporary = false;
+      return { baseDigest: initialDigest, digest: digestDocument(candidate), document: candidate };
+    } catch (error) {
+      if (descriptor !== null) {
+        try { fileSystem.closeSync(descriptor); } catch {}
+      }
+      if (createdTemporary && fileSystem.existsSync(temporaryPath)) {
+        try { fileSystem.unlinkSync(temporaryPath); } catch {}
+      }
+      throw error;
+    }
   } catch (error) {
-    if (descriptor !== null) {
-      try { fileSystem.closeSync(descriptor); } catch {}
-    }
-    if (createdTemporary && fileSystem.existsSync(temporaryPath)) {
-      try { fileSystem.unlinkSync(temporaryPath); } catch {}
-    }
     throw error;
+  } finally {
+    if (lockDescriptor !== null) {
+      try { fileSystem.closeSync(lockDescriptor); } catch {}
+    }
+    if (createdLock && fileSystem.existsSync(lockPath)) {
+      try { fileSystem.unlinkSync(lockPath); } catch {}
+    }
   }
 }
 
