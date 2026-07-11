@@ -195,6 +195,22 @@ test("spot advice operator scripts are exposed and local review artifacts stay i
   assert.match(gitignoreSource, /^\.local\/$/m);
 });
 
+test("CI pins official JavaScript actions and enables weekly action updates", () => {
+  const validateWorkflow = fs.readFileSync(".github/workflows/validate.yml", "utf8");
+  const refreshWorkflow = fs.readFileSync(".github/workflows/update-surfline-conditions.yml", "utf8");
+  const dependabot = fs.readFileSync(".github/dependabot.yml", "utf8");
+  const workflows = `${validateWorkflow}\n${refreshWorkflow}`;
+
+  assert.doesNotMatch(workflows, /uses:\s*actions\/(?:checkout|setup-node)@v\d/);
+  assert.match(workflows, /actions\/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0\s+# v7\.0\.0/g);
+  assert.match(workflows, /actions\/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e\s+# v6\.4\.0/g);
+  for (const line of workflows.split("\n").filter((line) => /uses:\s*actions\/(?:checkout|setup-node)@/.test(line))) {
+    assert.match(line, /@[0-9a-f]{40}\s+# v\d/);
+  }
+  assert.match(dependabot, /package-ecosystem:\s*"github-actions"/);
+  assert.match(dependabot, /interval:\s*"weekly"/);
+});
+
 test("spot data build can refresh road distances from a directions table API", () => {
   assert.match(buildSpotDataSource, /ROUTING_PROVIDER/);
   assert.match(buildSpotDataSource, /router\.project-osrm\.org\/table\/v1\/driving/);

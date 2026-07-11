@@ -25,6 +25,8 @@ npm run check-spot-advice-links
 
 It audits accepted HTTP(S) evidence with bounded requests and exits nonzero for unreachable sources. Run it manually and investigate failures; never add it to deterministic CI, because remote sites may throttle or block automated requests.
 
+GitHub Actions dependencies are pinned to full commit SHAs with release-version comments. Dependabot checks them weekly; review its release link and official tag ref before accepting a pin update.
+
 ## Surfline Cache Refresh
 
 Direct `curl`, Node `fetch`, and headless Chrome can hit Surfline Cloudflare 403 responses. Do not generate placeholder Surfline HTML. The reliable refresh path is a headed Chrome session that has loaded a Surfline report page, followed by Chrome DevTools Protocol fetches from inside that browser context.
