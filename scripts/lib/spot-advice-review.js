@@ -359,6 +359,7 @@ export function buildDynamicReviewSpots(document, spotCatalog, context) {
     const applicable = preview.applicableClaims;
     const directClaims = (research?.directClaimIds ?? []).map((id) => claimsById.get(id)).filter(Boolean);
     const inheritedClaims = (research?.inheritedApprovals ?? []).map((approval) => claimsById.get(approval.claimId)).filter(Boolean);
+    const ledgerClaims = [...new Map([...directClaims, ...inheritedClaims].map((claim) => [claim.id, claim])).values()];
     const directCount = directClaims.length;
     const inheritedCount = inheritedClaims.length;
     return {
@@ -368,13 +369,14 @@ export function buildDynamicReviewSpots(document, spotCatalog, context) {
       research: clone(research),
       directClaimIds: directClaims.map((claim) => claim.id),
       inheritedClaimIds: inheritedClaims.map((claim) => claim.id),
-      applicableClaimIds: applicable.map((claim) => claim.id),
-      applicableScopeTypes: [...new Set(applicable.map((claim) => claim.scope.type))],
-      topics: [...new Set(applicable.map((claim) => claim.topic))],
-      confidences: [...new Set(applicable.map((claim) => claim.confidence))],
-      publications: [...new Set(applicable.map((claim) => claim.publicationStatus))],
-      consensuses: [...new Set(applicable.map((claim) => claim.consensus))],
-      expiries: applicable.map((claim) => claim.revalidateAfter).filter(Boolean),
+      geographicallyApplicableClaimIds: applicable.map((claim) => claim.id),
+      applicableClaimIds: ledgerClaims.map((claim) => claim.id),
+      applicableScopeTypes: [...new Set(ledgerClaims.map((claim) => claim.scope.type))],
+      topics: [...new Set(ledgerClaims.map((claim) => claim.topic))],
+      confidences: [...new Set(ledgerClaims.map((claim) => claim.confidence))],
+      publications: [...new Set(ledgerClaims.map((claim) => claim.publicationStatus))],
+      consensuses: [...new Set(ledgerClaims.map((claim) => claim.consensus))],
+      expiries: ledgerClaims.map((claim) => claim.revalidateAfter).filter(Boolean),
       missingDirectEvidence: research?.directEvidenceOutcome === "no-credible-spot-source-found",
       adviceCoverage: {
         status: preview.effectiveClaims.length > 0 ? "published" : "missing",
@@ -388,7 +390,7 @@ export function buildDynamicReviewSpots(document, spotCatalog, context) {
         reviewedAt: research?.reviewedAt ?? null,
         label: `${directCount} direct signed off · ${inheritedCount} inherited approved`
       },
-      conflictCount: applicable.filter((claim) => claim.consensus === "unresolved" || claim.conflictGroupId).length
+      conflictCount: ledgerClaims.filter((claim) => claim.consensus === "unresolved" || claim.conflictGroupId).length
     };
   });
 }

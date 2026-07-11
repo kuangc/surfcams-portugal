@@ -381,6 +381,23 @@ test("dynamic review rows rebuild filter metadata, advice coverage, and mixed ap
   assert.match(rainha.applicabilitySignoff.label, /direct.*inherited/i);
 });
 
+test("Torre filter ledger excludes unsigned geographic claims after its signed direct claim becomes draft", () => {
+  const document = fixtureDocument();
+  const context = fixtureContext();
+  const model = buildSpotAdviceReviewModel({ document, context });
+  let state = initializeWorkingState(document, digestDocument(document));
+  state = updateClaim(state, "user-torre-minimum-primary-swell", { summary: "Torre threshold edited into draft." });
+  const rows = buildDynamicReviewSpots(state.document, model.spotCatalog, model.previewContext);
+  const torre = rows.find((spot) => spot.id === "surfline-praia-de-torre");
+  assert.deepEqual(torre.publications, ["draft"]);
+  assert.deepEqual(torre.topics, ["size-translation"]);
+  assert.deepEqual(torre.applicableScopeTypes, ["spot"]);
+  assert.equal(torre.adviceCoverage.status, "missing");
+  assert.equal(torre.adviceCoverage.effectiveCount, 0);
+  assert.equal(filterReviewSpots(rows, { publication: "draft" }).some((spot) => spot.id === torre.id), true);
+  assert.equal(filterReviewSpots(rows, { publication: "published" }).some((spot) => spot.id === torre.id), false);
+});
+
 test("spot ledger separates camera and published advice coverage with applicability signoff and effective inheritance", () => {
   const document = fixtureDocument();
   const context = fixtureContext();
