@@ -157,7 +157,7 @@ export function findAdviceTideSnapshot(camera, spotData, tideData, now = new Dat
   const snapshot = findTideSnapshot({ id: tideCameraId }, tideData, new Date(nowMs));
   if (!snapshot) return null;
   const phase = tidePhase(snapshot.events, new Date(nowMs));
-  return phase ? { ...snapshot, phase } : null;
+  return phase ? deepFreeze({ ...deepClone(snapshot), phase: deepClone(phase) }) : null;
 }
 
 function finiteOrNull(value) {

@@ -13,6 +13,7 @@ import {
   selectLocalLens,
   tidePhase
 } from "../src/spot-advice.js";
+import { normalizeTideCache } from "../src/tide-data.js";
 
 const NOW = Date.parse("2026-07-12T12:00:00Z");
 const runtimePayload = JSON.parse(fs.readFileSync("data/spot-advice-resolved.json", "utf8"));
@@ -133,6 +134,43 @@ test("advice tide lookup happens only after trusted identity and rejects stale c
     rawTideCache({ generatedAt: "2026-07-10T11:59:59Z" }),
     new Date(NOW)
   ), null);
+});
+
+test("advice tide snapshots do not expose mutable aliases into normalized tide data", () => {
+  const normalizedTideData = normalizeTideCache({
+    ...rawTideCache(),
+    cameraStations: {
+      "sao-juliao": {
+        portId: "15",
+        portName: "Cascais",
+        gaugeLat: 38.69,
+        gaugeLon: -9.42,
+        metadata: { aliases: ["Cascais gauge"], owner: { name: "IH" } }
+      }
+    }
+  });
+  const before = structuredClone(normalizedTideData);
+  const snapshot = findAdviceTideSnapshot(
+    { id: "sao-juliao" },
+    spotData(),
+    normalizedTideData,
+    new Date(NOW)
+  );
+
+  assert.equal(Object.isFrozen(snapshot), true);
+  assert.equal(Object.isFrozen(snapshot.events), true);
+  assert.equal(Object.isFrozen(snapshot.events[0]), true);
+  assert.equal(Object.isFrozen(snapshot.station), true);
+  assert.equal(Object.isFrozen(snapshot.station.metadata.aliases), true);
+  assert.equal(Object.isFrozen(snapshot.station.metadata.owner), true);
+
+  assert.throws(() => snapshot.events.push({ type: "high", timeUtc: "2026-07-12T22:00:00Z" }), TypeError);
+  assert.throws(() => { snapshot.events[0].heightM = 9; }, TypeError);
+  assert.throws(() => { snapshot.station.portName = "Mutated"; }, TypeError);
+  assert.throws(() => snapshot.station.metadata.aliases.push("mutated"), TypeError);
+  assert.throws(() => { snapshot.station.metadata.owner.name = "Mutated"; }, TypeError);
+
+  assert.deepEqual(normalizedTideData, before);
 });
 
 test("condition snapshot separates provider surf and primary swell without mutating rating", () => {
