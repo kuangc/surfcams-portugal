@@ -7,21 +7,21 @@
       "evidence": [
         {
           "accessedAt": "2026-07-11",
-          "kind": "specialist-guide",
+          "kind": "provider",
           "locationMatch": "exact-spot",
-          "publisher": "Surf-Forecast",
-          "quality": "dedicated-spot-guide",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
           "status": "accepted",
-          "supportedClaim": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
-          "title": "Nazaré Surf Guide",
-          "url": "https://www.surf-forecast.com/breaks/Nazare"
+          "supportedClaim": "The exact cached Surfline guide says W through NW works and WNW receives the most constructive canyon interference.",
+          "title": "Nazaré Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
         }
       ],
       "id": "research-nazare-swell",
       "overrideKey": "swell.useful-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:00.000Z",
+      "reviewedAt": "2026-07-11T20:00:00.000Z",
       "rule": {
         "arcs": [
           {
@@ -36,7 +36,7 @@
         "id": "surfline-nazare",
         "type": "spot"
       },
-      "summary": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
+      "summary": "West to northwest works at Nazaré, with west-northwest receiving the most constructive interference from the offshore canyon.",
       "topic": "swell"
     },
     {
@@ -46,21 +46,21 @@
       "evidence": [
         {
           "accessedAt": "2026-07-11",
-          "kind": "local-guide",
+          "kind": "provider",
           "locationMatch": "exact-spot",
-          "publisher": "Peniche Rentals",
-          "quality": "dedicated-spot-guide",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
           "status": "accepted",
-          "supportedClaim": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
-          "title": "Surf Spots in Peniche",
-          "url": "https://penicherentals.com/en/surf-spots"
+          "supportedClaim": "The exact cached Surfline guide places Lagide reef just north of Baleal followed by open beachbreak and gives different favorable winds for the nearby setups.",
+          "title": "Baleal Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
         }
       ],
       "id": "research-baleal-mechanics",
-      "overrideKey": "mechanics.peninsula-shelter",
+      "overrideKey": "mechanics.nearby-options",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:01.000Z",
+      "reviewedAt": "2026-07-11T20:00:01.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -68,7 +68,7 @@
         "id": "surfline-baleal",
         "type": "spot"
       },
-      "summary": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
+      "summary": "Baleal is a surf hub with Lagide reef just north and open beachbreak beyond; compare the nearby options when one setup is unsuitable.",
       "topic": "mechanics"
     },
     {
@@ -83,17 +83,29 @@
           "publisher": "Surf-Forecast",
           "quality": "dedicated-spot-guide",
           "status": "accepted",
-          "supportedClaim": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+          "supportedClaim": "The current exact guide says Lagide is best around mid tide while rising.",
           "title": "Lagide Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Lagide"
+        },
+        {
+          "accessedAt": "2026-07-11",
+          "kind": "provider",
+          "locationMatch": "exact-spot",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
+          "status": "accepted",
+          "supportedClaim": "The exact cached Surfline guide says low to mid tide is best and warns that the reef is shallow at low.",
+          "title": "Lagide Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
         }
       ],
       "id": "research-lagide-tide",
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:02.000Z",
+      "reviewedAt": "2026-07-11T20:00:02.000Z",
       "rule": {
+        "direction": "rising",
         "stage": "mid",
         "type": "tide-preference"
       },
@@ -101,7 +113,7 @@
         "id": "surfline-lagide",
         "type": "spot"
       },
-      "summary": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+      "summary": "Mid tide, especially while rising, is the clearest shared window; the reef is shallow at low water.",
       "topic": "tide"
     },
     {
@@ -125,7 +137,7 @@
       "overrideKey": "mechanics.bay-shelter",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:03.000Z",
+      "reviewedAt": "2026-07-11T20:00:03.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -143,26 +155,26 @@
       "evidence": [
         {
           "accessedAt": "2026-07-11",
-          "kind": "specialist-guide",
+          "kind": "provider",
           "locationMatch": "exact-spot",
-          "publisher": "Surf-Forecast",
-          "quality": "dedicated-spot-guide",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
           "status": "accepted",
-          "supportedClaim": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
-          "title": "Supertubos Surf Guide",
-          "url": "https://www.surf-forecast.com/breaks/Supertubos"
+          "supportedClaim": "The exact cached Surfline guide says W and WNW swells work and too much north is shadowed.",
+          "title": "Supertubos Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
         }
       ],
       "id": "research-supertubos-swell",
       "overrideKey": "swell.useful-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:04.000Z",
+      "reviewedAt": "2026-07-11T20:00:04.000Z",
       "rule": {
         "arcs": [
           {
             "end": 303.75,
-            "start": 247.5
+            "start": 270
           }
         ],
         "input": "primary-swell-direction-deg",
@@ -172,7 +184,7 @@
         "id": "surfline-supertubos",
         "type": "spot"
       },
-      "summary": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
+      "summary": "West and west-northwest swells are the useful window in Surfline's exact guide; too much north is shadowed.",
       "topic": "swell"
     },
     {
@@ -196,7 +208,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:05.000Z",
+      "reviewedAt": "2026-07-11T20:00:05.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -229,7 +241,7 @@
       "overrideKey": "wind.preferred-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:06.000Z",
+      "reviewedAt": "2026-07-11T20:00:06.000Z",
       "rule": {
         "arcs": [
           {
@@ -259,7 +271,7 @@
           "publisher": "Ericeira World Surfing Reserve",
           "quality": "dedicated-spot-guide",
           "status": "accepted",
-          "supportedClaim": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+          "supportedClaim": "The exact reserve page describes Cave as a very shallow, extremely dangerous reef and lists high tide.",
           "title": "Cave - Ericeira World Surfing Reserve",
           "url": "https://ericeirawsr10.com/en/cave-2/"
         }
@@ -268,17 +280,16 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:07.000Z",
+      "reviewedAt": "2026-07-11T20:00:07.000Z",
       "rule": {
-        "direction": "falling",
-        "stage": "low",
+        "stage": "high",
         "type": "tide-preference"
       },
       "scope": {
         "id": "surfline-cave",
         "type": "spot"
       },
-      "summary": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+      "summary": "Cave is an extremely shallow and dangerous reef for highly advanced surfers; the World Surfing Reserve lists high tide.",
       "topic": "tide"
     },
     {
@@ -302,7 +313,7 @@
       "overrideKey": "mechanics.flexible-reef-right",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:08.000Z",
+      "reviewedAt": "2026-07-11T20:00:08.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -325,7 +336,7 @@
           "publisher": "Ericeira World Surfing Reserve",
           "quality": "dedicated-spot-guide",
           "status": "accepted",
-          "supportedClaim": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+          "supportedClaim": "The exact reserve page describes a fast, powerful, dangerous shallow-reef right and lists half tide.",
           "title": "Reef - Ericeira World Surfing Reserve",
           "url": "https://ericeirawsr10.com/en/reef-2/"
         }
@@ -334,17 +345,16 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:09.000Z",
+      "reviewedAt": "2026-07-11T20:00:09.000Z",
       "rule": {
-        "direction": "rising",
-        "stage": "high",
+        "stage": "mid",
         "type": "tide-preference"
       },
       "scope": {
         "id": "surfline-reef",
         "type": "spot"
       },
-      "summary": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+      "summary": "Reef is a fast, dangerous shallow-reef right that works at half tide.",
       "topic": "tide"
     },
     {
@@ -368,7 +378,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:10.000Z",
+      "reviewedAt": "2026-07-11T20:00:10.000Z",
       "rule": {
         "direction": "rising",
         "stage": "high",
@@ -402,7 +412,7 @@
       "overrideKey": "mechanics.mixed-bottom",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:11.000Z",
+      "reviewedAt": "2026-07-11T20:00:11.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -434,7 +444,7 @@
       "overrideKey": "mechanics.sheltered-mixed-break",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:12.000Z",
+      "reviewedAt": "2026-07-11T20:00:12.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -466,7 +476,7 @@
       "overrideKey": "mechanics.river-mouth-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:13.000Z",
+      "reviewedAt": "2026-07-11T20:00:13.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -497,7 +507,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:14.000Z",
+      "reviewedAt": "2026-07-11T20:00:14.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -530,7 +540,7 @@
       "overrideKey": "mechanics.exposed-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:15.000Z",
+      "reviewedAt": "2026-07-11T20:00:15.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -562,7 +572,7 @@
       "overrideKey": "mechanics.exposed-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:16.000Z",
+      "reviewedAt": "2026-07-11T20:00:16.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -585,7 +595,7 @@
           "publisher": "Surfspots.pt",
           "quality": "dedicated-spot-guide",
           "status": "accepted",
-          "supportedClaim": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+          "supportedClaim": "The exact guide says the beach works on all tides and that mid tide often produces the most defined peaks.",
           "title": "Praia Grande (Sintra)",
           "url": "https://www.surfspots.pt/praia-grande-sintra.html"
         }
@@ -594,7 +604,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:17.000Z",
+      "reviewedAt": "2026-07-11T20:00:17.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -603,7 +613,7 @@
         "id": "surfline-praia-grande",
         "type": "spot"
       },
-      "summary": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+      "summary": "Praia Grande works on all tides, but mid tide often produces the most defined peaks.",
       "topic": "tide"
     },
     {
@@ -627,7 +637,7 @@
       "overrideKey": "mechanics.exposed-atlantic-beach",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:18.000Z",
+      "reviewedAt": "2026-07-11T20:00:18.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -645,12 +655,23 @@
       "evidence": [
         {
           "accessedAt": "2026-07-11",
+          "kind": "provider",
+          "locationMatch": "exact-spot",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
+          "status": "accepted",
+          "supportedClaim": "The exact cached Surfline guide says all tides work but low to medium tide is best.",
+          "title": "Praia do Guincho Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
+        },
+        {
+          "accessedAt": "2026-07-11",
           "kind": "specialist-guide",
           "locationMatch": "exact-spot",
           "publisher": "The Portugal Guides",
           "quality": "dedicated-spot-guide",
           "status": "accepted",
-          "supportedClaim": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+          "supportedClaim": "The exact guide says hollow peaks form at mid to low tide.",
           "title": "Surfing Praia do Guincho",
           "url": "https://www.theportugalguides.com/surf/guincho/"
         }
@@ -659,7 +680,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:19.000Z",
+      "reviewedAt": "2026-07-11T20:00:20.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -668,7 +689,7 @@
         "id": "surfline-praia-do-guincho",
         "type": "spot"
       },
-      "summary": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+      "summary": "Guincho works on all tides but is generally best from low through mid tide.",
       "topic": "tide"
     },
     {
@@ -691,7 +712,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:20.000Z",
+      "reviewedAt": "2026-07-11T20:00:21.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectBelow": "likely-flat",
@@ -727,7 +748,7 @@
       "overrideKey": "mechanics.reef-point",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:21.000Z",
+      "reviewedAt": "2026-07-11T20:00:22.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -759,7 +780,7 @@
       "overrideKey": "swell.sheltered-exposure",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:22.000Z",
+      "reviewedAt": "2026-07-11T20:00:23.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -791,7 +812,7 @@
       "overrideKey": "mechanics.rare-reef-break",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:23.000Z",
+      "reviewedAt": "2026-07-11T20:00:24.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -823,7 +844,7 @@
       "overrideKey": "swell.sheltered-exposure",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:24.000Z",
+      "reviewedAt": "2026-07-11T20:00:26.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -855,7 +876,7 @@
       "overrideKey": "swell.useful-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:25.000Z",
+      "reviewedAt": "2026-07-11T20:00:27.000Z",
       "rule": {
         "arcs": [
           {
@@ -893,7 +914,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:26.000Z",
+      "reviewedAt": "2026-07-11T20:00:28.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectAtOrAbove": "may-start-working",
@@ -930,7 +951,7 @@
       "overrideKey": "mechanics.river-mouth-wedge",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:27.000Z",
+      "reviewedAt": "2026-07-11T20:00:29.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -962,7 +983,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:28.000Z",
+      "reviewedAt": "2026-07-11T20:00:30.000Z",
       "rule": {
         "stage": "high",
         "type": "tide-preference"
@@ -995,7 +1016,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:29.000Z",
+      "reviewedAt": "2026-07-11T20:00:31.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1027,7 +1048,7 @@
       "overrideKey": "mechanics.groyne-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:30.000Z",
+      "reviewedAt": "2026-07-11T20:00:32.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1059,7 +1080,7 @@
       "overrideKey": "mechanics.groyne-sandbanks",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:31.000Z",
+      "reviewedAt": "2026-07-11T20:00:33.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1091,7 +1112,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:32.000Z",
+      "reviewedAt": "2026-07-11T20:00:34.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1123,7 +1144,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:33.000Z",
+      "reviewedAt": "2026-07-11T20:00:36.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1156,7 +1177,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T15:00:02.000Z",
+      "reviewedAt": "2026-07-11T20:00:37.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1188,7 +1209,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T12:00:35.000Z",
+      "reviewedAt": "2026-07-11T20:00:38.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1206,21 +1227,21 @@
       "evidence": [
         {
           "accessedAt": "2026-07-11",
-          "kind": "specialist-guide",
+          "kind": "provider",
           "locationMatch": "exact-spot",
-          "publisher": "Surf-Forecast",
-          "quality": "dedicated-spot-guide",
+          "publisher": "Surfline",
+          "quality": "provider-spot-guide",
           "status": "accepted",
-          "supportedClaim": "Fonte da Telha is generally best between the tide extremes; dead low may close out and dead high may shorebreak.",
-          "title": "Fonte da Telha Surf Guide",
-          "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha"
+          "supportedClaim": "The exact cached Surfline guide says low can close out, high can shore dump, and the best window lies between those extremes.",
+          "title": "Fonte da Telha Surf Report and cached spot guide",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
         }
       ],
       "id": "research-fonte-da-telha-tide",
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:36.000Z",
+      "reviewedAt": "2026-07-11T20:00:40.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1253,7 +1274,7 @@
       "overrideKey": "mechanics.exposed-lagoon-mouth",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:37.000Z",
+      "reviewedAt": "2026-07-11T20:00:41.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1285,7 +1306,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:38.000Z",
+      "reviewedAt": "2026-07-11T20:00:42.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1317,7 +1338,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:39.000Z",
+      "reviewedAt": "2026-07-11T20:00:43.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectBelow": "likely-flat",
@@ -1356,7 +1377,7 @@
       "overrideKey": "size.sheltered-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:40.000Z",
+      "reviewedAt": "2026-07-11T20:01:00.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1387,7 +1408,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T12:00:41.000Z",
+      "reviewedAt": "2026-07-11T20:01:01.000Z",
       "rule": {
         "stage": "high",
         "type": "tide-preference"
@@ -1420,7 +1441,7 @@
       "overrideKey": "mechanics.exposed-remote-beach",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T15:00:00.000Z",
+      "reviewedAt": "2026-07-11T20:00:19.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1452,7 +1473,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T15:00:01.000Z",
+      "reviewedAt": "2026-07-11T20:00:35.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1529,15 +1550,15 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Nazaré by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline Nazaré travel metadata says W through NW works and WNW receives the most constructive canyon interference.",
           "title": "Nazaré Surf Report",
           "url": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
         },
         {
-          "decision": "accepted",
-          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "locationMatch": "mismatch",
           "publisher": "Surf-Forecast",
-          "rationale": "This dedicated or local guide matches Nazaré and supports the paraphrased swell guidance.",
+          "rationale": "This generic Nazaré town-beach guide separates Praia do Norte and cannot support the selected canyon-focused WNW claim.",
           "title": "Nazaré Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Nazare"
         }
@@ -1546,7 +1567,7 @@
         "research-nazare-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:00.000Z",
+      "reviewedAt": "2026-07-11T21:00:00.000Z",
       "spotId": "surfline-nazare",
       "status": "complete"
     },
@@ -1556,15 +1577,15 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Baleal by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata describes Baleal as a hub with Lagide reef just north, open beachbreak beyond, and different favorable winds for nearby options.",
           "title": "Baleal Surf Report",
           "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
         },
         {
-          "decision": "accepted",
+          "decision": "rejected",
           "locationMatch": "exact-spot",
           "publisher": "Peniche Rentals",
-          "rationale": "This dedicated or local guide matches Baleal and supports the paraphrased mechanics guidance.",
+          "rationale": "The page matches the Peniche area but does not state the previously claimed two-side exposure, so it is retained as checked but not claim support.",
           "title": "Surf Spots in Peniche",
           "url": "https://penicherentals.com/en/surf-spots"
         },
@@ -1581,7 +1602,7 @@
         "research-baleal-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:01.000Z",
+      "reviewedAt": "2026-07-11T21:00:01.000Z",
       "spotId": "surfline-baleal",
       "status": "complete"
     },
@@ -1591,7 +1612,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Lagide by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata says best low to mid tide and warns that the reef is shallow at low.",
           "title": "Lagide Surf Report",
           "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
         },
@@ -1599,7 +1620,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surf-Forecast",
-          "rationale": "This dedicated or local guide matches Lagide and supports the paraphrased tide guidance.",
+          "rationale": "The current exact-spot guide says best around mid tide while rising and warns about rocks and urchins.",
           "title": "Lagide Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Lagide"
         }
@@ -1608,7 +1629,7 @@
         "research-lagide-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:02.000Z",
+      "reviewedAt": "2026-07-11T21:00:02.000Z",
       "spotId": "surfline-lagide",
       "status": "complete"
     },
@@ -1635,7 +1656,7 @@
         "research-cantinho-da-baia-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:03.000Z",
+      "reviewedAt": "2026-07-11T21:00:03.000Z",
       "spotId": "surfline-cantinho-da-baia",
       "status": "complete"
     },
@@ -1645,15 +1666,15 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Supertubos by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata says west and west-northwest swells work and that too much north is shadowed.",
           "title": "Supertubos Surf Report",
           "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
         },
         {
-          "decision": "accepted",
+          "decision": "rejected",
           "locationMatch": "exact-spot",
           "publisher": "Surf-Forecast",
-          "rationale": "This dedicated or local guide matches Supertubos and supports the paraphrased swell guidance.",
+          "rationale": "The live exact-spot page says southwest is best, contradicting the cached Surfline W/WNW direction used by this app, so it is retained as a documented disagreement and not claim support.",
           "title": "Supertubos Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Supertubos"
         }
@@ -1662,7 +1683,7 @@
         "research-supertubos-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:04.000Z",
+      "reviewedAt": "2026-07-11T21:00:04.000Z",
       "spotId": "surfline-supertubos",
       "status": "complete"
     },
@@ -1689,7 +1710,7 @@
         "research-consolacao-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:05.000Z",
+      "reviewedAt": "2026-07-11T21:00:05.000Z",
       "spotId": "surfline-consolacao",
       "status": "complete"
     },
@@ -1716,7 +1737,7 @@
         "research-santa-cruz-wind"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:06.000Z",
+      "reviewedAt": "2026-07-11T21:00:06.000Z",
       "spotId": "surfline-santa-cruz",
       "status": "complete"
     },
@@ -1734,7 +1755,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Ericeira World Surfing Reserve",
-          "rationale": "This dedicated or local guide matches Cave and supports the paraphrased tide guidance.",
+          "rationale": "The exact World Surfing Reserve page says Cave is a very shallow, extremely dangerous reef for highly advanced surfers and lists high tide.",
           "title": "Cave - Ericeira World Surfing Reserve",
           "url": "https://ericeirawsr10.com/en/cave-2/"
         }
@@ -1743,7 +1764,7 @@
         "research-cave-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:07.000Z",
+      "reviewedAt": "2026-07-11T21:00:07.000Z",
       "spotId": "surfline-cave",
       "status": "complete"
     },
@@ -1770,7 +1791,7 @@
         "research-ribeira-d-ilhas-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:08.000Z",
+      "reviewedAt": "2026-07-11T21:00:08.000Z",
       "spotId": "surfline-ribeira-d-ilhas",
       "status": "complete"
     },
@@ -1780,7 +1801,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Reef by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata matches Reef and independently says medium tide is generally best.",
           "title": "Reef Surf Report",
           "url": "https://www.surfline.com/surf-report/reef/5842041f4e65fad6a7708bc1"
         },
@@ -1788,7 +1809,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Ericeira World Surfing Reserve",
-          "rationale": "This dedicated or local guide matches Reef and supports the paraphrased tide guidance.",
+          "rationale": "The exact World Surfing Reserve page describes the dangerous shallow reef and says it works at half tide.",
           "title": "Reef - Ericeira World Surfing Reserve",
           "url": "https://ericeirawsr10.com/en/reef-2/"
         },
@@ -1805,7 +1826,7 @@
         "research-reef-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:09.000Z",
+      "reviewedAt": "2026-07-11T21:00:09.000Z",
       "spotId": "surfline-reef",
       "status": "complete"
     },
@@ -1832,7 +1853,7 @@
         "research-pedra-branca-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:10.000Z",
+      "reviewedAt": "2026-07-11T21:00:10.000Z",
       "spotId": "surfline-pedra-branca",
       "status": "complete"
     },
@@ -1859,7 +1880,7 @@
         "research-matadouro-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:11.000Z",
+      "reviewedAt": "2026-07-11T21:00:11.000Z",
       "spotId": "surfline-matadouro",
       "status": "complete"
     },
@@ -1886,7 +1907,7 @@
         "research-praia-do-sul-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:12.000Z",
+      "reviewedAt": "2026-07-11T21:00:12.000Z",
       "spotId": "surfline-praia-do-sul",
       "status": "complete"
     },
@@ -1913,7 +1934,7 @@
         "research-foz-do-lizandro-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:13.000Z",
+      "reviewedAt": "2026-07-11T21:00:13.000Z",
       "spotId": "surfline-foz-do-lizandro",
       "status": "complete"
     },
@@ -1940,7 +1961,7 @@
         "user-sao-juliao-mid-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:14.000Z",
+      "reviewedAt": "2026-07-11T21:00:14.000Z",
       "spotId": "surfline-sao-juliao",
       "status": "complete"
     },
@@ -1967,7 +1988,7 @@
         "research-praia-das-macas-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:15.000Z",
+      "reviewedAt": "2026-07-11T21:00:15.000Z",
       "spotId": "surfline-praia-das-macas",
       "status": "complete"
     },
@@ -1994,7 +2015,7 @@
         "research-praia-pequena-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:16.000Z",
+      "reviewedAt": "2026-07-11T21:00:16.000Z",
       "spotId": "surfline-praia-pequena",
       "status": "complete"
     },
@@ -2004,7 +2025,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Praia Grande by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata says low to mid is best while also listing all tides and warning that high can produce shore dump.",
           "title": "Praia Grande Surf Report",
           "url": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62"
         },
@@ -2012,7 +2033,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfspots.pt",
-          "rationale": "This dedicated or local guide matches Praia Grande and supports the paraphrased tide guidance.",
+          "rationale": "The exact guide says Praia Grande works on all tides and that mid tide often produces the most defined peaks.",
           "title": "Praia Grande (Sintra)",
           "url": "https://www.surfspots.pt/praia-grande-sintra.html"
         }
@@ -2021,7 +2042,7 @@
         "research-praia-grande-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:17.000Z",
+      "reviewedAt": "2026-07-11T21:00:17.000Z",
       "spotId": "surfline-praia-grande",
       "status": "complete"
     },
@@ -2056,7 +2077,7 @@
         "research-praia-da-adraga-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:18.000Z",
+      "reviewedAt": "2026-07-11T21:00:18.000Z",
       "spotId": "surfline-praia-da-adraga",
       "status": "complete"
     },
@@ -2099,7 +2120,7 @@
         "research-praia-da-ursa-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T15:10:00.000Z",
+      "reviewedAt": "2026-07-11T21:00:19.000Z",
       "spotId": "surfline-praia-da-ursa",
       "status": "complete"
     },
@@ -2109,7 +2130,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Praia Do Guincho by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata says all tides work but low to medium is best.",
           "title": "Praia Do Guincho Surf Report",
           "url": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
         },
@@ -2117,7 +2138,7 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "The Portugal Guides",
-          "rationale": "This dedicated or local guide matches Praia Do Guincho and supports the paraphrased tide guidance.",
+          "rationale": "The exact guide says hollow peaks form at mid to low tide and separately documents the frequent wind; it does not make tide causally dependent on wind.",
           "title": "Surfing Praia do Guincho",
           "url": "https://www.theportugalguides.com/surf/guincho/"
         }
@@ -2126,7 +2147,7 @@
         "research-praia-do-guincho-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:20.000Z",
+      "reviewedAt": "2026-07-11T21:00:20.000Z",
       "spotId": "surfline-praia-do-guincho",
       "status": "complete"
     },
@@ -2153,7 +2174,7 @@
         "user-caxias-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:21.000Z",
+      "reviewedAt": "2026-07-11T21:00:21.000Z",
       "spotId": "surfline-praia-de-caxias",
       "status": "complete"
     },
@@ -2180,7 +2201,7 @@
         "research-sao-pedro-do-estoril-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:22.000Z",
+      "reviewedAt": "2026-07-11T21:00:22.000Z",
       "spotId": "surfline-sao-pedro-do-estoril",
       "status": "complete"
     },
@@ -2207,7 +2228,7 @@
         "research-paco-de-arcos-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:23.000Z",
+      "reviewedAt": "2026-07-11T21:00:23.000Z",
       "spotId": "surfline-paco-de-arcos",
       "status": "complete"
     },
@@ -2234,7 +2255,7 @@
         "research-parede-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:24.000Z",
+      "reviewedAt": "2026-07-11T21:00:24.000Z",
       "spotId": "surfline-parede",
       "status": "complete"
     },
@@ -2269,11 +2290,11 @@
       "directEvidenceOutcome": "no-credible-spot-source-found",
       "inheritedApprovals": [
         {
-          "claimDigest": "7cb40c97df42bd05086c1ad5d136274661a8384b77be9756134fa69e9252e1e8",
+          "claimDigest": "5d4352b7b5ad5720f249b50e9463aae3a1b16e9f756e0a790b56cb628307ab14",
           "claimId": "linha-stretch-sheltered-size-translation"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:25.000Z",
+      "reviewedAt": "2026-07-11T21:00:25.000Z",
       "spotId": "surfline-praia-da-laje",
       "status": "complete"
     },
@@ -2300,7 +2321,7 @@
         "research-santo-amaro-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:26.000Z",
+      "reviewedAt": "2026-07-11T21:00:26.000Z",
       "spotId": "surfline-santo-amaro",
       "status": "complete"
     },
@@ -2327,7 +2348,7 @@
         "research-carcavelos-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:27.000Z",
+      "reviewedAt": "2026-07-11T21:00:27.000Z",
       "spotId": "surfline-carcavelos",
       "status": "complete"
     },
@@ -2354,7 +2375,7 @@
         "user-torre-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:28.000Z",
+      "reviewedAt": "2026-07-11T21:00:28.000Z",
       "spotId": "surfline-praia-de-torre",
       "status": "complete"
     },
@@ -2383,11 +2404,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:29.000Z",
+      "reviewedAt": "2026-07-11T21:00:29.000Z",
       "spotId": "surfline-cova-do-vapor",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
@@ -2417,11 +2438,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:30.000Z",
+      "reviewedAt": "2026-07-11T21:00:30.000Z",
       "spotId": "surfline-sao-joao-da-caparica",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
@@ -2459,11 +2480,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:31.000Z",
+      "reviewedAt": "2026-07-11T21:00:31.000Z",
       "spotId": "surfline-marcelino",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-do-norte"
@@ -2493,11 +2514,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:32.000Z",
+      "reviewedAt": "2026-07-11T21:00:32.000Z",
       "spotId": "surfline-praia-do-barbas",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-tarquinio"
@@ -2527,11 +2548,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:33.000Z",
+      "reviewedAt": "2026-07-11T21:00:33.000Z",
       "spotId": "surfline-costa-da-caparica",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-cds"
@@ -2561,11 +2582,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:34.000Z",
+      "reviewedAt": "2026-07-11T21:00:34.000Z",
       "spotId": "surfline-praia-da-saude",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-nova-praia"
@@ -2603,11 +2624,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T15:10:01.000Z",
+      "reviewedAt": "2026-07-11T21:00:35.000Z",
       "spotId": "surfline-praia-da-cornelia",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2637,11 +2658,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:36.000Z",
+      "reviewedAt": "2026-07-11T21:00:36.000Z",
       "spotId": "surfline-praia-da-rainha",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2671,11 +2692,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T15:10:02.000Z",
+      "reviewedAt": "2026-07-11T21:00:37.000Z",
       "spotId": "surfline-castelo",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2713,11 +2734,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:38.000Z",
+      "reviewedAt": "2026-07-11T21:00:38.000Z",
       "spotId": "surfline-praia-do-pescador",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
@@ -2753,11 +2774,11 @@
       "directEvidenceOutcome": "no-credible-spot-source-found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:39.000Z",
+      "reviewedAt": "2026-07-11T21:00:39.000Z",
       "spotId": "surfline-praia-do-rei",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
@@ -2768,15 +2789,15 @@
           "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surfline",
-          "rationale": "The dedicated provider record matches Fonte da Telha by id and coordinates and was checked for spot metadata and exposure.",
+          "rationale": "The exact cached Surfline travel metadata says low can close out, high can shore dump, and the useful window is between the extremes.",
           "title": "Fonte da Telha Surf Report",
           "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
         },
         {
-          "decision": "accepted",
+          "decision": "rejected",
           "locationMatch": "exact-spot",
           "publisher": "Surf-Forecast",
-          "rationale": "This dedicated or local guide matches Fonte da Telha and supports the paraphrased tide guidance.",
+          "rationale": "The live exact-spot page has swell and wind guidance but no tide guidance, so it is retained as checked and not used for the tide claim.",
           "title": "Fonte da Telha Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha"
         }
@@ -2787,11 +2808,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5228481b3b090ee99c73ba7631635cd1360c2d315f20af9d5c474b8a4d1610e4",
+          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T13:00:40.000Z",
+      "reviewedAt": "2026-07-11T21:00:40.000Z",
       "spotId": "surfline-fonte-da-telha",
       "status": "complete",
       "tideCameraId": "fonte-da-telha"
@@ -2819,7 +2840,7 @@
         "research-lagoa-de-albufeira-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:41.000Z",
+      "reviewedAt": "2026-07-11T21:00:41.000Z",
       "spotId": "surfline-lagoa-de-albufeira",
       "status": "complete"
     },
@@ -2846,7 +2867,7 @@
         "research-bicas-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T13:00:42.000Z",
+      "reviewedAt": "2026-07-11T21:00:42.000Z",
       "spotId": "surfline-bicas",
       "status": "complete"
     },
@@ -2873,7 +2894,7 @@
         "user-sesimbra-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T14:00:00.000Z",
+      "reviewedAt": "2026-07-11T21:00:43.000Z",
       "spotId": "surfline-sesimbra",
       "status": "complete"
     }

@@ -210,7 +210,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sourceDigest": "39d2ed579e1c193f8833cc77ca20349d5ced69920a4b1697299d72a54d5e2dba",
+  "sourceDigest": "43274ebd96179f9a342385f21141622dd8b377463fff0c3dc782051d3de48bfe",
   "subjects": {
     "surfline-baleal": {
       "claims": [
@@ -220,19 +220,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "local-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Peniche Rentals",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
-              "title": "Surf Spots in Peniche",
-              "url": "https://penicherentals.com/en/surf-spots"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide places Lagide reef just north of Baleal followed by open beachbreak and gives different favorable winds for the nearby setups.",
+              "title": "Baleal Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
             }
           ],
           "id": "research-baleal-mechanics",
-          "overrideKey": "mechanics.peninsula-shelter",
+          "overrideKey": "mechanics.nearby-options",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:01.000Z",
+          "reviewedAt": "2026-07-11T20:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -240,7 +240,7 @@
             "id": "surfline-baleal",
             "type": "spot"
           },
-          "summary": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
+          "summary": "Baleal is a surf hub with Lagide reef just north and open beachbreak beyond; compare the nearby options when one setup is unsuitable.",
           "topic": "mechanics"
         }
       ],
@@ -252,19 +252,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "local-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Peniche Rentals",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
-              "title": "Surf Spots in Peniche",
-              "url": "https://penicherentals.com/en/surf-spots"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide places Lagide reef just north of Baleal followed by open beachbreak and gives different favorable winds for the nearby setups.",
+              "title": "Baleal Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
             }
           ],
           "id": "research-baleal-mechanics",
-          "overrideKey": "mechanics.peninsula-shelter",
+          "overrideKey": "mechanics.nearby-options",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:01.000Z",
+          "reviewedAt": "2026-07-11T20:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -272,7 +272,7 @@
             "id": "surfline-baleal",
             "type": "spot"
           },
-          "summary": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
+          "summary": "Baleal is a surf hub with Lagide reef just north and open beachbreak beyond; compare the nearby options when one setup is unsuitable.",
           "topic": "mechanics"
         }
       ],
@@ -313,7 +313,7 @@
           "id": "research-bicas-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:38.000Z",
+          "reviewedAt": "2026-07-11T20:00:42.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -346,7 +346,7 @@
           "id": "research-bicas-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:38.000Z",
+          "reviewedAt": "2026-07-11T20:00:42.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -396,7 +396,7 @@
           "id": "research-cantinho-da-baia-mechanics",
           "overrideKey": "mechanics.bay-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:03.000Z",
+          "reviewedAt": "2026-07-11T20:00:03.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -428,7 +428,7 @@
           "id": "research-cantinho-da-baia-mechanics",
           "overrideKey": "mechanics.bay-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:03.000Z",
+          "reviewedAt": "2026-07-11T20:00:03.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -477,7 +477,7 @@
           "id": "research-carcavelos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:25.000Z",
+          "reviewedAt": "2026-07-11T20:00:27.000Z",
           "rule": {
             "arcs": [
               {
@@ -516,7 +516,7 @@
           "id": "research-carcavelos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:25.000Z",
+          "reviewedAt": "2026-07-11T20:00:27.000Z",
           "rule": {
             "arcs": [
               {
@@ -572,7 +572,7 @@
           "id": "research-castelo-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T15:00:02.000Z",
+          "reviewedAt": "2026-07-11T20:00:37.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -600,7 +600,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -633,7 +633,7 @@
           "id": "research-castelo-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T15:00:02.000Z",
+          "reviewedAt": "2026-07-11T20:00:37.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -661,7 +661,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -706,7 +706,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Ericeira World Surfing Reserve",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+              "supportedClaim": "The exact reserve page describes Cave as a very shallow, extremely dangerous reef and lists high tide.",
               "title": "Cave - Ericeira World Surfing Reserve",
               "url": "https://ericeirawsr10.com/en/cave-2/"
             }
@@ -714,17 +714,16 @@
           "id": "research-cave-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:07.000Z",
+          "reviewedAt": "2026-07-11T20:00:07.000Z",
           "rule": {
-            "direction": "falling",
-            "stage": "low",
+            "stage": "high",
             "type": "tide-preference"
           },
           "scope": {
             "id": "surfline-cave",
             "type": "spot"
           },
-          "summary": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+          "summary": "Cave is an extremely shallow and dangerous reef for highly advanced surfers; the World Surfing Reserve lists high tide.",
           "topic": "tide"
         }
       ],
@@ -740,7 +739,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Ericeira World Surfing Reserve",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+              "supportedClaim": "The exact reserve page describes Cave as a very shallow, extremely dangerous reef and lists high tide.",
               "title": "Cave - Ericeira World Surfing Reserve",
               "url": "https://ericeirawsr10.com/en/cave-2/"
             }
@@ -748,17 +747,16 @@
           "id": "research-cave-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:07.000Z",
+          "reviewedAt": "2026-07-11T20:00:07.000Z",
           "rule": {
-            "direction": "falling",
-            "stage": "low",
+            "stage": "high",
             "type": "tide-preference"
           },
           "scope": {
             "id": "surfline-cave",
             "type": "spot"
           },
-          "summary": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+          "summary": "Cave is an extremely shallow and dangerous reef for highly advanced surfers; the World Surfing Reserve lists high tide.",
           "topic": "tide"
         }
       ],
@@ -799,7 +797,7 @@
           "id": "research-consolacao-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:05.000Z",
+          "reviewedAt": "2026-07-11T20:00:05.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -832,7 +830,7 @@
           "id": "research-consolacao-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:05.000Z",
+          "reviewedAt": "2026-07-11T20:00:05.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -882,7 +880,7 @@
           "id": "research-costa-da-caparica-mechanics",
           "overrideKey": "mechanics.groyne-sandbanks",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:31.000Z",
+          "reviewedAt": "2026-07-11T20:00:33.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -910,7 +908,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -943,7 +941,7 @@
           "id": "research-costa-da-caparica-mechanics",
           "overrideKey": "mechanics.groyne-sandbanks",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:31.000Z",
+          "reviewedAt": "2026-07-11T20:00:33.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -971,7 +969,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1024,7 +1022,7 @@
           "id": "research-cova-do-vapor-mechanics",
           "overrideKey": "mechanics.river-mouth-wedge",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:27.000Z",
+          "reviewedAt": "2026-07-11T20:00:29.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1052,7 +1050,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1085,7 +1083,7 @@
           "id": "research-cova-do-vapor-mechanics",
           "overrideKey": "mechanics.river-mouth-wedge",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:27.000Z",
+          "reviewedAt": "2026-07-11T20:00:29.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1113,7 +1111,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1154,19 +1152,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Fonte da Telha is generally best between the tide extremes; dead low may close out and dead high may shorebreak.",
-              "title": "Fonte da Telha Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says low can close out, high can shore dump, and the best window lies between those extremes.",
+              "title": "Fonte da Telha Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
             }
           ],
           "id": "research-fonte-da-telha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:36.000Z",
+          "reviewedAt": "2026-07-11T20:00:40.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1187,19 +1185,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Fonte da Telha is generally best between the tide extremes; dead low may close out and dead high may shorebreak.",
-              "title": "Fonte da Telha Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says low can close out, high can shore dump, and the best window lies between those extremes.",
+              "title": "Fonte da Telha Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
             }
           ],
           "id": "research-fonte-da-telha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:36.000Z",
+          "reviewedAt": "2026-07-11T20:00:40.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1251,7 +1249,7 @@
           "id": "research-foz-do-lizandro-mechanics",
           "overrideKey": "mechanics.river-mouth-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:13.000Z",
+          "reviewedAt": "2026-07-11T20:00:13.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1283,7 +1281,7 @@
           "id": "research-foz-do-lizandro-mechanics",
           "overrideKey": "mechanics.river-mouth-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:13.000Z",
+          "reviewedAt": "2026-07-11T20:00:13.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1324,16 +1322,27 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+              "supportedClaim": "The current exact guide says Lagide is best around mid tide while rising.",
               "title": "Lagide Surf Guide",
               "url": "https://www.surf-forecast.com/breaks/Lagide"
+            },
+            {
+              "accessedAt": "2026-07-11",
+              "kind": "provider",
+              "locationMatch": "exact-spot",
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says low to mid tide is best and warns that the reef is shallow at low.",
+              "title": "Lagide Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
             }
           ],
           "id": "research-lagide-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:02.000Z",
+          "reviewedAt": "2026-07-11T20:00:02.000Z",
           "rule": {
+            "direction": "rising",
             "stage": "mid",
             "type": "tide-preference"
           },
@@ -1341,7 +1350,7 @@
             "id": "surfline-lagide",
             "type": "spot"
           },
-          "summary": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+          "summary": "Mid tide, especially while rising, is the clearest shared window; the reef is shallow at low water.",
           "topic": "tide"
         }
       ],
@@ -1357,16 +1366,27 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+              "supportedClaim": "The current exact guide says Lagide is best around mid tide while rising.",
               "title": "Lagide Surf Guide",
               "url": "https://www.surf-forecast.com/breaks/Lagide"
+            },
+            {
+              "accessedAt": "2026-07-11",
+              "kind": "provider",
+              "locationMatch": "exact-spot",
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says low to mid tide is best and warns that the reef is shallow at low.",
+              "title": "Lagide Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
             }
           ],
           "id": "research-lagide-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:02.000Z",
+          "reviewedAt": "2026-07-11T20:00:02.000Z",
           "rule": {
+            "direction": "rising",
             "stage": "mid",
             "type": "tide-preference"
           },
@@ -1374,7 +1394,7 @@
             "id": "surfline-lagide",
             "type": "spot"
           },
-          "summary": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+          "summary": "Mid tide, especially while rising, is the clearest shared window; the reef is shallow at low water.",
           "topic": "tide"
         }
       ],
@@ -1415,7 +1435,7 @@
           "id": "research-lagoa-de-albufeira-mechanics",
           "overrideKey": "mechanics.exposed-lagoon-mouth",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:37.000Z",
+          "reviewedAt": "2026-07-11T20:00:41.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1447,7 +1467,7 @@
           "id": "research-lagoa-de-albufeira-mechanics",
           "overrideKey": "mechanics.exposed-lagoon-mouth",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:37.000Z",
+          "reviewedAt": "2026-07-11T20:00:41.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1496,7 +1516,7 @@
           "id": "research-marcelino-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:29.000Z",
+          "reviewedAt": "2026-07-11T20:00:31.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1524,7 +1544,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1557,7 +1577,7 @@
           "id": "research-marcelino-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:29.000Z",
+          "reviewedAt": "2026-07-11T20:00:31.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1585,7 +1605,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1638,7 +1658,7 @@
           "id": "research-matadouro-mechanics",
           "overrideKey": "mechanics.mixed-bottom",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:11.000Z",
+          "reviewedAt": "2026-07-11T20:00:11.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1670,7 +1690,7 @@
           "id": "research-matadouro-mechanics",
           "overrideKey": "mechanics.mixed-bottom",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:11.000Z",
+          "reviewedAt": "2026-07-11T20:00:11.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1707,19 +1727,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
-              "title": "Nazaré Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Nazare"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says W through NW works and WNW receives the most constructive canyon interference.",
+              "title": "Nazaré Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
             }
           ],
           "id": "research-nazare-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:00.000Z",
+          "reviewedAt": "2026-07-11T20:00:00.000Z",
           "rule": {
             "arcs": [
               {
@@ -1734,7 +1754,7 @@
             "id": "surfline-nazare",
             "type": "spot"
           },
-          "summary": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
+          "summary": "West to northwest works at Nazaré, with west-northwest receiving the most constructive interference from the offshore canyon.",
           "topic": "swell"
         }
       ],
@@ -1746,19 +1766,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
-              "title": "Nazaré Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Nazare"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says W through NW works and WNW receives the most constructive canyon interference.",
+              "title": "Nazaré Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
             }
           ],
           "id": "research-nazare-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:00.000Z",
+          "reviewedAt": "2026-07-11T20:00:00.000Z",
           "rule": {
             "arcs": [
               {
@@ -1773,7 +1793,7 @@
             "id": "surfline-nazare",
             "type": "spot"
           },
-          "summary": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
+          "summary": "West to northwest works at Nazaré, with west-northwest receiving the most constructive interference from the offshore canyon.",
           "topic": "swell"
         }
       ],
@@ -1814,7 +1834,7 @@
           "id": "research-paco-de-arcos-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:22.000Z",
+          "reviewedAt": "2026-07-11T20:00:23.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1846,7 +1866,7 @@
           "id": "research-paco-de-arcos-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:22.000Z",
+          "reviewedAt": "2026-07-11T20:00:23.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1895,7 +1915,7 @@
           "id": "research-parede-mechanics",
           "overrideKey": "mechanics.rare-reef-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:23.000Z",
+          "reviewedAt": "2026-07-11T20:00:24.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1927,7 +1947,7 @@
           "id": "research-parede-mechanics",
           "overrideKey": "mechanics.rare-reef-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:23.000Z",
+          "reviewedAt": "2026-07-11T20:00:24.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1976,7 +1996,7 @@
           "id": "research-pedra-branca-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:10.000Z",
+          "reviewedAt": "2026-07-11T20:00:10.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -2010,7 +2030,7 @@
           "id": "research-pedra-branca-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:10.000Z",
+          "reviewedAt": "2026-07-11T20:00:10.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -2061,7 +2081,7 @@
           "id": "research-praia-da-adraga-mechanics",
           "overrideKey": "mechanics.exposed-atlantic-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:18.000Z",
+          "reviewedAt": "2026-07-11T20:00:18.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2093,7 +2113,7 @@
           "id": "research-praia-da-adraga-mechanics",
           "overrideKey": "mechanics.exposed-atlantic-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:18.000Z",
+          "reviewedAt": "2026-07-11T20:00:18.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2142,7 +2162,7 @@
           "id": "research-praia-da-cornelia-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T15:00:01.000Z",
+          "reviewedAt": "2026-07-11T20:00:35.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2170,7 +2190,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2203,7 +2223,7 @@
           "id": "research-praia-da-cornelia-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T15:00:01.000Z",
+          "reviewedAt": "2026-07-11T20:00:35.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2231,7 +2251,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2287,7 +2307,7 @@
           "id": "linha-stretch-sheltered-size-translation",
           "overrideKey": "size.sheltered-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:40.000Z",
+          "reviewedAt": "2026-07-11T20:01:00.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2322,7 +2342,7 @@
           "id": "linha-stretch-sheltered-size-translation",
           "overrideKey": "size.sheltered-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:40.000Z",
+          "reviewedAt": "2026-07-11T20:01:00.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2371,7 +2391,7 @@
           "id": "research-praia-da-rainha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:33.000Z",
+          "reviewedAt": "2026-07-11T20:00:36.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -2404,7 +2424,7 @@
           "id": "research-praia-da-rainha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:33.000Z",
+          "reviewedAt": "2026-07-11T20:00:36.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -2456,7 +2476,7 @@
           "id": "research-praia-da-saude-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:32.000Z",
+          "reviewedAt": "2026-07-11T20:00:34.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2484,7 +2504,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2517,7 +2537,7 @@
           "id": "research-praia-da-saude-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:32.000Z",
+          "reviewedAt": "2026-07-11T20:00:34.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2545,7 +2565,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2598,7 +2618,7 @@
           "id": "research-praia-da-ursa-mechanics",
           "overrideKey": "mechanics.exposed-remote-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T15:00:00.000Z",
+          "reviewedAt": "2026-07-11T20:00:19.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2630,7 +2650,7 @@
           "id": "research-praia-da-ursa-mechanics",
           "overrideKey": "mechanics.exposed-remote-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T15:00:00.000Z",
+          "reviewedAt": "2026-07-11T20:00:19.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2679,7 +2699,7 @@
           "id": "research-praia-das-macas-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:15.000Z",
+          "reviewedAt": "2026-07-11T20:00:15.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2711,7 +2731,7 @@
           "id": "research-praia-das-macas-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:15.000Z",
+          "reviewedAt": "2026-07-11T20:00:15.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2759,7 +2779,7 @@
           "id": "user-caxias-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:20.000Z",
+          "reviewedAt": "2026-07-11T20:00:21.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -2794,7 +2814,7 @@
           "id": "user-caxias-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:20.000Z",
+          "reviewedAt": "2026-07-11T20:00:21.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -2846,7 +2866,7 @@
           "id": "user-torre-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:26.000Z",
+          "reviewedAt": "2026-07-11T20:00:28.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectAtOrAbove": "may-start-working",
@@ -2882,7 +2902,7 @@
           "id": "user-torre-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:26.000Z",
+          "reviewedAt": "2026-07-11T20:00:28.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectAtOrAbove": "may-start-working",
@@ -2936,7 +2956,7 @@
           "id": "research-praia-do-barbas-mechanics",
           "overrideKey": "mechanics.groyne-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:30.000Z",
+          "reviewedAt": "2026-07-11T20:00:32.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2964,7 +2984,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2997,7 +3017,7 @@
           "id": "research-praia-do-barbas-mechanics",
           "overrideKey": "mechanics.groyne-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:30.000Z",
+          "reviewedAt": "2026-07-11T20:00:32.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3025,7 +3045,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3066,11 +3086,21 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
+              "kind": "provider",
+              "locationMatch": "exact-spot",
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says all tides work but low to medium tide is best.",
+              "title": "Praia do Guincho Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
+            },
+            {
+              "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
               "publisher": "The Portugal Guides",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+              "supportedClaim": "The exact guide says hollow peaks form at mid to low tide.",
               "title": "Surfing Praia do Guincho",
               "url": "https://www.theportugalguides.com/surf/guincho/"
             }
@@ -3078,7 +3108,7 @@
           "id": "research-praia-do-guincho-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:19.000Z",
+          "reviewedAt": "2026-07-11T20:00:20.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3087,7 +3117,7 @@
             "id": "surfline-praia-do-guincho",
             "type": "spot"
           },
-          "summary": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+          "summary": "Guincho works on all tides but is generally best from low through mid tide.",
           "topic": "tide"
         }
       ],
@@ -3099,11 +3129,21 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
+              "kind": "provider",
+              "locationMatch": "exact-spot",
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says all tides work but low to medium tide is best.",
+              "title": "Praia do Guincho Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
+            },
+            {
+              "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
               "publisher": "The Portugal Guides",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+              "supportedClaim": "The exact guide says hollow peaks form at mid to low tide.",
               "title": "Surfing Praia do Guincho",
               "url": "https://www.theportugalguides.com/surf/guincho/"
             }
@@ -3111,7 +3151,7 @@
           "id": "research-praia-do-guincho-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:19.000Z",
+          "reviewedAt": "2026-07-11T20:00:20.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3120,7 +3160,7 @@
             "id": "surfline-praia-do-guincho",
             "type": "spot"
           },
-          "summary": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+          "summary": "Guincho works on all tides but is generally best from low through mid tide.",
           "topic": "tide"
         }
       ],
@@ -3161,7 +3201,7 @@
           "id": "research-praia-do-pescador-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:35.000Z",
+          "reviewedAt": "2026-07-11T20:00:38.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3189,7 +3229,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3222,7 +3262,7 @@
           "id": "research-praia-do-pescador-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:35.000Z",
+          "reviewedAt": "2026-07-11T20:00:38.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3250,7 +3290,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3302,7 +3342,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3334,7 +3374,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:41.000Z",
+          "reviewedAt": "2026-07-11T20:01:01.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3384,7 +3424,7 @@
           "id": "research-praia-do-sul-mechanics",
           "overrideKey": "mechanics.sheltered-mixed-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:12.000Z",
+          "reviewedAt": "2026-07-11T20:00:12.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3416,7 +3456,7 @@
           "id": "research-praia-do-sul-mechanics",
           "overrideKey": "mechanics.sheltered-mixed-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:12.000Z",
+          "reviewedAt": "2026-07-11T20:00:12.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3457,7 +3497,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Surfspots.pt",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+              "supportedClaim": "The exact guide says the beach works on all tides and that mid tide often produces the most defined peaks.",
               "title": "Praia Grande (Sintra)",
               "url": "https://www.surfspots.pt/praia-grande-sintra.html"
             }
@@ -3465,7 +3505,7 @@
           "id": "research-praia-grande-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:17.000Z",
+          "reviewedAt": "2026-07-11T20:00:17.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3474,7 +3514,7 @@
             "id": "surfline-praia-grande",
             "type": "spot"
           },
-          "summary": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+          "summary": "Praia Grande works on all tides, but mid tide often produces the most defined peaks.",
           "topic": "tide"
         }
       ],
@@ -3490,7 +3530,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Surfspots.pt",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+              "supportedClaim": "The exact guide says the beach works on all tides and that mid tide often produces the most defined peaks.",
               "title": "Praia Grande (Sintra)",
               "url": "https://www.surfspots.pt/praia-grande-sintra.html"
             }
@@ -3498,7 +3538,7 @@
           "id": "research-praia-grande-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:17.000Z",
+          "reviewedAt": "2026-07-11T20:00:17.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3507,7 +3547,7 @@
             "id": "surfline-praia-grande",
             "type": "spot"
           },
-          "summary": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+          "summary": "Praia Grande works on all tides, but mid tide often produces the most defined peaks.",
           "topic": "tide"
         }
       ],
@@ -3548,7 +3588,7 @@
           "id": "research-praia-pequena-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:16.000Z",
+          "reviewedAt": "2026-07-11T20:00:16.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3580,7 +3620,7 @@
           "id": "research-praia-pequena-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:16.000Z",
+          "reviewedAt": "2026-07-11T20:00:16.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3621,7 +3661,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Ericeira World Surfing Reserve",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+              "supportedClaim": "The exact reserve page describes a fast, powerful, dangerous shallow-reef right and lists half tide.",
               "title": "Reef - Ericeira World Surfing Reserve",
               "url": "https://ericeirawsr10.com/en/reef-2/"
             }
@@ -3629,17 +3669,16 @@
           "id": "research-reef-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:09.000Z",
+          "reviewedAt": "2026-07-11T20:00:09.000Z",
           "rule": {
-            "direction": "rising",
-            "stage": "high",
+            "stage": "mid",
             "type": "tide-preference"
           },
           "scope": {
             "id": "surfline-reef",
             "type": "spot"
           },
-          "summary": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+          "summary": "Reef is a fast, dangerous shallow-reef right that works at half tide.",
           "topic": "tide"
         }
       ],
@@ -3655,7 +3694,7 @@
               "locationMatch": "exact-spot",
               "publisher": "Ericeira World Surfing Reserve",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+              "supportedClaim": "The exact reserve page describes a fast, powerful, dangerous shallow-reef right and lists half tide.",
               "title": "Reef - Ericeira World Surfing Reserve",
               "url": "https://ericeirawsr10.com/en/reef-2/"
             }
@@ -3663,17 +3702,16 @@
           "id": "research-reef-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:09.000Z",
+          "reviewedAt": "2026-07-11T20:00:09.000Z",
           "rule": {
-            "direction": "rising",
-            "stage": "high",
+            "stage": "mid",
             "type": "tide-preference"
           },
           "scope": {
             "id": "surfline-reef",
             "type": "spot"
           },
-          "summary": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+          "summary": "Reef is a fast, dangerous shallow-reef right that works at half tide.",
           "topic": "tide"
         }
       ],
@@ -3714,7 +3752,7 @@
           "id": "research-ribeira-d-ilhas-mechanics",
           "overrideKey": "mechanics.flexible-reef-right",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:08.000Z",
+          "reviewedAt": "2026-07-11T20:00:08.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3746,7 +3784,7 @@
           "id": "research-ribeira-d-ilhas-mechanics",
           "overrideKey": "mechanics.flexible-reef-right",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:08.000Z",
+          "reviewedAt": "2026-07-11T20:00:08.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3795,7 +3833,7 @@
           "id": "research-santa-cruz-wind",
           "overrideKey": "wind.preferred-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:06.000Z",
+          "reviewedAt": "2026-07-11T20:00:06.000Z",
           "rule": {
             "arcs": [
               {
@@ -3834,7 +3872,7 @@
           "id": "research-santa-cruz-wind",
           "overrideKey": "wind.preferred-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:06.000Z",
+          "reviewedAt": "2026-07-11T20:00:06.000Z",
           "rule": {
             "arcs": [
               {
@@ -3890,7 +3928,7 @@
           "id": "research-santo-amaro-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:24.000Z",
+          "reviewedAt": "2026-07-11T20:00:26.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3922,7 +3960,7 @@
           "id": "research-santo-amaro-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:24.000Z",
+          "reviewedAt": "2026-07-11T20:00:26.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3971,7 +4009,7 @@
           "id": "research-sao-joao-da-caparica-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:28.000Z",
+          "reviewedAt": "2026-07-11T20:00:30.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -4004,7 +4042,7 @@
           "id": "research-sao-joao-da-caparica-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:28.000Z",
+          "reviewedAt": "2026-07-11T20:00:30.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -4055,7 +4093,7 @@
           "id": "user-sao-juliao-mid-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:14.000Z",
+          "reviewedAt": "2026-07-11T20:00:14.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -4087,7 +4125,7 @@
           "id": "user-sao-juliao-mid-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:14.000Z",
+          "reviewedAt": "2026-07-11T20:00:14.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -4137,7 +4175,7 @@
           "id": "research-sao-pedro-do-estoril-mechanics",
           "overrideKey": "mechanics.reef-point",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:21.000Z",
+          "reviewedAt": "2026-07-11T20:00:22.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -4169,7 +4207,7 @@
           "id": "research-sao-pedro-do-estoril-mechanics",
           "overrideKey": "mechanics.reef-point",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T12:00:21.000Z",
+          "reviewedAt": "2026-07-11T20:00:22.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -4217,7 +4255,7 @@
           "id": "user-sesimbra-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:39.000Z",
+          "reviewedAt": "2026-07-11T20:00:43.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -4252,7 +4290,7 @@
           "id": "user-sesimbra-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:39.000Z",
+          "reviewedAt": "2026-07-11T20:00:43.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -4293,24 +4331,24 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
-              "title": "Supertubos Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Supertubos"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says W and WNW swells work and too much north is shadowed.",
+              "title": "Supertubos Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
             }
           ],
           "id": "research-supertubos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:04.000Z",
+          "reviewedAt": "2026-07-11T20:00:04.000Z",
           "rule": {
             "arcs": [
               {
                 "end": 303.75,
-                "start": 247.5
+                "start": 270
               }
             ],
             "input": "primary-swell-direction-deg",
@@ -4320,7 +4358,7 @@
             "id": "surfline-supertubos",
             "type": "spot"
           },
-          "summary": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
+          "summary": "West and west-northwest swells are the useful window in Surfline's exact guide; too much north is shadowed.",
           "topic": "swell"
         }
       ],
@@ -4332,24 +4370,24 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "provider",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
-              "title": "Supertubos Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Supertubos"
+              "publisher": "Surfline",
+              "quality": "provider-spot-guide",
+              "supportedClaim": "The exact cached Surfline guide says W and WNW swells work and too much north is shadowed.",
+              "title": "Supertubos Surf Report and cached spot guide",
+              "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
             }
           ],
           "id": "research-supertubos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T12:00:04.000Z",
+          "reviewedAt": "2026-07-11T20:00:04.000Z",
           "rule": {
             "arcs": [
               {
                 "end": 303.75,
-                "start": 247.5
+                "start": 270
               }
             ],
             "input": "primary-swell-direction-deg",
@@ -4359,7 +4397,7 @@
             "id": "surfline-supertubos",
             "type": "spot"
           },
-          "summary": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
+          "summary": "West and west-northwest swells are the useful window in Surfline's exact guide; too much north is shadowed.",
           "topic": "swell"
         }
       ],
