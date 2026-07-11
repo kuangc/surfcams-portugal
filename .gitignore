@@ -2,6 +2,7 @@
 .cache/
 .playwright-mcp/
 .superpowers/
+.worktrees/
 node_modules/
 npm-debug.log*
 coverage/
