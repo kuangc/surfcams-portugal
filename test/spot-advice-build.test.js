@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
+import * as spotAdviceCli from "../scripts/build-spot-advice.js";
 import {
   canonicalJson,
   compileSpotAdvice,
@@ -271,6 +274,62 @@ test("identity report covers exactly 44 selected ids, defaults, trusted advice c
   assert.equal(compiled.subjects["surfline-nazare"].guideOnly, false);
 });
 
+test("deferred Cave and Ursa subjects copy exact normalized Surfline guide metadata", () => {
+  const compiled = compileSpotAdvice(fixtureDocument(), fixtureContext());
+  assert.deepEqual(
+    {
+      name: compiled.subjects["surfline-cave"].name,
+      lat: compiled.subjects["surfline-cave"].lat,
+      lon: compiled.subjects["surfline-cave"].lon,
+      region: compiled.subjects["surfline-cave"].region,
+      surfline: compiled.subjects["surfline-cave"].surfline
+    },
+    {
+      name: "Cave",
+      lat: 38.99663,
+      lon: -9.42693,
+      region: "Ericeira",
+      surfline: { pageUrl: "https://www.surfline.com/surf-report/cave/5d702a08b8be350001890108" }
+    }
+  );
+  assert.deepEqual(
+    {
+      name: compiled.subjects["surfline-praia-da-ursa"].name,
+      lat: compiled.subjects["surfline-praia-da-ursa"].lat,
+      lon: compiled.subjects["surfline-praia-da-ursa"].lon,
+      region: compiled.subjects["surfline-praia-da-ursa"].region,
+      surfline: compiled.subjects["surfline-praia-da-ursa"].surfline
+    },
+    {
+      name: "Praia da Ursa",
+      lat: 38.79081,
+      lon: -9.49342,
+      region: "Cape Roca",
+      surfline: { pageUrl: "https://www.surfline.com/surf-report/praia-da-ursa/640b9d174519050958e08490" }
+    }
+  );
+});
+
+test("promoted runtime ids form one exact, catalog-backed partition of the selected roster", async (t) => {
+  const cases = [
+    ["unknown promoted id", (context) => { context.promotedDb.promoted[0].id = "surfline-unknown"; }, /promotedDb.*unknown.*catalog/i],
+    ["unknown deferred id", (context) => { context.promotedDb.deferred[0].surflineSpotId = "surfline-unknown"; }, /promotedDb.*unknown.*catalog/i],
+    ["duplicate promoted id", (context) => { context.promotedDb.promoted[1].id = context.promotedDb.promoted[0].id; }, /duplicate promotedDb promoted/i],
+    ["duplicate deferred id", (context) => { context.promotedDb.deferred.push(clone(context.promotedDb.deferred[0])); }, /duplicate promotedDb deferred/i],
+    ["promoted/deferred overlap", (context) => { context.promotedDb.deferred.push({ surflineSpotId: context.promotedDb.promoted[0].id, reason: "fixture" }); }, /promotedDb.*overlap/i],
+    ["missing Cave", (context) => { context.promotedDb.deferred = context.promotedDb.deferred.filter((row) => row.surflineSpotId !== "surfline-cave"); }, /partition.*surfline-cave/i],
+    ["missing Ursa", (context) => { context.promotedDb.deferred = context.promotedDb.deferred.filter((row) => row.surflineSpotId !== "surfline-praia-da-ursa"); }, /partition.*surfline-praia-da-ursa/i],
+    ["wrong total", (context) => { context.promotedDb.total -= 1; }, /promotedDb total/i]
+  ];
+  for (const [name, mutate, pattern] of cases) {
+    await t.test(name, () => {
+      const context = fixtureContext();
+      mutate(context);
+      assert.throws(() => validateSpotAdvice(fixtureDocument(), context), pattern);
+    });
+  }
+});
+
 test("identity validation rejects mismatched and untrusted conditions attachments", () => {
   const mismatch = fixtureContext();
   const favorite = mismatch.enrichmentDb.entries.find((entry) => entry.id === "sao-pedro-do-estoril");
@@ -289,4 +348,52 @@ test("file CLI is wired to deterministic build and freshness package commands", 
   assert.equal(packageJson.scripts["check-spot-advice"], "node scripts/build-spot-advice.js --check");
   const result = spawnSync(process.execPath, ["scripts/build-spot-advice.js", "--check"], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr || result.stdout);
+});
+
+test("stale check leaves existing artifact bytes unchanged and exits nonzero", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "spot-advice-check-"));
+  const outputPath = path.join(directory, "spot-advice-resolved.json");
+  const stale = "{\"stale\":true}\n";
+  fs.writeFileSync(outputPath, stale);
+  let writeCount = 0;
+  const fileSystem = {
+    ...fs,
+    writeFileSync(...args) {
+      writeCount += 1;
+      return fs.writeFileSync(...args);
+    }
+  };
+  try {
+    const result = spotAdviceCli.syncCompiledArtifact({ outputPath, expected: "{\"fresh\":true}\n", check: true, fileSystem });
+    assert.deepEqual(result, { status: 1, changed: false });
+    assert.equal(writeCount, 0);
+    assert.equal(fs.readFileSync(outputPath, "utf8"), stale);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("unchanged normal build avoids rewriting artifact bytes or mtime", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "spot-advice-build-"));
+  const outputPath = path.join(directory, "spot-advice-resolved.json");
+  const expected = "{\"fresh\":true}\n";
+  fs.writeFileSync(outputPath, expected);
+  const before = fs.statSync(outputPath).mtimeMs;
+  let writeCount = 0;
+  const fileSystem = {
+    ...fs,
+    writeFileSync(...args) {
+      writeCount += 1;
+      return fs.writeFileSync(...args);
+    }
+  };
+  try {
+    const result = spotAdviceCli.syncCompiledArtifact({ outputPath, expected, check: false, fileSystem });
+    assert.deepEqual(result, { status: 0, changed: false });
+    assert.equal(writeCount, 0);
+    assert.equal(fs.readFileSync(outputPath, "utf8"), expected);
+    assert.equal(fs.statSync(outputPath).mtimeMs, before);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 });

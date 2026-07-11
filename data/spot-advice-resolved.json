@@ -278,8 +278,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-baleal",
+      "lat": 39.37464,
+      "lon": -9.33822,
       "name": "Baleal",
       "overriddenClaimIds": [],
+      "region": "Peniche",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -355,8 +361,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-bicas",
+      "lat": 38.46404,
+      "lon": -9.19328,
       "name": "Bicas",
       "overriddenClaimIds": [],
+      "region": "Azoia",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/bicas/640b9cf8606c45e808f46d79"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -430,8 +442,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-cantinho-da-baia",
+      "lat": 39.36971,
+      "lon": -9.33952,
       "name": "Cantinho da Baía",
       "overriddenClaimIds": [],
+      "region": "Peniche",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -519,8 +537,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-carcavelos",
+      "lat": 38.67869246746279,
+      "lon": -9.33685,
       "name": "Carcavelos",
       "overriddenClaimIds": [],
+      "region": "São Julião da Barra",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "swell": [
@@ -652,8 +676,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-castelo",
+      "lat": 38.6130718914354,
+      "lon": -9.21753,
       "name": "Costa da Caparica | Costelo (Irmao)",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8"
+      },
       "tideCameraId": "costa-da-caparica-riviera",
       "topicIndex": {
         "mechanics": [
@@ -734,8 +764,14 @@
       ],
       "guideOnly": true,
       "id": "surfline-cave",
+      "lat": 38.99663,
+      "lon": -9.42693,
       "name": "Cave",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/cave/5d702a08b8be350001890108"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -811,8 +847,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-consolacao",
+      "lat": 39.32285,
+      "lon": -9.36146,
       "name": "Consolação",
       "overriddenClaimIds": [],
+      "region": "Peniche",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/consolacao/5a53f6e5a8b6a9001b017369"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -944,8 +986,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-costa-da-caparica",
+      "lat": 38.64036,
+      "lon": -9.24275,
       "name": "Costa da Caparica",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc"
+      },
       "tideCameraId": "costa-da-caparica-cds",
       "topicIndex": {
         "mechanics": [
@@ -1080,8 +1128,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-cova-do-vapor",
+      "lat": 38.66104,
+      "lon": -9.26191,
       "name": "Cova Do Vapor",
       "overriddenClaimIds": [],
+      "region": "Trafaria",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/cova-do-vapor/584204204e65fad6a77096ad"
+      },
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor",
       "topicIndex": {
         "mechanics": [
@@ -1160,10 +1214,16 @@
       ],
       "guideOnly": false,
       "id": "surfline-fonte-da-telha",
+      "lat": 38.57372110885146,
+      "lon": -9.19898,
       "name": "Fonte da Telha",
       "overriddenClaimIds": [
         "user-caparica-high-tide"
       ],
+      "region": "Charneca",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
+      },
       "tideCameraId": "fonte-da-telha",
       "topicIndex": {
         "tide": [
@@ -1237,8 +1297,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-foz-do-lizandro",
+      "lat": 38.94403,
+      "lon": -9.41865,
       "name": "Foz do Lizandro",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -1314,8 +1380,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-lagide",
+      "lat": 39.37432,
+      "lon": -9.33561,
       "name": "Lagide",
       "overriddenClaimIds": [],
+      "region": "Atouguia da Baleia",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -1389,8 +1461,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-lagoa-de-albufeira",
+      "lat": 38.5089,
+      "lon": -9.1848,
       "name": "Lagoa de Albufeira",
       "overriddenClaimIds": [],
+      "region": "Lagoa de Albufeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/lagoa-de-albufeira/640b9cfe4878eb47751e344d"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -1522,8 +1600,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-marcelino",
+      "lat": 38.64612,
+      "lon": -9.24575,
       "name": "Marcelino",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/marcelino/584204214e65fad6a7709d15"
+      },
       "tideCameraId": "costa-de-caparica-praia-do-norte",
       "topicIndex": {
         "mechanics": [
@@ -1600,8 +1684,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-matadouro",
+      "lat": 38.97556,
+      "lon": -9.42174,
       "name": "Matadouro",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/matadouro/64bbfc3868c6112c8d112deb"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -1689,8 +1779,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-nazare",
+      "lat": 39.60484,
+      "lon": -9.08567,
       "name": "Nazaré",
       "overriddenClaimIds": [],
+      "region": "Nazaré",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "swell": [
@@ -1764,8 +1860,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-paco-de-arcos",
+      "lat": 38.689118,
+      "lon": -9.29619,
       "name": "Paco de Arcos",
       "overriddenClaimIds": [],
+      "region": "Paço de Arcos",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/paco-de-arcos/584204214e65fad6a7709d0c"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "swell": [
@@ -1839,8 +1941,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-parede",
+      "lat": 38.685308,
+      "lon": -9.35436,
       "name": "Parede",
       "overriddenClaimIds": [],
+      "region": "Parede",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -1918,8 +2026,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-pedra-branca",
+      "lat": 38.98009,
+      "lon": -9.42396,
       "name": "Pedra Branca",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/pedra-branca/584204204e65fad6a77096ae"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -1993,8 +2107,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-da-adraga",
+      "lat": 38.80361,
+      "lon": -9.48605,
       "name": "Praia da Adraga",
       "overriddenClaimIds": [],
+      "region": "Adraga",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-adraga/640b9d054878eb35041e35bb"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -2126,8 +2246,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-da-cornelia",
+      "lat": 38.62753236844342,
+      "lon": -9.22752,
       "name": "Praia da Cornelia",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-cornelia/5dbf6037eb8ddf00015a883f"
+      },
       "tideCameraId": "costa-da-caparica-riviera",
       "topicIndex": {
         "mechanics": [
@@ -2210,8 +2336,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-da-laje",
+      "lat": 38.6838,
+      "lon": -9.3125,
       "name": "Praia da Laje",
       "overriddenClaimIds": [],
+      "region": "Carcavelos",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-laje/640b9d10de81d566960e2892"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "size-translation": [
@@ -2287,10 +2419,16 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-da-rainha",
+      "lat": 38.616,
+      "lon": -9.2192,
       "name": "Praia da Rainha",
       "overriddenClaimIds": [
         "user-caparica-high-tide"
       ],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598"
+      },
       "tideCameraId": "costa-da-caparica-riviera",
       "topicIndex": {
         "tide": [
@@ -2422,8 +2560,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-da-saude",
+      "lat": 38.6294,
+      "lon": -9.2299,
       "name": "Praia da Saude",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-saude/640b9d48b6d7692692951263"
+      },
       "tideCameraId": "costa-da-caparica-nova-praia",
       "topicIndex": {
         "mechanics": [
@@ -2500,8 +2644,14 @@
       ],
       "guideOnly": true,
       "id": "surfline-praia-da-ursa",
+      "lat": 38.79081,
+      "lon": -9.49342,
       "name": "Praia da Ursa",
       "overriddenClaimIds": [],
+      "region": "Cape Roca",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-da-ursa/640b9d174519050958e08490"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -2575,8 +2725,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-das-macas",
+      "lat": 38.82667,
+      "lon": -9.47201,
       "name": "Praia das Maçãs",
       "overriddenClaimIds": [],
+      "region": "Colares",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-das-macas/601853a64071addd994eeb43"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -2656,8 +2812,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-de-caxias",
+      "lat": 38.6985,
+      "lon": -9.2796,
       "name": "Praia de Caxias",
       "overriddenClaimIds": [],
+      "region": "Caxias",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-de-caxias/640b9d60606c45bbe5f4841b"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "size-translation": [
@@ -2739,8 +2901,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-de-torre",
+      "lat": 38.6757,
+      "lon": -9.3228,
       "name": "Praia de Torre",
       "overriddenClaimIds": [],
+      "region": "Da House",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-de-torre/602d64e1d663ff28d7a951c2"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "size-translation": [
@@ -2872,8 +3040,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-do-barbas",
+      "lat": 38.644758,
+      "lon": -9.24246,
       "name": "Praia do Barbas",
       "overriddenClaimIds": [],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16"
+      },
       "tideCameraId": "costa-da-caparica-tarquinio",
       "topicIndex": {
         "mechanics": [
@@ -2952,8 +3126,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-do-guincho",
+      "lat": 38.73426,
+      "lon": -9.47531,
       "name": "Praia Do Guincho",
       "overriddenClaimIds": [],
+      "region": "Alcabideche",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -3085,8 +3265,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-do-pescador",
+      "lat": 38.6092,
+      "lon": -9.2149,
       "name": "Praia do Pescador",
       "overriddenClaimIds": [],
+      "region": "Vale de Cavalos",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-do-pescador/640b9d4ede81d58fdf0e363b"
+      },
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena",
       "topicIndex": {
         "mechanics": [
@@ -3163,8 +3349,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-do-rei",
+      "lat": 38.6057,
+      "lon": -9.2138,
       "name": "Praia do Rei",
       "overriddenClaimIds": [],
+      "region": "Vale de Cavalos",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-do-rei/640b9d54de81d5217b0e37a6"
+      },
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena",
       "topicIndex": {
         "tide": [
@@ -3238,8 +3430,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-do-sul",
+      "lat": 38.95891,
+      "lon": -9.41822,
       "name": "Praia do Sul",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -3315,8 +3513,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-grande",
+      "lat": 38.81535,
+      "lon": -9.48151,
       "name": "Praia Grande",
       "overriddenClaimIds": [],
+      "region": "Colares",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -3390,8 +3594,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-praia-pequena",
+      "lat": 38.82006,
+      "lon": -9.47561,
       "name": "Praia Pequena",
       "overriddenClaimIds": [],
+      "region": "Colares",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -3469,8 +3679,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-reef",
+      "lat": 38.98297,
+      "lon": -9.42478,
       "name": "Reef",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/reef/5842041f4e65fad6a7708bc1"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -3544,8 +3760,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-ribeira-d-ilhas",
+      "lat": 38.98878,
+      "lon": -9.42327,
       "name": "Ribeira D’Ilhas",
       "overriddenClaimIds": [],
+      "region": "Ericeira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -3633,8 +3855,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-santa-cruz",
+      "lat": 39.14163,
+      "lon": -9.37922,
       "name": "Santa Cruz",
       "overriddenClaimIds": [],
+      "region": "Silveira",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "wind": [
@@ -3708,8 +3936,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-santo-amaro",
+      "lat": 38.683313,
+      "lon": -9.31098,
       "name": "Santo Amaro",
       "overriddenClaimIds": [],
+      "region": "Carcavelos",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/santo-amaro/584204214e65fad6a7709d13"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "swell": [
@@ -3785,10 +4019,16 @@
       ],
       "guideOnly": false,
       "id": "surfline-sao-joao-da-caparica",
+      "lat": 38.65589,
+      "lon": -9.2526,
       "name": "São João da Caparica",
       "overriddenClaimIds": [
         "user-caparica-high-tide"
       ],
+      "region": "Costa de Caparica",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/sao-joao-da-caparica/5dbb587ff387900001fee288"
+      },
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor",
       "topicIndex": {
         "tide": [
@@ -3862,8 +4102,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-sao-juliao",
+      "lat": 38.93263,
+      "lon": -9.42251,
       "name": "São Julião",
       "overriddenClaimIds": [],
+      "region": "São Julião",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "tide": [
@@ -3937,8 +4183,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-sao-pedro-do-estoril",
+      "lat": 38.6935,
+      "lon": -9.3697,
       "name": "São Pedro do Estoril",
       "overriddenClaimIds": [],
+      "region": "São Pedro do Estoril",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "mechanics": [
@@ -4018,8 +4270,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-sesimbra",
+      "lat": 38.4413,
+      "lon": -9.0969,
       "name": "Sesimbra",
       "overriddenClaimIds": [],
+      "region": "Sesimbra",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "size-translation": [
@@ -4107,8 +4365,14 @@
       ],
       "guideOnly": false,
       "id": "surfline-supertubos",
+      "lat": 39.34222,
+      "lon": -9.36445,
       "name": "Supertubos",
       "overriddenClaimIds": [],
+      "region": "Peniche",
+      "surfline": {
+        "pageUrl": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
+      },
       "tideCameraId": null,
       "topicIndex": {
         "swell": [

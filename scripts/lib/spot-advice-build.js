@@ -206,6 +206,27 @@ function validateContext(context) {
   for (const [id, memberships] of stretchMembership) requireValue(memberships.length <= 1, `${id} has multiple stretch memberships: ${memberships.join(", ")}`);
   requireValue(Array.isArray(context.promotedDb?.promoted), "promotedDb.promoted must be an array");
   requireValue(Array.isArray(context.promotedDb?.deferred), "promotedDb.deferred must be an array");
+  const promotedIds = context.promotedDb.promoted.map((row) => row.id);
+  const deferredIds = context.promotedDb.deferred.map((row) => row.surflineSpotId);
+  requireUnique(promotedIds, "promotedDb promoted id");
+  requireUnique(deferredIds, "promotedDb deferred id");
+  for (const id of promotedIds) {
+    requireString(id, "promotedDb promoted id");
+    requireValue(surflineSet.has(id), `promotedDb promoted id ${id} is unknown in Surfline catalog`);
+    requireValue(selectedSet.has(id), `promotedDb promoted id ${id} is outside the selected roster`);
+  }
+  for (const id of deferredIds) {
+    requireString(id, "promotedDb deferred id");
+    requireValue(surflineSet.has(id), `promotedDb deferred id ${id} is unknown in Surfline catalog`);
+    requireValue(selectedSet.has(id), `promotedDb deferred id ${id} is outside the selected roster`);
+  }
+  const promotedSet = new Set(promotedIds);
+  const overlap = deferredIds.find((id) => promotedSet.has(id));
+  requireValue(!overlap, `promotedDb promoted/deferred overlap for ${overlap}`);
+  const partition = new Set([...promotedIds, ...deferredIds]);
+  const missing = selected.find((id) => !partition.has(id));
+  requireValue(partition.size === selected.length && !missing, `promotedDb partition is missing selected id ${missing ?? "unknown"}`);
+  requireValue(context.promotedDb.total === promotedIds.length, "promotedDb total must equal promoted array length");
   requireValue(Array.isArray(context.enrichmentDb?.entries), "enrichmentDb.entries must be an array");
   requireValue(Array.isArray(context.defaultFavoriteIds), "defaultFavoriteIds must be an array");
   requireUnique(context.defaultFavoriteIds, "default favorite id");
@@ -462,6 +483,10 @@ export function compileSpotAdvice(document, context) {
     subjects[spotId] = {
       id: spotId,
       name: surflineById.get(spotId).name,
+      lat: surflineById.get(spotId).lat,
+      lon: surflineById.get(spotId).lon,
+      region: surflineById.get(spotId).staticMetadata?.breadcrumb?.at(-1) ?? surflineById.get(spotId).region ?? null,
+      surfline: { pageUrl: surflineById.get(spotId).url },
       guideOnly: deferred.has(spotId),
       tideCameraId: research.tideCameraId ?? null,
       claims,
