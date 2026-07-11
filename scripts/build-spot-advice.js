@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -8,12 +9,38 @@ import { canonicalJson, compileSpotAdvice } from "./lib/spot-advice-build.js";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (filePath, fileSystem = fs) => JSON.parse(fileSystem.readFileSync(filePath, "utf8"));
 
-export function syncCompiledArtifact({ outputPath, expected, check = false, fileSystem = fs }) {
+export function syncCompiledArtifact({
+  outputPath,
+  expected,
+  check = false,
+  fileSystem = fs,
+  temporaryPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${randomUUID()}.tmp`)
+}) {
   const current = fileSystem.existsSync(outputPath) ? fileSystem.readFileSync(outputPath, "utf8") : null;
   if (current === expected) return { status: 0, changed: false };
   if (check) return { status: 1, changed: false };
-  fileSystem.writeFileSync(outputPath, expected);
-  return { status: 0, changed: true };
+  const temporaryPath = temporaryPathFactory(outputPath);
+  let descriptor = null;
+  let createdTemporary = false;
+  try {
+    descriptor = fileSystem.openSync(temporaryPath, "wx");
+    createdTemporary = true;
+    fileSystem.writeFileSync(descriptor, expected, "utf8");
+    fileSystem.fsyncSync(descriptor);
+    fileSystem.closeSync(descriptor);
+    descriptor = null;
+    fileSystem.renameSync(temporaryPath, outputPath);
+    createdTemporary = false;
+    return { status: 0, changed: true };
+  } catch (error) {
+    if (descriptor !== null) {
+      try { fileSystem.closeSync(descriptor); } catch {}
+    }
+    if (createdTemporary && fileSystem.existsSync(temporaryPath)) {
+      try { fileSystem.unlinkSync(temporaryPath); } catch {}
+    }
+    throw error;
+  }
 }
 
 export function buildSpotAdviceFiles({ root = ROOT, check = false, fileSystem = fs } = {}) {

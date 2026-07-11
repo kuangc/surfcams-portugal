@@ -243,6 +243,61 @@ test("validation checks source and evidence fields, URL safety, source quality, 
   }
 });
 
+test("a checked-source URL cannot be both accepted and rejected for one research row", () => {
+  const document = fixtureDocument();
+  const source = document.spotResearch[0].checkedSources[0];
+  document.spotResearch[0].checkedSources.push({
+    ...clone(source),
+    decision: source.decision === "accepted" ? "rejected" : "accepted",
+    rationale: "Contradictory fixture decision."
+  });
+  assert.throws(() => validateSpotAdvice(document, fixtureContext()), /checked source URL.*conflicting decisions/i);
+
+  const consistent = fixtureDocument();
+  consistent.spotResearch[0].checkedSources.push({
+    ...clone(consistent.spotResearch[0].checkedSources[0]),
+    rationale: "A consistent duplicate audit entry."
+  });
+  assert.doesNotThrow(() => validateSpotAdvice(consistent, fixtureContext()));
+});
+
+test("selected Surfline DTO metadata rejects missing, nonfinite, out-of-bounds, and unsafe values", async (t) => {
+  const cases = [
+    ["missing name", "surfline-cave", (spot) => { spot.name = ""; }, /catalog.*name/i],
+    ["nonfinite latitude", "surfline-cave", (spot) => { spot.lat = Number.NaN; }, /catalog.*latitude/i],
+    ["latitude above 90", "surfline-cave", (spot) => { spot.lat = 90.01; }, /catalog.*latitude/i],
+    ["nonfinite longitude", "surfline-praia-da-ursa", (spot) => { spot.lon = Number.POSITIVE_INFINITY; }, /catalog.*longitude/i],
+    ["longitude below -180", "surfline-praia-da-ursa", (spot) => { spot.lon = -180.01; }, /catalog.*longitude/i],
+    ["javascript URL", "surfline-cave", (spot) => { spot.url = "javascript:alert(1)"; }, /catalog.*safe.*URL/i],
+    ["malformed URL", "surfline-praia-da-ursa", (spot) => { spot.url = "not a URL"; }, /catalog.*safe.*URL/i]
+  ];
+  for (const [name, id, mutate, pattern] of cases) {
+    await t.test(name, () => {
+      const context = fixtureContext();
+      mutate(context.surflineSpots.spots.find((spot) => spot.id === id));
+      assert.throws(() => validateSpotAdvice(fixtureDocument(), context), pattern);
+    });
+  }
+});
+
+test("calendar dates and reviewed timestamps require strict valid UTC round trips", async (t) => {
+  const cases = [
+    ["February 30 document date", (document) => { document.updatedAt = "2026-02-30"; }, /updatedAt.*YYYY-MM-DD/i],
+    ["February 30 evidence date", (document) => { document.advice[0].evidence[0].accessedAt = "2026-02-30"; }, /accessedAt.*YYYY-MM-DD/i],
+    ["date-only reviewed timestamp", (document) => { document.advice[0].reviewedAt = "2026-07-11"; }, /reviewedAt.*UTC/i],
+    ["offset reviewed timestamp", (document) => { document.advice[0].reviewedAt = "2026-07-11T00:00:00+00:00"; }, /reviewedAt.*UTC/i],
+    ["February 30 reviewed timestamp", (document) => { document.advice[0].reviewedAt = "2026-02-30T00:00:00.000Z"; }, /reviewedAt.*UTC/i],
+    ["research timestamp without milliseconds", (document) => { document.spotResearch[0].reviewedAt = "2026-07-11T00:00:00Z"; }, /research.*reviewedAt.*UTC/i]
+  ];
+  for (const [name, mutate, pattern] of cases) {
+    await t.test(name, () => {
+      const document = fixtureDocument();
+      mutate(document);
+      assert.throws(() => validateSpotAdvice(document, fixtureContext()), pattern);
+    });
+  }
+});
+
 test("source digest and compiled bytes are deterministic and sensitive to canonical source changes", () => {
   const document = fixtureDocument();
   const first = compileSpotAdvice(document, fixtureContext());
@@ -393,6 +448,61 @@ test("unchanged normal build avoids rewriting artifact bytes or mtime", () => {
     assert.equal(writeCount, 0);
     assert.equal(fs.readFileSync(outputPath, "utf8"), expected);
     assert.equal(fs.statSync(outputPath).mtimeMs, before);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("changed normal build fsyncs a same-directory temp file before atomic rename", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "spot-advice-atomic-"));
+  const outputPath = path.join(directory, "spot-advice-resolved.json");
+  const temporaryPath = path.join(directory, ".spot-advice-resolved.fixture.tmp");
+  fs.writeFileSync(outputPath, "stale\n");
+  const calls = [];
+  const fileSystem = {
+    ...fs,
+    openSync(...args) { calls.push(["open", ...args]); return fs.openSync(...args); },
+    writeFileSync(...args) { calls.push(["write", args[0]]); return fs.writeFileSync(...args); },
+    fsyncSync(...args) { calls.push(["fsync", ...args]); return fs.fsyncSync(...args); },
+    closeSync(...args) { calls.push(["close", ...args]); return fs.closeSync(...args); },
+    renameSync(...args) { calls.push(["rename", ...args]); return fs.renameSync(...args); }
+  };
+  try {
+    const result = spotAdviceCli.syncCompiledArtifact({
+      outputPath,
+      expected: "fresh\n",
+      fileSystem,
+      temporaryPathFactory: () => temporaryPath
+    });
+    assert.deepEqual(result, { status: 0, changed: true });
+    assert.equal(fs.readFileSync(outputPath, "utf8"), "fresh\n");
+    assert.ok(!fs.existsSync(temporaryPath));
+    assert.deepEqual(calls.map(([operation]) => operation), ["open", "write", "fsync", "close", "rename"]);
+    assert.equal(calls[0][1], temporaryPath);
+    assert.deepEqual(calls.at(-1).slice(1), [temporaryPath, outputPath]);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("atomic build failure preserves the old artifact and removes the temp file", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "spot-advice-atomic-failure-"));
+  const outputPath = path.join(directory, "spot-advice-resolved.json");
+  const temporaryPath = path.join(directory, ".spot-advice-resolved.fixture.tmp");
+  fs.writeFileSync(outputPath, "old\n");
+  const fileSystem = {
+    ...fs,
+    renameSync() { throw new Error("simulated rename failure"); }
+  };
+  try {
+    assert.throws(() => spotAdviceCli.syncCompiledArtifact({
+      outputPath,
+      expected: "new\n",
+      fileSystem,
+      temporaryPathFactory: () => temporaryPath
+    }), /simulated rename failure/);
+    assert.equal(fs.readFileSync(outputPath, "utf8"), "old\n");
+    assert.ok(!fs.existsSync(temporaryPath));
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
   }

@@ -51,12 +51,19 @@ function requireString(value, label) {
 
 function requireDate(value, label, { nullable = false } = {}) {
   if (nullable && value === null) return;
-  requireValue(typeof value === "string" && DATE_PATTERN.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)), `${label} must be a YYYY-MM-DD date${nullable ? " or null" : ""}`);
+  const parsed = typeof value === "string" && DATE_PATTERN.test(value)
+    ? new Date(`${value}T00:00:00.000Z`)
+    : null;
+  const roundTrips = parsed && !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+  requireValue(roundTrips, `${label} must be a valid YYYY-MM-DD date${nullable ? " or null" : ""}`);
 }
 
 function requireTimestamp(value, label, { nullable = false } = {}) {
   if (nullable && value === null) return;
-  requireValue(typeof value === "string" && !Number.isNaN(Date.parse(value)), `${label} must be an ISO timestamp${nullable ? " or null" : ""}`);
+  const strictShape = typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value);
+  const parsed = strictShape ? new Date(value) : null;
+  const roundTrips = parsed && !Number.isNaN(parsed.valueOf()) && parsed.toISOString() === value;
+  requireValue(roundTrips, `${label} must be a strict ISO 8601 UTC timestamp (YYYY-MM-DDTHH:mm:ss.sssZ)${nullable ? " or null" : ""}`);
 }
 
 function requireSafeUrl(value, label, { nullable = false } = {}) {
@@ -188,7 +195,15 @@ function validateContext(context) {
   const surflineIds = context.surflineSpots.spots.map((spot) => spot.id);
   requireUnique(surflineIds, "Surfline spot id");
   const surflineSet = new Set(surflineIds);
-  for (const id of selected) requireValue(surflineSet.has(id), `promotion has unknown Surfline spot id ${id}`);
+  const surflineById = new Map(context.surflineSpots.spots.map((spot) => [spot.id, spot]));
+  for (const id of selected) {
+    requireValue(surflineSet.has(id), `promotion has unknown Surfline spot id ${id}`);
+    const spot = surflineById.get(id);
+    requireString(spot.name, `selected Surfline catalog ${id} name`);
+    requireValue(Number.isFinite(spot.lat) && spot.lat >= -90 && spot.lat <= 90, `selected Surfline catalog ${id} latitude must be finite and within [-90, 90]`);
+    requireValue(Number.isFinite(spot.lon) && spot.lon >= -180 && spot.lon <= 180, `selected Surfline catalog ${id} longitude must be finite and within [-180, 180]`);
+    requireSafeUrl(spot.url, `selected Surfline catalog ${id} safe URL`);
+  }
   requireValue(Array.isArray(context.stretches?.stretches), "stretches.stretches must be an array");
   const stretchIds = context.stretches.stretches.map((stretch) => stretch.id);
   requireUnique(stretchIds, "stretch id");
@@ -342,6 +357,12 @@ export function validateSpotAdvice(document, context) {
     requireValue(RESEARCH_OUTCOMES.has(research.directEvidenceOutcome), `${label} directEvidenceOutcome is invalid`);
     requireValue(Array.isArray(research.checkedSources) && research.checkedSources.length > 0, `${label} checkedSources must be a non-empty array`);
     research.checkedSources.forEach((source) => validateCheckedSource(source, label));
+    const decisionsByUrl = new Map();
+    for (const source of research.checkedSources) {
+      const priorDecision = decisionsByUrl.get(source.url);
+      requireValue(!priorDecision || priorDecision === source.decision, `${label} checked source URL ${source.url} has conflicting decisions`);
+      decisionsByUrl.set(source.url, source.decision);
+    }
     requireValue(Array.isArray(research.directClaimIds), `${label} directClaimIds must be an array`);
     requireUnique(research.directClaimIds, `${label} direct claim id`);
     if (research.directEvidenceOutcome === "found") requireValue(research.directClaimIds.length > 0, `${label} found outcome requires a direct claim`);
