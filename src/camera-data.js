@@ -113,12 +113,14 @@ export function mergePromotedSpots(cameraDb, promotedDb) {
   };
 }
 
+const RESERVED_SUBJECT_IDS = new Set(["__proto__", "constructor", "prototype"]);
+
 function guideSubjects(adviceRuntime) {
   if (adviceRuntime?.subjectsById instanceof Map) {
-    return [...adviceRuntime.subjectsById.values()];
+    return [...adviceRuntime.subjectsById.entries()];
   }
   if (adviceRuntime?.subjects && typeof adviceRuntime.subjects === "object") {
-    return Object.values(adviceRuntime.subjects);
+    return Object.entries(adviceRuntime.subjects);
   }
   return [];
 }
@@ -133,11 +135,15 @@ function safeHttpUrl(value) {
   }
 }
 
-function guideRecord(subject) {
+function guideRecord(key, subject) {
   if (
     !subject?.guideOnly
+    || typeof key !== "string"
     || typeof subject.id !== "string"
     || !subject.id.trim()
+    || subject.id !== subject.id.trim()
+    || key !== subject.id
+    || RESERVED_SUBJECT_IDS.has(subject.id)
     || typeof subject.name !== "string"
     || !subject.name.trim()
     || typeof subject.region !== "string"
@@ -169,8 +175,8 @@ export function mergeAdviceGuideSubjects(cameraDb, adviceRuntime) {
 
   const existingIds = new Set(cameraDb.cameras.map((camera) => camera?.id).filter(Boolean));
   const appended = [];
-  for (const subject of guideSubjects(adviceRuntime)) {
-    const record = guideRecord(subject);
+  for (const [key, subject] of guideSubjects(adviceRuntime)) {
+    const record = guideRecord(key, subject);
     if (!record || existingIds.has(record.id)) continue;
     existingIds.add(record.id);
     appended.push(record);
@@ -179,4 +185,37 @@ export function mergeAdviceGuideSubjects(cameraDb, adviceRuntime) {
   return appended.length
     ? { ...cameraDb, cameras: [...cameraDb.cameras, ...appended] }
     : cameraDb;
+}
+
+export function sanitizeFavoriteIds(cameras, favoriteIds) {
+  const eligibleIds = new Set(
+    (Array.isArray(cameras) ? cameras : [])
+      .filter((camera) => camera?.id && !camera.adviceGuideOnly)
+      .map((camera) => camera.id)
+  );
+  return new Set(
+    favoriteIds && typeof favoriteIds[Symbol.iterator] === "function"
+      ? [...favoriteIds].filter((id) => eligibleIds.has(id))
+      : []
+  );
+}
+
+export function routeCameraPlayback(camera, linkedCamera, player) {
+  if (camera?.adviceGuideOnly) {
+    player?.clear?.();
+    return "guide";
+  }
+
+  const reportOnly = !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
+  if (reportOnly) {
+    if (linkedCamera?.streamUrl) {
+      player?.play?.(linkedCamera);
+      return "linked-live";
+    }
+    player?.clear?.();
+    return "report";
+  }
+
+  player?.play?.(camera);
+  return "live";
 }

@@ -46,6 +46,7 @@ function waveMeters(camera) {
 }
 
 function conditionRank(camera, getConditionRank) {
+  if (camera?.adviceGuideOnly) return 0;
   const value = getConditionRank(camera);
   const key = typeof value === "string" ? value : value?.key;
   if (value?.isRecommended) return CONDITION_RANKS.good;
@@ -122,9 +123,15 @@ export function filterCameras(
       && matchesQuery;
   });
 
-  return sort
-    ? [...filtered].sort((a, b) => compareCameras(a, b, sort, favoriteIds, getConditionRank, getDriveDistanceKm))
-    : filtered;
+  if (sort) {
+    return [...filtered].sort((a, b) => compareCameras(a, b, sort, favoriteIds, getConditionRank, getDriveDistanceKm));
+  }
+  if (normalizedQuery) {
+    return [...filtered].sort((a, b) => (
+      Number(normalizeText(b.name) === normalizedQuery) - Number(normalizeText(a.name) === normalizedQuery)
+    ));
+  }
+  return filtered;
 }
 
 export function camerasInBounds(cameras, bounds) {

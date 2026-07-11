@@ -42,7 +42,7 @@ export function monitorCameraSlots(
   const orderedFavorites = sortByDistance(favoriteOrder
     .filter((id) => favoriteIds.has(id))
     .map((id) => byId.get(id))
-    .filter(Boolean), getDriveDistanceKm)
+    .filter((camera) => camera && !camera.adviceGuideOnly), getDriveDistanceKm)
     .slice(0, limit);
   const slots = orderedFavorites.map((camera) => ({ camera, empty: false }));
 
@@ -64,14 +64,15 @@ export function mightBeGoodCameras(
   favoriteIds,
   preferences,
   limit = MONITOR_CAMERA_LIMIT,
-  { getDriveDistanceKm = null, getConditions = null } = {}
+  { getDriveDistanceKm = null, getConditions = null, rateSpot = rateSurfSpot } = {}
 ) {
   return cameras
+    .filter((camera) => !camera.adviceGuideOnly)
     .filter((camera) => !favoriteIds.has(camera.id))
     .filter(inSuggestionFence)
     .map((camera) => {
       const resolved = typeof getConditions === "function" ? getConditions(camera) : null;
-      return { camera, resolved, rating: rateSurfSpot(camera, preferences, resolved) };
+      return { camera, resolved, rating: rateSpot(camera, preferences, resolved) };
     })
     .filter((entry) => entry.resolved && entry.resolved.source !== "meo-static")
     .filter((entry) => entry.rating.isRecommended)
@@ -84,16 +85,17 @@ export function bestNearMiss(
   cameras,
   favoriteIds,
   preferences,
-  { getConditions = null } = {}
+  { getConditions = null, rateSpot = rateSurfSpot } = {}
 ) {
   if (typeof getConditions !== "function") return null;
   let best = null;
   for (const camera of cameras) {
+    if (camera.adviceGuideOnly) continue;
     if (favoriteIds.has(camera.id)) continue;
     if (!inSuggestionFence(camera)) continue;
     const resolved = getConditions(camera);
     if (!resolved || resolved.source === "meo-static") continue;
-    if (rateSurfSpot(camera, preferences, resolved).isRecommended) continue;
+    if (rateSpot(camera, preferences, resolved).isRecommended) continue;
     if (!Number.isFinite(resolved.waveMaxM)) continue;
     if (!best || resolved.waveMaxM > best.resolved.waveMaxM) best = { camera, resolved };
   }

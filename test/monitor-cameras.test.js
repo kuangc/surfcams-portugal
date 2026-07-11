@@ -56,10 +56,67 @@ test("monitorCameraSlots sorts favorite monitor tiles by nearest drive distance"
   assert.deepEqual(slots.map((slot) => slot.camera?.id), ["b", "a", "c"]);
 });
 
+test("persisted guide-only favorites never enter monitor slots", () => {
+  const guide = { id: "guide", adviceGuideOnly: true };
+  const slots = monitorCameraSlots(
+    [guide, cameras[0]],
+    new Set(["guide", "a"]),
+    ["guide", "a"],
+    2
+  );
+
+  assert.deepEqual(slots.map((slot) => slot.camera?.id || null), ["a", null]);
+});
+
 test("mightBeGoodCameras is explicit and excludes favorites", () => {
   const result = mightBeGoodCameras(cameras, new Set(["a"]), DEFAULT_SURF_PREFERENCES, 6, { getConditions: getFreshConditions });
 
   assert.deepEqual(result.map((camera) => camera.id), ["b"]);
+});
+
+test("guide-only subjects bypass condition and rating work in monitor suggestions", () => {
+  const guide = { id: "guide", adviceGuideOnly: true, lat: 38.7, lon: -9.3 };
+  const conditionCalls = [];
+  const ratingCalls = [];
+  const result = mightBeGoodCameras(
+    [guide, cameras[0]],
+    new Set(),
+    DEFAULT_SURF_PREFERENCES,
+    6,
+    {
+      getConditions(camera) {
+        conditionCalls.push(camera.id);
+        return freshConditionsById[camera.id];
+      },
+      rateSpot(camera) {
+        ratingCalls.push(camera.id);
+        return { isRecommended: true };
+      }
+    }
+  );
+
+  assert.deepEqual(conditionCalls, ["a"]);
+  assert.deepEqual(ratingCalls, ["a"]);
+  assert.deepEqual(result.map((camera) => camera.id), ["a"]);
+});
+
+test("guide-only subjects bypass condition and rating work in near-miss selection", () => {
+  const guide = { id: "guide", adviceGuideOnly: true, lat: 38.7, lon: -9.3 };
+  const conditionCalls = [];
+  const ratingCalls = [];
+  bestNearMiss([guide, cameras[0]], new Set(), DEFAULT_SURF_PREFERENCES, {
+    getConditions(camera) {
+      conditionCalls.push(camera.id);
+      return freshConditionsById[camera.id];
+    },
+    rateSpot(camera) {
+      ratingCalls.push(camera.id);
+      return { isRecommended: false };
+    }
+  });
+
+  assert.deepEqual(conditionCalls, ["a"]);
+  assert.deepEqual(ratingCalls, ["a"]);
 });
 
 test("mightBeGoodCameras sorts monitor candidates by nearest drive distance before limiting", () => {

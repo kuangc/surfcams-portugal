@@ -137,6 +137,23 @@ test("filterCameras supports manage spot sort orders", () => {
   assert.deepEqual(idsForSort("region"), ["carcavelos", "praia-da-barra", "matosinhos"]);
 });
 
+test("fit sorting keeps guide-only rows neutral without calling the rating callback", () => {
+  const calls = [];
+  const result = filterCameras([
+    { id: "guide", name: "Guide", adviceGuideOnly: true },
+    { id: "real", name: "Real" }
+  ], {
+    sort: "fit",
+    getConditionRank(camera) {
+      calls.push(camera.id);
+      return { key: "good" };
+    }
+  });
+
+  assert.deepEqual(calls, ["real"]);
+  assert.deepEqual(result.map((camera) => camera.id), ["real", "guide"]);
+});
+
 test("filterCameras supports nearest-distance sorting and max-distance filtering", () => {
   const sortableCameras = [
     { id: "peniche", name: "Peniche", location: "PENICHE", region: "peniche" },

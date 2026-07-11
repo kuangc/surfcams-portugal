@@ -2,7 +2,9 @@ import {
   firstClassCameras,
   loadCameraDb,
   mergeAdviceGuideSubjects,
-  mergePromotedSpots
+  mergePromotedSpots,
+  routeCameraPlayback,
+  sanitizeFavoriteIds
 } from "./camera-data.js";
 import {
   camerasForInitialBounds,
@@ -171,7 +173,7 @@ function favoriteCameras() {
   return favoriteOrder()
     .filter((id) => state.favoriteIds.has(id))
     .map((id) => camerasById.get(id))
-    .filter(Boolean);
+    .filter((camera) => camera && !camera.adviceGuideOnly);
 }
 
 function manageSpotCameras() {
@@ -196,6 +198,7 @@ function driveDistanceKm(camera) {
 }
 
 function getConditions(camera) {
+  if (camera?.adviceGuideOnly) return null;
   return resolveConditions(camera, state.spotData, {
     liveCache: state.liveForecastCache ?? null,
     now: Date.now()
@@ -231,6 +234,7 @@ function favoriteManagerCameras() {
     maxDistanceKm: els.favoritesDistanceSelect.value,
     sort: els.favoritesSortSelect.value || "favorites",
     getConditionRank(camera) {
+      if (camera.adviceGuideOnly) return null;
       return rateSurfSpot(camera, state.preferences, getConditions(camera));
     },
     getDriveDistanceKm: driveDistanceKm
@@ -680,7 +684,7 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
 }
 
 function toggleFavorite(camera, checked) {
-  if (!camera) return;
+  if (!camera || camera.adviceGuideOnly) return;
 
   if (checked) {
     state.favoriteIds.add(camera.id);
@@ -699,8 +703,9 @@ function toggleFavorite(camera, checked) {
 }
 
 function syncFavoriteToggle(button, camera) {
-  const isFavorite = Boolean(camera && state.favoriteIds.has(camera.id));
-  button.disabled = !camera;
+  const isFavorite = Boolean(camera && !camera.adviceGuideOnly && state.favoriteIds.has(camera.id));
+  button.hidden = Boolean(camera?.adviceGuideOnly);
+  button.disabled = !camera || Boolean(camera.adviceGuideOnly);
   button.textContent = isFavorite ? "♥" : "♡";
   button.title = isFavorite ? "Remove from favorites" : "Add to favorites";
   button.setAttribute("aria-pressed", String(isFavorite));
@@ -770,19 +775,13 @@ function linkedCamera(camera) {
 
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
-  if (isReportOnlyCamera(camera)) {
-    const linked = linkedCamera(camera);
-    if (linked?.streamUrl) {
-      state.explorePlayer.play(linked);
-      return;
-    }
-    state.explorePlayer.clear();
-    els.exploreFeedStatus.textContent = camera.adviceGuideOnly
-      ? "Guide only · no live camera or conditions"
-      : "Open Surfline report";
-    return;
+  const linked = linkedCamera(camera);
+  const mode = routeCameraPlayback(camera, linked, state.explorePlayer);
+  if (mode === "guide") {
+    els.exploreFeedStatus.textContent = "Guide only · no live camera or conditions";
+  } else if (mode === "report") {
+    els.exploreFeedStatus.textContent = "Open Surfline report";
   }
-  state.explorePlayer.play(camera);
 }
 
 function selectExploreCamera(camera, { pan = false, route = false, scroll = false } = {}) {
@@ -1078,7 +1077,9 @@ function readConfigForm() {
 }
 
 function markerIcon(camera, active = false) {
-  const rating = rateSurfSpot(camera, state.preferences, getConditions(camera));
+  const rating = camera.adviceGuideOnly
+    ? { key: "guide" }
+    : rateSurfSpot(camera, state.preferences, getConditions(camera));
 
   return L.divIcon({
     className: "",
@@ -1090,6 +1091,7 @@ function markerIcon(camera, active = false) {
 }
 
 function isMightBeGood(camera) {
+  if (camera.adviceGuideOnly) return false;
   const resolved = getConditions(camera);
   return inSuggestionFence(camera)
     && resolved.source !== "meo-static"
@@ -1304,7 +1306,7 @@ async function init() {
   );
   state.tideData = tideData;
   state.cameras = sortCamerasByLatitudeDescending(firstClassCameras(state.db));
-  state.favoriteIds = loadFavoriteIds(manageSpotCameras());
+  state.favoriteIds = sanitizeFavoriteIds(manageSpotCameras(), loadFavoriteIds(manageSpotCameras()));
   state.preferences = loadSurfPreferences();
 
   renderRegions();

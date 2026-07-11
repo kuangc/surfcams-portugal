@@ -5,7 +5,9 @@ import test from "node:test";
 import {
   firstClassCameras,
   mergeAdviceGuideSubjects,
-  mergePromotedSpots
+  mergePromotedSpots,
+  routeCameraPlayback,
+  sanitizeFavoriteIds
 } from "../src/camera-data.js";
 import { filterCameras } from "../src/camera-filters.js";
 import { formatSpotPlaybook, normalizeSpotAdviceRuntime } from "../src/spot-advice.js";
@@ -134,6 +136,37 @@ test("mergeAdviceGuideSubjects ignores malformed guides and omits unsafe page UR
   assert.equal(Object.hasOwn(merged.cameras[0], "surfline"), false);
 });
 
+test("guide merge requires canonical exact map identity and rejects prototype-like ids", () => {
+  const subject = (id) => ({
+    id,
+    name: id,
+    region: "Region",
+    lat: 38,
+    lon: -9,
+    guideOnly: true,
+    claims: [{ id: `${id}-claim` }]
+  });
+  const runtime = {
+    subjectsById: new Map([
+      ["canonical-guide", subject("canonical-guide")],
+      ["map-key", subject("different-value-id")],
+      [" whitespace-guide ", subject(" whitespace-guide ")],
+      ["constructor", subject("constructor")],
+      ["__proto__", subject("__proto__")]
+    ])
+  };
+
+  const merged = mergeAdviceGuideSubjects({ cameras: [] }, runtime);
+
+  assert.deepEqual(merged.cameras.map((row) => row.id), ["canonical-guide"]);
+  const playbookData = {
+    advice: normalizeSpotAdviceRuntime({
+      subjects: { "canonical-guide": subject("canonical-guide") }
+    })
+  };
+  assert.equal(formatSpotPlaybook(merged.cameras[0], playbookData).subjectId, "canonical-guide");
+});
+
 test("real and promoted records win guide identity collisions", () => {
   const runtime = normalizeSpotAdviceRuntime({
     subjects: {
@@ -175,6 +208,34 @@ test("empty or failed advice leaves the camera database unchanged", () => {
   assert.equal(mergeAdviceGuideSubjects(input, { subjectsById: "bad" }), input);
 });
 
+test("persisted guide favorites are removed while real favorites retain their order", () => {
+  const cameras = [
+    { id: "real-a" },
+    { id: "guide", adviceGuideOnly: true },
+    { id: "real-b" }
+  ];
+  const persisted = new Set(["real-b", "guide", "missing", "real-a"]);
+
+  assert.deepEqual([...sanitizeFavoriteIds(cameras, persisted)], ["real-b", "real-a"]);
+});
+
+test("guide playback always clears and never reaches the live player path", () => {
+  for (const guide of [
+    { id: "guide-safe", adviceGuideOnly: true, surfline: { pageUrl: "https://example.com/guide" } },
+    { id: "guide-no-url", adviceGuideOnly: true },
+    { id: "guide-unsafe", adviceGuideOnly: true, surfline: { pageUrl: "javascript:alert(1)" } }
+  ]) {
+    const calls = { clear: 0, play: [] };
+    const mode = routeCameraPlayback(guide, null, {
+      clear() { calls.clear += 1; },
+      play(camera) { calls.play.push(camera.id); }
+    });
+    assert.equal(mode, "guide");
+    assert.equal(calls.clear, 1);
+    assert.deepEqual(calls.play, []);
+  }
+});
+
 test("all 44 selected advice subjects are inspectable after the real app merges", () => {
   const merged = mergeActualAppSubjects();
   const inspectableIds = new Set(merged.cameras.map((row) => row.id));
@@ -202,7 +263,11 @@ test("deferred guides survive the real Explore collection, search, and playbook 
     const playbook = formatSpotPlaybook(guide, spotData);
     assert.equal(playbook.guideOnly, true);
     assert.ok(playbook.sections.some((section) => section.claims.length > 0));
+    assert.equal(matches[0].id, expectedId, `${query} exact-name result is deterministic`);
   }
+
+  const caveMatches = filterCameras(exploreCollection, { query: "Cave" });
+  assert.ok(caveMatches.some((camera) => /carcavelos/i.test(camera.name)), "legacy substring matches remain visible after exact Cave");
 });
 
 test("main wires guides after metadata and promotion merges and labels them without live claims", () => {
@@ -211,4 +276,8 @@ test("main wires guides after metadata and promotion merges and labels them with
   assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*applySpotMetadataToCameraDb\(cameraDb, spotData\),\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
   assert.match(source, /Guide only[^"'`]*no live camera or conditions/i);
   assert.match(source, /camera\.adviceGuideOnly/);
+  assert.match(source, /sanitizeFavoriteIds\(manageSpotCameras\(\), loadFavoriteIds\(/);
+  assert.match(source, /button\.hidden = Boolean\(camera\?\.adviceGuideOnly\)/);
+  assert.match(source, /camera\.adviceGuideOnly\s*\?\s*\{ key: "guide" \}\s*:\s*rateSurfSpot/s);
+  assert.match(source, /routeCameraPlayback\(camera, linked, state\.explorePlayer\)/);
 });
