@@ -1,4 +1,9 @@
-import { firstClassCameras, loadCameraDb, mergePromotedSpots } from "./camera-data.js";
+import {
+  firstClassCameras,
+  loadCameraDb,
+  mergeAdviceGuideSubjects,
+  mergePromotedSpots
+} from "./camera-data.js";
 import {
   camerasForInitialBounds,
   camerasInBounds,
@@ -198,7 +203,7 @@ function getConditions(camera) {
 }
 
 function requestLiveForecastForSelection(camera) {
-  if (!camera || getConditions(camera).source !== "meo-static") return;
+  if (!camera || camera.adviceGuideOnly || getConditions(camera).source !== "meo-static") return;
   if (state.liveForecastPending.has(camera.id)) return;
 
   state.liveForecastPending.add(camera.id);
@@ -603,6 +608,15 @@ function createSurflineControl(camera) {
 function createConditionStrip(camera, { showName = false, compact = false, showSurfline = !compact } = {}) {
   const strip = document.createElement("div");
   strip.className = compact ? "condition-strip condition-strip--compact" : "condition-strip";
+  if (camera.adviceGuideOnly) {
+    const label = "Guide only · no live camera or conditions";
+    strip.setAttribute("aria-label", `${camera.name} / ${label}`);
+    const message = document.createElement("span");
+    message.className = "muted";
+    message.textContent = label;
+    strip.appendChild(message);
+    return strip;
+  }
   const resolved = getConditions(camera);
   strip.setAttribute("aria-label", `${camera.name} / ${formatConditionLine(camera, state.preferences, resolved)}`);
   const driveEstimate = findDriveEstimate(camera, state.spotData);
@@ -763,7 +777,9 @@ function playExploreCamera(camera) {
       return;
     }
     state.explorePlayer.clear();
-    els.exploreFeedStatus.textContent = "Open Surfline report";
+    els.exploreFeedStatus.textContent = camera.adviceGuideOnly
+      ? "Guide only · no live camera or conditions"
+      : "Open Surfline report";
     return;
   }
   state.explorePlayer.play(camera);
@@ -791,7 +807,7 @@ function renderExploreList() {
   const mapScoped = state.activeRoute === "explore" && state.map && state.mapHasInitialFit;
   els.exploreResultsSummary.textContent = mapScoped
     ? `${cameras.length}/${allCameras.length} spots in this map view. Move or zoom the map to change the list.`
-    : `${cameras.length} spots shown. Click a row or marker to watch.`;
+    : `${cameras.length} spots shown. Select a row or marker for details.`;
   els.exploreList.textContent = "";
 
   if (!cameras.length) {
@@ -1004,8 +1020,8 @@ function renderExploreSelection(camera) {
   renderWaterSummaries();
 
   if (!camera) {
-    els.detailName.textContent = "Select a camera";
-    els.detailLocation.textContent = "Choose a marker to watch.";
+    els.detailName.textContent = "Select a spot";
+    els.detailLocation.textContent = "Choose a marker for details.";
     els.detailFavorite.disabled = true;
     syncFavoriteToggle(els.detailFavorite, null);
     renderSlCamBadge(null);
@@ -1279,9 +1295,12 @@ async function init() {
   ]);
 
   state.spotData = spotData;
-  state.db = mergePromotedSpots(
-    applySpotMetadataToCameraDb(cameraDb, spotData),
-    spotData.promotedDb
+  state.db = mergeAdviceGuideSubjects(
+    mergePromotedSpots(
+      applySpotMetadataToCameraDb(cameraDb, spotData),
+      spotData.promotedDb
+    ),
+    spotData.advice
   );
   state.tideData = tideData;
   state.cameras = sortCamerasByLatitudeDescending(firstClassCameras(state.db));

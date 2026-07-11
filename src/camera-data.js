@@ -81,7 +81,12 @@ export function availableCameras(cameraDb) {
 }
 
 export function firstClassCameras(cameraDb) {
-  return cameraDb.cameras.filter((camera) => camera.hasStream || camera.firstClass || camera.promoted);
+  return cameraDb.cameras.filter((camera) => (
+    camera.hasStream
+    || camera.firstClass
+    || camera.promoted
+    || camera.adviceGuideOnly
+  ));
 }
 
 export function mergePromotedSpots(cameraDb, promotedDb) {
@@ -106,4 +111,72 @@ export function mergePromotedSpots(cameraDb, promotedDb) {
     ...cameraDb,
     cameras: [...cameraDb.cameras.filter((c) => !promotedIds.has(c.id)), ...merged]
   };
+}
+
+function guideSubjects(adviceRuntime) {
+  if (adviceRuntime?.subjectsById instanceof Map) {
+    return [...adviceRuntime.subjectsById.values()];
+  }
+  if (adviceRuntime?.subjects && typeof adviceRuntime.subjects === "object") {
+    return Object.values(adviceRuntime.subjects);
+  }
+  return [];
+}
+
+function safeHttpUrl(value) {
+  if (typeof value !== "string") return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function guideRecord(subject) {
+  if (
+    !subject?.guideOnly
+    || typeof subject.id !== "string"
+    || !subject.id.trim()
+    || typeof subject.name !== "string"
+    || !subject.name.trim()
+    || typeof subject.region !== "string"
+    || !subject.region.trim()
+    || !Number.isFinite(subject.lat)
+    || !Number.isFinite(subject.lon)
+    || subject.lat < -90
+    || subject.lat > 90
+    || subject.lon < -180
+    || subject.lon > 180
+  ) {
+    return null;
+  }
+
+  const pageUrl = safeHttpUrl(subject.surfline?.pageUrl);
+  return {
+    id: subject.id,
+    name: subject.name,
+    region: subject.region,
+    lat: subject.lat,
+    lon: subject.lon,
+    ...(pageUrl ? { surfline: { pageUrl } } : {}),
+    adviceGuideOnly: true
+  };
+}
+
+export function mergeAdviceGuideSubjects(cameraDb, adviceRuntime) {
+  if (!Array.isArray(cameraDb?.cameras)) return cameraDb;
+
+  const existingIds = new Set(cameraDb.cameras.map((camera) => camera?.id).filter(Boolean));
+  const appended = [];
+  for (const subject of guideSubjects(adviceRuntime)) {
+    const record = guideRecord(subject);
+    if (!record || existingIds.has(record.id)) continue;
+    existingIds.add(record.id);
+    appended.push(record);
+  }
+
+  return appended.length
+    ? { ...cameraDb, cameras: [...cameraDb.cameras, ...appended] }
+    : cameraDb;
 }

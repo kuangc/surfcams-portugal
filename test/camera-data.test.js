@@ -2,7 +2,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-import { availableCameras, firstClassCameras, loadCameraDb, mergePromotedSpots } from "../src/camera-data.js";
+import {
+  availableCameras,
+  firstClassCameras,
+  loadCameraDb,
+  mergePromotedSpots
+} from "../src/camera-data.js";
 import { DEFAULT_FAVORITE_IDS, INITIAL_BOUNDS_IDS } from "../src/config.js";
 
 const db = JSON.parse(fs.readFileSync("data/beachcam-cameras.json", "utf8"));
@@ -45,6 +50,15 @@ test("first class cameras exclude plain streamless spots", () => {
   ]});
 
   assert.deepEqual(cameras.map((camera) => camera.id), ["explicit-first-class"]);
+});
+
+test("first class cameras include guide-only advice subjects without treating other streamless rows as spots", () => {
+  const cameras = firstClassCameras({ cameras: [
+    { id: "plain-streamless", hasStream: false },
+    { id: "guide-only", adviceGuideOnly: true }
+  ]});
+
+  assert.deepEqual(cameras.map((camera) => camera.id), ["guide-only"]);
 });
 
 test("loadCameraDb merges private stream overrides into embedded cameras", async () => {
