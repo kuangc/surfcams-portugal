@@ -57,7 +57,7 @@ export function isMaterialClaimChange(before, after) {
 }
 
 function resetMaterialReview(before, next) {
-  if (before?.publicationStatus === "published" && isMaterialClaimChange(before, next)) {
+  if (isMaterialClaimChange(before, next)) {
     return { ...next, publicationStatus: "draft", reviewedAt: null, calculationCandidate: false };
   }
   return next;
@@ -90,7 +90,9 @@ export function initializeWorkingState(canonicalDocument, baseDigest) {
     baseDigest,
     autosaveKey: `spot-advice-review:${baseDigest}`,
     canonicalDocument: clone(canonicalDocument),
-    document: clone(canonicalDocument)
+    document: clone(canonicalDocument),
+    editorDrafts: {},
+    savedAt: null
   };
 }
 
@@ -188,17 +190,21 @@ export function mergeClaims(state, targetId, sourceId, patch = {}) {
   const target = state.document.advice.find((claim) => claim.id === targetId);
   const source = state.document.advice.find((claim) => claim.id === sourceId);
   if (!target || !source) throw new Error("merge references an unknown claim");
+  if (!sameValue(target.scope, source.scope)) throw new Error("merge claims must share one scope");
   const combinedEvidence = [...clone(target.evidence ?? [])];
   for (const evidence of source.evidence ?? []) {
     if (!combinedEvidence.some((item) => sameValue(item, evidence))) combinedEvidence.push(clone(evidence));
   }
   let next = updateClaim(state, targetId, { ...clone(patch), evidence: combinedEvidence });
-  const sourceDirectOwners = next.document.spotResearch.filter((row) => row.directClaimIds?.includes(sourceId));
   next = deleteClaim(next, sourceId);
   const document = clone(next.document);
-  for (const research of sourceDirectOwners) {
-    const row = document.spotResearch.find((item) => item.spotId === research.spotId);
-    if (row && !row.directClaimIds.includes(targetId)) row.directClaimIds.push(targetId);
+  withoutClaimMemberships(document, targetId);
+  const merged = document.advice.find((claim) => claim.id === targetId);
+  if (merged.scope.type === "spot") {
+    const row = document.spotResearch.find((item) => item.spotId === merged.scope.id);
+    if (!row) throw new Error(`unknown research spot ${merged.scope.id}`);
+    row.directClaimIds ??= [];
+    row.directClaimIds.push(targetId);
   }
   return withDocument(next, document);
 }
@@ -212,30 +218,174 @@ export function updateResearchRow(state, spotId, patch) {
 }
 
 export function pendingCount(state) {
-  return state.document.advice.filter((claim) => claim.publicationStatus === "draft" || claim.reviewedAt == null).length;
+  const changedRows = (beforeRows, afterRows, key) => {
+    const before = new Map(beforeRows.map((row) => [row[key], row]));
+    const after = new Map(afterRows.map((row) => [row[key], row]));
+    return new Set([...before.keys(), ...after.keys()]).size === 0
+      ? 0
+      : [...new Set([...before.keys(), ...after.keys()])].filter((id) => !sameValue(before.get(id), after.get(id))).length;
+  };
+  const canonical = state.canonicalDocument;
+  let count = changedRows(canonical.advice, state.document.advice, "id")
+    + changedRows(canonical.spotResearch, state.document.spotResearch, "spotId")
+    + changedRows(canonical.areas, state.document.areas, "id");
+  if (canonical.schemaVersion !== state.document.schemaVersion || canonical.updatedAt !== state.document.updatedAt) count += 1;
+  count += Object.keys(state.editorDrafts ?? {}).length;
+  return count;
 }
 
 export function exportFeedback(state) {
   return { schemaVersion: 1, baseDigest: state.baseDigest, document: clone(state.document) };
 }
 
-export function serializeAutosave(state) {
-  return JSON.stringify(exportFeedback(state));
+export function setEditorDraft(state, key, value) {
+  if (typeof key !== "string" || !key) throw new Error("editor draft key is required");
+  return { ...state, editorDrafts: { ...(state.editorDrafts ?? {}), [key]: clone(value) } };
+}
+
+export function clearEditorDraft(state, key) {
+  const editorDrafts = { ...(state.editorDrafts ?? {}) };
+  delete editorDrafts[key];
+  return { ...state, editorDrafts };
+}
+
+export function serializeAutosave(state, savedAt = state.savedAt) {
+  return JSON.stringify({
+    schemaVersion: 1,
+    baseDigest: state.baseDigest,
+    document: clone(state.document),
+    editorDrafts: clone(state.editorDrafts ?? {}),
+    savedAt: savedAt ?? null
+  });
 }
 
 export function recoverAutosave(canonicalDocument, baseDigest, serialized) {
   const state = initializeWorkingState(canonicalDocument, baseDigest);
-  return importFeedback(state, serialized);
+  const value = typeof serialized === "string" ? JSON.parse(serialized) : clone(serialized);
+  assertObject(value, "autosave envelope");
+  if (value.schemaVersion !== 1) throw new Error("autosave schemaVersion must be 1");
+  if (value.baseDigest !== baseDigest) throw new Error("autosave digest does not match this canonical document");
+  assertDocumentShape(value.document);
+  if (value.editorDrafts !== undefined) assertObject(value.editorDrafts, "autosave editorDrafts");
+  return {
+    ...state,
+    document: clone(value.document),
+    editorDrafts: clone(value.editorDrafts ?? {}),
+    savedAt: value.savedAt ?? null
+  };
 }
 
 export function importFeedback(state, input) {
   const envelope = parseEnvelope(input);
   if (envelope.baseDigest !== state.baseDigest) throw new Error("feedback digest does not match this canonical document");
-  return withDocument(state, clone(envelope.document));
+  return { ...withDocument(state, clone(envelope.document)), editorDrafts: {}, savedAt: null };
 }
 
 export function resetWorkingState(state) {
-  return withDocument(state, clone(state.canonicalDocument));
+  return { ...withDocument(state, clone(state.canonicalDocument)), editorDrafts: {}, savedAt: null };
+}
+
+export function filterReviewSpots(spots, filters = {}) {
+  const topic = String(filters.topic ?? "").trim().toLowerCase();
+  return spots.filter((spot) => (
+    (!filters.area || spot.areaIds.includes(filters.area))
+    && (!filters.scope || spot.applicableScopeTypes.includes(filters.scope))
+    && (!topic || spot.topics.some((value) => value.toLowerCase().includes(topic)))
+    && (!filters.confidence || spot.confidences.includes(filters.confidence))
+    && (!filters.publication || spot.publications.includes(filters.publication))
+    && (!filters.consensus || spot.consensuses.includes(filters.consensus))
+    && (!filters.expiry || (filters.expiry === "set" ? spot.expiries.length > 0 : spot.expiries.length === 0))
+    && (!filters.missingDirect || spot.missingDirectEvidence)
+  ));
+}
+
+const SCOPE_RANK = { area: 1, stretch: 2, spot: 3 };
+
+export function resolveSpotAdvicePreview(document, context, spotId) {
+  const research = document.spotResearch.find((row) => row.spotId === spotId);
+  if (!research) throw new Error(`unknown research spot ${spotId}`);
+  const areaIds = document.areas.filter((area) => area.spotIds.includes(spotId)).map((area) => area.id);
+  const stretchIds = (context.stretches?.stretches ?? []).filter((stretch) => stretch.surflineSpotIds.includes(spotId)).map((stretch) => stretch.id);
+  const directIds = new Set(research.directClaimIds ?? []);
+  const inheritedIds = new Set((research.inheritedApprovals ?? []).map((approval) => approval.claimId));
+  const applies = (claim) => claim.scope.type === "spot"
+    ? claim.scope.id === spotId
+    : claim.scope.type === "area"
+      ? areaIds.includes(claim.scope.id)
+      : stretchIds.includes(claim.scope.id);
+  const applicableClaims = document.advice.filter((claim) => applies(claim));
+  const signedOffClaims = applicableClaims.filter((claim) => claim.publicationStatus === "published" && (
+    (claim.scope.type === "spot" && directIds.has(claim.id))
+    || (claim.scope.type !== "spot" && inheritedIds.has(claim.id))
+  ));
+  const grouped = new Map();
+  for (const claim of signedOffClaims) {
+    if (!grouped.has(claim.overrideKey)) grouped.set(claim.overrideKey, []);
+    grouped.get(claim.overrideKey).push(claim);
+  }
+  const effectiveClaims = [];
+  const overriddenClaims = [];
+  for (const claims of grouped.values()) {
+    const rank = Math.max(...claims.map((claim) => SCOPE_RANK[claim.scope.type]));
+    effectiveClaims.push(...claims.filter((claim) => SCOPE_RANK[claim.scope.type] === rank));
+    overriddenClaims.push(...claims.filter((claim) => SCOPE_RANK[claim.scope.type] < rank));
+  }
+  effectiveClaims.sort((left, right) => left.id.localeCompare(right.id));
+  overriddenClaims.sort((left, right) => left.id.localeCompare(right.id));
+  return {
+    spotId,
+    areaIds,
+    stretchIds,
+    applicableClaims,
+    signedOffClaims,
+    effectiveClaims,
+    overriddenClaims,
+    directClaimIds: [...directIds],
+    inheritedClaimIds: [...inheritedIds]
+  };
+}
+
+function formatSavedTime(savedAt) {
+  if (!savedAt) return "Autosave ready";
+  const date = new Date(savedAt);
+  return Number.isNaN(date.getTime()) ? "Autosaved locally" : `Autosaved locally at ${date.toLocaleTimeString()}`;
+}
+
+export function createReviewRuntime({ canonicalDocument, baseDigest, storage, now = () => new Date() }) {
+  let current = initializeWorkingState(canonicalDocument, baseDigest);
+  let unsaved = false;
+  let status = "Autosave ready";
+  const recovered = storage?.getItem?.(current.autosaveKey);
+  if (recovered) {
+    try {
+      current = recoverAutosave(canonicalDocument, baseDigest, recovered);
+      status = current.savedAt ? formatSavedTime(current.savedAt) : "Recovered local autosave";
+    } catch {}
+  }
+  return {
+    state: () => current,
+    replaceState(next) { current = next; unsaved = true; status = "Unsaved; autosave queued"; return current; },
+    typeDraft(key, value) { current = setEditorDraft(current, key, value); unsaved = true; status = "Unsaved; autosave queued"; return current; },
+    clearDraft(key) { current = clearEditorDraft(current, key); return current; },
+    saveNow() {
+      const savedAt = now().toISOString();
+      current = { ...current, savedAt };
+      storage?.setItem?.(current.autosaveKey, serializeAutosave(current, savedAt));
+      unsaved = false;
+      status = formatSavedTime(savedAt);
+      return current;
+    },
+    reset() {
+      storage?.removeItem?.(current.autosaveKey);
+      current = resetWorkingState(current);
+      unsaved = false;
+      status = "Reset to canonical";
+      return current;
+    },
+    beforeUnloadShouldWarn: () => unsaved,
+    pendingCount: () => pendingCount(current),
+    autosaveStatus: () => status
+  };
 }
 
 export function isSafeExternalUrl(value) {

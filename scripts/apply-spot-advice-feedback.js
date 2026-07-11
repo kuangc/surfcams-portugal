@@ -40,10 +40,8 @@ export function prepareFeedbackCandidate(canonical, feedback) {
     }
     if (!isMaterialClaimChange(before, claim)) continue;
     claim.calculationCandidate = false;
-    if (claim.publicationStatus === "published") {
-      claim.publicationStatus = "draft";
-      claim.reviewedAt = null;
-    }
+    claim.publicationStatus = "draft";
+    claim.reviewedAt = null;
   }
   return candidate;
 }

@@ -9,6 +9,7 @@ import { buildSpotAdviceFiles } from "../scripts/build-spot-advice.js";
 import {
   canonicalJson,
   compileSpotAdvice,
+  digestClaim,
   digestDocument
 } from "../scripts/lib/spot-advice-build.js";
 import {
@@ -17,15 +18,19 @@ import {
   deleteClaim,
   deleteEvidence,
   exportFeedback,
+  filterReviewSpots,
   importFeedback,
   initializeWorkingState,
   isSafeExternalUrl,
   mergeClaims,
   pendingCount,
+  createReviewRuntime,
   recoverAutosave,
   resetWorkingState,
   rescopeClaim,
+  resolveSpotAdvicePreview,
   serializeAutosave,
+  setEditorDraft,
   splitClaim,
   updateClaim,
   updateEvidence,
@@ -129,6 +134,30 @@ test("every material claim field resets publication review metadata", async (t) 
   }
 });
 
+test("material edits reset rejected and draft claims in both editor and apply-time defense", () => {
+  const rejectedState = stateFixture();
+  rejectedState.document.advice[0].publicationStatus = "rejected";
+  const rejected = updateClaim(rejectedState, rejectedState.document.advice[0].id, { summary: "Rejected claim changed." });
+  assert.deepEqual(
+    Object.fromEntries(["publicationStatus", "reviewedAt", "calculationCandidate"].map((key) => [key, rejected.document.advice[0][key]])),
+    { publicationStatus: "draft", reviewedAt: null, calculationCandidate: false }
+  );
+
+  const draftState = stateFixture();
+  draftState.document.advice[0].publicationStatus = "draft";
+  const draft = updateClaim(draftState, draftState.document.advice[0].id, { summary: "Draft claim changed." });
+  assert.equal(draft.document.advice[0].reviewedAt, null);
+
+  const canonical = fixtureDocument();
+  canonical.advice[0].publicationStatus = "rejected";
+  const feedback = { schemaVersion: 1, baseDigest: digestDocument(canonical), document: clone(canonical) };
+  feedback.document.advice[0].summary = "Apply-time rejected edit.";
+  const candidate = prepareFeedbackCandidate(canonical, feedback);
+  assert.equal(candidate.advice[0].publicationStatus, "draft");
+  assert.equal(candidate.advice[0].reviewedAt, null);
+  assert.equal(candidate.advice[0].calculationCandidate, false);
+});
+
 test("nonmaterial edits preserve publication state while explicit review can publish a draft", () => {
   const state = stateFixture();
   const claim = state.document.advice[0];
@@ -199,6 +228,43 @@ test("research rows can be edited without resetting unrelated claim publication"
   assert.equal(next.document.advice[0].publicationStatus, firstClaim.publicationStatus);
 });
 
+test("pending count compares the complete document to canonical and includes unsaved editor drafts", () => {
+  const state = stateFixture();
+  assert.equal(pendingCount(state), 0);
+  assert.equal(pendingCount(updateResearchRow(state, "surfline-nazare", { editorialNotes: "changed" })), 1);
+  assert.equal(pendingCount(updateClaim(state, state.document.advice[0].id, { revalidateAfter: "2027-01-01" })), 1);
+  assert.equal(pendingCount(updateEvidence(state, state.document.advice[0].id, 0, { title: "Changed evidence" })), 1);
+  assert.equal(pendingCount(deleteClaim(state, state.document.advice[0].id)), 2);
+  assert.equal(pendingCount(setEditorDraft(state, "claim:research-nazare-swell", { summary: "typed, not saved" })), 1);
+});
+
+test("review runtime autosaves typed drafts with a saved time, recovers them, warns only before save, and reset returns zero pending", () => {
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value),
+    removeItem: (key) => values.delete(key)
+  };
+  const canonical = fixtureDocument();
+  const baseDigest = digestDocument(canonical);
+  const runtime = createReviewRuntime({ canonicalDocument: canonical, baseDigest, storage, now: () => new Date("2026-07-11T12:34:56.000Z") });
+  runtime.typeDraft("research:surfline-nazare", "typed before Save");
+  assert.equal(runtime.beforeUnloadShouldWarn(), true);
+  assert.equal(runtime.pendingCount(), 1);
+  runtime.saveNow();
+  assert.equal(runtime.beforeUnloadShouldWarn(), false);
+  assert.match(runtime.autosaveStatus(), /34:56/i);
+
+  const recovered = createReviewRuntime({ canonicalDocument: canonical, baseDigest, storage, now: () => new Date("2026-07-11T12:35:00.000Z") });
+  assert.equal(recovered.state().editorDrafts["research:surfline-nazare"], "typed before Save");
+  assert.equal(recovered.pendingCount(), 1);
+  recovered.reset();
+  assert.deepEqual(recovered.state().document, canonical);
+  assert.deepEqual(recovered.state().editorDrafts, {});
+  assert.equal(recovered.pendingCount(), 0);
+  assert.equal(recovered.beforeUnloadShouldWarn(), false);
+});
+
 test("autosave serialization recovers only the matching digest and reset restores canonical", () => {
   const state = updateResearchRow(stateFixture(), "surfline-nazare", { editorialNotes: "Autosaved" });
   const serialized = serializeAutosave(state);
@@ -236,17 +302,89 @@ test("review model and HTML expose all 44 spots, filters, cockpit panes, and edi
   assert.equal(model.spots.length, 44);
   const html = renderSpotAdviceReviewHtml(model);
   assert.equal((html.match(/data-spot-id=/g) || []).length, 44);
+  assert.match(html, /\[hidden\]\s*\{[^}]*display\s*:\s*none\s*!important/i);
   assert.match(html, /data-spot-id="surfline-nazare"[\s\S]*?research complete[\s\S]*?direct found/i);
   const scripts = [...html.matchAll(/<script(?: [^>]*)?>([\s\S]*?)<\/script>/g)];
   const executable = scripts.find((match) => !match[0].includes('type="application/json"'))?.[1];
   assert.ok(executable);
-  assert.doesNotThrow(() => new Function(executable));
+  assert.doesNotThrow(() => new Function(executable.replace(/^\s*import[\s\S]*?;\s*/, "")));
   for (const marker of [
     "filter-area", "filter-scope", "filter-topic", "filter-confidence", "filter-publication", "filter-consensus", "filter-expiry", "filter-missing-direct",
     "research outcome", "direct evidence", "coverage", "conflicts", "claim-editor", "evidence-editor", "Split claim", "Merge claim", "Re-scope",
     "conflict group", "confidence", "publication", "reviewed", "expiry", "source-pane", "inheritance-preview", "Local lens", "Import", "Export", "Reset",
     "autosave-status", "pending-count", "beforeunload", "localStorage"
   ]) assert.match(html, new RegExp(marker, "i"), marker);
+});
+
+test("filter runtime uses canonical area and actual applicable claim scopes", () => {
+  const document = fixtureDocument();
+  const model = buildSpotAdviceReviewModel({ document, context: fixtureContext() });
+  const peniche = filterReviewSpots(model.spots, { area: "peniche" });
+  assert.equal(peniche.length, 5);
+  assert.ok(peniche.every((spot) => spot.areaIds.includes("peniche")));
+  const spotScoped = filterReviewSpots(model.spots, { scope: "spot" });
+  assert.equal(spotScoped.length, 42);
+  assert.ok(spotScoped.every((spot) => spot.applicableScopeTypes.includes("spot")));
+  assert.ok(!spotScoped.some((spot) => spot.id === "surfline-praia-da-laje" || spot.id === "surfline-praia-do-rei"));
+});
+
+test("spot ledger separates camera and published advice coverage with applicability signoff and effective inheritance", () => {
+  const document = fixtureDocument();
+  const context = fixtureContext();
+  const model = buildSpotAdviceReviewModel({ document, context });
+  const laje = model.spots.find((spot) => spot.id === "surfline-praia-da-laje");
+  assert.equal(laje.cameraCoverage, "spot");
+  assert.equal(laje.adviceCoverage.status, "published");
+  assert.match(laje.applicabilitySignoff.label, /inherited|approved/i);
+  const lajePreview = resolveSpotAdvicePreview(document, context, laje.id);
+  assert.ok(lajePreview.effectiveClaims.some((claim) => claim.id === "linha-stretch-sheltered-size-translation"));
+  assert.ok(lajePreview.effectiveClaims.some((claim) => claim.scope.type === "stretch"));
+
+  const rainhaPreview = resolveSpotAdvicePreview(document, context, "surfline-praia-da-rainha");
+  assert.ok(rainhaPreview.effectiveClaims.some((claim) => claim.id === "research-praia-da-rainha-tide"));
+  assert.ok(rainhaPreview.overriddenClaims.some((claim) => claim.id === "user-caparica-high-tide"));
+
+  const withArea = clone(document);
+  const areaClaim = {
+    ...clone(withArea.advice[0]),
+    id: "fixture-peniche-area-wind",
+    scope: { type: "area", id: "peniche" },
+    topic: "wind",
+    overrideKey: "wind.fixture-area",
+    summary: "Fixture area wind guidance."
+  };
+  withArea.advice.push(areaClaim);
+  withArea.spotResearch.find((row) => row.spotId === "surfline-baleal").inheritedApprovals = [
+    { claimId: areaClaim.id, claimDigest: digestClaim(areaClaim) }
+  ];
+  const areaPreview = resolveSpotAdvicePreview(withArea, context, "surfline-baleal");
+  assert.ok(areaPreview.effectiveClaims.some((claim) => claim.id === areaClaim.id && claim.scope.type === "area"));
+});
+
+test("merge and re-scope clean all memberships and produce Task2-valid browser-state exports", () => {
+  const context = fixtureContext();
+  let state = stateFixture();
+  state = addClaim(state, draftClaim("browser-merge-target"), { directSpotId: "surfline-nazare" });
+  state = addClaim(state, draftClaim("browser-merge-source"), { directSpotId: "surfline-nazare" });
+  state.document.spotResearch[1].inheritedApprovals = [
+    { claimId: "browser-merge-source", claimDigest: "0".repeat(64) },
+    { claimId: "browser-merge-target", claimDigest: "1".repeat(64) }
+  ];
+  state = mergeClaims(state, "browser-merge-target", "browser-merge-source", { summary: "Browser merged draft." });
+  assert.ok(state.document.spotResearch[0].directClaimIds.includes("browser-merge-target"));
+  assert.ok(state.document.spotResearch.every((row) => !(row.directClaimIds ?? []).includes("browser-merge-source")));
+  assert.ok(state.document.spotResearch.every((row) => !(row.inheritedApprovals ?? []).some((approval) => ["browser-merge-source", "browser-merge-target"].includes(approval.claimId))));
+  assert.doesNotThrow(() => compileSpotAdvice(exportFeedback(state).document, context));
+
+  state = rescopeClaim(state, "browser-merge-target", { type: "spot", id: "surfline-baleal" });
+  assert.ok(!state.document.spotResearch[0].directClaimIds.includes("browser-merge-target"));
+  assert.ok(state.document.spotResearch[1].directClaimIds.includes("browser-merge-target"));
+  assert.ok(state.document.spotResearch.every((row) => !(row.inheritedApprovals ?? []).some((approval) => approval.claimId === "browser-merge-target")));
+  assert.doesNotThrow(() => compileSpotAdvice(exportFeedback(state).document, context));
+
+  const model = buildSpotAdviceReviewModel({ document: fixtureDocument(), context });
+  const html = renderSpotAdviceReviewHtml(model);
+  assert.match(html, /import\s*\{[^}]*mergeClaims[^}]*rescopeClaim[^}]*\}\s*from\s*["']\.\.\/scripts\/lib\/spot-advice-review\.js["']/s);
 });
 
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {
