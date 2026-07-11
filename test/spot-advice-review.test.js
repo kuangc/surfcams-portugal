@@ -15,6 +15,7 @@ import {
 import {
   addClaim,
   addEvidence,
+  buildDynamicReviewSpots,
   deleteClaim,
   deleteEvidence,
   exportFeedback,
@@ -265,6 +266,21 @@ test("review runtime autosaves typed drafts with a saved time, recovers them, wa
   assert.equal(recovered.beforeUnloadShouldWarn(), false);
 });
 
+test("typed draft recovery preserves complete claim fields with invalid rule JSON and explicit empty textareas", () => {
+  let state = stateFixture();
+  const claimKey = "claim:research-nazare-swell";
+  state = setEditorDraft(state, claimKey, { summary: "Changed before save", topic: "swell", rule: { type: "qualitative" } });
+  state = setEditorDraft(state, claimKey, { rule: "{ invalid json" });
+  state = setEditorDraft(state, "evidence:research-nazare-swell:0", "");
+  state = setEditorDraft(state, "research:surfline-nazare", "");
+  const recovered = recoverAutosave(state.canonicalDocument, state.baseDigest, serializeAutosave(state, "2026-07-11T12:34:56.000Z"));
+  assert.equal(recovered.editorDrafts[claimKey].summary, "Changed before save");
+  assert.equal(recovered.editorDrafts[claimKey].topic, "swell");
+  assert.equal(recovered.editorDrafts[claimKey].rule, "{ invalid json");
+  assert.equal(recovered.editorDrafts["evidence:research-nazare-swell:0"], "");
+  assert.equal(recovered.editorDrafts["research:surfline-nazare"], "");
+});
+
 test("autosave serialization recovers only the matching digest and reset restores canonical", () => {
   const state = updateResearchRow(stateFixture(), "surfline-nazare", { editorialNotes: "Autosaved" });
   const serialized = serializeAutosave(state);
@@ -328,6 +344,43 @@ test("filter runtime uses canonical area and actual applicable claim scopes", ()
   assert.ok(!spotScoped.some((spot) => spot.id === "surfline-praia-da-laje" || spot.id === "surfline-praia-do-rei"));
 });
 
+test("dynamic review rows rebuild filter metadata, advice coverage, and mixed applicability from working state", () => {
+  const document = fixtureDocument();
+  const context = fixtureContext();
+  const model = buildSpotAdviceReviewModel({ document, context });
+  let rows = buildDynamicReviewSpots(document, model.spotCatalog, model.previewContext);
+  let nazare = rows.find((spot) => spot.id === "surfline-nazare");
+  assert.ok(nazare.publications.includes("published"));
+  assert.equal(nazare.adviceCoverage.status, "published");
+
+  let state = initializeWorkingState(document, digestDocument(document));
+  state = updateClaim(state, "research-nazare-swell", {
+    summary: "A material draft edit.",
+    topic: "wind",
+    confidence: "low",
+    revalidateAfter: "2027-01-01"
+  });
+  rows = buildDynamicReviewSpots(state.document, model.spotCatalog, model.previewContext);
+  nazare = rows.find((spot) => spot.id === "surfline-nazare");
+  assert.deepEqual(nazare.publications, ["draft"]);
+  assert.ok(nazare.topics.includes("wind"));
+  assert.ok(nazare.confidences.includes("low"));
+  assert.deepEqual(nazare.expiries, ["2027-01-01"]);
+  assert.equal(nazare.adviceCoverage.status, "missing");
+  assert.equal(filterReviewSpots(rows, { publication: "published" }).some((spot) => spot.id === nazare.id), false);
+  assert.equal(filterReviewSpots(rows, { publication: "draft" }).some((spot) => spot.id === nazare.id), true);
+
+  state = rescopeClaim(state, "research-nazare-swell", { type: "spot", id: "surfline-baleal" });
+  rows = buildDynamicReviewSpots(state.document, model.spotCatalog, model.previewContext);
+  assert.equal(rows.find((spot) => spot.id === "surfline-nazare").applicableScopeTypes.includes("spot"), false);
+  assert.equal(rows.find((spot) => spot.id === "surfline-baleal").topics.includes("wind"), true);
+
+  const rainha = buildDynamicReviewSpots(document, model.spotCatalog, model.previewContext).find((spot) => spot.id === "surfline-praia-da-rainha");
+  assert.ok(rainha.applicabilitySignoff.directCount > 0);
+  assert.ok(rainha.applicabilitySignoff.inheritedCount > 0);
+  assert.match(rainha.applicabilitySignoff.label, /direct.*inherited/i);
+});
+
 test("spot ledger separates camera and published advice coverage with applicability signoff and effective inheritance", () => {
   const document = fixtureDocument();
   const context = fixtureContext();
@@ -385,6 +438,8 @@ test("merge and re-scope clean all memberships and produce Task2-valid browser-s
   const model = buildSpotAdviceReviewModel({ document: fixtureDocument(), context });
   const html = renderSpotAdviceReviewHtml(model);
   assert.match(html, /import\s*\{[^}]*mergeClaims[^}]*rescopeClaim[^}]*\}\s*from\s*["']\.\.\/scripts\/lib\/spot-advice-review\.js["']/s);
+  assert.match(html, /buildDynamicReviewSpots/);
+  assert.match(html, /function refreshSpotRows/);
 });
 
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {

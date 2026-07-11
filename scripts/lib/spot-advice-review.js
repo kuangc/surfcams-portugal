@@ -240,7 +240,12 @@ export function exportFeedback(state) {
 
 export function setEditorDraft(state, key, value) {
   if (typeof key !== "string" || !key) throw new Error("editor draft key is required");
-  return { ...state, editorDrafts: { ...(state.editorDrafts ?? {}), [key]: clone(value) } };
+  const previous = state.editorDrafts?.[key];
+  const mergeable = previous && value
+    && typeof previous === "object" && !Array.isArray(previous)
+    && typeof value === "object" && !Array.isArray(value);
+  const nextValue = mergeable ? { ...clone(previous), ...clone(value) } : clone(value);
+  return { ...state, editorDrafts: { ...(state.editorDrafts ?? {}), [key]: nextValue } };
 }
 
 export function clearEditorDraft(state, key) {
@@ -343,6 +348,49 @@ export function resolveSpotAdvicePreview(document, context, spotId) {
     directClaimIds: [...directIds],
     inheritedClaimIds: [...inheritedIds]
   };
+}
+
+export function buildDynamicReviewSpots(document, spotCatalog, context) {
+  const claimsById = new Map(document.advice.map((claim) => [claim.id, claim]));
+  const researchById = new Map(document.spotResearch.map((row) => [row.spotId, row]));
+  return spotCatalog.map((catalog) => {
+    const research = researchById.get(catalog.id);
+    const preview = resolveSpotAdvicePreview(document, context, catalog.id);
+    const applicable = preview.applicableClaims;
+    const directClaims = (research?.directClaimIds ?? []).map((id) => claimsById.get(id)).filter(Boolean);
+    const inheritedClaims = (research?.inheritedApprovals ?? []).map((approval) => claimsById.get(approval.claimId)).filter(Boolean);
+    const directCount = directClaims.length;
+    const inheritedCount = inheritedClaims.length;
+    return {
+      ...clone(catalog),
+      areaIds: preview.areaIds,
+      stretchIds: preview.stretchIds,
+      research: clone(research),
+      directClaimIds: directClaims.map((claim) => claim.id),
+      inheritedClaimIds: inheritedClaims.map((claim) => claim.id),
+      applicableClaimIds: applicable.map((claim) => claim.id),
+      applicableScopeTypes: [...new Set(applicable.map((claim) => claim.scope.type))],
+      topics: [...new Set(applicable.map((claim) => claim.topic))],
+      confidences: [...new Set(applicable.map((claim) => claim.confidence))],
+      publications: [...new Set(applicable.map((claim) => claim.publicationStatus))],
+      consensuses: [...new Set(applicable.map((claim) => claim.consensus))],
+      expiries: applicable.map((claim) => claim.revalidateAfter).filter(Boolean),
+      missingDirectEvidence: research?.directEvidenceOutcome === "no-credible-spot-source-found",
+      adviceCoverage: {
+        status: preview.effectiveClaims.length > 0 ? "published" : "missing",
+        effectiveCount: preview.effectiveClaims.length,
+        effectiveClaimIds: preview.effectiveClaims.map((claim) => claim.id),
+        overriddenClaimIds: preview.overriddenClaims.map((claim) => claim.id)
+      },
+      applicabilitySignoff: {
+        directCount,
+        inheritedCount,
+        reviewedAt: research?.reviewedAt ?? null,
+        label: `${directCount} direct signed off · ${inheritedCount} inherited approved`
+      },
+      conflictCount: applicable.filter((claim) => claim.consensus === "unresolved" || claim.conflictGroupId).length
+    };
+  });
 }
 
 function formatSavedTime(savedAt) {

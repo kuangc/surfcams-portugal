@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
 import { digestDocument } from "./lib/spot-advice-build.js";
-import { isSafeExternalUrl, resolveSpotAdvicePreview } from "./lib/spot-advice-review.js";
+import { buildDynamicReviewSpots, isSafeExternalUrl } from "./lib/spot-advice-review.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_OUTPUT_PATH = path.join(ROOT, ".local", "spot-advice-review.html");
@@ -34,75 +34,28 @@ function safeLink(url, label) {
   return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
 }
 
-function appliesToSpot(claim, spotId, areaIds, stretchIds) {
-  if (claim.scope.type === "spot") return claim.scope.id === spotId;
-  if (claim.scope.type === "area") return areaIds.includes(claim.scope.id);
-  return stretchIds.includes(claim.scope.id);
-}
-
 export function buildSpotAdviceReviewModel({ document, context, baseDigest = digestDocument(document) }) {
   const surflineById = new Map((context.surflineSpots?.spots ?? []).map((spot) => [spot.id, spot]));
   const promotedById = new Map((context.promotedDb?.promoted ?? []).map((spot) => [spot.id, spot]));
   const deferredById = new Map((context.promotedDb?.deferred ?? []).map((spot) => [spot.surflineSpotId, spot]));
-  const researchById = new Map(document.spotResearch.map((row) => [row.spotId, row]));
-  const claimsById = new Map(document.advice.map((claim) => [claim.id, claim]));
-  const spots = context.promotions.promoted.map((promotion) => {
+  const spotCatalog = context.promotions.promoted.map((promotion) => {
     const id = promotion.surflineSpotId;
     const catalog = surflineById.get(id) ?? { id, name: id };
-    const research = researchById.get(id);
-    const areaIds = document.areas.filter((area) => area.spotIds.includes(id)).map((area) => area.id);
-    const stretchIds = (context.stretches?.stretches ?? []).filter((stretch) => stretch.surflineSpotIds.includes(id)).map((stretch) => stretch.id);
-    const applicable = document.advice.filter((claim) => appliesToSpot(claim, id, areaIds, stretchIds));
-    const preview = resolveSpotAdvicePreview(document, context, id);
-    const directClaims = (research?.directClaimIds ?? []).map((claimId) => claimsById.get(claimId)).filter(Boolean);
-    const inheritedClaims = (research?.inheritedApprovals ?? []).map((approval) => claimsById.get(approval.claimId)).filter(Boolean);
-    const conflicts = applicable.filter((claim) => claim.consensus === "unresolved" || claim.conflictGroupId);
     const cameraCoverage = promotedById.get(id)?.camCoverage ?? (deferredById.has(id) ? "deferred" : "none");
-    const directCount = research?.directClaimIds?.length ?? 0;
-    const inheritedCount = research?.inheritedApprovals?.length ?? 0;
-    return {
-      id,
-      name: catalog.name,
-      lat: catalog.lat,
-      lon: catalog.lon,
-      areaIds,
-      stretchIds,
-      research,
-      directClaimIds: directClaims.map((claim) => claim.id),
-      inheritedClaimIds: inheritedClaims.map((claim) => claim.id),
-      applicableClaimIds: applicable.map((claim) => claim.id),
-      applicableScopeTypes: [...new Set(applicable.map((claim) => claim.scope.type))],
-      topics: [...new Set(applicable.map((claim) => claim.topic))],
-      confidences: [...new Set(applicable.map((claim) => claim.confidence))],
-      publications: [...new Set(applicable.map((claim) => claim.publicationStatus))],
-      consensuses: [...new Set(applicable.map((claim) => claim.consensus))],
-      expiries: applicable.map((claim) => claim.revalidateAfter).filter(Boolean),
-      missingDirectEvidence: research?.directEvidenceOutcome === "no-credible-spot-source-found",
-      cameraCoverage,
-      adviceCoverage: {
-        status: preview.effectiveClaims.length > 0 ? "published" : "missing",
-        effectiveCount: preview.effectiveClaims.length,
-        effectiveClaimIds: preview.effectiveClaims.map((claim) => claim.id),
-        overriddenClaimIds: preview.overriddenClaims.map((claim) => claim.id)
-      },
-      applicabilitySignoff: {
-        directCount,
-        inheritedCount,
-        reviewedAt: research?.reviewedAt ?? null,
-        label: directCount > 0 ? `${directCount} direct signed off` : `${inheritedCount} inherited approved`
-      },
-      conflictCount: conflicts.length
-    };
+    return { id, name: catalog.name, lat: catalog.lat, lon: catalog.lon, cameraCoverage };
   });
+  const previewContext = { stretches: context.stretches };
+  const spots = buildDynamicReviewSpots(document, spotCatalog, previewContext);
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     baseDigest,
     document,
     spots,
+    spotCatalog,
     areas: document.areas.map(({ id, name }) => ({ id, name })),
     stretches: (context.stretches?.stretches ?? []).map(({ id, name }) => ({ id, name })),
-    previewContext: { stretches: context.stretches },
+    previewContext,
     defaultFavoriteIds: context.defaultFavoriteIds ?? DEFAULT_FAVORITE_IDS
   };
 }
@@ -184,16 +137,17 @@ export function renderSpotAdviceReviewHtml(model) {
 </main>
 <script id="review-data" type="application/json">${scriptJson(model)}</script>
 <script type="module">
-import { addClaim, addEvidence, clearEditorDraft, createReviewRuntime, deleteClaim, deleteEvidence, exportFeedback, filterReviewSpots, importFeedback, isSafeExternalUrl, mergeClaims, rescopeClaim, resolveSpotAdvicePreview, splitClaim, updateClaim, updateEvidence, updateResearchRow } from "../scripts/lib/spot-advice-review.js";
+import { addClaim, addEvidence, buildDynamicReviewSpots, clearEditorDraft, createReviewRuntime, deleteClaim, deleteEvidence, exportFeedback, filterReviewSpots, importFeedback, isSafeExternalUrl, mergeClaims, rescopeClaim, resolveSpotAdvicePreview, splitClaim, updateClaim, updateEvidence, updateResearchRow } from "../scripts/lib/spot-advice-review.js";
 
 const bootstrap = JSON.parse(document.getElementById("review-data").textContent);
 const runtime = createReviewRuntime({ canonicalDocument: bootstrap.document, baseDigest: bootstrap.baseDigest, storage: localStorage });
 let working = runtime.state().document;
+let reviewSpots = buildDynamicReviewSpots(working, bootstrap.spotCatalog, bootstrap.previewContext);
 let selectedSpotId = bootstrap.spots[0]?.id || null;
 let selectedClaimId = null;
 let saveTimer = null;
 const byId = (id) => document.getElementById(id);
-const spotMeta = () => bootstrap.spots.find((spot) => spot.id === selectedSpotId);
+const spotMeta = () => reviewSpots.find((spot) => spot.id === selectedSpotId);
 const research = () => working.spotResearch.find((row) => row.spotId === selectedSpotId);
 const claim = () => working.advice.find((item) => item.id === selectedClaimId);
 const applicable = (item, spot) => item.scope.type === "spot" ? item.scope.id === spot.id : item.scope.type === "area" ? spot.areaIds.includes(item.scope.id) : spot.stretchIds.includes(item.scope.id);
@@ -223,9 +177,20 @@ function renderLink(container, source) {
   const note = document.createElement("p"); note.textContent = source.rationale || source.supportedClaim || "";
   card.append(heading,meta,note); container.append(card);
 }
+function refreshSpotRows() {
+  reviewSpots = buildDynamicReviewSpots(working, bootstrap.spotCatalog, bootstrap.previewContext);
+  for (const spot of reviewSpots) {
+    const row = [...document.querySelectorAll(".spot-row")].find((node) => node.dataset.spotId === spot.id);
+    if (!row) continue;
+    row.dataset.area = spot.areaIds.join(" "); row.dataset.scope = spot.applicableScopeTypes.join(" "); row.dataset.topic = spot.topics.join(" "); row.dataset.confidence = spot.confidences.join(" "); row.dataset.publication = spot.publications.join(" "); row.dataset.consensus = spot.consensuses.join(" "); row.dataset.expiry = spot.expiries.join(" "); row.dataset.missingDirect = String(spot.missingDirectEvidence);
+    const badges = row.querySelector(".badges"); badges.replaceChildren();
+    const values = [spot.areaIds.join(", ")||"unassigned","research "+(spot.research?.status||"missing"),"direct "+(spot.research?.directEvidenceOutcome||"missing"),"camera "+spot.cameraCoverage,"advice "+spot.adviceCoverage.status+" ("+spot.adviceCoverage.effectiveCount+")","applicability "+spot.applicabilitySignoff.label,...(spot.conflictCount?[spot.conflictCount+" conflicts"]:[])];
+    for (const value of values) { const badge=document.createElement("em"); badge.textContent=value; badges.append(badge); }
+  }
+}
 function renderFilters() {
   const filters = { area: byId("filter-area").value, scope: byId("filter-scope").value, topic: byId("filter-topic").value, confidence: byId("filter-confidence").value, publication: byId("filter-publication").value, consensus: byId("filter-consensus").value, expiry: byId("filter-expiry").value, missingDirect: byId("filter-missing-direct").checked };
-  const visible = new Set(filterReviewSpots(bootstrap.spots, filters).map((spot) => spot.id));
+  const visible = new Set(filterReviewSpots(reviewSpots, filters).map((spot) => spot.id));
   document.querySelectorAll(".spot-row").forEach((row) => { row.hidden = !visible.has(row.dataset.spotId); });
 }
 function readClaimForm() {
@@ -239,13 +204,13 @@ function renderClaimEditor() {
   const value = {...item,...draft,scope:draft.scope||item.scope};
   byId("claim-id").value=item.id; byId("claim-topic").value=value.topic; byId("claim-scope-type").value=value.scope.type; byId("claim-scope-id").value=value.scope.id; byId("claim-override-key").value=value.overrideKey; byId("claim-summary").value=value.summary; byId("claim-rule").value=typeof value.rule==="string"?value.rule:JSON.stringify(value.rule,null,2); byId("claim-confidence").value=value.confidence; byId("claim-publication").value=value.publicationStatus; byId("claim-reviewed").value=value.reviewedAt||""; byId("claim-expiry").value=value.revalidateAfter||""; byId("claim-consensus").value=value.consensus; byId("claim-conflict-group").value=value.conflictGroupId||""; byId("claim-position").value=value.position||"";
   const evidenceList=byId("evidence-list"); evidenceList.replaceChildren();
-  item.evidence.forEach((evidence,index)=>{const key="evidence:"+item.id+":"+index;const wrap=document.createElement("div");wrap.className="claim-card";const area=document.createElement("textarea");area.value=runtime.state().editorDrafts[key]||JSON.stringify(evidence,null,2);area.addEventListener("input",()=>typeDraft(key,area.value));const save=document.createElement("button");save.textContent="Save evidence";save.onclick=()=>{try{let next=clearEditorDraft(runtime.state(),key);next=updateEvidence(next,item.id,index,JSON.parse(area.value));commit(next);}catch(error){alert(error.message);}};const remove=document.createElement("button");remove.textContent="Delete evidence";remove.onclick=()=>commit(deleteEvidence(runtime.state(),item.id,index));wrap.append(area,save,remove);evidenceList.append(wrap);});
+  item.evidence.forEach((evidence,index)=>{const key="evidence:"+item.id+":"+index;const wrap=document.createElement("div");wrap.className="claim-card";const area=document.createElement("textarea");area.value=Object.hasOwn(runtime.state().editorDrafts,key)?runtime.state().editorDrafts[key]:JSON.stringify(evidence,null,2);area.addEventListener("input",()=>typeDraft(key,area.value));const save=document.createElement("button");save.textContent="Save evidence";save.onclick=()=>{try{let next=clearEditorDraft(runtime.state(),key);next=updateEvidence(next,item.id,index,JSON.parse(area.value));commit(next);}catch(error){alert(error.message);}};const remove=document.createElement("button");remove.textContent="Delete evidence";remove.onclick=()=>commit(deleteEvidence(runtime.state(),item.id,index));wrap.append(area,save,remove);evidenceList.append(wrap);});
 }
 function render() {
-  const spot=spotMeta();if(!spot)return;const row=research();const preview=resolveSpotAdvicePreview(working,bootstrap.previewContext,spot.id);const relevant=working.advice.filter((item)=>applicable(item,spot));
+  refreshSpotRows(); renderFilters(); const spot=spotMeta();if(!spot)return;const row=research();const preview=resolveSpotAdvicePreview(working,bootstrap.previewContext,spot.id);const relevant=working.advice.filter((item)=>applicable(item,spot));
   document.querySelectorAll(".spot-row").forEach((node)=>node.classList.toggle("active",node.dataset.spotId===spot.id));setText("spot-heading",spot.name+" · "+spot.id);setText("research-outcome",row?.status||"missing");setText("direct-outcome",row?.directEvidenceOutcome||"missing");setText("coverage","camera "+spot.cameraCoverage+" · published advice "+preview.effectiveClaims.length);const conflicts=relevant.filter((item)=>item.consensus==="unresolved");setText("conflicts",conflicts.length?conflicts.map((item)=>item.id).join(", "):"none");
   const claims=byId("claims");claims.replaceChildren();relevant.forEach((item)=>{const card=document.createElement("button");card.type="button";card.className="claim-card"+(item.id===selectedClaimId?" selected":"");card.onclick=()=>{selectedClaimId=item.id;render();};const title=document.createElement("strong");title.textContent=item.summary;const meta=document.createElement("small");meta.textContent=[item.id,item.scope.type+":"+item.scope.id,item.topic,item.confidence,item.publicationStatus,item.consensus].join(" · ");card.append(title,meta);claims.append(card);});if(!selectedClaimId||!relevant.some((item)=>item.id===selectedClaimId))selectedClaimId=relevant[0]?.id||null;
-  const researchKey="research:"+spot.id;byId("research-json").value=runtime.state().editorDrafts[researchKey]||JSON.stringify(row,null,2);const effective=preview.effectiveClaims.map((item)=>"effective "+item.scope.type+":"+item.scope.id+" · "+item.id);const overridden=preview.overriddenClaims.map((item)=>"overridden "+item.scope.type+":"+item.scope.id+" · "+item.id);setText("inheritance",[...effective,...overridden].join("\\n")||"No signed-off effective advice.");
+  const researchKey="research:"+spot.id;byId("research-json").value=Object.hasOwn(runtime.state().editorDrafts,researchKey)?runtime.state().editorDrafts[researchKey]:JSON.stringify(row,null,2);const effective=preview.effectiveClaims.map((item)=>"effective "+item.scope.type+":"+item.scope.id+" · "+item.id);const overridden=preview.overriddenClaims.map((item)=>"overridden "+item.scope.type+":"+item.scope.id+" · "+item.id);setText("inheritance",[...effective,...overridden].join("\\n")||"No signed-off effective advice.");
   const sources=byId("sources");sources.replaceChildren();(row?.checkedSources||[]).forEach((source)=>renderLink(sources,source));relevant.flatMap((item)=>item.evidence||[]).forEach((source)=>renderLink(sources,source));updateStatus();renderClaimEditor();
 }
 function applyClaimPatch(patch){let next=clearEditorDraft(runtime.state(),"claim:"+selectedClaimId);next=updateClaim(next,selectedClaimId,patch);commit(next);}
