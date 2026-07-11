@@ -7,7 +7,10 @@ name: Update surfline conditions
 # Chrome on a home IP) remains as a documented fallback if Cloudflare tightens.
 on:
   schedule:
-    - cron: "0 6 * * *"   # 06:00 UTC ≈ 06:00–07:00 Lisbon, before the morning surf check
+    # Off-peak minute on purpose: top-of-hour crons (e.g. 0 6) get heavily
+    # queued by GitHub and land 3–4h late. 05:17 UTC ≈ Lisbon dawn (06:17
+    # summer / 05:17 winter) and runs close to on time.
+    - cron: "17 5 * * *"
   workflow_dispatch:
 
 permissions:
