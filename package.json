@@ -16,6 +16,8 @@
     "build-coast-exposures": "node scripts/build-coast-exposures.js",
     "build-spot-metadata-enrichment": "node scripts/build-spot-metadata-enrichment.js",
     "build-spot-advice": "node scripts/build-spot-advice.js",
+    "build-spot-advice-review": "node scripts/build-spot-advice-review-html.js",
+    "apply-spot-advice-feedback": "node scripts/apply-spot-advice-feedback.js",
     "check-spot-advice": "node scripts/build-spot-advice.js --check",
     "build-surfline-needs-review": "node scripts/build-surfline-needs-review-html.js",
     "build-promoted-spots": "node scripts/build-promoted-spots.js",

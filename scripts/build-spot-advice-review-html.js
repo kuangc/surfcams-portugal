@@ -1,0 +1,310 @@
+#!/usr/bin/env node
+
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
+import { digestDocument } from "./lib/spot-advice-build.js";
+import { isSafeExternalUrl } from "./lib/spot-advice-review.js";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const DEFAULT_OUTPUT_PATH = path.join(ROOT, ".local", "spot-advice-review.html");
+
+export function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function scriptJson(value) {
+  return JSON.stringify(value)
+    .replaceAll("<", "\\u003c")
+    .replaceAll(">", "\\u003e")
+    .replaceAll("&", "\\u0026")
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
+}
+
+function safeLink(url, label) {
+  if (!isSafeExternalUrl(url)) return `<span class="unsafe-link">${escapeHtml(label)} (unsafe URL omitted)</span>`;
+  return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
+}
+
+function appliesToSpot(claim, spotId, areaIds, stretchIds) {
+  if (claim.scope.type === "spot") return claim.scope.id === spotId;
+  if (claim.scope.type === "area") return areaIds.includes(claim.scope.id);
+  return stretchIds.includes(claim.scope.id);
+}
+
+export function buildSpotAdviceReviewModel({ document, context, baseDigest = digestDocument(document) }) {
+  const surflineById = new Map((context.surflineSpots?.spots ?? []).map((spot) => [spot.id, spot]));
+  const promotedById = new Map((context.promotedDb?.promoted ?? []).map((spot) => [spot.id, spot]));
+  const deferredById = new Map((context.promotedDb?.deferred ?? []).map((spot) => [spot.surflineSpotId, spot]));
+  const researchById = new Map(document.spotResearch.map((row) => [row.spotId, row]));
+  const claimsById = new Map(document.advice.map((claim) => [claim.id, claim]));
+  const spots = context.promotions.promoted.map((promotion) => {
+    const id = promotion.surflineSpotId;
+    const catalog = surflineById.get(id) ?? { id, name: id };
+    const research = researchById.get(id);
+    const areaIds = document.areas.filter((area) => area.spotIds.includes(id)).map((area) => area.id);
+    const stretchIds = (context.stretches?.stretches ?? []).filter((stretch) => stretch.surflineSpotIds.includes(id)).map((stretch) => stretch.id);
+    const applicable = document.advice.filter((claim) => appliesToSpot(claim, id, areaIds, stretchIds));
+    const directClaims = (research?.directClaimIds ?? []).map((claimId) => claimsById.get(claimId)).filter(Boolean);
+    const inheritedClaims = (research?.inheritedApprovals ?? []).map((approval) => claimsById.get(approval.claimId)).filter(Boolean);
+    const conflicts = applicable.filter((claim) => claim.consensus === "unresolved" || claim.conflictGroupId);
+    const coverage = promotedById.get(id)?.camCoverage ?? (deferredById.has(id) ? "deferred" : "none");
+    return {
+      id,
+      name: catalog.name,
+      lat: catalog.lat,
+      lon: catalog.lon,
+      areaIds,
+      stretchIds,
+      research,
+      directClaimIds: directClaims.map((claim) => claim.id),
+      inheritedClaimIds: inheritedClaims.map((claim) => claim.id),
+      applicableClaimIds: applicable.map((claim) => claim.id),
+      topics: [...new Set(applicable.map((claim) => claim.topic))],
+      confidences: [...new Set(applicable.map((claim) => claim.confidence))],
+      publications: [...new Set(applicable.map((claim) => claim.publicationStatus))],
+      consensuses: [...new Set(applicable.map((claim) => claim.consensus))],
+      expiries: applicable.map((claim) => claim.revalidateAfter).filter(Boolean),
+      missingDirectEvidence: research?.directEvidenceOutcome === "no-credible-spot-source-found",
+      coverage,
+      conflictCount: conflicts.length
+    };
+  });
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    baseDigest,
+    document,
+    spots,
+    areas: document.areas.map(({ id, name }) => ({ id, name })),
+    stretches: (context.stretches?.stretches ?? []).map(({ id, name }) => ({ id, name })),
+    defaultFavoriteIds: context.defaultFavoriteIds ?? DEFAULT_FAVORITE_IDS
+  };
+}
+
+function renderSpotRow(spot) {
+  const area = spot.areaIds.join(", ") || "unassigned";
+  const scope = [...spot.areaIds.map((id) => `area:${id}`), ...spot.stretchIds.map((id) => `stretch:${id}`), `spot:${spot.id}`].join(" ");
+  return `<button class="spot-row" type="button" data-spot-id="${escapeHtml(spot.id)}" data-area="${escapeHtml(spot.areaIds.join(" "))}" data-scope="${escapeHtml(scope)}" data-topic="${escapeHtml(spot.topics.join(" "))}" data-confidence="${escapeHtml(spot.confidences.join(" "))}" data-publication="${escapeHtml(spot.publications.join(" "))}" data-consensus="${escapeHtml(spot.consensuses.join(" "))}" data-expiry="${escapeHtml(spot.expiries.join(" "))}" data-missing-direct="${spot.missingDirectEvidence ? "true" : "false"}">
+    <span><strong>${escapeHtml(spot.name)}</strong><small>${escapeHtml(spot.id)}</small></span>
+    <span class="badges"><em>${escapeHtml(area)}</em><em>research ${escapeHtml(spot.research?.status ?? "missing")}</em><em>direct ${escapeHtml(spot.research?.directEvidenceOutcome ?? "missing")}</em><em>${escapeHtml(spot.coverage)} coverage</em>${spot.conflictCount ? `<em>${spot.conflictCount} conflicts</em>` : ""}</span>
+  </button>`;
+}
+
+function renderInitialSources(model) {
+  const research = model.spots[0]?.research;
+  if (!research) return "<p>No research row.</p>";
+  return research.checkedSources.map((source) => `<article class="source-card"><strong>${safeLink(source.url, source.title)}</strong><span>${escapeHtml(source.publisher)} · ${escapeHtml(source.locationMatch)} · ${escapeHtml(source.decision)}</span><p>${escapeHtml(source.rationale)}</p></article>`).join("");
+}
+
+export function renderSpotAdviceReviewHtml(model) {
+  const rows = model.spots.map(renderSpotRow).join("\n");
+  const initialSources = renderInitialSources(model);
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local spot advice review cockpit</title>
+<style>
+:root{color-scheme:light dark;--bg:#eef3f0;--panel:#fff;--ink:#16211b;--muted:#627069;--line:#c9d5ce;--accent:#166b50;--warn:#a85e08;--danger:#a33131}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}header{position:sticky;top:0;z-index:4;display:flex;gap:16px;align-items:center;padding:12px 18px;background:#123b2f;color:#fff}header h1{font-size:18px;margin:0}header span{margin-left:auto}.layout{display:grid;grid-template-columns:310px minmax(440px,1fr) 330px;gap:12px;padding:12px;min-height:calc(100vh - 54px)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:auto}.filters{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px;border-bottom:1px solid var(--line)}label{display:grid;gap:3px;color:var(--muted);font-size:12px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:7px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}textarea{min-height:72px;resize:vertical}.spot-list{display:grid}.spot-row{display:flex;justify-content:space-between;text-align:left;gap:8px;border:0;border-bottom:1px solid var(--line);padding:10px;background:none;color:inherit;cursor:pointer}.spot-row:hover,.spot-row.active{background:#dcece5}.spot-row span{display:grid}.spot-row small{color:var(--muted)}.badges{justify-items:end}.badges em{font-size:11px;font-style:normal;color:var(--muted)}.workspace{padding:14px}.workspace h2,.workspace h3{margin:4px 0 10px}.summary-grid,.editor-grid,.lens-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.summary-card{padding:9px;border:1px solid var(--line);border-radius:7px}.toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.toolbar button,.file-button{padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);cursor:pointer}.toolbar .danger{color:var(--danger)}.claims{display:grid;gap:8px;margin:10px 0}.claim-card{border:1px solid var(--line);border-radius:8px;padding:9px;cursor:pointer}.claim-card.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.claim-card small{display:block;color:var(--muted)}.editor-grid .wide{grid-column:1/-1}.side{padding:12px}.source-card{border-bottom:1px solid var(--line);padding:9px 0}.source-card span{display:block;color:var(--muted);font-size:12px}.source-card p{margin:5px 0}.unsafe-link{color:var(--danger)}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);padding:8px;border-radius:6px}.status-good{color:#c6f6df}.status-warn{color:#ffd89a}@media(max-width:1050px){.layout{grid-template-columns:270px 1fr}.side{grid-column:1/-1}}@media(max-width:700px){.layout{display:block}.panel{margin-bottom:10px}.summary-grid,.editor-grid,.lens-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>Local spot advice review cockpit</h1><span id="pending-count">0 pending</span><span id="autosave-status" class="status-good">Autosave ready</span></header>
+<main class="layout">
+<aside class="panel">
+  <section class="filters" aria-label="Review filters">
+    <label>Area<select id="filter-area"><option value="">All areas</option>${model.areas.map((area) => `<option value="${escapeHtml(area.id)}">${escapeHtml(area.name)}</option>`).join("")}</select></label>
+    <label>Scope<select id="filter-scope"><option value="">All scopes</option><option value="spot:">spot</option><option value="stretch:">stretch</option><option value="area:">area</option></select></label>
+    <label>Topic<input id="filter-topic" placeholder="wind, tide…"></label>
+    <label>Confidence<select id="filter-confidence"><option value="">All</option><option>high</option><option>medium</option><option>low</option></select></label>
+    <label>Publication<select id="filter-publication"><option value="">All</option><option>published</option><option>draft</option><option>rejected</option></select></label>
+    <label>Consensus<select id="filter-consensus"><option value="">All</option><option>settled</option><option>unresolved</option></select></label>
+    <label>Expiry<select id="filter-expiry"><option value="">Any</option><option value="set">Has expiry</option><option value="missing">No expiry</option></select></label>
+    <label><input id="filter-missing-direct" type="checkbox"> Missing direct evidence</label>
+  </section>
+  <nav id="spot-list" class="spot-list" aria-label="Spot review list">${rows}</nav>
+</aside>
+<section class="panel workspace">
+  <h2 id="spot-heading">Select a spot</h2>
+  <div class="summary-grid">
+    <div class="summary-card"><strong>Research outcome</strong><div id="research-outcome"></div></div>
+    <div class="summary-card"><strong>Direct evidence</strong><div id="direct-outcome"></div></div>
+    <div class="summary-card"><strong>Coverage</strong><div id="coverage"></div></div>
+    <div class="summary-card"><strong>Conflicts</strong><div id="conflicts"></div></div>
+  </div>
+  <div class="toolbar"><button id="add-claim">Add claim</button><button id="split-claim">Split claim</button><button id="merge-claim">Merge claim</button><button id="rescope-claim">Re-scope</button><button id="delete-claim" class="danger">Delete claim</button></div>
+  <div id="claims" class="claims"></div>
+  <section id="claim-editor">
+    <h3>Claim editor</h3>
+    <div class="editor-grid">
+      <label>ID<input id="claim-id" readonly></label><label>Topic<input id="claim-topic"></label>
+      <label>Scope type<select id="claim-scope-type"><option>spot</option><option>stretch</option><option>area</option></select></label><label>Scope id<input id="claim-scope-id"></label>
+      <label>Override key<input id="claim-override-key"></label><label>Confidence<select id="claim-confidence"><option>high</option><option>medium</option><option>low</option></select></label>
+      <label class="wide">Summary<textarea id="claim-summary"></textarea></label><label class="wide">Rule JSON<textarea id="claim-rule"></textarea></label>
+      <label>Publication<select id="claim-publication"><option>published</option><option>draft</option><option>rejected</option></select></label><label>Reviewed at<input id="claim-reviewed" placeholder="ISO timestamp"></label>
+      <label>Expiry<input id="claim-expiry" type="date"></label><label>Consensus<select id="claim-consensus"><option>settled</option><option>unresolved</option></select></label>
+      <label>Conflict group<input id="claim-conflict-group"></label><label>Conflict position<input id="claim-position"></label>
+    </div>
+    <div class="toolbar"><button id="save-claim">Save claim</button></div>
+  </section>
+  <section id="evidence-editor"><h3>Evidence editor</h3><div id="evidence-list"></div><div class="toolbar"><button id="add-evidence">Add evidence</button></div></section>
+  <section><h3>Research row edits</h3><textarea id="research-json"></textarea><div class="toolbar"><button id="save-research">Save research row</button></div></section>
+  <section id="inheritance-preview"><h3>Inheritance preview</h3><div id="inheritance"></div></section>
+  <section id="local-lens"><h3>Local lens fixture preview</h3><div class="lens-grid"><label>Swell height m<input id="lens-height" type="number" value="1.5" step="0.1"></label><label>Tide stage<select id="lens-tide"><option>low</option><option selected>mid</option><option>high</option></select></label><label>Swell direction °<input id="lens-swell" type="number" value="290"></label><label>Wind direction °<input id="lens-wind" type="number" value="45"></label></div><div class="toolbar"><button id="run-lens">Run Local lens</button></div><pre id="lens-output"></pre></section>
+  <div class="toolbar"><label class="file-button">Import feedback<input id="import-feedback" type="file" accept="application/json" hidden></label><button id="export-feedback">Export feedback</button><button id="reset-review" class="danger">Reset</button></div>
+</section>
+<aside class="panel side" id="source-pane"><h2>Source pane</h2><div id="sources">${initialSources}</div></aside>
+</main>
+<script id="review-data" type="application/json">${scriptJson(model)}</script>
+<script>
+(() => {
+  "use strict";
+  const bootstrap = JSON.parse(document.getElementById("review-data").textContent);
+  const canonical = structuredClone(bootstrap.document);
+  const storageKey = "spot-advice-review:" + bootstrap.baseDigest;
+  let working = structuredClone(canonical);
+  let selectedSpotId = bootstrap.spots[0]?.id || null;
+  let selectedClaimId = null;
+  let unsaved = false;
+  let saveTimer = null;
+  const byId = (id) => document.getElementById(id);
+  const materialFields = ["summary","rule","scope","overrideKey","evidence","confidence","consensus","conflictGroupId","position"];
+  const sorted = (value) => Array.isArray(value) ? value.map(sorted) : value && typeof value === "object" ? Object.fromEntries(Object.keys(value).sort().map((key)=>[key,sorted(value[key])])) : value;
+  const same = (a,b) => JSON.stringify(sorted(a)) === JSON.stringify(sorted(b));
+  const safeUrl = (value) => { try { const url = new URL(value); return ["http:","https:"].includes(url.protocol) && !!url.hostname; } catch { return false; } };
+  const spotMeta = () => bootstrap.spots.find((spot) => spot.id === selectedSpotId);
+  const research = () => working.spotResearch.find((row) => row.spotId === selectedSpotId);
+  const claim = () => working.advice.find((item) => item.id === selectedClaimId);
+  const applicable = (item, spot) => item.scope.type === "spot" ? item.scope.id === spot.id : item.scope.type === "area" ? spot.areaIds.includes(item.scope.id) : spot.stretchIds.includes(item.scope.id);
+  const markChanged = () => {
+    unsaved = true;
+    byId("autosave-status").textContent = "Unsaved; autosave queued";
+    byId("autosave-status").className = "status-warn";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      localStorage.setItem(storageKey, JSON.stringify({schemaVersion:1,baseDigest:bootstrap.baseDigest,document:working}));
+      unsaved = false;
+      byId("autosave-status").textContent = "Autosaved locally";
+      byId("autosave-status").className = "status-good";
+    }, 120);
+  };
+  window.addEventListener("beforeunload", (event) => { if (unsaved) { event.preventDefault(); event.returnValue = ""; } });
+  const recovered = localStorage.getItem(storageKey);
+  if (recovered) {
+    try { const parsed = JSON.parse(recovered); if (parsed.schemaVersion === 1 && parsed.baseDigest === bootstrap.baseDigest && parsed.document) { working = parsed.document; byId("autosave-status").textContent = "Recovered autosave"; } } catch {}
+  }
+  function setText(id, value) { byId(id).textContent = value ?? ""; }
+  function pending() { return working.advice.filter((item) => item.publicationStatus === "draft" || item.reviewedAt == null).length; }
+  function renderLink(container, source) {
+    const card = document.createElement("article"); card.className = "source-card";
+    const heading = document.createElement("strong");
+    if (safeUrl(source.url)) { const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; heading.append(link); }
+    else { heading.textContent = source.title + " (unsafe URL omitted)"; }
+    const meta = document.createElement("span"); meta.textContent = [source.publisher,source.locationMatch,source.decision || source.status].filter(Boolean).join(" · ");
+    const note = document.createElement("p"); note.textContent = source.rationale || source.supportedClaim || "";
+    card.append(heading,meta,note); container.append(card);
+  }
+  function renderFilters() {
+    const filters = {
+      area: byId("filter-area").value, scope: byId("filter-scope").value, topic: byId("filter-topic").value.trim().toLowerCase(),
+      confidence: byId("filter-confidence").value, publication: byId("filter-publication").value, consensus: byId("filter-consensus").value,
+      expiry: byId("filter-expiry").value, missing: byId("filter-missing-direct").checked
+    };
+    document.querySelectorAll(".spot-row").forEach((row) => {
+      const match = (!filters.area || row.dataset.area.split(" ").includes(filters.area)) && (!filters.scope || row.dataset.scope.includes(filters.scope))
+        && (!filters.topic || row.dataset.topic.toLowerCase().includes(filters.topic)) && (!filters.confidence || row.dataset.confidence.includes(filters.confidence))
+        && (!filters.publication || row.dataset.publication.includes(filters.publication)) && (!filters.consensus || row.dataset.consensus.includes(filters.consensus))
+        && (!filters.expiry || (filters.expiry === "set" ? !!row.dataset.expiry : !row.dataset.expiry)) && (!filters.missing || row.dataset.missingDirect === "true");
+      row.hidden = !match;
+    });
+  }
+  function renderClaimEditor() {
+    const item = claim();
+    const fields = ["claim-id","claim-topic","claim-scope-id","claim-override-key","claim-summary","claim-rule","claim-reviewed","claim-expiry","claim-conflict-group","claim-position"];
+    if (!item) { fields.forEach((id) => { byId(id).value = ""; }); byId("evidence-list").replaceChildren(); return; }
+    byId("claim-id").value=item.id; byId("claim-topic").value=item.topic; byId("claim-scope-type").value=item.scope.type; byId("claim-scope-id").value=item.scope.id;
+    byId("claim-override-key").value=item.overrideKey; byId("claim-summary").value=item.summary; byId("claim-rule").value=JSON.stringify(item.rule,null,2);
+    byId("claim-confidence").value=item.confidence; byId("claim-publication").value=item.publicationStatus; byId("claim-reviewed").value=item.reviewedAt || "";
+    byId("claim-expiry").value=item.revalidateAfter || ""; byId("claim-consensus").value=item.consensus; byId("claim-conflict-group").value=item.conflictGroupId || ""; byId("claim-position").value=item.position || "";
+    const evidenceList=byId("evidence-list"); evidenceList.replaceChildren();
+    item.evidence.forEach((evidence,index) => { const wrap=document.createElement("div"); wrap.className="claim-card"; const area=document.createElement("textarea"); area.value=JSON.stringify(evidence,null,2); area.dataset.evidenceIndex=String(index);
+      const save=document.createElement("button"); save.textContent="Save evidence"; save.onclick=()=>{ try { const updated=JSON.parse(area.value); const next=[...item.evidence]; next[index]=updated; applyClaimPatch({evidence:next}); } catch(error){ alert(error.message); } };
+      const remove=document.createElement("button"); remove.textContent="Delete evidence"; remove.onclick=()=>{ const next=item.evidence.filter((_,i)=>i!==index); applyClaimPatch({evidence:next}); };
+      wrap.append(area,save,remove); evidenceList.append(wrap); });
+  }
+  function render() {
+    const spot=spotMeta(); if(!spot)return; const row=research();
+    document.querySelectorAll(".spot-row").forEach((node)=>node.classList.toggle("active",node.dataset.spotId===spot.id));
+    setText("spot-heading",spot.name+" · "+spot.id); setText("research-outcome",row?.status || "missing"); setText("direct-outcome",row?.directEvidenceOutcome || "missing");
+    setText("coverage",spot.coverage); const relevant=working.advice.filter((item)=>applicable(item,spot)); const conflicts=relevant.filter((item)=>item.consensus==="unresolved"); setText("conflicts",conflicts.length?conflicts.map((item)=>item.id).join(", "):"none");
+    const claims=byId("claims"); claims.replaceChildren(); relevant.forEach((item)=>{const card=document.createElement("button");card.type="button";card.className="claim-card"+(item.id===selectedClaimId?" selected":"");card.onclick=()=>{selectedClaimId=item.id;render();};
+      const title=document.createElement("strong");title.textContent=item.summary;const meta=document.createElement("small");meta.textContent=[item.id,item.scope.type+":"+item.scope.id,item.topic,item.confidence,item.publicationStatus,item.consensus].join(" · ");card.append(title,meta);claims.append(card);});
+    if(!selectedClaimId||!relevant.some((item)=>item.id===selectedClaimId)) selectedClaimId=relevant[0]?.id||null;
+    byId("research-json").value=JSON.stringify(row,null,2); const inherited=(row?.inheritedApprovals||[]).map((approval)=>working.advice.find((item)=>item.id===approval.claimId)).filter(Boolean);
+    setText("inheritance",inherited.length?inherited.map((item)=>item.id+": "+item.summary).join("\\n"):"No approved inherited claims.");
+    const sources=byId("sources");sources.replaceChildren();(row?.checkedSources||[]).forEach((source)=>renderLink(sources,source));relevant.flatMap((item)=>item.evidence||[]).forEach((source)=>renderLink(sources,source));
+    setText("pending-count",pending()+" pending"); renderClaimEditor();
+  }
+  function applyClaimPatch(patch) {
+    const index=working.advice.findIndex((item)=>item.id===selectedClaimId);if(index<0)return;const before=working.advice[index];let next={...before,...patch};
+    if(before.publicationStatus==="published"&&materialFields.some((field)=>!same(before[field],next[field]))) next={...next,publicationStatus:"draft",reviewedAt:null,calculationCandidate:false};
+    working.advice[index]=next;markChanged();render();
+  }
+  document.querySelectorAll(".spot-row").forEach((row)=>row.addEventListener("click",()=>{selectedSpotId=row.dataset.spotId;selectedClaimId=null;render();}));
+  ["filter-area","filter-scope","filter-topic","filter-confidence","filter-publication","filter-consensus","filter-expiry","filter-missing-direct"].forEach((id)=>byId(id).addEventListener("input",renderFilters));
+  byId("save-claim").onclick=()=>{try{const patch={topic:byId("claim-topic").value,scope:{type:byId("claim-scope-type").value,id:byId("claim-scope-id").value},overrideKey:byId("claim-override-key").value,summary:byId("claim-summary").value,rule:JSON.parse(byId("claim-rule").value),confidence:byId("claim-confidence").value,publicationStatus:byId("claim-publication").value,reviewedAt:byId("claim-reviewed").value||null,revalidateAfter:byId("claim-expiry").value||null,consensus:byId("claim-consensus").value};
+    const group=byId("claim-conflict-group").value.trim(),position=byId("claim-position").value.trim();if(group){patch.conflictGroupId=group;patch.position=position;}else{patch.conflictGroupId=undefined;patch.position=undefined;}applyClaimPatch(patch);}catch(error){alert(error.message);}};
+  byId("add-claim").onclick=()=>{const id=prompt("New claim id");if(!id)return;if(working.advice.some((item)=>item.id===id))return alert("Claim id already exists");const today=new Date().toISOString().slice(0,10);working.advice.push({id,scope:{type:"spot",id:selectedSpotId},topic:"wind",overrideKey:"wind."+id,summary:"New local claim",rule:{type:"qualitative"},evidence:[{kind:"user-observed",title:"Local observation",publisher:"Local knowledge",url:null,accessedAt:today,supportedClaim:"New local claim",quality:"first-hand",status:"accepted"}],confidence:"low",publicationStatus:"draft",consensus:"settled",calculationCandidate:false,reviewedAt:null,revalidateAfter:null});research().directClaimIds.push(id);selectedClaimId=id;markChanged();render();};
+  byId("delete-claim").onclick=()=>{if(!claim()||!confirm("Delete selected claim?"))return;working.advice=working.advice.filter((item)=>item.id!==selectedClaimId);working.spotResearch.forEach((row)=>{row.directClaimIds=(row.directClaimIds||[]).filter((id)=>id!==selectedClaimId);row.inheritedApprovals=(row.inheritedApprovals||[]).filter((approval)=>approval.claimId!==selectedClaimId);});selectedClaimId=null;markChanged();render();};
+  byId("split-claim").onclick=()=>{const source=claim();if(!source)return;const id=prompt("New claim id for split");if(!id)return;const split={...structuredClone(source),id,summary:source.summary+" (split)",overrideKey:source.overrideKey+".split",publicationStatus:"draft",reviewedAt:null,calculationCandidate:false};working.advice.push(split);working.spotResearch.forEach((row)=>{if(row.directClaimIds?.includes(source.id))row.directClaimIds.push(id);});selectedClaimId=id;markChanged();render();};
+  byId("merge-claim").onclick=()=>{const target=claim();if(!target)return;const sourceId=prompt("Claim id to merge into selected claim");const source=working.advice.find((item)=>item.id===sourceId);if(!source||source.id===target.id)return alert("Choose a different existing claim");const evidence=[...target.evidence,...source.evidence.filter((candidate)=>!target.evidence.some((item)=>same(item,candidate)))];applyClaimPatch({summary:target.summary+" "+source.summary,evidence});working.advice=working.advice.filter((item)=>item.id!==source.id);working.spotResearch.forEach((row)=>{row.directClaimIds=(row.directClaimIds||[]).map((id)=>id===source.id?target.id:id).filter((id,index,list)=>list.indexOf(id)===index);});markChanged();render();};
+  byId("rescope-claim").onclick=()=>{if(!claim())return;const type=prompt("Scope type: spot, stretch, or area",claim().scope.type);const id=prompt("Scope id",claim().scope.id);if(!type||!id)return;working.spotResearch.forEach((row)=>row.directClaimIds=(row.directClaimIds||[]).filter((claimId)=>claimId!==selectedClaimId));if(type==="spot"){const row=working.spotResearch.find((item)=>item.spotId===id);if(row)row.directClaimIds.push(selectedClaimId);}applyClaimPatch({scope:{type,id}});};
+  byId("add-evidence").onclick=()=>{const item=claim();if(!item)return;const today=new Date().toISOString().slice(0,10);applyClaimPatch({evidence:[...item.evidence,{kind:"user-observed",title:"New evidence",publisher:"Local knowledge",url:null,accessedAt:today,supportedClaim:item.summary,quality:"first-hand",status:"accepted"}]});};
+  byId("save-research").onclick=()=>{try{const next=JSON.parse(byId("research-json").value);if(next.spotId!==selectedSpotId)throw new Error("Research spotId cannot change");const index=working.spotResearch.findIndex((row)=>row.spotId===selectedSpotId);working.spotResearch[index]=next;markChanged();render();}catch(error){alert(error.message);}};
+  byId("run-lens").onclick=()=>{const spot=spotMeta();const height=Number(byId("lens-height").value),tide=byId("lens-tide").value,swell=Number(byId("lens-swell").value),wind=Number(byId("lens-wind").value);const results=working.advice.filter((item)=>item.publicationStatus==="published"&&applicable(item,spot)).map((item)=>{const rule=item.rule||{};let outcome="qualitative";if(rule.type==="minimum")outcome=height>=rule.value?(rule.effectAtOrAbove||"at or above"):rule.effectBelow;if(rule.type==="tide-preference")outcome=tide===rule.stage?"preferred tide":"outside preferred tide";if(rule.type==="direction-preference"){const value=rule.input.startsWith("wind")?wind:swell;outcome=rule.arcs.some((arc)=>arc.start<=arc.end?value>=arc.start&&value<=arc.end:value>=arc.start||value<=arc.end)?"preferred direction":"outside preferred direction";}return item.id+": "+outcome;});setText("lens-output",results.join("\\n")||"No published applicable claims.");};
+  byId("export-feedback").onclick=()=>{const payload=JSON.stringify({schemaVersion:1,baseDigest:bootstrap.baseDigest,document:working},null,2)+"\\n";const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([payload],{type:"application/json"}));link.download="spot-advice-feedback.json";link.click();URL.revokeObjectURL(link.href);};
+  byId("import-feedback").onchange=async(event)=>{try{const parsed=JSON.parse(await event.target.files[0].text());if(Object.keys(parsed).sort().join(",")!=="baseDigest,document,schemaVersion"||parsed.schemaVersion!==1||parsed.baseDigest!==bootstrap.baseDigest)throw new Error("Feedback shape or digest does not match");working=parsed.document;selectedClaimId=null;markChanged();render();}catch(error){alert(error.message);}};
+  byId("reset-review").onclick=()=>{if(!confirm("Reset all local review edits?"))return;working=structuredClone(canonical);localStorage.removeItem(storageKey);unsaved=false;clearTimeout(saveTimer);byId("autosave-status").textContent="Reset to canonical";selectedClaimId=null;render();};
+  renderFilters();render();
+})();
+</script>
+</body>
+</html>\n`;
+}
+
+const readJson = (filePath, fileSystem = fs) => JSON.parse(fileSystem.readFileSync(filePath, "utf8"));
+
+export function buildSpotAdviceReviewFiles({ root = ROOT, outputPath = root === ROOT ? DEFAULT_OUTPUT_PATH : path.join(root, ".local", "spot-advice-review.html"), fileSystem = fs } = {}) {
+  const dataPath = (name) => path.join(root, "data", name);
+  const document = readJson(dataPath("spot-advice.json"), fileSystem);
+  const context = {
+    promotions: readJson(dataPath("surfline-promotions.json"), fileSystem),
+    surflineSpots: readJson(dataPath("surfline-spots.json"), fileSystem),
+    stretches: readJson(dataPath("stretches.json"), fileSystem),
+    promotedDb: readJson(dataPath("promoted-spots.json"), fileSystem),
+    enrichmentDb: readJson(dataPath("spot-metadata-enrichment.json"), fileSystem),
+    defaultFavoriteIds: DEFAULT_FAVORITE_IDS
+  };
+  const model = buildSpotAdviceReviewModel({ document, context });
+  const html = renderSpotAdviceReviewHtml(model);
+  fileSystem.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fileSystem.writeFileSync(outputPath, html, "utf8");
+  return { outputPath, bytes: Buffer.byteLength(html), spots: model.spots.length };
+}
+
+function main() {
+  const result = buildSpotAdviceReviewFiles();
+  console.log(`Wrote ${path.relative(ROOT, result.outputPath)} (${result.spots} spots, ${result.bytes} bytes)`);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
