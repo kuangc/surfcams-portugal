@@ -230,6 +230,19 @@ test("sole Nazaré claim supports explicit two-step signoff and exact coverage-v
   assert.match(html, /signOffClaim/);
 });
 
+test("a new claim can be explicitly signed off and applies with exact readback", () => {
+  let state = stateFixture();
+  state = addClaim(state, draftClaim("new-reviewed-claim"), { directSpotId: "surfline-nazare" });
+  assert.equal(state.document.advice.find((claim) => claim.id === "new-reviewed-claim").publicationStatus, "draft");
+  state = signOffClaim(state, "new-reviewed-claim", "2026-07-12T14:00:00.000Z");
+  const feedback = exportFeedback(state);
+  assert.equal(feedback.document.advice.find((claim) => claim.id === "new-reviewed-claim").publicationStatus, "published");
+  const { canonicalPath } = tempCanonical();
+  const applied = applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() });
+  assert.deepEqual(applied.document, feedback.document);
+  assert.deepEqual(readJson(canonicalPath), feedback.document);
+});
+
 test("claim CRUD, evidence CRUD, split, merge, and re-scope keep review state coherent", () => {
   let state = stateFixture();
   const before = state.document.advice.length;
@@ -617,6 +630,33 @@ test("review validation has exact Task2 parity for strict dates and a mutation c
   assert.throws(() => validateReviewDocument(strictDate, context), /valid.*date/i);
 });
 
+test("working validation skips only coverage while rejecting an unrelated invalid timestamp", () => {
+  const context = fixtureContext();
+  const canonical = fixtureDocument();
+  const draft = clone(canonical);
+  const nazare = draft.advice.find((claim) => claim.id === "research-nazare-swell");
+  nazare.publicationStatus = "draft";
+  nazare.reviewedAt = null;
+  assert.throws(() => validateSpotAdvice(draft, context), /coverage/i);
+  assert.doesNotThrow(() => validateSpotAdvice(draft, context, { requirePublishedCoverage: false }));
+
+  const runtime = createReviewRuntime({
+    canonicalDocument: canonical,
+    baseDigest: digestDocument(canonical),
+    storage: { getItem: () => null, setItem() {}, removeItem() {} },
+    validationContext: context
+  });
+  runtime.replaceState(updateClaim(runtime.state(), "research-nazare-swell", { summary: "Draft while reviewing." }));
+  assert.throws(() => runtime.feedback(), /coverage/i);
+  const { canonicalPath } = tempCanonical();
+  const beforeApply = fs.readFileSync(canonicalPath, "utf8");
+  assert.throws(() => applyFeedbackFile({ canonicalPath, feedback: exportFeedback(runtime.state()), context }), /coverage/i);
+  assert.equal(fs.readFileSync(canonicalPath, "utf8"), beforeApply);
+  const before = runtime.state().document;
+  assert.throws(() => runtime.replaceState(updateClaim(runtime.state(), "research-baleal-mechanics", { reviewedAt: "invalid" })), /timestamp/i);
+  assert.deepEqual(runtime.state().document, before);
+});
+
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {
   const document = fixtureDocument();
   document.spotResearch[0].checkedSources.push({
@@ -774,6 +814,170 @@ test("partial metadata from a dead generation is recoverable and removed", () =>
     context: fixtureContext(),
     processIsAlive: (pid) => pid === process.pid
   }));
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+});
+
+test("owner discovery failures clean the exact generation and allow a same-process retry", () => {
+  const { canonicalPath } = tempCanonical();
+  let failed = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "readdirSync") return (...args) => {
+        if (!failed) { failed = true; throw new Error("injected readdirSync failure"); }
+        return target.readdirSync(...args);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  assert.throws(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }), /readdirSync/);
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+  assert.doesNotThrow(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext() }));
+});
+
+test("owner discovery cleanup failures remain explicitly reclaimable", () => {
+  const { canonicalPath } = tempCanonical();
+  let discoveryFailed = false; let cleanupFailed = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "readdirSync") return (...args) => {
+        if (!discoveryFailed) { discoveryFailed = true; throw new Error("injected owner discovery failure"); }
+        return target.readdirSync(...args);
+      };
+      if (property === "unlinkSync") return (filePath) => {
+        if (filePath.includes(`.owner.${process.pid}.`) && !cleanupFailed) { cleanupFailed = true; throw new Error("injected owner cleanup failure"); }
+        return target.unlinkSync(filePath);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  let error;
+  try { applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }); } catch (caught) { error = caught; }
+  assert.match(error?.message ?? "", /acquisition.*cleanup/i);
+  assert.equal(error?.reclaimable, true);
+  const [ownerPath] = canonicalLockPaths(canonicalPath);
+  assert.equal(readJson(ownerPath).state, "releasable");
+  assert.doesNotThrow(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext() }));
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+});
+
+test("acquisition cleanup remains retryable when metadata read or marker write also fails", async (t) => {
+  for (const mode of ["readFileSync", "writeFileSync"]) {
+    await t.test(mode, () => {
+      const { canonicalPath } = tempCanonical();
+      let discoveryFailed = false; let unlinkFailed = false; let metadataFailure = false;
+      const fileSystem = new Proxy(fs, {
+        get(target, property) {
+          if (property === "readdirSync") return (...args) => {
+            if (!discoveryFailed) { discoveryFailed = true; throw new Error("injected discovery failure"); }
+            return target.readdirSync(...args);
+          };
+          if (property === "unlinkSync") return (filePath) => {
+            if (filePath.includes(`.owner.${process.pid}.`) && !unlinkFailed) { unlinkFailed = true; throw new Error("injected unlink failure"); }
+            return target.unlinkSync(filePath);
+          };
+          if (property === mode) return (...args) => {
+            const ownerPath = typeof args[0] === "string" && args[0].includes(`.owner.${process.pid}.`);
+            if (discoveryFailed && ownerPath && !metadataFailure) { metadataFailure = true; throw new Error(`injected ${mode} metadata failure`); }
+            return target[property](...args);
+          };
+          const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+        }
+      });
+      let error;
+      try { applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }); } catch (caught) { error = caught; }
+      assert.equal(error?.reclaimable, true);
+      assert.doesNotThrow(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext() }));
+      assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+    });
+  }
+});
+
+test("acquisition cleanup never marks a replacement token reclaimable", () => {
+  const { canonicalPath } = tempCanonical();
+  let discoveryFailed = false; let replaced = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "readdirSync") return (...args) => {
+        if (!discoveryFailed) { discoveryFailed = true; throw new Error("injected discovery failure"); }
+        return target.readdirSync(...args);
+      };
+      if (property === "unlinkSync") return (filePath) => {
+        if (filePath.includes(`.owner.${process.pid}.`) && !replaced) {
+          replaced = true;
+          target.writeFileSync(filePath, JSON.stringify({ pid: process.pid, token: "replacement-token", createdAt: "2026-07-11T00:00:00.000Z", state: "active" }));
+          throw new Error("injected ownership replacement");
+        }
+        return target.unlinkSync(filePath);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  let error;
+  try { applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }); } catch (caught) { error = caught; }
+  assert.equal(error?.reclaimable, false);
+  const [ownerPath] = canonicalLockPaths(canonicalPath);
+  assert.equal(readJson(ownerPath).token, "replacement-token");
+  fs.unlinkSync(ownerPath);
+});
+
+test("unreadable replacement metadata is non-reclaimable and never overwritten or reaped", () => {
+  const { canonicalPath } = tempCanonical();
+  const replacement = { pid: process.pid, token: "unreadable-replacement", createdAt: "2026-07-11T00:00:00.000Z", state: "active" };
+  let discoveryFailed = false; let replaced = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "readdirSync") return (...args) => {
+        if (!discoveryFailed) { discoveryFailed = true; throw new Error("injected discovery failure"); }
+        return target.readdirSync(...args);
+      };
+      if (property === "unlinkSync") return (filePath) => {
+        if (filePath.includes(`.owner.${process.pid}.`) && !replaced) {
+          replaced = true;
+          target.writeFileSync(filePath, JSON.stringify(replacement));
+          throw new Error("injected ownership replacement");
+        }
+        return target.unlinkSync(filePath);
+      };
+      if (property === "readFileSync") return (filePath, ...args) => {
+        if (replaced && typeof filePath === "string" && filePath.includes(`.owner.${process.pid}.`)) throw new Error("injected unreadable replacement metadata");
+        return target.readFileSync(filePath, ...args);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  let error;
+  try { applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }); } catch (caught) { error = caught; }
+  assert.equal(error?.reclaimable, false);
+  const [ownerPath] = canonicalLockPaths(canonicalPath);
+  assert.deepEqual(readJson(ownerPath), replacement);
+  assert.throws(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext() }), /lock.*busy/i);
+  assert.deepEqual(readJson(ownerPath), replacement);
+  fs.unlinkSync(ownerPath);
+});
+
+test("stale-generation reap failures clean the new owner and allow a same-process retry", () => {
+  const { canonicalPath } = tempCanonical();
+  const stalePath = `${canonicalLockPath(canonicalPath)}.owner.999999.stale`;
+  fs.writeFileSync(stalePath, JSON.stringify({ pid: 999999, token: "stale", createdAt: "2026-07-11T00:00:00.000Z", state: "active" }));
+  let failed = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "unlinkSync") return (filePath) => {
+        if (filePath === stalePath && !failed) { failed = true; throw new Error("injected stale reap failure"); }
+        return target.unlinkSync(filePath);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  assert.throws(() => applyFeedbackFile({
+    canonicalPath,
+    feedback: feedbackFor(readJson(canonicalPath)),
+    context: fixtureContext(),
+    fileSystem,
+    processIsAlive: (pid) => pid === process.pid
+  }), /reap|unlink|stale/i);
+  assert.equal(canonicalLockPaths(canonicalPath).some((ownerPath) => ownerPath.includes(`.owner.${process.pid}.`)), false);
+  assert.doesNotThrow(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), processIsAlive: (pid) => pid === process.pid }));
   assert.deepEqual(canonicalLockPaths(canonicalPath), []);
 });
 

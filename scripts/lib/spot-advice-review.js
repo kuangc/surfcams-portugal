@@ -80,6 +80,11 @@ export function isFreshReviewTimestamp(value, previous = null) {
   return !Number.isNaN(prior.valueOf()) && parsed.valueOf() > prior.valueOf();
 }
 
+export function isExplicitClaimSignoff(before, claim) {
+  return claim?.publicationStatus === "published"
+    && isFreshReviewTimestamp(claim.reviewedAt, before?.reviewedAt ?? null);
+}
+
 function withDocument(state, document) {
   return { ...state, document };
 }
@@ -293,8 +298,7 @@ export function normalizeReviewDocument(canonicalDocument, document, materialSig
     const before = baseline.get(claim.id);
     if (!before || isMaterialClaimChange(before, claim)) {
       const explicitlySigned = materialSignoffs[claim.id] === materialFingerprint(claim)
-        && claim.publicationStatus === "published"
-        && isFreshReviewTimestamp(claim.reviewedAt, before?.reviewedAt ?? null);
+        && isExplicitClaimSignoff(before, claim);
       if (explicitlySigned) {
         claim.calculationCandidate = false;
         continue;
@@ -357,12 +361,7 @@ export function validateReviewDocument(document, context) {
 }
 
 function validateWorkingDocument(document, context) {
-  try {
-    return validateReviewDocument(document, context);
-  } catch (error) {
-    if (/has no published decision-effective coverage/.test(error?.message ?? "")) return document;
-    throw error;
-  }
+  return validateSpotAdvice(document, context, { requirePublishedCoverage: false });
 }
 
 export function recoverAutosave(canonicalDocument, baseDigest, serialized, { validationContext, maxBytes = MAX_REVIEW_PAYLOAD_BYTES } = {}) {

@@ -326,7 +326,7 @@ function validateIdentity(context, contextInfo, selectedSet) {
   };
 }
 
-export function validateSpotAdvice(document, context) {
+export function validateSpotAdvice(document, context, { requirePublishedCoverage = true } = {}) {
   requireValue(isObject(document), "document must be an object");
   requireValue(document.schemaVersion === 1, "schemaVersion must be 1");
   requireDate(document.updatedAt, "updatedAt");
@@ -403,7 +403,9 @@ export function validateSpotAdvice(document, context) {
       || (claim.scope.type !== "spot" && approvedIds.has(claim.id))
     ));
     const resolvedCoverage = resolveClaims(effective).winning;
-    requireValue(resolvedCoverage.some((claim) => DECISION_TOPICS.has(claim.topic)), `${label} has no published decision-effective coverage through a direct claim or exact inherited approval`);
+    if (requirePublishedCoverage) {
+      requireValue(resolvedCoverage.some((claim) => DECISION_TOPICS.has(claim.topic)), `${label} has no published decision-effective coverage through a direct claim or exact inherited approval`);
+    }
   }
   for (const claim of document.advice.filter((item) => item.publicationStatus === "published" && item.scope.type === "spot")) {
     requireValue(directOwner.has(claim.id), `${claim.id} published spot claim is missing direct research coverage`);

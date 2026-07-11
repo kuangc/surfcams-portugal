@@ -7,11 +7,12 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
 import { canonicalJson, digestDocument, validateSpotAdvice } from "./lib/spot-advice-build.js";
-import { isFreshReviewTimestamp, isMaterialClaimChange } from "./lib/spot-advice-review.js";
+import { isExplicitClaimSignoff, isMaterialClaimChange } from "./lib/spot-advice-review.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CANONICAL_PATH = path.join(ROOT, "data", "spot-advice.json");
 const clone = (value) => structuredClone(value);
+const locallyReclaimableOwners = new Map();
 
 function validateFeedbackEnvelope(feedback) {
   if (!feedback || typeof feedback !== "object" || Array.isArray(feedback)) throw new Error("feedback must be an object");
@@ -32,17 +33,9 @@ export function prepareFeedbackCandidate(canonical, feedback) {
   const canonicalById = new Map(canonical.advice.map((claim) => [claim.id, claim]));
   for (const claim of candidate.advice ?? []) {
     const before = canonicalById.get(claim.id);
-    if (!before) {
-      claim.publicationStatus = "draft";
-      claim.reviewedAt = null;
-      claim.calculationCandidate = false;
-      continue;
-    }
-    if (!isMaterialClaimChange(before, claim)) continue;
+    if (before && !isMaterialClaimChange(before, claim)) continue;
     claim.calculationCandidate = false;
-    const explicitlySignedOff = claim.publicationStatus === "published"
-      && isFreshReviewTimestamp(claim.reviewedAt, before.reviewedAt);
-    if (explicitlySignedOff) continue;
+    if (isExplicitClaimSignoff(before, claim)) continue;
     claim.publicationStatus = "draft";
     claim.reviewedAt = null;
   }
@@ -83,9 +76,27 @@ function ownerPidFromPath(ownerPath) {
 
 function ownerIsActive(fileSystem, ownerPath, processIsAlive) {
   const metadata = parseLockMetadata(fileSystem, ownerPath);
+  const localToken = locallyReclaimableOwners.get(ownerPath);
+  if (localToken !== undefined) {
+    if (metadata?.token === localToken) return false;
+    if (metadata) locallyReclaimableOwners.delete(ownerPath);
+  }
   if (metadata) return metadata.state === "active" && processIsAlive(metadata.pid);
   const pid = ownerPidFromPath(ownerPath);
   return pid === null || processIsAlive(pid);
+}
+
+function ensureOwnerReclaimable(fileSystem, metadata) {
+  if (!fileSystem.existsSync(metadata.path)) return true;
+  const current = parseLockMetadata(fileSystem, metadata.path);
+  if (!current || current.token !== metadata.token) return false;
+  try {
+    fileSystem.writeFileSync(metadata.path, `${JSON.stringify({ ...metadata, path: undefined, state: "releasable" })}\n`, "utf8");
+    return true;
+  } catch {
+    locallyReclaimableOwners.set(metadata.path, metadata.token);
+    return true;
+  }
 }
 
 function acquireOwnedLock({ fileSystem, lockPath, lockTokenFactory, now, processIsAlive }) {
@@ -106,16 +117,28 @@ function acquireOwnedLock({ fileSystem, lockPath, lockTokenFactory, now, process
     }
     throw error;
   }
-  const owners = lockOwnerPaths(fileSystem, lockPath);
-  const activeOther = owners.find((candidate) => candidate !== ownerPath && ownerIsActive(fileSystem, candidate, processIsAlive));
-  if (activeOther) {
-    fileSystem.unlinkSync(ownerPath);
-    throw new Error(`spot advice feedback lock is busy: ${activeOther}`);
+  const owned = { ...metadata, path: ownerPath };
+  try {
+    const owners = lockOwnerPaths(fileSystem, lockPath);
+    const activeOther = owners.find((candidate) => candidate !== ownerPath && ownerIsActive(fileSystem, candidate, processIsAlive));
+    if (activeOther) throw new Error(`spot advice feedback lock is busy: ${activeOther}`);
+    for (const candidate of owners) {
+      if (candidate !== ownerPath && !ownerIsActive(fileSystem, candidate, processIsAlive)) {
+        fileSystem.unlinkSync(candidate);
+        locallyReclaimableOwners.delete(candidate);
+      }
+    }
+    return owned;
+  } catch (error) {
+    try {
+      releaseOwnedLock({ fileSystem, metadata: owned, committed: false });
+    } catch (cleanupError) {
+      const wrapped = new Error(`spot advice feedback lock acquisition failed and owner cleanup failed: ${cleanupError.message}`, { cause: error });
+      wrapped.reclaimable = ensureOwnerReclaimable(fileSystem, owned);
+      throw wrapped;
+    }
+    throw error;
   }
-  for (const candidate of owners) {
-    if (candidate !== ownerPath && !ownerIsActive(fileSystem, candidate, processIsAlive)) fileSystem.unlinkSync(candidate);
-  }
-  return { ...metadata, path: ownerPath };
 }
 
 function releaseOwnedLock({ fileSystem, metadata, committed }) {
@@ -124,6 +147,7 @@ function releaseOwnedLock({ fileSystem, metadata, committed }) {
   if (!current || current.token !== metadata.token) throw new Error("spot advice feedback lock ownership changed before cleanup");
   try {
     fileSystem.unlinkSync(metadata.path);
+    locallyReclaimableOwners.delete(metadata.path);
   } catch (cleanupError) {
     const stillOwned = parseLockMetadata(fileSystem, metadata.path);
     if (!stillOwned || stillOwned.token !== metadata.token) throw new Error("spot advice feedback lock ownership changed after cleanup failure");
