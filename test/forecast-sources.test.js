@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { resolveConditions, newestConditionsAgeHours } from "../src/forecast-sources.js";
+import { formatConditionChips, formatConditionLine } from "../src/condition-summary.js";
+import { monitorCameraSlots } from "../src/monitor-cameras.js";
+import { DEFAULT_SURF_PREFERENCES } from "../src/surf-preferences.js";
+import { rateSurfSpot } from "../src/surf-rating.js";
 
 const NOW = Date.parse("2026-07-06T12:00:00Z");
 const spotData = {
@@ -25,6 +29,12 @@ test("promoted spot with fresh conditions -> surfline-fresh", () => {
   assert.equal(resolved.rating, "GOOD");
   assert.equal(resolved.periodS, 12);
   assert.equal(resolved.swellDirDeg, 225);
+  assert.equal(resolved.sourceSpotId, "surfline-fresh-spot");
+  assert.equal(resolved.providerSpotSurfMinM, 0.9);
+  assert.equal(resolved.providerSpotSurfMaxM, 1.5);
+  assert.equal(resolved.primarySwellHeightM, 1.2);
+  assert.equal(resolved.primarySwellPeriodS, 12);
+  assert.equal(resolved.primarySwellDirectionDeg, 225);
   assert.equal(Math.round(resolved.ageHours), 6);
 });
 
@@ -86,4 +96,97 @@ test("newestConditionsAgeHours reports freshest entry age", () => {
 
 test("newestConditionsAgeHours null when no conditions", () => {
   assert.equal(newestConditionsAgeHours({ conditionsById: new Map() }, Date.now()), null);
+});
+
+test("typed advice fields leave legacy forecast, formatting, rating, and monitor order unchanged", () => {
+  const camera = {
+    id: "surfline-fresh-spot",
+    promoted: true,
+    name: "Fixture",
+    lat: 38.7,
+    lon: -9.3,
+    forecast: {},
+    detailMetrics: {},
+    surfMetadata: { coastExposure: { bearing: 270, confidence: "spot" } }
+  };
+  const resolved = resolveConditions(camera, spotData, { now: NOW });
+  const legacyProjection = ({ source, fetchedAt, ageHours, waveMinM, waveMaxM, windKmh, windDirDeg, periodS, swellDirDeg, rating }) => ({
+    source, fetchedAt, ageHours, waveMinM, waveMaxM, windKmh, windDirDeg, periodS, swellDirDeg, rating
+  });
+  const before = {
+    resolved: {
+      source: "surfline-fresh", fetchedAt: "2026-07-06T06:00:00Z", ageHours: 6,
+      waveMinM: 0.9, waveMaxM: 1.5, windKmh: 11, windDirDeg: 20, periodS: 12, swellDirDeg: 225, rating: "GOOD"
+    }
+  };
+
+  assert.deepEqual(legacyProjection(resolved), before.resolved);
+  assert.equal(formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, resolved), formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, before.resolved));
+  assert.deepEqual(formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, resolved), formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, before.resolved));
+  assert.deepEqual(rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, resolved), rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, before.resolved));
+
+  const cameras = [{ id: "far" }, camera, { id: "near" }];
+  const orderBefore = monitorCameraSlots(cameras, new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), 3, {
+    getDriveDistanceKm: ({ id }) => ({ far: 40, "surfline-fresh-spot": 20, near: 10 })[id]
+  });
+  const orderAfter = monitorCameraSlots(cameras.map((item) => ({ ...item, advice: { populated: true } })), new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), 3, {
+    getDriveDistanceKm: ({ id }) => ({ far: 40, "surfline-fresh-spot": 20, near: 10 })[id]
+  });
+  assert.deepEqual(orderAfter.map((slot) => slot.camera?.id), orderBefore.map((slot) => slot.camera?.id));
+});
+
+test("live-model and MEO-static legacy results do not gain typed Surfline fields", () => {
+  const live = resolveConditions({ id: "cam-live" }, { conditionsById: new Map(), spotMetadataById: new Map() }, {
+    now: NOW,
+    liveCache: new Map([["cam-live", {
+      fetchedAt: "2026-07-06T11:30:00Z", waveMinM: 1, waveMaxM: 1.2,
+      windKmh: 8, windDirDeg: 20, periodS: 10, swellDirDeg: 280
+    }]])
+  });
+  const meo = resolveConditions({ id: "cam-meo", forecast: { wave: "0.8 m" } }, { conditionsById: new Map(), spotMetadataById: new Map() }, { now: NOW });
+
+  for (const resolved of [live, meo]) {
+    assert.equal(resolved.sourceSpotId, undefined);
+    assert.equal(resolved.providerSpotSurfMinM, undefined);
+    assert.equal(resolved.primarySwellHeightM, undefined);
+  }
+});
+
+test("empty versus populated advice leaves Surfline, live-model, and MEO outputs byte-equivalent", () => {
+  const populatedAdvice = { subjectsById: new Map([["surfline-fresh-spot", { id: "surfline-fresh-spot" }]]) };
+  const cases = [
+    {
+      camera: { id: "surfline-fresh-spot", promoted: true, name: "Surfline", forecast: {}, detailMetrics: {}, surfMetadata: { coastExposure: { bearing: 270, confidence: "spot" } } },
+      options: { now: NOW }
+    },
+    {
+      camera: { id: "cam-live", name: "Live", forecast: {}, detailMetrics: {}, surfMetadata: { coastExposure: { bearing: 270, confidence: "spot" } } },
+      options: { now: NOW, liveCache: new Map([["cam-live", { fetchedAt: "2026-07-06T11:30:00Z", waveMinM: 0.8, waveMaxM: 1.1, windKmh: 8, windDirDeg: 20, periodS: 10, swellDirDeg: 280 }]]) }
+    },
+    {
+      camera: { id: "cam-meo", name: "MEO", forecast: { wave: "0.8 m", wind: "6Km/h", windDirection: "north" }, detailMetrics: { "Período das ondas": "8s", "Direção das ondas": "Noroeste" }, surfMetadata: { coastExposure: { bearing: 180, confidence: "spot" } } },
+      options: { now: NOW }
+    }
+  ];
+
+  for (const { camera, options } of cases) {
+    const emptyResolved = resolveConditions(camera, { ...spotData, advice: null }, options);
+    const populatedResolved = resolveConditions(camera, { ...spotData, advice: populatedAdvice }, options);
+    assert.deepEqual(populatedResolved, emptyResolved, `${emptyResolved.source} resolved output`);
+    assert.equal(
+      formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, populatedResolved),
+      formatConditionLine(camera, DEFAULT_SURF_PREFERENCES, emptyResolved),
+      `${emptyResolved.source} condition line`
+    );
+    assert.deepEqual(
+      formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, populatedResolved),
+      formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, emptyResolved),
+      `${emptyResolved.source} condition chips`
+    );
+    assert.deepEqual(
+      rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, populatedResolved),
+      rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, emptyResolved),
+      `${emptyResolved.source} rating`
+    );
+  }
 });

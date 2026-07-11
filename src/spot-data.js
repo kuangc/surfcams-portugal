@@ -5,10 +5,12 @@ import {
   MEO_SURFLINE_MATCHES_URL,
   PROMOTED_SPOTS_URL,
   SPOT_METADATA_ENRICHMENT_URL,
+  SPOT_ADVICE_URL,
   STRETCHES_URL,
   SURFLINE_CONDITIONS_URL,
   SURFLINE_SPOTS_URL
 } from "./config.js";
+import { normalizeSpotAdviceRuntime } from "./spot-advice.js";
 
 export const CENTRAL_LISBON = {
   label: "Central Lisbon",
@@ -25,7 +27,8 @@ const EMPTY_SPOT_DATA = {
   spotMetadataDb: { entries: [] },
   promotedDb: { promoted: [], deferred: [] },
   conditionsDb: { conditions: {} },
-  stretchesDb: { stretches: [] }
+  stretchesDb: { stretches: [] },
+  adviceDb: {}
 };
 
 function toMap(items = [], key = "id") {
@@ -166,7 +169,8 @@ export function normalizeSpotData({
   spotMetadataDb = EMPTY_SPOT_DATA.spotMetadataDb,
   promotedDb = EMPTY_SPOT_DATA.promotedDb,
   conditionsDb = EMPTY_SPOT_DATA.conditionsDb,
-  stretchesDb = EMPTY_SPOT_DATA.stretchesDb
+  stretchesDb = EMPTY_SPOT_DATA.stretchesDb,
+  adviceDb = EMPTY_SPOT_DATA.adviceDb
 } = EMPTY_SPOT_DATA) {
   const safeSurflineDb = surflineDb || EMPTY_SPOT_DATA.surflineDb;
   const safeMeoDb = meoDb || EMPTY_SPOT_DATA.meoDb;
@@ -177,6 +181,7 @@ export function normalizeSpotData({
   const safePromotedDb = promotedDb || EMPTY_SPOT_DATA.promotedDb;
   const safeConditionsDb = conditionsDb || EMPTY_SPOT_DATA.conditionsDb;
   const safeStretchesDb = stretchesDb || EMPTY_SPOT_DATA.stretchesDb;
+  const safeAdviceDb = adviceDb || EMPTY_SPOT_DATA.adviceDb;
   const surflineById = toMap(safeSurflineDb.spots);
   const meoById = toMap(safeMeoDb.spots);
   const matchesByMeoId = toMap(safeMappingDb.matches, "meoSpotId");
@@ -185,6 +190,8 @@ export function normalizeSpotData({
   const spotMetadataById = toMap(safeSpotMetadataDb.entries);
   const conditionsById = new Map(Object.entries(safeConditionsDb.conditions || {}));
   const stretchBySpotId = toStretchBySpotIdMap(safeStretchesDb.stretches);
+  const promotedById = toMap(safePromotedDb.promoted);
+  const advice = normalizeSpotAdviceRuntime(safeAdviceDb);
 
   return {
     surflineDb: safeSurflineDb,
@@ -196,6 +203,8 @@ export function normalizeSpotData({
     promotedDb: safePromotedDb,
     conditionsDb: safeConditionsDb,
     stretchesDb: safeStretchesDb,
+    adviceDb: safeAdviceDb,
+    advice,
     surflineById,
     meoById,
     matchesByMeoId,
@@ -203,6 +212,7 @@ export function normalizeSpotData({
     coastExposureById,
     spotMetadataById,
     conditionsById,
+    promotedById,
     stretchBySpotId,
     stretches: safeStretchesDb.stretches || []
   };
@@ -289,10 +299,11 @@ async function fetchJson(fetcher, url) {
   return response.json();
 }
 
-async function fetchOptionalJson(fetcher, url, fallback) {
+async function fetchOptionalJson(fetcher, url, fallback, diagnosticLabel = "") {
   try {
     return await fetchJson(fetcher, url);
-  } catch {
+  } catch (error) {
+    if (diagnosticLabel) console.warn(`${diagnosticLabel}: ${error.message}`);
     return fallback;
   }
 }
@@ -307,7 +318,8 @@ export async function loadSpotData({ fetcher = fetch } = {}) {
     spotMetadataDb,
     promotedDb,
     conditionsDb,
-    stretchesDb
+    stretchesDb,
+    adviceDb
   ] = await Promise.all([
     fetchJson(fetcher, SURFLINE_SPOTS_URL),
     fetchJson(fetcher, MEO_SPOTS_URL),
@@ -317,7 +329,8 @@ export async function loadSpotData({ fetcher = fetch } = {}) {
     fetchOptionalJson(fetcher, SPOT_METADATA_ENRICHMENT_URL, EMPTY_SPOT_DATA.spotMetadataDb),
     fetchOptionalJson(fetcher, PROMOTED_SPOTS_URL, EMPTY_SPOT_DATA.promotedDb),
     fetchOptionalJson(fetcher, SURFLINE_CONDITIONS_URL, EMPTY_SPOT_DATA.conditionsDb),
-    fetchOptionalJson(fetcher, STRETCHES_URL, EMPTY_SPOT_DATA.stretchesDb)
+    fetchOptionalJson(fetcher, STRETCHES_URL, EMPTY_SPOT_DATA.stretchesDb),
+    fetchOptionalJson(fetcher, SPOT_ADVICE_URL, EMPTY_SPOT_DATA.adviceDb, "Spot advice unavailable")
   ]);
 
   return normalizeSpotData({
@@ -329,6 +342,7 @@ export async function loadSpotData({ fetcher = fetch } = {}) {
     spotMetadataDb,
     promotedDb,
     conditionsDb,
-    stretchesDb
+    stretchesDb,
+    adviceDb
   });
 }

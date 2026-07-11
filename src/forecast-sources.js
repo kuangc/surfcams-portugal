@@ -22,8 +22,14 @@ export function resolveConditions(camera, spotData, { liveCache = null, now = Da
     const primarySwell = (entry.swells || [])[0] || {};
     return {
       source: "surfline-fresh",
+      sourceSpotId: surflineId,
       fetchedAt: entry.fetchedAt,
       ageHours: entryAge,
+      providerSpotSurfMinM: entry.surfMinM ?? null,
+      providerSpotSurfMaxM: entry.surfMaxM ?? null,
+      primarySwellHeightM: primarySwell.hM ?? null,
+      primarySwellPeriodS: primarySwell.periodS ?? null,
+      primarySwellDirectionDeg: primarySwell.dirDeg ?? null,
       waveMinM: entry.surfMinM ?? null,
       waveMaxM: entry.surfMaxM ?? null,
       windKmh: entry.windKmh ?? null,

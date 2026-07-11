@@ -2,14 +2,16 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
+import { DEFAULT_FAVORITE_IDS, SPOT_ADVICE_URL } from "../src/config.js";
 import {
+  CENTRAL_LISBON,
   applyCoastExposuresToCameraDb,
   applySpotMetadataToCameraDb,
   estimateDrivingMinutes,
   findDriveEstimate,
   findSurflineMatches,
   haversineKm,
+  loadSpotData,
   normalizeSpotData
 } from "../src/spot-data.js";
 
@@ -439,4 +441,47 @@ test("normalizeSpotData tolerates absent conditions and stretches", () => {
   const normalized = normalizeSpotData({});
   assert.equal(normalized.conditionsById.size, 0);
   assert.equal(normalized.stretchBySpotId.size, 0);
+  assert.equal(normalized.advice.subjectsById.size, 0);
+});
+
+test("normalizeSpotData loads the 44-subject advice artifact and promotion lookup", () => {
+  const adviceDb = JSON.parse(fs.readFileSync("data/spot-advice-resolved.json", "utf8"));
+  const normalized = normalizeSpotData({
+    adviceDb,
+    promotedDb: { promoted: [{ id: "surfline-sao-juliao", linkedCamId: "sao-juliao" }], deferred: [] }
+  });
+
+  assert.equal(normalized.advice.subjectsById.size, 44);
+  assert.equal(normalized.advice.identityByCameraId.get("praia-sesimbra"), "surfline-sesimbra");
+  assert.equal(normalized.promotedById.get("surfline-sao-juliao").linkedCamId, "sao-juliao");
+  assert.equal(SPOT_ADVICE_URL, "./data/spot-advice-resolved.json");
+});
+
+test("failed optional advice fetch degrades to empty advice without losing other spot data", async () => {
+  const required = new Map([
+    ["./data/surfline-spots.json", { spots: [{ id: "surfline-required" }] }],
+    ["./data/meo-spots.json", { spots: [{ id: "meo-required" }] }],
+    ["./data/meo-surfline-matches.json", { matches: [] }],
+    ["./data/lisbon-drive-estimates.json", { origin: CENTRAL_LISBON, estimates: [] }]
+  ]);
+  const fetcher = async (url) => {
+    if (url === SPOT_ADVICE_URL) return { ok: false, status: 503, json: async () => ({}) };
+    const body = required.get(url) || {};
+    return { ok: true, status: 200, json: async () => body };
+  };
+
+  const warnings = [];
+  const originalWarn = console.warn;
+  console.warn = (...args) => warnings.push(args.join(" "));
+  let loaded;
+  try {
+    loaded = await loadSpotData({ fetcher });
+  } finally {
+    console.warn = originalWarn;
+  }
+  assert.equal(loaded.surflineById.has("surfline-required"), true);
+  assert.equal(loaded.meoById.has("meo-required"), true);
+  assert.equal(loaded.advice.subjectsById.size, 0);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /spot advice.*503/i);
 });

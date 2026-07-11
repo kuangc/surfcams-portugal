@@ -30,6 +30,7 @@ export const HLS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/hls.js@1.6.4/dist/hl
 export const PROMOTED_SPOTS_URL = "./data/promoted-spots.json";
 export const SURFLINE_CONDITIONS_URL = "./data/surfline-conditions.json";
 export const STRETCHES_URL = "./data/stretches.json";
+export const SPOT_ADVICE_URL = "./data/spot-advice-resolved.json";
 export const SUGGESTION_FENCE = { north: 39.65, south: 38.40, westOfLon: -9.05 };
 export const SURFLINE_FRESH_MAX_AGE_HOURS = 36;
 export const LIVE_MODEL_MAX_AGE_HOURS = 2;
