@@ -1,5 +1,30 @@
 # CLAUDE.md
 
+## Spot Advice Research and Review
+
+`data/spot-advice.json` is the hand-reviewed canonical research file. Its schema v1 is display-only: advice may describe thresholds and fit, but it never changes provider estimates, local estimates, or surf ratings. `data/spot-advice-resolved.json` is generated and must not be hand-edited.
+
+Use these exact commands to build, validate, and review the advice:
+
+```sh
+npm run build-spot-advice
+npm run check-spot-advice
+npm run build-spot-advice-review
+npm run apply-spot-advice-feedback -- .local/spot-advice-feedback.json
+```
+
+The review cockpit is `.local/spot-advice-review.html`. `.local/` is local-only, gitignored, and never deployed. Its browser state is recovery state, not the source of truth. Export a complete schema-v1 feedback document before applying edits.
+
+Feedback contains a `baseDigest`. The apply command rejects stale feedback, validates the complete candidate, rechecks the canonical digest before its atomic rename, and then rebuilds the runtime artifact. Do not bypass that digest guard or copy browser-state fragments directly into `data/spot-advice.json`. Read back the canonical file and run `npm run check-spot-advice` after applying feedback.
+
+Source-link health is a separate, non-deterministic operator check:
+
+```sh
+npm run check-spot-advice-links
+```
+
+It audits accepted HTTP(S) evidence with bounded requests and exits nonzero for unreachable sources. Run it manually and investigate failures; never add it to deterministic CI, because remote sites may throttle or block automated requests.
+
 ## Surfline Cache Refresh
 
 Direct `curl`, Node `fetch`, and headless Chrome can hit Surfline Cloudflare 403 responses. Do not generate placeholder Surfline HTML. The reliable refresh path is a headed Chrome session that has loaded a Surfline report page, followed by Chrome DevTools Protocol fetches from inside that browser context.

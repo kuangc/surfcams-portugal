@@ -180,6 +180,21 @@ test("official tide cache has a scheduled refresh path", () => {
   assert.match(workflowSource, /data\/portugal-tides\.json/);
 });
 
+test("spot advice operator scripts are exposed and local review artifacts stay ignored", () => {
+  for (const [scriptName, command] of [
+    ["build-spot-advice", "node scripts/build-spot-advice.js"],
+    ["check-spot-advice", "node scripts/build-spot-advice.js --check"],
+    ["build-spot-advice-review", "node scripts/build-spot-advice-review-html.js"],
+    ["apply-spot-advice-feedback", "node scripts/apply-spot-advice-feedback.js"],
+    ["check-spot-advice-links", "node scripts/check-spot-advice-links.js"]
+  ]) {
+    assert.match(packageSource, new RegExp(`"${scriptName}":\\s*"${command.replaceAll(".", "\\.")}`));
+  }
+
+  const gitignoreSource = fs.readFileSync(".gitignore", "utf8");
+  assert.match(gitignoreSource, /^\.local\/$/m);
+});
+
 test("spot data build can refresh road distances from a directions table API", () => {
   assert.match(buildSpotDataSource, /ROUTING_PROVIDER/);
   assert.match(buildSpotDataSource, /router\.project-osrm\.org\/table\/v1\/driving/);

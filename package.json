@@ -19,6 +19,7 @@
     "build-spot-advice-review": "node scripts/build-spot-advice-review-html.js",
     "apply-spot-advice-feedback": "node scripts/apply-spot-advice-feedback.js",
     "check-spot-advice": "node scripts/build-spot-advice.js --check",
+    "check-spot-advice-links": "node scripts/check-spot-advice-links.js",
     "build-surfline-needs-review": "node scripts/build-surfline-needs-review-html.js",
     "build-promoted-spots": "node scripts/build-promoted-spots.js",
     "build-promotion-map": "node scripts/build-promotion-map-html.js",

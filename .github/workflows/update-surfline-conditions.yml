@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate committed spot advice
+        run: npm run check-spot-advice
+
       - name: Resolve Chrome binary
         id: chrome
         run: |
