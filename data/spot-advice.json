@@ -21,7 +21,7 @@
       "overrideKey": "swell.useful-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:00.000Z",
+      "reviewedAt": "2026-07-11T22:00:00.000Z",
       "rule": {
         "arcs": [
           {
@@ -60,7 +60,7 @@
       "overrideKey": "mechanics.nearby-options",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:01.000Z",
+      "reviewedAt": "2026-07-11T22:00:01.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -103,7 +103,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:02.000Z",
+      "reviewedAt": "2026-07-11T22:00:02.000Z",
       "rule": {
         "direction": "rising",
         "stage": "mid",
@@ -137,7 +137,7 @@
       "overrideKey": "mechanics.bay-shelter",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:03.000Z",
+      "reviewedAt": "2026-07-11T22:00:03.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -151,7 +151,8 @@
     {
       "calculationCandidate": false,
       "confidence": "medium",
-      "consensus": "settled",
+      "conflictGroupId": "supertubos-swell-direction-alternatives",
+      "consensus": "unresolved",
       "evidence": [
         {
           "accessedAt": "2026-07-11",
@@ -167,9 +168,10 @@
       ],
       "id": "research-supertubos-swell",
       "overrideKey": "swell.useful-direction",
+      "position": "surfline-west-to-west-northwest",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:04.000Z",
+      "reviewedAt": "2026-07-11T22:00:04.000Z",
       "rule": {
         "arcs": [
           {
@@ -208,7 +210,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:05.000Z",
+      "reviewedAt": "2026-07-11T22:00:05.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -241,7 +243,7 @@
       "overrideKey": "wind.preferred-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:06.000Z",
+      "reviewedAt": "2026-07-11T22:00:06.000Z",
       "rule": {
         "arcs": [
           {
@@ -280,7 +282,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:07.000Z",
+      "reviewedAt": "2026-07-11T22:00:07.000Z",
       "rule": {
         "stage": "high",
         "type": "tide-preference"
@@ -313,7 +315,7 @@
       "overrideKey": "mechanics.flexible-reef-right",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:08.000Z",
+      "reviewedAt": "2026-07-11T22:00:08.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -345,7 +347,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:09.000Z",
+      "reviewedAt": "2026-07-11T22:00:09.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -378,7 +380,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:10.000Z",
+      "reviewedAt": "2026-07-11T22:00:10.000Z",
       "rule": {
         "direction": "rising",
         "stage": "high",
@@ -412,7 +414,7 @@
       "overrideKey": "mechanics.mixed-bottom",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:11.000Z",
+      "reviewedAt": "2026-07-11T22:00:11.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -444,7 +446,7 @@
       "overrideKey": "mechanics.sheltered-mixed-break",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:12.000Z",
+      "reviewedAt": "2026-07-11T22:00:12.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -476,7 +478,7 @@
       "overrideKey": "mechanics.river-mouth-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:13.000Z",
+      "reviewedAt": "2026-07-11T22:00:13.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -507,7 +509,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:14.000Z",
+      "reviewedAt": "2026-07-11T22:00:14.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -540,7 +542,7 @@
       "overrideKey": "mechanics.exposed-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:15.000Z",
+      "reviewedAt": "2026-07-11T22:00:15.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -572,7 +574,7 @@
       "overrideKey": "mechanics.exposed-beachbreak",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:16.000Z",
+      "reviewedAt": "2026-07-11T22:00:16.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -604,7 +606,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:17.000Z",
+      "reviewedAt": "2026-07-11T22:00:17.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -637,7 +639,7 @@
       "overrideKey": "mechanics.exposed-atlantic-beach",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:18.000Z",
+      "reviewedAt": "2026-07-11T22:00:18.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -680,7 +682,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:20.000Z",
+      "reviewedAt": "2026-07-11T22:00:20.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -712,7 +714,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:21.000Z",
+      "reviewedAt": "2026-07-11T22:00:21.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectBelow": "likely-flat",
@@ -748,7 +750,7 @@
       "overrideKey": "mechanics.reef-point",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:22.000Z",
+      "reviewedAt": "2026-07-11T22:00:22.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -780,7 +782,7 @@
       "overrideKey": "swell.sheltered-exposure",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:23.000Z",
+      "reviewedAt": "2026-07-11T22:00:23.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -812,7 +814,7 @@
       "overrideKey": "mechanics.rare-reef-break",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:24.000Z",
+      "reviewedAt": "2026-07-11T22:00:24.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -844,7 +846,7 @@
       "overrideKey": "swell.sheltered-exposure",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:26.000Z",
+      "reviewedAt": "2026-07-11T22:00:26.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -876,7 +878,7 @@
       "overrideKey": "swell.useful-direction",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:27.000Z",
+      "reviewedAt": "2026-07-11T22:00:27.000Z",
       "rule": {
         "arcs": [
           {
@@ -914,7 +916,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:28.000Z",
+      "reviewedAt": "2026-07-11T22:00:28.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectAtOrAbove": "may-start-working",
@@ -951,7 +953,7 @@
       "overrideKey": "mechanics.river-mouth-wedge",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:29.000Z",
+      "reviewedAt": "2026-07-11T22:00:29.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -983,7 +985,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:30.000Z",
+      "reviewedAt": "2026-07-11T22:00:30.000Z",
       "rule": {
         "stage": "high",
         "type": "tide-preference"
@@ -1016,7 +1018,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:31.000Z",
+      "reviewedAt": "2026-07-11T22:00:31.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1048,7 +1050,7 @@
       "overrideKey": "mechanics.groyne-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:32.000Z",
+      "reviewedAt": "2026-07-11T22:00:32.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1080,7 +1082,7 @@
       "overrideKey": "mechanics.groyne-sandbanks",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:33.000Z",
+      "reviewedAt": "2026-07-11T22:00:33.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1112,7 +1114,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:34.000Z",
+      "reviewedAt": "2026-07-11T22:00:34.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1144,7 +1146,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:36.000Z",
+      "reviewedAt": "2026-07-11T22:00:36.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1177,7 +1179,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:37.000Z",
+      "reviewedAt": "2026-07-11T22:00:37.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1209,7 +1211,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:38.000Z",
+      "reviewedAt": "2026-07-11T22:00:38.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1241,7 +1243,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:40.000Z",
+      "reviewedAt": "2026-07-11T22:00:40.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1274,7 +1276,7 @@
       "overrideKey": "mechanics.exposed-lagoon-mouth",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:41.000Z",
+      "reviewedAt": "2026-07-11T22:00:41.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1306,7 +1308,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:42.000Z",
+      "reviewedAt": "2026-07-11T22:00:42.000Z",
       "rule": {
         "stage": "mid",
         "type": "tide-preference"
@@ -1338,7 +1340,7 @@
       "overrideKey": "size.minimum-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:43.000Z",
+      "reviewedAt": "2026-07-11T22:00:43.000Z",
       "rule": {
         "comparison": "greater-than-or-equal",
         "effectBelow": "likely-flat",
@@ -1377,7 +1379,7 @@
       "overrideKey": "size.sheltered-primary-swell",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:01:00.000Z",
+      "reviewedAt": "2026-07-11T22:01:00.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1408,7 +1410,7 @@
       "overrideKey": "tide.preferred-stage",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:01:01.000Z",
+      "reviewedAt": "2026-07-11T22:01:01.000Z",
       "rule": {
         "stage": "high",
         "type": "tide-preference"
@@ -1441,7 +1443,7 @@
       "overrideKey": "mechanics.exposed-remote-beach",
       "publicationStatus": "published",
       "revalidateAfter": null,
-      "reviewedAt": "2026-07-11T20:00:19.000Z",
+      "reviewedAt": "2026-07-11T22:00:19.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1473,7 +1475,7 @@
       "overrideKey": "mechanics.shifting-sandbank",
       "publicationStatus": "published",
       "revalidateAfter": "2027-01-15",
-      "reviewedAt": "2026-07-11T20:00:35.000Z",
+      "reviewedAt": "2026-07-11T22:00:35.000Z",
       "rule": {
         "type": "qualitative"
       },
@@ -1483,6 +1485,47 @@
       },
       "summary": "Cornélia has shifting sand-bottom peaks, so bank quality should be rechecked rather than treated as permanent.",
       "topic": "mechanics"
+    },
+    {
+      "calculationCandidate": false,
+      "confidence": "medium",
+      "conflictGroupId": "supertubos-swell-direction-alternatives",
+      "consensus": "unresolved",
+      "evidence": [
+        {
+          "accessedAt": "2026-07-11",
+          "kind": "specialist-guide",
+          "locationMatch": "exact-spot",
+          "publisher": "Surf-Forecast",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "supportedClaim": "The live exact-spot guide says the best swell direction is southwest.",
+          "title": "Supertubos Surf Guide",
+          "url": "https://www.surf-forecast.com/breaks/Supertubos"
+        }
+      ],
+      "id": "research-supertubos-southwest-swell",
+      "overrideKey": "swell.useful-direction",
+      "position": "surf-forecast-southwest",
+      "publicationStatus": "published",
+      "revalidateAfter": null,
+      "reviewedAt": "2026-07-11T22:00:04.500Z",
+      "rule": {
+        "arcs": [
+          {
+            "end": 236.25,
+            "start": 213.75
+          }
+        ],
+        "input": "primary-swell-direction-deg",
+        "type": "direction-preference"
+      },
+      "scope": {
+        "id": "surfline-supertubos",
+        "type": "spot"
+      },
+      "summary": "Surf-Forecast instead identifies southwest as the best swell direction at Supertubos.",
+      "topic": "swell"
     }
   ],
   "areas": [
@@ -1567,7 +1610,7 @@
         "research-nazare-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:00.000Z",
+      "reviewedAt": "2026-07-11T23:00:00.000Z",
       "spotId": "surfline-nazare",
       "status": "complete"
     },
@@ -1583,7 +1626,7 @@
         },
         {
           "decision": "rejected",
-          "locationMatch": "exact-spot",
+          "locationMatch": "area",
           "publisher": "Peniche Rentals",
           "rationale": "The page matches the Peniche area but does not state the previously claimed two-side exposure, so it is retained as checked but not claim support.",
           "title": "Surf Spots in Peniche",
@@ -1602,7 +1645,7 @@
         "research-baleal-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:01.000Z",
+      "reviewedAt": "2026-07-11T23:00:01.000Z",
       "spotId": "surfline-baleal",
       "status": "complete"
     },
@@ -1629,7 +1672,7 @@
         "research-lagide-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:02.000Z",
+      "reviewedAt": "2026-07-11T23:00:02.000Z",
       "spotId": "surfline-lagide",
       "status": "complete"
     },
@@ -1656,7 +1699,7 @@
         "research-cantinho-da-baia-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:03.000Z",
+      "reviewedAt": "2026-07-11T23:00:03.000Z",
       "spotId": "surfline-cantinho-da-baia",
       "status": "complete"
     },
@@ -1671,19 +1714,20 @@
           "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
         },
         {
-          "decision": "rejected",
+          "decision": "accepted",
           "locationMatch": "exact-spot",
           "publisher": "Surf-Forecast",
-          "rationale": "The live exact-spot page says southwest is best, contradicting the cached Surfline W/WNW direction used by this app, so it is retained as a documented disagreement and not claim support.",
+          "rationale": "The live exact-spot guide credibly says southwest is best; it is published as an unresolved alternative to Surfline's W/WNW guidance and cannot drive decisive Local lens text.",
           "title": "Supertubos Surf Guide",
           "url": "https://www.surf-forecast.com/breaks/Supertubos"
         }
       ],
       "directClaimIds": [
-        "research-supertubos-swell"
+        "research-supertubos-swell",
+        "research-supertubos-southwest-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:04.000Z",
+      "reviewedAt": "2026-07-11T23:00:04.000Z",
       "spotId": "surfline-supertubos",
       "status": "complete"
     },
@@ -1710,7 +1754,7 @@
         "research-consolacao-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:05.000Z",
+      "reviewedAt": "2026-07-11T23:00:05.000Z",
       "spotId": "surfline-consolacao",
       "status": "complete"
     },
@@ -1737,7 +1781,7 @@
         "research-santa-cruz-wind"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:06.000Z",
+      "reviewedAt": "2026-07-11T23:00:06.000Z",
       "spotId": "surfline-santa-cruz",
       "status": "complete"
     },
@@ -1764,7 +1808,7 @@
         "research-cave-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:07.000Z",
+      "reviewedAt": "2026-07-11T23:00:07.000Z",
       "spotId": "surfline-cave",
       "status": "complete"
     },
@@ -1791,7 +1835,7 @@
         "research-ribeira-d-ilhas-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:08.000Z",
+      "reviewedAt": "2026-07-11T23:00:08.000Z",
       "spotId": "surfline-ribeira-d-ilhas",
       "status": "complete"
     },
@@ -1826,7 +1870,7 @@
         "research-reef-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:09.000Z",
+      "reviewedAt": "2026-07-11T23:00:09.000Z",
       "spotId": "surfline-reef",
       "status": "complete"
     },
@@ -1853,7 +1897,7 @@
         "research-pedra-branca-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:10.000Z",
+      "reviewedAt": "2026-07-11T23:00:10.000Z",
       "spotId": "surfline-pedra-branca",
       "status": "complete"
     },
@@ -1880,7 +1924,7 @@
         "research-matadouro-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:11.000Z",
+      "reviewedAt": "2026-07-11T23:00:11.000Z",
       "spotId": "surfline-matadouro",
       "status": "complete"
     },
@@ -1907,7 +1951,7 @@
         "research-praia-do-sul-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:12.000Z",
+      "reviewedAt": "2026-07-11T23:00:12.000Z",
       "spotId": "surfline-praia-do-sul",
       "status": "complete"
     },
@@ -1934,7 +1978,7 @@
         "research-foz-do-lizandro-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:13.000Z",
+      "reviewedAt": "2026-07-11T23:00:13.000Z",
       "spotId": "surfline-foz-do-lizandro",
       "status": "complete"
     },
@@ -1961,7 +2005,7 @@
         "user-sao-juliao-mid-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:14.000Z",
+      "reviewedAt": "2026-07-11T23:00:14.000Z",
       "spotId": "surfline-sao-juliao",
       "status": "complete"
     },
@@ -1988,7 +2032,7 @@
         "research-praia-das-macas-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:15.000Z",
+      "reviewedAt": "2026-07-11T23:00:15.000Z",
       "spotId": "surfline-praia-das-macas",
       "status": "complete"
     },
@@ -2015,7 +2059,7 @@
         "research-praia-pequena-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:16.000Z",
+      "reviewedAt": "2026-07-11T23:00:16.000Z",
       "spotId": "surfline-praia-pequena",
       "status": "complete"
     },
@@ -2042,7 +2086,7 @@
         "research-praia-grande-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:17.000Z",
+      "reviewedAt": "2026-07-11T23:00:17.000Z",
       "spotId": "surfline-praia-grande",
       "status": "complete"
     },
@@ -2077,7 +2121,7 @@
         "research-praia-da-adraga-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:18.000Z",
+      "reviewedAt": "2026-07-11T23:00:18.000Z",
       "spotId": "surfline-praia-da-adraga",
       "status": "complete"
     },
@@ -2120,7 +2164,7 @@
         "research-praia-da-ursa-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:19.000Z",
+      "reviewedAt": "2026-07-11T23:00:19.000Z",
       "spotId": "surfline-praia-da-ursa",
       "status": "complete"
     },
@@ -2147,7 +2191,7 @@
         "research-praia-do-guincho-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:20.000Z",
+      "reviewedAt": "2026-07-11T23:00:20.000Z",
       "spotId": "surfline-praia-do-guincho",
       "status": "complete"
     },
@@ -2174,7 +2218,7 @@
         "user-caxias-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:21.000Z",
+      "reviewedAt": "2026-07-11T23:00:21.000Z",
       "spotId": "surfline-praia-de-caxias",
       "status": "complete"
     },
@@ -2201,7 +2245,7 @@
         "research-sao-pedro-do-estoril-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:22.000Z",
+      "reviewedAt": "2026-07-11T23:00:22.000Z",
       "spotId": "surfline-sao-pedro-do-estoril",
       "status": "complete"
     },
@@ -2228,7 +2272,7 @@
         "research-paco-de-arcos-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:23.000Z",
+      "reviewedAt": "2026-07-11T23:00:23.000Z",
       "spotId": "surfline-paco-de-arcos",
       "status": "complete"
     },
@@ -2255,7 +2299,7 @@
         "research-parede-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:24.000Z",
+      "reviewedAt": "2026-07-11T23:00:24.000Z",
       "spotId": "surfline-parede",
       "status": "complete"
     },
@@ -2290,11 +2334,11 @@
       "directEvidenceOutcome": "no-credible-spot-source-found",
       "inheritedApprovals": [
         {
-          "claimDigest": "5d4352b7b5ad5720f249b50e9463aae3a1b16e9f756e0a790b56cb628307ab14",
+          "claimDigest": "3e22573618e12308f11d922dbbc14c4be879492e7b24bb2d50896c535ec729b4",
           "claimId": "linha-stretch-sheltered-size-translation"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:25.000Z",
+      "reviewedAt": "2026-07-11T23:00:25.000Z",
       "spotId": "surfline-praia-da-laje",
       "status": "complete"
     },
@@ -2321,7 +2365,7 @@
         "research-santo-amaro-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:26.000Z",
+      "reviewedAt": "2026-07-11T23:00:26.000Z",
       "spotId": "surfline-santo-amaro",
       "status": "complete"
     },
@@ -2348,7 +2392,7 @@
         "research-carcavelos-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:27.000Z",
+      "reviewedAt": "2026-07-11T23:00:27.000Z",
       "spotId": "surfline-carcavelos",
       "status": "complete"
     },
@@ -2375,7 +2419,7 @@
         "user-torre-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:28.000Z",
+      "reviewedAt": "2026-07-11T23:00:28.000Z",
       "spotId": "surfline-praia-de-torre",
       "status": "complete"
     },
@@ -2404,11 +2448,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:29.000Z",
+      "reviewedAt": "2026-07-11T23:00:29.000Z",
       "spotId": "surfline-cova-do-vapor",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
@@ -2438,11 +2482,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:30.000Z",
+      "reviewedAt": "2026-07-11T23:00:30.000Z",
       "spotId": "surfline-sao-joao-da-caparica",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
@@ -2480,11 +2524,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:31.000Z",
+      "reviewedAt": "2026-07-11T23:00:31.000Z",
       "spotId": "surfline-marcelino",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-do-norte"
@@ -2514,11 +2558,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:32.000Z",
+      "reviewedAt": "2026-07-11T23:00:32.000Z",
       "spotId": "surfline-praia-do-barbas",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-tarquinio"
@@ -2548,11 +2592,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:33.000Z",
+      "reviewedAt": "2026-07-11T23:00:33.000Z",
       "spotId": "surfline-costa-da-caparica",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-cds"
@@ -2582,11 +2626,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:34.000Z",
+      "reviewedAt": "2026-07-11T23:00:34.000Z",
       "spotId": "surfline-praia-da-saude",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-nova-praia"
@@ -2624,11 +2668,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:35.000Z",
+      "reviewedAt": "2026-07-11T23:00:35.000Z",
       "spotId": "surfline-praia-da-cornelia",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2658,11 +2702,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:36.000Z",
+      "reviewedAt": "2026-07-11T23:00:36.000Z",
       "spotId": "surfline-praia-da-rainha",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2692,11 +2736,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:37.000Z",
+      "reviewedAt": "2026-07-11T23:00:37.000Z",
       "spotId": "surfline-castelo",
       "status": "complete",
       "tideCameraId": "costa-da-caparica-riviera"
@@ -2734,11 +2778,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:38.000Z",
+      "reviewedAt": "2026-07-11T23:00:38.000Z",
       "spotId": "surfline-praia-do-pescador",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
@@ -2774,11 +2818,11 @@
       "directEvidenceOutcome": "no-credible-spot-source-found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:39.000Z",
+      "reviewedAt": "2026-07-11T23:00:39.000Z",
       "spotId": "surfline-praia-do-rei",
       "status": "complete",
       "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
@@ -2808,11 +2852,11 @@
       "directEvidenceOutcome": "found",
       "inheritedApprovals": [
         {
-          "claimDigest": "3584aab129de3a400f32d5bea163e2a7450698c484bee74d8fceebbceec25ae6",
+          "claimDigest": "17c4127faeec5dc54345b9e2b4fbdcbde0863db53a658091a4b4752c20b1e60d",
           "claimId": "user-caparica-high-tide"
         }
       ],
-      "reviewedAt": "2026-07-11T21:00:40.000Z",
+      "reviewedAt": "2026-07-11T23:00:40.000Z",
       "spotId": "surfline-fonte-da-telha",
       "status": "complete",
       "tideCameraId": "fonte-da-telha"
@@ -2840,7 +2884,7 @@
         "research-lagoa-de-albufeira-mechanics"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:41.000Z",
+      "reviewedAt": "2026-07-11T23:00:41.000Z",
       "spotId": "surfline-lagoa-de-albufeira",
       "status": "complete"
     },
@@ -2867,7 +2911,7 @@
         "research-bicas-tide"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:42.000Z",
+      "reviewedAt": "2026-07-11T23:00:42.000Z",
       "spotId": "surfline-bicas",
       "status": "complete"
     },
@@ -2894,7 +2938,7 @@
         "user-sesimbra-minimum-primary-swell"
       ],
       "directEvidenceOutcome": "found",
-      "reviewedAt": "2026-07-11T21:00:43.000Z",
+      "reviewedAt": "2026-07-11T23:00:43.000Z",
       "spotId": "surfline-sesimbra",
       "status": "complete"
     }
