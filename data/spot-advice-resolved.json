@@ -210,7 +210,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sourceDigest": "09416dd370f8136e11bde584d3c575f35ce6d567fb6ec90a631dc9a19eaf94f0",
+  "sourceDigest": "39d2ed579e1c193f8833cc77ca20349d5ced69920a4b1697299d72a54d5e2dba",
   "subjects": {
     "surfline-baleal": {
       "claims": [
@@ -232,7 +232,7 @@
           "id": "research-baleal-mechanics",
           "overrideKey": "mechanics.peninsula-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -264,7 +264,7 @@
           "id": "research-baleal-mechanics",
           "overrideKey": "mechanics.peninsula-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -313,7 +313,7 @@
           "id": "research-bicas-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:38.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -346,7 +346,7 @@
           "id": "research-bicas-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:38.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -396,7 +396,7 @@
           "id": "research-cantinho-da-baia-mechanics",
           "overrideKey": "mechanics.bay-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:03.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -428,7 +428,7 @@
           "id": "research-cantinho-da-baia-mechanics",
           "overrideKey": "mechanics.bay-shelter",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:03.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -477,7 +477,7 @@
           "id": "research-carcavelos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:25.000Z",
           "rule": {
             "arcs": [
               {
@@ -516,7 +516,7 @@
           "id": "research-carcavelos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:25.000Z",
           "rule": {
             "arcs": [
               {
@@ -564,15 +564,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak and pairs west swell with east offshore wind.",
               "title": "Praia do Castello Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-do-Castello"
+              "url": "https://www.surf-forecast.com/breaks/Praiado-Castello"
             }
           ],
           "id": "research-castelo-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:02.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -580,7 +580,7 @@
             "id": "surfline-castelo",
             "type": "spot"
           },
-          "summary": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+          "summary": "Castelo is an exposed left-and-right beachbreak; west swell with east wind is the source's cleanest reported pairing.",
           "topic": "mechanics"
         },
         {
@@ -600,7 +600,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -625,15 +625,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak and pairs west swell with east offshore wind.",
               "title": "Praia do Castello Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-do-Castello"
+              "url": "https://www.surf-forecast.com/breaks/Praiado-Castello"
             }
           ],
           "id": "research-castelo-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:02.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -641,7 +641,7 @@
             "id": "surfline-castelo",
             "type": "spot"
           },
-          "summary": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+          "summary": "Castelo is an exposed left-and-right beachbreak; west swell with east wind is the source's cleanest reported pairing.",
           "topic": "mechanics"
         },
         {
@@ -661,7 +661,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -714,7 +714,7 @@
           "id": "research-cave-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:07.000Z",
           "rule": {
             "direction": "falling",
             "stage": "low",
@@ -748,7 +748,7 @@
           "id": "research-cave-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:07.000Z",
           "rule": {
             "direction": "falling",
             "stage": "low",
@@ -799,7 +799,7 @@
           "id": "research-consolacao-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:05.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -832,7 +832,7 @@
           "id": "research-consolacao-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:05.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -882,7 +882,7 @@
           "id": "research-costa-da-caparica-mechanics",
           "overrideKey": "mechanics.groyne-sandbanks",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:31.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -910,7 +910,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -943,7 +943,7 @@
           "id": "research-costa-da-caparica-mechanics",
           "overrideKey": "mechanics.groyne-sandbanks",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:31.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -971,7 +971,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1012,19 +1012,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "local-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
-              "title": "Cova do Vapor Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Cova-do-Vapor"
+              "publisher": "Lost Caparica Surf House",
+              "quality": "local-operator-guide",
+              "supportedClaim": "The local guide places Cova at the river mouth and reports inconsistent peaks, strong currents, and tricky conditions.",
+              "title": "Surfing in Costa da Caparica",
+              "url": "https://lostcaparica.com/surfing-in-costa-da-caparica-waves-stories-surf-spots-and-local-life"
             }
           ],
           "id": "research-cova-do-vapor-mechanics",
           "overrideKey": "mechanics.river-mouth-wedge",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:27.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1032,7 +1032,7 @@
             "id": "surfline-cova-do-vapor",
             "type": "spot"
           },
-          "summary": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
+          "summary": "Cova sits at the Tagus river mouth, where peaks can appear and disappear quickly and strong currents can make conditions tricky.",
           "topic": "mechanics"
         },
         {
@@ -1052,7 +1052,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1073,19 +1073,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "local-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
-              "title": "Cova do Vapor Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Cova-do-Vapor"
+              "publisher": "Lost Caparica Surf House",
+              "quality": "local-operator-guide",
+              "supportedClaim": "The local guide places Cova at the river mouth and reports inconsistent peaks, strong currents, and tricky conditions.",
+              "title": "Surfing in Costa da Caparica",
+              "url": "https://lostcaparica.com/surfing-in-costa-da-caparica-waves-stories-surf-spots-and-local-life"
             }
           ],
           "id": "research-cova-do-vapor-mechanics",
           "overrideKey": "mechanics.river-mouth-wedge",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:27.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1093,7 +1093,7 @@
             "id": "surfline-cova-do-vapor",
             "type": "spot"
           },
-          "summary": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
+          "summary": "Cova sits at the Tagus river mouth, where peaks can appear and disappear quickly and strong currents can make conditions tricky.",
           "topic": "mechanics"
         },
         {
@@ -1113,7 +1113,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1166,7 +1166,7 @@
           "id": "research-fonte-da-telha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:36.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1199,7 +1199,7 @@
           "id": "research-fonte-da-telha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:36.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1243,15 +1243,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+              "supportedClaim": "The exact guide describes Foz do Lizandro as an exposed river break and pairs southwest swell with east offshore wind.",
               "title": "Foz do Lizandro Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Foz-do-Lizandro"
+              "url": "https://www.surf-forecast.com/breaks/Fozdo-Lizandro"
             }
           ],
           "id": "research-foz-do-lizandro-mechanics",
           "overrideKey": "mechanics.river-mouth-beachbreak",
-          "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "revalidateAfter": null,
+          "reviewedAt": "2026-07-11T12:00:13.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1259,7 +1259,7 @@
             "id": "surfline-foz-do-lizandro",
             "type": "spot"
           },
-          "summary": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+          "summary": "Foz do Lizandro is an exposed river break; east wind and southwest swell are the source's cleanest reported pairing.",
           "topic": "mechanics"
         }
       ],
@@ -1275,15 +1275,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+              "supportedClaim": "The exact guide describes Foz do Lizandro as an exposed river break and pairs southwest swell with east offshore wind.",
               "title": "Foz do Lizandro Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Foz-do-Lizandro"
+              "url": "https://www.surf-forecast.com/breaks/Fozdo-Lizandro"
             }
           ],
           "id": "research-foz-do-lizandro-mechanics",
           "overrideKey": "mechanics.river-mouth-beachbreak",
-          "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "revalidateAfter": null,
+          "reviewedAt": "2026-07-11T12:00:13.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1291,7 +1291,7 @@
             "id": "surfline-foz-do-lizandro",
             "type": "spot"
           },
-          "summary": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+          "summary": "Foz do Lizandro is an exposed river break; east wind and southwest swell are the source's cleanest reported pairing.",
           "topic": "mechanics"
         }
       ],
@@ -1332,7 +1332,7 @@
           "id": "research-lagide-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:02.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1365,7 +1365,7 @@
           "id": "research-lagide-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:02.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -1403,19 +1403,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "local-guide",
+              "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Visit Sesimbra",
+              "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
-              "title": "Lagoa de Albufeira - Mar",
-              "url": "https://www.visitsesimbra.pt/en/praias/298/lagoa-de-albufeira-mar"
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak with reliable surf and warns about strong rips.",
+              "title": "Lagoa de Albufeira Surf Guide",
+              "url": "https://www.surf-forecast.com/breaks/Lagoa-de-Albufeira"
             }
           ],
           "id": "research-lagoa-de-albufeira-mechanics",
           "overrideKey": "mechanics.exposed-lagoon-mouth",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:37.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1423,7 +1423,7 @@
             "id": "surfline-lagoa-de-albufeira",
             "type": "spot"
           },
-          "summary": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
+          "summary": "Lagoa de Albufeira is an exposed left-and-right beachbreak; strong rips are the key on-site condition to assess.",
           "topic": "mechanics"
         }
       ],
@@ -1435,19 +1435,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "local-guide",
+              "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Visit Sesimbra",
+              "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
-              "title": "Lagoa de Albufeira - Mar",
-              "url": "https://www.visitsesimbra.pt/en/praias/298/lagoa-de-albufeira-mar"
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak with reliable surf and warns about strong rips.",
+              "title": "Lagoa de Albufeira Surf Guide",
+              "url": "https://www.surf-forecast.com/breaks/Lagoa-de-Albufeira"
             }
           ],
           "id": "research-lagoa-de-albufeira-mechanics",
           "overrideKey": "mechanics.exposed-lagoon-mouth",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:37.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1455,7 +1455,7 @@
             "id": "surfline-lagoa-de-albufeira",
             "type": "spot"
           },
-          "summary": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
+          "summary": "Lagoa de Albufeira is an exposed left-and-right beachbreak; strong rips are the key on-site condition to assess.",
           "topic": "mechanics"
         }
       ],
@@ -1496,7 +1496,7 @@
           "id": "research-marcelino-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:29.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1524,7 +1524,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1557,7 +1557,7 @@
           "id": "research-marcelino-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:29.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1585,7 +1585,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -1626,19 +1626,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "local-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
+              "publisher": "Ericeira Surf House",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
-              "title": "Matadouro Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Matadouro"
+              "supportedClaim": "Matadouro has a defined left-and-right peak around reef plateaus, with low tide often too shallow to surf safely.",
+              "title": "Matadouro Surf Spot Details",
+              "url": "https://www.ericeirasurfhouse.com/surf-spots/matadouro/"
             }
           ],
           "id": "research-matadouro-mechanics",
           "overrideKey": "mechanics.mixed-bottom",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:11.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1646,7 +1646,7 @@
             "id": "surfline-matadouro",
             "type": "spot"
           },
-          "summary": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
+          "summary": "Matadouro has reef plateaus around a left-and-right peak; low water can become too shallow, so inspect the rock exposure before paddling out.",
           "topic": "mechanics"
         }
       ],
@@ -1658,19 +1658,19 @@
           "evidence": [
             {
               "accessedAt": "2026-07-11",
-              "kind": "specialist-guide",
+              "kind": "local-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
+              "publisher": "Ericeira Surf House",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
-              "title": "Matadouro Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Matadouro"
+              "supportedClaim": "Matadouro has a defined left-and-right peak around reef plateaus, with low tide often too shallow to surf safely.",
+              "title": "Matadouro Surf Spot Details",
+              "url": "https://www.ericeirasurfhouse.com/surf-spots/matadouro/"
             }
           ],
           "id": "research-matadouro-mechanics",
           "overrideKey": "mechanics.mixed-bottom",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:11.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1678,7 +1678,7 @@
             "id": "surfline-matadouro",
             "type": "spot"
           },
-          "summary": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
+          "summary": "Matadouro has reef plateaus around a left-and-right peak; low water can become too shallow, so inspect the rock exposure before paddling out.",
           "topic": "mechanics"
         }
       ],
@@ -1719,7 +1719,7 @@
           "id": "research-nazare-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:00.000Z",
           "rule": {
             "arcs": [
               {
@@ -1758,7 +1758,7 @@
           "id": "research-nazare-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:00.000Z",
           "rule": {
             "arcs": [
               {
@@ -1814,7 +1814,7 @@
           "id": "research-paco-de-arcos-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:22.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1846,7 +1846,7 @@
           "id": "research-paco-de-arcos-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:22.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1895,7 +1895,7 @@
           "id": "research-parede-mechanics",
           "overrideKey": "mechanics.rare-reef-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:23.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1927,7 +1927,7 @@
           "id": "research-parede-mechanics",
           "overrideKey": "mechanics.rare-reef-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:23.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -1976,7 +1976,7 @@
           "id": "research-pedra-branca-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:10.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -2010,7 +2010,7 @@
           "id": "research-pedra-branca-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:10.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -2061,7 +2061,7 @@
           "id": "research-praia-da-adraga-mechanics",
           "overrideKey": "mechanics.exposed-atlantic-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:18.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2093,7 +2093,7 @@
           "id": "research-praia-da-adraga-mechanics",
           "overrideKey": "mechanics.exposed-atlantic-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:18.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2125,24 +2125,24 @@
     "surfline-praia-da-cornelia": {
       "claims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
               "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surftrips.co",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
-              "title": "Praia da Cornelia Surf Forecast",
+              "publisher": "surftrips.co",
+              "quality": "single-exact-location-guide",
+              "supportedClaim": "The exact-location page identifies shifting sand-bottom beach peaks at Praia da Cornélia.",
+              "title": "Praia da Cornelia Surf Guide",
               "url": "https://surftrips.co/portugal/zona-oeste-portugal/praia-da-cornelia"
             }
           ],
           "id": "research-praia-da-cornelia-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2150,7 +2150,7 @@
             "id": "surfline-praia-da-cornelia",
             "type": "spot"
           },
-          "summary": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
+          "summary": "Cornélia has shifting sand-bottom peaks, so bank quality should be rechecked rather than treated as permanent.",
           "topic": "mechanics"
         },
         {
@@ -2170,7 +2170,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2186,24 +2186,24 @@
       "conflicts": [],
       "decisiveClaims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
               "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surftrips.co",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
-              "title": "Praia da Cornelia Surf Forecast",
+              "publisher": "surftrips.co",
+              "quality": "single-exact-location-guide",
+              "supportedClaim": "The exact-location page identifies shifting sand-bottom beach peaks at Praia da Cornélia.",
+              "title": "Praia da Cornelia Surf Guide",
               "url": "https://surftrips.co/portugal/zona-oeste-portugal/praia-da-cornelia"
             }
           ],
           "id": "research-praia-da-cornelia-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:01.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2211,7 +2211,7 @@
             "id": "surfline-praia-da-cornelia",
             "type": "spot"
           },
-          "summary": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
+          "summary": "Cornélia has shifting sand-bottom peaks, so bank quality should be rechecked rather than treated as permanent.",
           "topic": "mechanics"
         },
         {
@@ -2231,7 +2231,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2287,7 +2287,7 @@
           "id": "linha-stretch-sheltered-size-translation",
           "overrideKey": "size.sheltered-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:40.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2322,7 +2322,7 @@
           "id": "linha-stretch-sheltered-size-translation",
           "overrideKey": "size.sheltered-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:40.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2371,7 +2371,7 @@
           "id": "research-praia-da-rainha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:33.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -2404,7 +2404,7 @@
           "id": "research-praia-da-rainha-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:33.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -2456,7 +2456,7 @@
           "id": "research-praia-da-saude-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:32.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2484,7 +2484,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2517,7 +2517,7 @@
           "id": "research-praia-da-saude-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:32.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2545,7 +2545,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2581,24 +2581,24 @@
     "surfline-praia-da-ursa": {
       "claims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
               "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
-              "title": "Praia da Ursa Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-da-Ursa"
+              "publisher": "Lisbon Beaches Guide",
+              "quality": "exact-beach-safety-guide",
+              "supportedClaim": "The exact beach guide describes strong waves, a remote setting, and a steep trail to Praia da Ursa.",
+              "title": "Praia da Ursa Beach Guide",
+              "url": "https://www.lisbonbeachesguide.com/sintra/praia-da-ursa-beach.html"
             }
           ],
           "id": "research-praia-da-ursa-mechanics",
           "overrideKey": "mechanics.exposed-remote-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:00.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2606,31 +2606,31 @@
             "id": "surfline-praia-da-ursa",
             "type": "spot"
           },
-          "summary": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
+          "summary": "Ursa is a remote beach with strong waves and a steep approach; inspect visible conditions and access before committing.",
           "topic": "mechanics"
         }
       ],
       "conflicts": [],
       "decisiveClaims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
               "accessedAt": "2026-07-11",
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
-              "publisher": "Surf-Forecast",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
-              "title": "Praia da Ursa Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-da-Ursa"
+              "publisher": "Lisbon Beaches Guide",
+              "quality": "exact-beach-safety-guide",
+              "supportedClaim": "The exact beach guide describes strong waves, a remote setting, and a steep trail to Praia da Ursa.",
+              "title": "Praia da Ursa Beach Guide",
+              "url": "https://www.lisbonbeachesguide.com/sintra/praia-da-ursa-beach.html"
             }
           ],
           "id": "research-praia-da-ursa-mechanics",
           "overrideKey": "mechanics.exposed-remote-beach",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T15:00:00.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2638,7 +2638,7 @@
             "id": "surfline-praia-da-ursa",
             "type": "spot"
           },
-          "summary": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
+          "summary": "Ursa is a remote beach with strong waves and a steep approach; inspect visible conditions and access before committing.",
           "topic": "mechanics"
         }
       ],
@@ -2671,15 +2671,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
-              "title": "Praia das Maçãs Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-das-Macas"
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak and pairs northwest swell with east-southeast offshore wind.",
+              "title": "Praia das Macas Surf Guide",
+              "url": "https://www.surf-forecast.com/breaks/Praiadas-Macas"
             }
           ],
           "id": "research-praia-das-macas-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
-          "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "revalidateAfter": null,
+          "reviewedAt": "2026-07-11T12:00:15.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2687,7 +2687,7 @@
             "id": "surfline-praia-das-macas",
             "type": "spot"
           },
-          "summary": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
+          "summary": "Praia das Maças is an exposed left-and-right beachbreak; northwest swell with east-southeast wind is the source's best reported pairing.",
           "topic": "mechanics"
         }
       ],
@@ -2703,15 +2703,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
-              "title": "Praia das Maçãs Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-das-Macas"
+              "supportedClaim": "The exact guide describes an exposed left-and-right beachbreak and pairs northwest swell with east-southeast offshore wind.",
+              "title": "Praia das Macas Surf Guide",
+              "url": "https://www.surf-forecast.com/breaks/Praiadas-Macas"
             }
           ],
           "id": "research-praia-das-macas-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
-          "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "revalidateAfter": null,
+          "reviewedAt": "2026-07-11T12:00:15.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2719,7 +2719,7 @@
             "id": "surfline-praia-das-macas",
             "type": "spot"
           },
-          "summary": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
+          "summary": "Praia das Maças is an exposed left-and-right beachbreak; northwest swell with east-southeast wind is the source's best reported pairing.",
           "topic": "mechanics"
         }
       ],
@@ -2759,7 +2759,7 @@
           "id": "user-caxias-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:20.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -2794,7 +2794,7 @@
           "id": "user-caxias-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:20.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -2846,7 +2846,7 @@
           "id": "user-torre-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:26.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectAtOrAbove": "may-start-working",
@@ -2882,7 +2882,7 @@
           "id": "user-torre-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:26.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectAtOrAbove": "may-start-working",
@@ -2919,7 +2919,7 @@
     "surfline-praia-do-barbas": {
       "claims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
@@ -2927,8 +2927,8 @@
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
               "publisher": "Wave Safari",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+              "quality": "single-recent-spot-guide",
+              "supportedClaim": "The exact-location guide reports rights and lefts over shifting sandbars, especially north of the main jetty.",
               "title": "Praia do Barbas Surf Spot Guide",
               "url": "https://www.wavesafari.com/praia-do-barbas/"
             }
@@ -2936,7 +2936,7 @@
           "id": "research-praia-do-barbas-mechanics",
           "overrideKey": "mechanics.groyne-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:30.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -2944,7 +2944,7 @@
             "id": "surfline-praia-do-barbas",
             "type": "spot"
           },
-          "summary": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+          "summary": "Rights and lefts form over shifting sandbars at Barbas, especially north of the main jetty.",
           "topic": "mechanics"
         },
         {
@@ -2964,7 +2964,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -2980,7 +2980,7 @@
       "conflicts": [],
       "decisiveClaims": [
         {
-          "confidence": "medium",
+          "confidence": "low",
           "consensus": "settled",
           "evidence": [
             {
@@ -2988,8 +2988,8 @@
               "kind": "specialist-guide",
               "locationMatch": "exact-spot",
               "publisher": "Wave Safari",
-              "quality": "dedicated-spot-guide",
-              "supportedClaim": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+              "quality": "single-recent-spot-guide",
+              "supportedClaim": "The exact-location guide reports rights and lefts over shifting sandbars, especially north of the main jetty.",
               "title": "Praia do Barbas Surf Spot Guide",
               "url": "https://www.wavesafari.com/praia-do-barbas/"
             }
@@ -2997,7 +2997,7 @@
           "id": "research-praia-do-barbas-mechanics",
           "overrideKey": "mechanics.groyne-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:30.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3005,7 +3005,7 @@
             "id": "surfline-praia-do-barbas",
             "type": "spot"
           },
-          "summary": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+          "summary": "Rights and lefts form over shifting sandbars at Barbas, especially north of the main jetty.",
           "topic": "mechanics"
         },
         {
@@ -3025,7 +3025,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3078,7 +3078,7 @@
           "id": "research-praia-do-guincho-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:19.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3111,7 +3111,7 @@
           "id": "research-praia-do-guincho-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:19.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3161,7 +3161,7 @@
           "id": "research-praia-do-pescador-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:35.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3189,7 +3189,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3222,7 +3222,7 @@
           "id": "research-praia-do-pescador-mechanics",
           "overrideKey": "mechanics.shifting-sandbank",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:35.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3250,7 +3250,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3302,7 +3302,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3334,7 +3334,7 @@
           "id": "user-caparica-high-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:41.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -3376,15 +3376,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+              "supportedClaim": "Praia do Sul has left and right beach and reef peaks, east offshore wind, and some shelter from north wind.",
               "title": "Praia do Sul Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul"
+              "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul-1"
             }
           ],
           "id": "research-praia-do-sul-mechanics",
           "overrideKey": "mechanics.sheltered-mixed-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:12.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3392,7 +3392,7 @@
             "id": "surfline-praia-do-sul",
             "type": "spot"
           },
-          "summary": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+          "summary": "Praia do Sul mixes left and right beach and reef peaks and has some shelter from north wind; inspect which section is working.",
           "topic": "mechanics"
         }
       ],
@@ -3408,15 +3408,15 @@
               "locationMatch": "exact-spot",
               "publisher": "Surf-Forecast",
               "quality": "dedicated-spot-guide",
-              "supportedClaim": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+              "supportedClaim": "Praia do Sul has left and right beach and reef peaks, east offshore wind, and some shelter from north wind.",
               "title": "Praia do Sul Surf Guide",
-              "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul"
+              "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul-1"
             }
           ],
           "id": "research-praia-do-sul-mechanics",
           "overrideKey": "mechanics.sheltered-mixed-break",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:12.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3424,7 +3424,7 @@
             "id": "surfline-praia-do-sul",
             "type": "spot"
           },
-          "summary": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+          "summary": "Praia do Sul mixes left and right beach and reef peaks and has some shelter from north wind; inspect which section is working.",
           "topic": "mechanics"
         }
       ],
@@ -3465,7 +3465,7 @@
           "id": "research-praia-grande-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:17.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3498,7 +3498,7 @@
           "id": "research-praia-grande-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:17.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -3548,7 +3548,7 @@
           "id": "research-praia-pequena-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:16.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3580,7 +3580,7 @@
           "id": "research-praia-pequena-mechanics",
           "overrideKey": "mechanics.exposed-beachbreak",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:16.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3629,7 +3629,7 @@
           "id": "research-reef-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:09.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -3663,7 +3663,7 @@
           "id": "research-reef-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:09.000Z",
           "rule": {
             "direction": "rising",
             "stage": "high",
@@ -3714,7 +3714,7 @@
           "id": "research-ribeira-d-ilhas-mechanics",
           "overrideKey": "mechanics.flexible-reef-right",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:08.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3746,7 +3746,7 @@
           "id": "research-ribeira-d-ilhas-mechanics",
           "overrideKey": "mechanics.flexible-reef-right",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:08.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3795,7 +3795,7 @@
           "id": "research-santa-cruz-wind",
           "overrideKey": "wind.preferred-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:06.000Z",
           "rule": {
             "arcs": [
               {
@@ -3834,7 +3834,7 @@
           "id": "research-santa-cruz-wind",
           "overrideKey": "wind.preferred-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:06.000Z",
           "rule": {
             "arcs": [
               {
@@ -3890,7 +3890,7 @@
           "id": "research-santo-amaro-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:24.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3922,7 +3922,7 @@
           "id": "research-santo-amaro-swell",
           "overrideKey": "swell.sheltered-exposure",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:24.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -3971,7 +3971,7 @@
           "id": "research-sao-joao-da-caparica-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:28.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -4004,7 +4004,7 @@
           "id": "research-sao-joao-da-caparica-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:28.000Z",
           "rule": {
             "stage": "high",
             "type": "tide-preference"
@@ -4055,7 +4055,7 @@
           "id": "user-sao-juliao-mid-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:14.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -4087,7 +4087,7 @@
           "id": "user-sao-juliao-mid-tide",
           "overrideKey": "tide.preferred-stage",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:14.000Z",
           "rule": {
             "stage": "mid",
             "type": "tide-preference"
@@ -4137,7 +4137,7 @@
           "id": "research-sao-pedro-do-estoril-mechanics",
           "overrideKey": "mechanics.reef-point",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:21.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -4169,7 +4169,7 @@
           "id": "research-sao-pedro-do-estoril-mechanics",
           "overrideKey": "mechanics.reef-point",
           "revalidateAfter": "2027-01-15",
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:21.000Z",
           "rule": {
             "type": "qualitative"
           },
@@ -4217,7 +4217,7 @@
           "id": "user-sesimbra-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:39.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -4252,7 +4252,7 @@
           "id": "user-sesimbra-minimum-primary-swell",
           "overrideKey": "size.minimum-primary-swell",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:39.000Z",
           "rule": {
             "comparison": "greater-than-or-equal",
             "effectBelow": "likely-flat",
@@ -4305,7 +4305,7 @@
           "id": "research-supertubos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:04.000Z",
           "rule": {
             "arcs": [
               {
@@ -4344,7 +4344,7 @@
           "id": "research-supertubos-swell",
           "overrideKey": "swell.useful-direction",
           "revalidateAfter": null,
-          "reviewedAt": "2026-07-11T00:00:00.000Z",
+          "reviewedAt": "2026-07-11T12:00:04.000Z",
           "rule": {
             "arcs": [
               {
