@@ -22,7 +22,18 @@ const spotData = { advice, promotedById: new Map() };
 function functionSource(name) {
   const start = mainSource.indexOf(`function ${name}(`);
   assert.notEqual(start, -1, `${name} exists`);
-  const bodyStart = mainSource.indexOf("{", start);
+  const parametersStart = mainSource.indexOf("(", start);
+  let parameterDepth = 0;
+  let parametersEnd = -1;
+  for (let index = parametersStart; index < mainSource.length; index += 1) {
+    if (mainSource[index] === "(") parameterDepth += 1;
+    if (mainSource[index] === ")") parameterDepth -= 1;
+    if (parameterDepth === 0) {
+      parametersEnd = index;
+      break;
+    }
+  }
+  const bodyStart = mainSource.indexOf("{", parametersEnd);
   let depth = 0;
   for (let index = bodyStart; index < mainSource.length; index += 1) {
     if (mainSource[index] === "{") depth += 1;
@@ -149,7 +160,7 @@ function executeLocalLens(lens) {
       return lens;
     }
   };
-  vm.runInNewContext(`${functionSource("renderLocalLens")}\nglobalThis.run = renderLocalLens;`, context);
+  vm.runInNewContext(`${functionSource("updateLocalLensSlot")}\n${functionSource("renderLocalLens")}\nglobalThis.run = renderLocalLens;`, context);
   const result = context.run(container, { id: "fixture" });
   return { calls, container, result };
 }
@@ -163,7 +174,7 @@ test("compact Local lens is wired once per requested surface as inert text", () 
   assert.match(mainSource, /renderExploreSelection[\s\S]*?renderLocalLens\(/);
   assert.doesNotMatch(mainSource, /local-lens[^\n]*addEventListener/);
   assert.doesNotMatch(mainSource, /local-lens[^\n]*(?:button|href|tabIndex)/i);
-  for (const surface of ["createMonitorTile", "createFavoriteCard", "renderExploreSelection"]) {
+  for (const surface of ["createMonitorTile", "createFavoriteCard", "renderExploreConditions"]) {
     assert.equal(functionSource(surface).match(/renderLocalLens\(/g)?.length, 1, `${surface} renders at most one lens`);
   }
 });
@@ -179,8 +190,10 @@ test("compact Local lens behavior emits only one inert paragraph for a decisive 
   assert.equal(rendered.result.children.length, 0);
 
   const omitted = executeLocalLens(null);
-  assert.equal(omitted.result, null);
-  assert.equal(omitted.container.children.length, 0);
+  assert.equal(omitted.result.tagName, "P");
+  assert.equal(omitted.result.hidden, true);
+  assert.equal(omitted.result.textContent, "");
+  assert.equal(omitted.container.children.length, 1, "a persistent hidden slot can become eligible later");
 });
 
 test("detail playbook source contains an explicit accessible disclosure and five groups", () => {
@@ -311,7 +324,7 @@ test("compiled fixtures preserve guide-only, conflict, and user-observation beha
   assert.match(sesimbra.sections.flatMap((section) => section.claims).map((claim) => claim.summary).join(" "), /2 m primary swell/i);
 });
 
-test("Explore water summary clears for a guide and restores for a real spot", () => {
+test("Explore water summary uses the selected real spot, clears for a guide, and restores", () => {
   const monitorWaterSummary = { name: "monitor", textContent: "", hidden: true };
   const favoritesWaterSummary = { name: "favorites", textContent: "", hidden: true };
   const detailWaterSummary = { name: "detail", textContent: "", hidden: true };
@@ -319,9 +332,11 @@ test("Explore water summary clears for a guide and restores for a real spot", ()
   const context = {
     state: { selectedExploreCamera: { id: "real", adviceGuideOnly: false } },
     els: { monitorWaterSummary, favoritesWaterSummary, detailWaterSummary },
-    renderWaterSummary(container) {
-      calls.push(container.name);
-      container.textContent = "Sea 17°C · Tide rising · Last light 9pm";
+    renderWaterSummary(container, camera) {
+      calls.push([container.name, camera?.id || "fallback"]);
+      container.textContent = camera
+        ? `Selected ${camera.id} · Sea 17°C · Tide rising`
+        : "Favorite fallback · Sea 19°C · Tide falling";
       container.hidden = false;
     }
   };
@@ -329,25 +344,156 @@ test("Explore water summary clears for a guide and restores for a real spot", ()
 
   context.run();
   assert.equal(detailWaterSummary.hidden, false);
-  assert.match(detailWaterSummary.textContent, /Sea 17°C/);
+  assert.match(detailWaterSummary.textContent, /Selected real/);
+  assert.doesNotMatch(detailWaterSummary.textContent, /Favorite fallback/);
 
   context.state.selectedExploreCamera = { id: "surfline-cave", adviceGuideOnly: true };
   context.run();
   assert.equal(detailWaterSummary.hidden, true);
   assert.equal(detailWaterSummary.textContent, "");
   assert.doesNotMatch(detailWaterSummary.textContent, /Sea|Tide|light/i);
-  assert.match(monitorWaterSummary.textContent, /Sea 17°C/);
-  assert.match(favoritesWaterSummary.textContent, /Sea 17°C/);
+  assert.match(monitorWaterSummary.textContent, /Favorite fallback/);
+  assert.match(favoritesWaterSummary.textContent, /Favorite fallback/);
 
   context.state.selectedExploreCamera = { id: "real", adviceGuideOnly: false };
   context.run();
   assert.equal(detailWaterSummary.hidden, false);
-  assert.match(detailWaterSummary.textContent, /Sea 17°C/);
+  assert.match(detailWaterSummary.textContent, /Selected real/);
   assert.deepEqual(calls, [
-    "monitor", "favorites", "detail",
-    "monitor", "favorites",
-    "monitor", "favorites", "detail"
+    ["monitor", "fallback"], ["favorites", "fallback"], ["detail", "real"],
+    ["monitor", "fallback"], ["favorites", "fallback"],
+    ["monitor", "fallback"], ["favorites", "fallback"], ["detail", "real"]
   ]);
+});
+
+test("resolved live forecast refreshes conditions in place without closing or defocusing playbook", async () => {
+  const sourceLink = { id: "source-link" };
+  const body = { id: "body" };
+  const playbook = { hidden: false };
+  const document = { activeElement: sourceLink, body };
+  const calls = [];
+  const camera = { id: "camera" };
+  const context = {
+    document,
+    state: {
+      selectedExploreCamera: camera,
+      liveForecastPending: new Set(),
+      liveForecastCache: new Map()
+    },
+    getConditions: () => ({ source: "meo-static" }),
+    fetchLiveForecast: async () => ({ fetchedAt: "2026-07-12T12:00:00Z", waveMinM: 1 }),
+    renderExploreSelection() {
+      calls.push("full-render");
+      playbook.hidden = true;
+      document.activeElement = body;
+    },
+    renderExploreConditions() {
+      calls.push("conditions-only");
+    }
+  };
+  vm.runInNewContext(`${functionSource("requestLiveForecastForSelection")}\nglobalThis.run = requestLiveForecastForSelection;`, context);
+
+  context.run(camera);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(calls, ["conditions-only"]);
+  assert.equal(playbook.hidden, false);
+  assert.equal(document.activeElement, sourceLink);
+  assert.equal(context.state.selectedExploreCamera, camera);
+  assert.equal(context.state.liveForecastCache.has(camera.id), true);
+  assert.equal(context.state.liveForecastPending.size, 0);
+});
+
+test("one advice scheduler updates persistent lens and expiry nodes in place without focus loss", () => {
+  const slot = new FakeElement("p", { activeElement: null });
+  slot.dataset.role = "local-lens";
+  slot.dataset.cameraId = "camera";
+  slot.hidden = true;
+  const expiry = new FakeElement("span", { activeElement: null });
+  expiry.dataset.revalidateAt = "120000";
+  expiry.hidden = true;
+  const sourceLink = { id: "source-link" };
+  const document = {
+    activeElement: sourceLink,
+    querySelectorAll(selector) {
+      if (selector.includes("local-lens")) return [slot];
+      if (selector.includes("revalidate-at")) return [expiry];
+      return [];
+    }
+  };
+  const camera = { id: "camera" };
+  let nowMs = 1_000;
+  const timers = new Map();
+  let nextTimerId = 1;
+  const setTimer = (callback, delay) => {
+    const id = nextTimerId++;
+    timers.set(id, { callback, delay });
+    return id;
+  };
+  const clearTimer = (id) => timers.delete(id);
+  const context = {
+    Date,
+    document,
+    state: { cameras: [camera], spotData: {}, tideData: {}, adviceRefreshTimerId: null, adviceRefreshGeneration: 0 },
+    getConditions: () => ({ source: "fixture" }),
+    findAdviceTideSnapshot: () => null,
+    selectLocalLens(_camera, _spotData, _resolved, _tide, evaluatedAt) {
+      if (evaluatedAt < 60_000) return null;
+      if (evaluatedAt >= 180_000) return null;
+      return { scopeLabel: "Spot advice", text: evaluatedAt < 120_000 ? "Target in 1m" : "Target now" };
+    },
+    window: { setTimeout: setTimer, clearTimeout: clearTimer }
+  };
+  const names = ["updateLocalLensSlot", "updateAdviceExpiryLabel", "refreshAdviceUiInPlace", "startAdviceRefreshScheduler"];
+  vm.runInNewContext(`${names.map(functionSource).join("\n")}\nglobalThis.helpers = { refreshAdviceUiInPlace, startAdviceRefreshScheduler };`, context);
+
+  const stopFirst = context.helpers.startAdviceRefreshScheduler({
+    now: () => nowMs,
+    setTimer,
+    clearTimer,
+    refresh: context.helpers.refreshAdviceUiInPlace
+  });
+  assert.equal(timers.size, 1);
+
+  const stopSecond = context.helpers.startAdviceRefreshScheduler({
+    now: () => nowMs,
+    setTimer,
+    clearTimer,
+    refresh: context.helpers.refreshAdviceUiInPlace
+  });
+  assert.equal(timers.size, 1, "restarting replaces rather than accumulates timers");
+  stopFirst();
+  assert.equal(timers.size, 1, "an obsolete stopper cannot cancel the replacement generation");
+
+  nowMs = 61_000;
+  let [timerId, timer] = timers.entries().next().value;
+  timers.delete(timerId);
+  timer.callback();
+  assert.equal(timers.size, 1);
+  assert.equal(slot.hidden, false);
+  assert.equal(slot.textContent, "Spot advice · Target in 1m");
+  assert.equal(slot.children.length, 0);
+  assert.equal(expiry.hidden, true);
+  assert.equal(document.activeElement, sourceLink);
+
+  nowMs = 121_000;
+  [timerId, timer] = timers.entries().next().value;
+  timers.delete(timerId);
+  timer.callback();
+  assert.equal(slot.textContent, "Spot advice · Target now");
+  assert.equal(expiry.hidden, false);
+  assert.equal(expiry.textContent, "Needs revalidation");
+  assert.equal(document.activeElement, sourceLink);
+
+  nowMs = 181_000;
+  [timerId, timer] = timers.entries().next().value;
+  timers.delete(timerId);
+  timer.callback();
+  assert.equal(slot.hidden, true, "stale or expired advice disappears without replacing its slot");
+  assert.equal(slot.textContent, "");
+  assert.equal(timers.size, 1);
+  stopSecond();
+  assert.equal(timers.size, 0);
 });
 
 test("advice UI remains display-only and monitor ordering remains byte-equivalent", () => {

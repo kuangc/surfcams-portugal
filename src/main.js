@@ -70,6 +70,8 @@ const state = {
   liveForecastPending: new Set(),
   monitorMode: "favorites",
   monitorPlayers: new Map(),
+  adviceRefreshTimerId: null,
+  adviceRefreshGeneration: 0,
   stalenessBannerDismissed: false,
   stalenessBannerEl: null,
   markers: new Map(),
@@ -222,7 +224,7 @@ function requestLiveForecastForSelection(camera) {
 
       state.liveForecastCache.set(camera.id, live);
       if (state.selectedExploreCamera?.id === camera.id) {
-        renderExploreSelection(state.selectedExploreCamera);
+        renderExploreConditions(state.selectedExploreCamera);
       }
     })
     .finally(() => {
@@ -486,10 +488,9 @@ function createMetricIcon(icon, key, tone = "neutral") {
   return iconEl;
 }
 
-function renderWaterSummary(container) {
+function renderWaterSummary(container, camera = waterSummaryCamera()) {
   if (!container) return;
 
-  const camera = waterSummaryCamera();
   container.textContent = "";
 
   if (!camera) {
@@ -519,14 +520,15 @@ function renderWaterSummary(container) {
 }
 
 function renderWaterSummaries() {
-  [els.monitorWaterSummary, els.favoritesWaterSummary].forEach(renderWaterSummary);
+  renderWaterSummary(els.monitorWaterSummary);
+  renderWaterSummary(els.favoritesWaterSummary);
 
   if (state.selectedExploreCamera?.adviceGuideOnly) {
     els.detailWaterSummary.textContent = "";
     els.detailWaterSummary.hidden = true;
     return;
   }
-  renderWaterSummary(els.detailWaterSummary);
+  renderWaterSummary(els.detailWaterSummary, state.selectedExploreCamera || undefined);
 }
 
 function createProviderLogo(source, label) {
@@ -695,18 +697,29 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
   return strip;
 }
 
-function renderLocalLens(container, camera) {
-  const now = new Date();
+function updateLocalLensSlot(line, camera, now = new Date()) {
+  const evaluatedAt = now instanceof Date ? now : new Date(now);
   const resolved = getConditions(camera);
-  const tide = findAdviceTideSnapshot(camera, state.spotData, state.tideData, now);
-  const lens = selectLocalLens(camera, state.spotData, resolved, tide, now.getTime());
-  if (!lens) return null;
+  const tide = findAdviceTideSnapshot(camera, state.spotData, state.tideData, evaluatedAt);
+  const lens = selectLocalLens(camera, state.spotData, resolved, tide, evaluatedAt.getTime());
+  if (!lens) {
+    line.textContent = "";
+    line.hidden = true;
+    return null;
+  }
 
+  line.hidden = false;
+  line.textContent = `${lens.scopeLabel} · ${lens.text}`;
+  return lens;
+}
+
+function renderLocalLens(container, camera) {
   const line = document.createElement("p");
   line.className = "local-lens";
   line.dataset.role = "local-lens";
-  line.textContent = `${lens.scopeLabel} · ${lens.text}`;
+  line.dataset.cameraId = camera.id;
   container.appendChild(line);
+  updateLocalLensSlot(line, camera);
   return line;
 }
 
@@ -1082,10 +1095,15 @@ function appendAdviceMeta(container, item) {
     meta.appendChild(conflict);
   }
 
-  if (item.needsRevalidation) {
+  if (item.needsRevalidation || item.revalidateAfter) {
     const expired = document.createElement("span");
     expired.className = "advice-expired";
-    expired.textContent = "Needs revalidation";
+    expired.hidden = !item.needsRevalidation;
+    expired.textContent = item.needsRevalidation ? "Needs revalidation" : "";
+    if (item.revalidateAfter) {
+      const revalidateAt = Date.parse(`${item.revalidateAfter}T23:59:59.999Z`);
+      if (Number.isFinite(revalidateAt)) expired.dataset.revalidateAt = String(revalidateAt);
+    }
     meta.appendChild(expired);
   }
 
@@ -1242,9 +1260,69 @@ function renderSpotPlaybook(camera) {
   state.spotPlaybookEl = shell;
 }
 
+function updateAdviceExpiryLabel(element, now = new Date()) {
+  const nowMs = now instanceof Date ? now.getTime() : Number(now);
+  const revalidateAt = Number(element.dataset.revalidateAt);
+  const needsRevalidation = Number.isFinite(nowMs)
+    && Number.isFinite(revalidateAt)
+    && nowMs > revalidateAt;
+  element.hidden = !needsRevalidation;
+  element.textContent = needsRevalidation ? "Needs revalidation" : "";
+}
+
+function refreshAdviceUiInPlace(now = new Date()) {
+  const cameras = new Map(state.cameras.map((camera) => [camera.id, camera]));
+  document.querySelectorAll('[data-role="local-lens"][data-camera-id]').forEach((slot) => {
+    const camera = cameras.get(slot.dataset.cameraId);
+    if (camera) updateLocalLensSlot(slot, camera, now);
+  });
+  document.querySelectorAll('.advice-expired[data-revalidate-at]').forEach((element) => {
+    updateAdviceExpiryLabel(element, now);
+  });
+}
+
+function startAdviceRefreshScheduler({
+  now = () => Date.now(),
+  setTimer = (callback, delay) => window.setTimeout(callback, delay),
+  clearTimer = (id) => window.clearTimeout(id),
+  refresh = refreshAdviceUiInPlace
+} = {}) {
+  const generation = state.adviceRefreshGeneration + 1;
+  state.adviceRefreshGeneration = generation;
+  if (state.adviceRefreshTimerId !== null) clearTimer(state.adviceRefreshTimerId);
+
+  const scheduleNext = () => {
+    const nowMs = Number(now());
+    const minuteRemainder = ((nowMs % 60_000) + 60_000) % 60_000;
+    const delay = Math.max(1_000, 60_000 - minuteRemainder);
+    state.adviceRefreshTimerId = setTimer(tick, delay);
+  };
+  const tick = () => {
+    if (state.adviceRefreshGeneration !== generation) return;
+    state.adviceRefreshTimerId = null;
+    refresh(new Date(Number(now())));
+    scheduleNext();
+  };
+  scheduleNext();
+
+  return () => {
+    if (state.adviceRefreshGeneration !== generation) return;
+    state.adviceRefreshGeneration += 1;
+    if (state.adviceRefreshTimerId !== null) clearTimer(state.adviceRefreshTimerId);
+    state.adviceRefreshTimerId = null;
+  };
+}
+
+function renderExploreConditions(camera) {
+  els.detailConditionStrip.textContent = "";
+  if (!camera) return;
+  const conditionStrip = createConditionStrip(camera);
+  renderLocalLens(conditionStrip, camera);
+  els.detailConditionStrip.appendChild(conditionStrip);
+}
+
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
-  els.detailConditionStrip.textContent = "";
   renderWaterSummaries();
 
   if (!camera) {
@@ -1254,6 +1332,7 @@ function renderExploreSelection(camera) {
     syncFavoriteToggle(els.detailFavorite, null);
     renderSlCamBadge(null);
     renderReportLink(null);
+    renderExploreConditions(null);
     renderStretchView(null);
     renderSpotPlaybook(null);
     renderMarkers();
@@ -1267,9 +1346,7 @@ function renderExploreSelection(camera) {
   syncFavoriteToggle(els.detailFavorite, camera);
   renderSlCamBadge(camera);
   renderReportLink(camera);
-  const conditionStrip = createConditionStrip(camera);
-  renderLocalLens(conditionStrip, camera);
-  els.detailConditionStrip.appendChild(conditionStrip);
+  renderExploreConditions(camera);
   renderStretchView(camera);
   renderSpotPlaybook(camera);
   updateExploreRowSelection(camera.id);
@@ -1548,6 +1625,7 @@ async function init() {
   renderExploreList();
   renderExploreSelection(favoriteCameras()[0] || state.cameras[0]);
   setRoute("monitor");
+  startAdviceRefreshScheduler();
 }
 
 init().catch((error) => {
