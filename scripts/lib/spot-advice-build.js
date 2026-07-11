@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256Hex } from "./sha256.js";
 
 const TOPICS = new Set(["size-translation", "tide", "swell", "period-energy", "wind", "season", "mechanics", "ability", "hazard", "crowd-access"]);
 const DECISION_TOPICS = new Set(["size-translation", "tide", "swell", "wind", "mechanics"]);
@@ -34,7 +34,7 @@ export function canonicalJson(value) {
 }
 
 export function digestDocument(value) {
-  return createHash("sha256").update(canonicalJson(value)).digest("hex");
+  return sha256Hex(canonicalJson(value));
 }
 
 export function digestClaim(claim) {

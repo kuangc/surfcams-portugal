@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
 import { canonicalJson, digestDocument, validateSpotAdvice } from "./lib/spot-advice-build.js";
-import { isMaterialClaimChange } from "./lib/spot-advice-review.js";
+import { isFreshReviewTimestamp, isMaterialClaimChange } from "./lib/spot-advice-review.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CANONICAL_PATH = path.join(ROOT, "data", "spot-advice.json");
@@ -40,10 +40,96 @@ export function prepareFeedbackCandidate(canonical, feedback) {
     }
     if (!isMaterialClaimChange(before, claim)) continue;
     claim.calculationCandidate = false;
+    const explicitlySignedOff = claim.publicationStatus === "published"
+      && isFreshReviewTimestamp(claim.reviewedAt, before.reviewedAt);
+    if (explicitlySignedOff) continue;
     claim.publicationStatus = "draft";
     claim.reviewedAt = null;
   }
   return candidate;
+}
+
+function defaultProcessIsAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code === "EPERM";
+  }
+}
+
+function parseLockMetadata(fileSystem, lockPath) {
+  try {
+    const metadata = JSON.parse(fileSystem.readFileSync(lockPath, "utf8"));
+    if (!Number.isInteger(metadata?.pid) || typeof metadata.token !== "string" || typeof metadata.createdAt !== "string") return null;
+    return metadata;
+  } catch {
+    return null;
+  }
+}
+
+function lockOwnerPaths(fileSystem, lockPrefix) {
+  const directory = path.dirname(lockPrefix);
+  const basename = path.basename(lockPrefix);
+  return fileSystem.readdirSync(directory)
+    .filter((name) => name === basename || name.startsWith(`${basename}.owner.`))
+    .map((name) => path.join(directory, name));
+}
+
+function ownerPidFromPath(ownerPath) {
+  const match = /\.owner\.(\d+)\./.exec(ownerPath);
+  return match ? Number(match[1]) : null;
+}
+
+function ownerIsActive(fileSystem, ownerPath, processIsAlive) {
+  const metadata = parseLockMetadata(fileSystem, ownerPath);
+  if (metadata) return metadata.state === "active" && processIsAlive(metadata.pid);
+  const pid = ownerPidFromPath(ownerPath);
+  return pid === null || processIsAlive(pid);
+}
+
+function acquireOwnedLock({ fileSystem, lockPath, lockTokenFactory, now, processIsAlive }) {
+  const token = lockTokenFactory();
+  const ownerPath = `${lockPath}.owner.${process.pid}.${token}`;
+  const metadata = { pid: process.pid, token, createdAt: now().toISOString(), state: "active" };
+  let descriptor = null;
+  try {
+    descriptor = fileSystem.openSync(ownerPath, "wx");
+    fileSystem.writeFileSync(descriptor, `${JSON.stringify(metadata)}\n`, "utf8");
+    fileSystem.fsyncSync(descriptor);
+    fileSystem.closeSync(descriptor);
+    descriptor = null;
+  } catch (error) {
+    if (descriptor !== null) { try { fileSystem.closeSync(descriptor); } catch {} }
+    if (fileSystem.existsSync(ownerPath)) {
+      try { fileSystem.unlinkSync(ownerPath); } catch (cleanupError) { throw new Error(`spot advice feedback lock setup failed and cleanup failed: ${cleanupError.message}`, { cause: error }); }
+    }
+    throw error;
+  }
+  const owners = lockOwnerPaths(fileSystem, lockPath);
+  const activeOther = owners.find((candidate) => candidate !== ownerPath && ownerIsActive(fileSystem, candidate, processIsAlive));
+  if (activeOther) {
+    fileSystem.unlinkSync(ownerPath);
+    throw new Error(`spot advice feedback lock is busy: ${activeOther}`);
+  }
+  for (const candidate of owners) {
+    if (candidate !== ownerPath && !ownerIsActive(fileSystem, candidate, processIsAlive)) fileSystem.unlinkSync(candidate);
+  }
+  return { ...metadata, path: ownerPath };
+}
+
+function releaseOwnedLock({ fileSystem, metadata, committed }) {
+  if (!metadata?.path || !fileSystem.existsSync(metadata.path)) return;
+  const current = parseLockMetadata(fileSystem, metadata.path);
+  if (!current || current.token !== metadata.token) throw new Error("spot advice feedback lock ownership changed before cleanup");
+  try {
+    fileSystem.unlinkSync(metadata.path);
+  } catch (cleanupError) {
+    const stillOwned = parseLockMetadata(fileSystem, metadata.path);
+    if (!stillOwned || stillOwned.token !== metadata.token) throw new Error("spot advice feedback lock ownership changed after cleanup failure");
+    fileSystem.writeFileSync(metadata.path, `${JSON.stringify({ ...current, state: committed ? "committed" : "releasable" })}\n`, "utf8");
+    throw cleanupError;
+  }
 }
 
 export function applyFeedback({
@@ -52,20 +138,21 @@ export function applyFeedback({
   context,
   fileSystem = fs,
   beforeRename = () => {},
+  afterLock = () => {},
   temporaryPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.${process.pid}.${randomUUID()}.tmp`),
-  lockPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.lock`)
+  lockPathFactory = (target) => path.join(path.dirname(target), `.${path.basename(target)}.lock`),
+  lockTokenFactory = () => randomUUID(),
+  now = () => new Date(),
+  processIsAlive = defaultProcessIsAlive
 }) {
   const lockPath = lockPathFactory(canonicalPath);
-  let lockDescriptor = null;
-  let createdLock = false;
+  let lockMetadata = null;
+  let committed = false;
+  let result;
+  let operationError;
   try {
-    try {
-      lockDescriptor = fileSystem.openSync(lockPath, "wx");
-      createdLock = true;
-    } catch (error) {
-      if (error?.code === "EEXIST") throw new Error(`spot advice feedback lock is busy: ${lockPath}`);
-      throw error;
-    }
+    lockMetadata = acquireOwnedLock({ fileSystem, lockPath, lockTokenFactory, now, processIsAlive });
+    afterLock({ lockPath: lockMetadata.path, metadata: clone(lockMetadata) });
     const initialText = fileSystem.readFileSync(canonicalPath, "utf8");
     const canonical = JSON.parse(initialText);
     const initialDigest = digestDocument(canonical);
@@ -82,32 +169,35 @@ export function applyFeedback({
       fileSystem.fsyncSync(descriptor);
       fileSystem.closeSync(descriptor);
       descriptor = null;
-      beforeRename({ canonicalPath, temporaryPath, initialDigest, lockPath });
+      beforeRename({ canonicalPath, temporaryPath, initialDigest, lockPath: lockMetadata.path });
       const current = JSON.parse(fileSystem.readFileSync(canonicalPath, "utf8"));
       const currentDigest = digestDocument(current);
       if (currentDigest !== initialDigest) throw new Error(`canonical document changed concurrently before rename: expected digest ${initialDigest}, received ${currentDigest}`);
       fileSystem.renameSync(temporaryPath, canonicalPath);
       createdTemporary = false;
-      return { baseDigest: initialDigest, digest: digestDocument(candidate), document: candidate };
+      committed = true;
+      result = { baseDigest: initialDigest, digest: digestDocument(candidate), document: candidate };
     } catch (error) {
       if (descriptor !== null) {
         try { fileSystem.closeSync(descriptor); } catch {}
       }
       if (createdTemporary && fileSystem.existsSync(temporaryPath)) {
-        try { fileSystem.unlinkSync(temporaryPath); } catch {}
+        try { fileSystem.unlinkSync(temporaryPath); } catch (cleanupError) { throw new Error(`temporary file cleanup failed: ${cleanupError.message}`, { cause: error }); }
       }
       throw error;
     }
   } catch (error) {
-    throw error;
-  } finally {
-    if (lockDescriptor !== null) {
-      try { fileSystem.closeSync(lockDescriptor); } catch {}
-    }
-    if (createdLock && fileSystem.existsSync(lockPath)) {
-      try { fileSystem.unlinkSync(lockPath); } catch {}
-    }
+    operationError = error;
   }
+  try {
+    releaseOwnedLock({ fileSystem, metadata: lockMetadata, committed });
+  } catch (cleanupError) {
+    const error = new Error(`spot advice feedback ${committed ? "committed but " : ""}lock cleanup failed: ${cleanupError.message}`, { cause: operationError ?? cleanupError });
+    error.committed = committed;
+    throw error;
+  }
+  if (operationError) throw operationError;
+  return result;
 }
 
 function readJson(filePath, fileSystem = fs) {

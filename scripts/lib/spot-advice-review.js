@@ -1,3 +1,5 @@
+import { digestDocument, validateSpotAdvice } from "./spot-advice-build.js";
+
 const MATERIAL_CLAIM_FIELDS = [
   "summary",
   "rule",
@@ -11,15 +13,6 @@ const MATERIAL_CLAIM_FIELDS = [
 ];
 
 export const MAX_REVIEW_PAYLOAD_BYTES = 5 * 1024 * 1024;
-
-const TOPICS = new Set(["size-translation", "tide", "swell", "period-energy", "wind", "season", "mechanics", "ability", "hazard", "crowd-access"]);
-const DECISION_TOPICS = new Set(["size-translation", "tide", "swell", "wind", "mechanics"]);
-const SCOPE_TYPES = new Set(["spot", "stretch", "area"]);
-const PUBLICATION_STATUSES = new Set(["draft", "published", "rejected"]);
-const CONFIDENCES = new Set(["high", "medium", "low"]);
-const CONSENSUS_VALUES = new Set(["settled", "unresolved"]);
-const EVIDENCE_KINDS = new Set(["user-observed", "local-guide", "specialist-guide", "provider", "inference"]);
-const EVIDENCE_STATUSES = new Set(["accepted", "rejected"]);
 
 const clone = (value) => structuredClone(value);
 
@@ -62,61 +55,6 @@ function sameValue(left, right) {
   return JSON.stringify(sortObjectKeys(left)) === JSON.stringify(sortObjectKeys(right));
 }
 
-const SHA256_CONSTANTS = new Uint32Array([
-  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-]);
-
-function rotateRight(value, bits) {
-  return (value >>> bits) | (value << (32 - bits));
-}
-
-function sha256Hex(text) {
-  const bytes = new TextEncoder().encode(text);
-  const paddedLength = Math.ceil((bytes.length + 9) / 64) * 64;
-  const data = new Uint8Array(paddedLength);
-  data.set(bytes);
-  data[bytes.length] = 0x80;
-  const bitLength = BigInt(bytes.length) * 8n;
-  for (let index = 0; index < 8; index += 1) data[paddedLength - 1 - index] = Number((bitLength >> BigInt(index * 8)) & 0xffn);
-  const hash = new Uint32Array([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
-  const words = new Uint32Array(64);
-  for (let offset = 0; offset < data.length; offset += 64) {
-    for (let index = 0; index < 16; index += 1) {
-      const start = offset + index * 4;
-      words[index] = ((data[start] << 24) | (data[start + 1] << 16) | (data[start + 2] << 8) | data[start + 3]) >>> 0;
-    }
-    for (let index = 16; index < 64; index += 1) {
-      const s0 = rotateRight(words[index - 15], 7) ^ rotateRight(words[index - 15], 18) ^ (words[index - 15] >>> 3);
-      const s1 = rotateRight(words[index - 2], 17) ^ rotateRight(words[index - 2], 19) ^ (words[index - 2] >>> 10);
-      words[index] = (words[index - 16] + s0 + words[index - 7] + s1) >>> 0;
-    }
-    let [a, b, c, d, e, f, g, h] = hash;
-    for (let index = 0; index < 64; index += 1) {
-      const sum1 = rotateRight(e, 6) ^ rotateRight(e, 11) ^ rotateRight(e, 25);
-      const choice = (e & f) ^ (~e & g);
-      const temp1 = (h + sum1 + choice + SHA256_CONSTANTS[index] + words[index]) >>> 0;
-      const sum0 = rotateRight(a, 2) ^ rotateRight(a, 13) ^ rotateRight(a, 22);
-      const majority = (a & b) ^ (a & c) ^ (b & c);
-      const temp2 = (sum0 + majority) >>> 0;
-      h = g; g = f; f = e; e = (d + temp1) >>> 0; d = c; c = b; b = a; a = (temp1 + temp2) >>> 0;
-    }
-    hash[0] = (hash[0] + a) >>> 0; hash[1] = (hash[1] + b) >>> 0; hash[2] = (hash[2] + c) >>> 0; hash[3] = (hash[3] + d) >>> 0;
-    hash[4] = (hash[4] + e) >>> 0; hash[5] = (hash[5] + f) >>> 0; hash[6] = (hash[6] + g) >>> 0; hash[7] = (hash[7] + h) >>> 0;
-  }
-  return [...hash].map((value) => value.toString(16).padStart(8, "0")).join("");
-}
-
-function digestReviewClaim(claim) {
-  return sha256Hex(`${JSON.stringify(sortObjectKeys(claim), null, 2)}\n`);
-}
-
 export function isMaterialClaimChange(before, after) {
   if (!before || !after) return true;
   return MATERIAL_CLAIM_FIELDS.some((field) => !sameValue(before[field], after[field]));
@@ -127,6 +65,19 @@ function resetMaterialReview(baseline, next) {
     return { ...next, publicationStatus: "draft", reviewedAt: null, calculationCandidate: false };
   }
   return next;
+}
+
+function materialFingerprint(claim) {
+  return digestDocument(Object.fromEntries(MATERIAL_CLAIM_FIELDS.map((field) => [field, claim[field]])));
+}
+
+export function isFreshReviewTimestamp(value, previous = null) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) return false;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.valueOf()) || parsed.toISOString() !== value) return false;
+  if (previous === null) return true;
+  const prior = new Date(previous);
+  return !Number.isNaN(prior.valueOf()) && parsed.valueOf() > prior.valueOf();
 }
 
 function withDocument(state, document) {
@@ -158,6 +109,7 @@ export function initializeWorkingState(canonicalDocument, baseDigest) {
     canonicalDocument: clone(canonicalDocument),
     document: clone(canonicalDocument),
     editorDrafts: {},
+    materialSignoffs: {},
     savedAt: null
   };
 }
@@ -169,7 +121,28 @@ export function updateClaim(state, claimId, patch) {
   const baseline = state.canonicalDocument.advice.find((claim) => claim.id === claimId);
   const candidate = { ...before, ...clone(patch) };
   document.advice[index] = resetMaterialReview(baseline, candidate);
-  return withDocument(state, document);
+  if (!isMaterialClaimChange(before, candidate)) return withDocument(state, document);
+  const materialSignoffs = { ...(state.materialSignoffs ?? {}) };
+  delete materialSignoffs[claimId];
+  return { ...withDocument(state, document), materialSignoffs };
+}
+
+export function signOffClaim(state, claimId, reviewedAt) {
+  const document = clone(state.document);
+  const index = claimIndex(document, claimId);
+  const claim = document.advice[index];
+  const baseline = state.canonicalDocument.advice.find((item) => item.id === claimId);
+  if (!isMaterialClaimChange(baseline, claim)) throw new Error(`claim ${claimId} has no material edit to sign off`);
+  if (claim.publicationStatus !== "draft") throw new Error(`claim ${claimId} must be saved as a draft before sign off`);
+  if (!isFreshReviewTimestamp(reviewedAt, baseline?.reviewedAt ?? null)) {
+    throw new Error(`claim ${claimId} sign off requires a fresh strict ISO UTC reviewedAt timestamp`);
+  }
+  const signed = { ...claim, publicationStatus: "published", reviewedAt, calculationCandidate: false };
+  document.advice[index] = signed;
+  return {
+    ...withDocument(state, document),
+    materialSignoffs: { ...(state.materialSignoffs ?? {}), [claimId]: materialFingerprint(signed) }
+  };
 }
 
 export function applyClaimEditorPatch(state, claimId, patch) {
@@ -313,12 +286,19 @@ export function pendingCount(state) {
   return count;
 }
 
-export function normalizeReviewDocument(canonicalDocument, document) {
+export function normalizeReviewDocument(canonicalDocument, document, materialSignoffs = {}) {
   const normalized = clone(document);
   const baseline = new Map(canonicalDocument.advice.map((claim) => [claim.id, claim]));
   for (const claim of normalized.advice) {
     const before = baseline.get(claim.id);
     if (!before || isMaterialClaimChange(before, claim)) {
+      const explicitlySigned = materialSignoffs[claim.id] === materialFingerprint(claim)
+        && claim.publicationStatus === "published"
+        && isFreshReviewTimestamp(claim.reviewedAt, before?.reviewedAt ?? null);
+      if (explicitlySigned) {
+        claim.calculationCandidate = false;
+        continue;
+      }
       claim.publicationStatus = "draft";
       claim.reviewedAt = null;
       claim.calculationCandidate = false;
@@ -328,7 +308,11 @@ export function normalizeReviewDocument(canonicalDocument, document) {
 }
 
 export function exportFeedback(state) {
-  return { schemaVersion: 1, baseDigest: state.baseDigest, document: normalizeReviewDocument(state.canonicalDocument, state.document) };
+  return {
+    schemaVersion: 1,
+    baseDigest: state.baseDigest,
+    document: normalizeReviewDocument(state.canonicalDocument, state.document, state.materialSignoffs)
+  };
 }
 
 export function setEditorDraft(state, key, value) {
@@ -353,6 +337,7 @@ export function serializeAutosave(state, savedAt = state.savedAt) {
     baseDigest: state.baseDigest,
     document: clone(state.document),
     editorDrafts: clone(state.editorDrafts ?? {}),
+    materialSignoffs: clone(state.materialSignoffs ?? {}),
     savedAt: savedAt ?? null
   });
 }
@@ -367,129 +352,17 @@ function parseBoundedPayload(input, maxBytes, label) {
   return typeof input === "string" ? JSON.parse(input) : clone(input);
 }
 
-function requireReview(condition, message) {
-  if (!condition) throw new Error(`spot advice review validation: ${message}`);
-}
-
-function requireString(value, label) {
-  requireReview(typeof value === "string" && value.length > 0, `${label} must be a non-empty string`);
-}
-
-function requireUnique(values, label) {
-  requireReview(new Set(values).size === values.length, `duplicate ${label}`);
-}
-
-function validateReviewRule(rule, label) {
-  requireReview(rule && typeof rule === "object" && !Array.isArray(rule), `${label} rule must be an object`);
-  requireReview(["minimum", "tide-preference", "direction-preference", "qualitative"].includes(rule.type), `${label} rule type is unsupported`);
-  if (rule.type === "minimum") {
-    requireReview(rule.input === "primary-swell-height-m" && Number.isFinite(rule.value) && rule.value >= 0, `${label} minimum rule is invalid`);
-  }
-  if (rule.type === "tide-preference") requireReview(["low", "mid", "high"].includes(rule.stage), `${label} tide rule is invalid`);
-  if (rule.type === "direction-preference") {
-    requireReview(["primary-swell-direction-deg", "wind-direction-deg"].includes(rule.input), `${label} direction rule input is invalid`);
-    requireReview(Array.isArray(rule.arcs) && rule.arcs.length > 0 && rule.arcs.every((arc) => Number.isFinite(arc?.start) && Number.isFinite(arc?.end)), `${label} direction rule arcs are invalid`);
-  }
-}
-
 export function validateReviewDocument(document, context) {
-  assertDocumentShape(document);
-  requireReview(Array.isArray(context?.spotIds) && Array.isArray(context?.stretches?.stretches), "validation context is incomplete");
-  const spotIds = context.spotIds;
-  const spotSet = new Set(spotIds);
-  const stretchSet = new Set(context.stretches.stretches.map((stretch) => stretch.id));
-  const areaSet = new Set(document.areas.map((area) => area.id));
-  requireUnique(document.areas.map((area) => area.id), "area id");
-  for (const area of document.areas) {
-    requireString(area.id, "area id"); requireString(area.name, `${area.id} area name`);
-    requireReview(Array.isArray(area.spotIds) && area.spotIds.every((id) => spotSet.has(id)), `${area.id} area membership is invalid`);
+  return validateSpotAdvice(document, context);
+}
+
+function validateWorkingDocument(document, context) {
+  try {
+    return validateReviewDocument(document, context);
+  } catch (error) {
+    if (/has no published decision-effective coverage/.test(error?.message ?? "")) return document;
+    throw error;
   }
-  const claims = document.advice;
-  requireUnique(claims.map((claim) => claim?.id), "claim id");
-  const claimsById = new Map();
-  for (const [index, claim] of claims.entries()) {
-    const label = `claim ${claim?.id ?? index}`;
-    requireReview(claim && typeof claim === "object" && !Array.isArray(claim), `${label} must be an object`);
-    requireString(claim.id, `${label} id`); requireString(claim.overrideKey, `${label} overrideKey`); requireString(claim.summary, `${label} summary`);
-    requireReview(claim.scope && typeof claim.scope === "object" && SCOPE_TYPES.has(claim.scope.type), `${label} scope is invalid`);
-    requireString(claim.scope.id, `${label} scope id`);
-    requireReview(claim.scope.type !== "spot" || spotSet.has(claim.scope.id), `${label} spot scope is unknown`);
-    requireReview(claim.scope.type !== "stretch" || stretchSet.has(claim.scope.id), `${label} stretch scope is unknown`);
-    requireReview(claim.scope.type !== "area" || areaSet.has(claim.scope.id), `${label} area scope is unknown`);
-    requireReview(TOPICS.has(claim.topic), `${label} topic is invalid`);
-    requireReview(CONFIDENCES.has(claim.confidence), `${label} confidence is invalid`);
-    requireReview(PUBLICATION_STATUSES.has(claim.publicationStatus), `${label} publicationStatus is invalid`);
-    requireReview(CONSENSUS_VALUES.has(claim.consensus), `${label} consensus is invalid`);
-    requireReview(claim.calculationCandidate === false, `${label} calculation activation is forbidden`);
-    requireReview(claim.publicationStatus !== "published" || typeof claim.reviewedAt === "string", `${label} published claim needs reviewedAt`);
-    validateReviewRule(claim.rule, label);
-    requireReview(Array.isArray(claim.evidence) && claim.evidence.length > 0, `${label} evidence must be non-empty`);
-    for (const [evidenceIndex, evidence] of claim.evidence.entries()) {
-      const evidenceLabel = `${label} evidence ${evidenceIndex}`;
-      requireReview(evidence && typeof evidence === "object", `${evidenceLabel} must be an object`);
-      requireReview(EVIDENCE_KINDS.has(evidence.kind), `${evidenceLabel} kind is invalid`);
-      requireReview(EVIDENCE_STATUSES.has(evidence.status), `${evidenceLabel} status is invalid`);
-      for (const key of ["title", "publisher", "supportedClaim", "quality", "accessedAt"]) requireString(evidence[key], `${evidenceLabel} ${key}`);
-      requireReview(evidence.url == null || isSafeExternalUrl(evidence.url), `${evidenceLabel} URL is unsafe`);
-      if (evidence.kind === "inference") requireReview(Array.isArray(evidence.inputClaimIds) && evidence.inputClaimIds.length >= 2, `${evidenceLabel} inference inputs are invalid`);
-    }
-    claimsById.set(claim.id, claim);
-  }
-  for (const claim of claims) {
-    for (const evidence of claim.evidence.filter((item) => item.kind === "inference" && item.status === "accepted")) {
-      for (const inputId of evidence.inputClaimIds) {
-        const input = claimsById.get(inputId);
-        requireReview(input?.evidence.some((item) => item.status === "accepted"), `${claim.id} inference input ${inputId} is unknown or unsupported`);
-      }
-    }
-  }
-  const collisionGroups = new Map();
-  for (const claim of claims.filter((item) => item.publicationStatus === "published")) {
-    const key = `${claim.scope.type}\u0000${claim.scope.id}\u0000${claim.overrideKey}`;
-    if (!collisionGroups.has(key)) collisionGroups.set(key, []);
-    collisionGroups.get(key).push(claim);
-  }
-  for (const group of collisionGroups.values()) {
-    if (group.length < 2) continue;
-    requireReview(group.every((claim) => claim.consensus === "unresolved" && claim.conflictGroupId && claim.position)
-      && new Set(group.map((claim) => claim.conflictGroupId)).size === 1, `published claim collision for ${group[0].overrideKey}`);
-  }
-  requireReview(Array.isArray(document.spotResearch) && document.spotResearch.length === spotIds.length, "research rows must match selected spots");
-  requireReview(document.spotResearch.every((row, index) => row.spotId === spotIds[index]), "research identity and order must match selected spots");
-  const directOwners = new Set();
-  for (const row of document.spotResearch) {
-    requireReview(row.status === "complete", `${row.spotId} research must be complete`);
-    requireReview(["found", "no-credible-spot-source-found"].includes(row.directEvidenceOutcome), `${row.spotId} research outcome is invalid`);
-    requireReview(Array.isArray(row.checkedSources) && row.checkedSources.length > 0, `${row.spotId} checked sources must be non-empty`);
-    requireReview(row.checkedSources.every((source) => source && typeof source === "object" && isSafeExternalUrl(source.url)), `${row.spotId} checked source is invalid`);
-    requireReview(Array.isArray(row.directClaimIds), `${row.spotId} direct claims must be an array`);
-    requireUnique(row.directClaimIds, `${row.spotId} direct claim`);
-    if (row.directEvidenceOutcome === "found") requireReview(row.directClaimIds.length > 0, `${row.spotId} found outcome needs a direct claim`);
-    if (row.directEvidenceOutcome !== "found") requireReview(row.directClaimIds.length === 0, `${row.spotId} no-source outcome cannot have direct claims`);
-    for (const id of row.directClaimIds) {
-      const claim = claimsById.get(id);
-      requireReview(claim?.scope.type === "spot" && claim.scope.id === row.spotId, `${row.spotId} direct claim ${id} has invalid scope`);
-      directOwners.add(id);
-    }
-    requireReview(Array.isArray(row.inheritedApprovals ?? []), `${row.spotId} inherited approvals must be an array`);
-    for (const approval of row.inheritedApprovals ?? []) {
-      const claim = claimsById.get(approval.claimId);
-      requireReview(claim && claim.scope.type !== "spot", `${row.spotId} inherited approval ${approval.claimId} is invalid`);
-      requireReview(/^[a-f0-9]{64}$/.test(approval.claimDigest ?? "") && approval.claimDigest === digestReviewClaim(claim), `${row.spotId} approval digest changed for ${approval.claimId}`);
-      const applicable = claim.scope.type === "area"
-        ? document.areas.some((area) => area.id === claim.scope.id && area.spotIds.includes(row.spotId))
-        : context.stretches.stretches.some((stretch) => stretch.id === claim.scope.id && stretch.surflineSpotIds.includes(row.spotId));
-      requireReview(applicable, `${row.spotId} inherited approval ${approval.claimId} has inapplicable membership`);
-    }
-  }
-  for (const claim of claims.filter((item) => item.publicationStatus === "published" && item.scope.type === "spot")) {
-    requireReview(directOwners.has(claim.id), `${claim.id} published spot claim lacks direct membership`);
-  }
-  for (const spotId of spotIds) {
-    const preview = resolveSpotAdvicePreview(document, context, spotId);
-    requireReview(preview.effectiveClaims.some((claim) => DECISION_TOPICS.has(claim.topic)), `${spotId} lacks published decision coverage`);
-  }
-  return document;
 }
 
 export function recoverAutosave(canonicalDocument, baseDigest, serialized, { validationContext, maxBytes = MAX_REVIEW_PAYLOAD_BYTES } = {}) {
@@ -500,11 +373,13 @@ export function recoverAutosave(canonicalDocument, baseDigest, serialized, { val
   if (value.baseDigest !== baseDigest) throw new Error("autosave digest does not match this canonical document");
   assertDocumentShape(value.document);
   if (value.editorDrafts !== undefined) assertObject(value.editorDrafts, "autosave editorDrafts");
-  if (validationContext) validateReviewDocument(value.document, validationContext);
+  if (value.materialSignoffs !== undefined) assertObject(value.materialSignoffs, "autosave materialSignoffs");
+  if (validationContext) validateWorkingDocument(value.document, validationContext);
   return {
     ...state,
     document: clone(value.document),
     editorDrafts: clone(value.editorDrafts ?? {}),
+    materialSignoffs: clone(value.materialSignoffs ?? {}),
     savedAt: value.savedAt ?? null
   };
 }
@@ -513,11 +388,11 @@ export function importFeedback(state, input, { validationContext, maxBytes = MAX
   const envelope = parseEnvelope(parseBoundedPayload(input, maxBytes, "feedback payload"));
   if (envelope.baseDigest !== state.baseDigest) throw new Error("feedback digest does not match this canonical document");
   if (validationContext) validateReviewDocument(envelope.document, validationContext);
-  return { ...withDocument(state, clone(envelope.document)), editorDrafts: {}, savedAt: null };
+  return { ...withDocument(state, clone(envelope.document)), editorDrafts: {}, materialSignoffs: {}, savedAt: null };
 }
 
 export function resetWorkingState(state) {
-  return { ...withDocument(state, clone(state.canonicalDocument)), editorDrafts: {}, savedAt: null };
+  return { ...withDocument(state, clone(state.canonicalDocument)), editorDrafts: {}, materialSignoffs: {}, savedAt: null };
 }
 
 export function filterReviewSpots(spots, filters = {}) {
@@ -651,8 +526,8 @@ export function createReviewRuntime({
     } catch {}
   }
   const validatedReplacement = (next) => {
-    const normalized = { ...next, document: normalizeReviewDocument(canonicalDocument, next.document) };
-    if (validationContext) validateReviewDocument(normalized.document, validationContext);
+    const normalized = { ...next, document: normalizeReviewDocument(canonicalDocument, next.document, next.materialSignoffs) };
+    if (validationContext) validateWorkingDocument(normalized.document, validationContext);
     return normalized;
   };
   return {

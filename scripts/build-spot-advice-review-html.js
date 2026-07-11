@@ -56,7 +56,7 @@ export function buildSpotAdviceReviewModel({ document, context, baseDigest = dig
     areas: document.areas.map(({ id, name }) => ({ id, name })),
     stretches: (context.stretches?.stretches ?? []).map(({ id, name }) => ({ id, name })),
     previewContext,
-    validationContext: { spotIds: spotCatalog.map((spot) => spot.id), stretches: context.stretches },
+    validationContext: context,
     defaultFavoriteIds: context.defaultFavoriteIds ?? DEFAULT_FAVORITE_IDS
   };
 }
@@ -126,7 +126,7 @@ export function renderSpotAdviceReviewHtml(model) {
       <label>Expiry<input id="claim-expiry" type="date"></label><label>Consensus<select id="claim-consensus"><option>settled</option><option>unresolved</option></select></label>
       <label>Conflict group<input id="claim-conflict-group"></label><label>Conflict position<input id="claim-position"></label>
     </div>
-    <div class="toolbar"><button id="save-claim">Save claim</button></div>
+    <div class="toolbar"><button id="save-claim">Save claim</button><button id="signoff-claim">Review / Sign off</button></div>
   </section>
   <section id="evidence-editor"><h3>Evidence editor</h3><div id="evidence-list"></div><div class="toolbar"><button id="add-evidence">Add evidence</button></div></section>
   <section><h3>Research row edits</h3><textarea id="research-json"></textarea><div class="toolbar"><button id="save-research">Save research row</button></div></section>
@@ -138,7 +138,7 @@ export function renderSpotAdviceReviewHtml(model) {
 </main>
 <script id="review-data" type="application/json">${scriptJson(model)}</script>
 <script type="module">
-import { addClaim, addEvidence, applyClaimEditorPatch, buildDynamicReviewSpots, clearEditorDraft, createReviewRuntime, deleteClaim, deleteEvidence, filterReviewSpots, isSafeExternalUrl, mergeClaims, rescopeClaim, resolveSpotAdvicePreview, splitClaim, updateEvidence, updateResearchRow } from "../scripts/lib/spot-advice-review.js";
+import { MAX_REVIEW_PAYLOAD_BYTES, addClaim, addEvidence, applyClaimEditorPatch, buildDynamicReviewSpots, clearEditorDraft, createReviewRuntime, deleteClaim, deleteEvidence, filterReviewSpots, isSafeExternalUrl, mergeClaims, rescopeClaim, resolveSpotAdvicePreview, signOffClaim, splitClaim, updateEvidence, updateResearchRow } from "../scripts/lib/spot-advice-review.js";
 
 const bootstrap = JSON.parse(document.getElementById("review-data").textContent);
 const runtime = createReviewRuntime({ canonicalDocument: bootstrap.document, baseDigest: bootstrap.baseDigest, storage: localStorage, validationContext: bootstrap.validationContext });
@@ -220,6 +220,7 @@ document.querySelectorAll(".spot-row").forEach((row)=>row.addEventListener("clic
 ["claim-topic","claim-scope-type","claim-scope-id","claim-override-key","claim-summary","claim-rule","claim-confidence","claim-publication","claim-reviewed","claim-expiry","claim-consensus","claim-conflict-group","claim-position"].forEach((id)=>byId(id).addEventListener("input",()=>{if(selectedClaimId){try{typeDraft("claim:"+selectedClaimId,readClaimForm());}catch{typeDraft("claim:"+selectedClaimId,{rule:byId("claim-rule").value});}}}));
 byId("research-json").addEventListener("input",()=>typeDraft("research:"+selectedSpotId,byId("research-json").value));
 byId("save-claim").onclick=()=>{try{applyClaimPatch(readClaimForm());}catch(error){alert(error.message);}};
+byId("signoff-claim").onclick=()=>{try{commit(signOffClaim(runtime.state(),selectedClaimId,new Date().toISOString()));}catch(error){alert("Sign off blocked: "+error.message);}};
 byId("add-claim").onclick=()=>{const id=prompt("New claim id");if(!id)return;const today=new Date().toISOString().slice(0,10);const item={id,scope:{type:"spot",id:selectedSpotId},topic:"wind",overrideKey:"wind."+id,summary:"New local claim",rule:{type:"qualitative"},evidence:[{kind:"user-observed",title:"Local observation",publisher:"Local knowledge",url:null,accessedAt:today,supportedClaim:"New local claim",quality:"first-hand",status:"accepted"}],confidence:"low",publicationStatus:"draft",consensus:"settled",calculationCandidate:false,reviewedAt:null,revalidateAfter:null};try{selectedClaimId=id;commit(addClaim(runtime.state(),item,{directSpotId:selectedSpotId}));}catch(error){alert(error.message);}};
 byId("delete-claim").onclick=()=>{if(!claim()||!confirm("Delete selected claim?"))return;try{commit(deleteClaim(runtime.state(),selectedClaimId));selectedClaimId=null;render();}catch(error){alert("Delete blocked: "+error.message);}};
 byId("split-claim").onclick=()=>{if(!claim())return;const id=prompt("New claim id for split");if(!id)return;try{commit(splitClaim(runtime.state(),selectedClaimId,{newId:id,newClaimPatch:{summary:claim().summary+" (split)",overrideKey:claim().overrideKey+".split"}}));selectedClaimId=id;render();}catch(error){alert(error.message);}};
@@ -229,7 +230,7 @@ byId("add-evidence").onclick=()=>{if(!claim())return;const today=new Date().toIS
 byId("save-research").onclick=()=>{try{const value=JSON.parse(byId("research-json").value);let next=clearEditorDraft(runtime.state(),"research:"+selectedSpotId);next=updateResearchRow(next,selectedSpotId,value);commit(next);}catch(error){alert(error.message);}};
 byId("run-lens").onclick=()=>{const preview=resolveSpotAdvicePreview(working,bootstrap.previewContext,selectedSpotId);const height=Number(byId("lens-height").value),tide=byId("lens-tide").value,swell=Number(byId("lens-swell").value),wind=Number(byId("lens-wind").value);const results=preview.effectiveClaims.map((item)=>{const rule=item.rule||{};let outcome="qualitative";if(rule.type==="minimum")outcome=height>=rule.value?(rule.effectAtOrAbove||"at or above"):rule.effectBelow;if(rule.type==="tide-preference")outcome=tide===rule.stage?"preferred tide":"outside preferred tide";if(rule.type==="direction-preference"){const value=rule.input.startsWith("wind")?wind:swell;outcome=rule.arcs.some((arc)=>arc.start<=arc.end?value>=arc.start&&value<=arc.end:value>=arc.start||value<=arc.end)?"preferred direction":"outside preferred direction";}return item.id+": "+outcome;});setText("lens-output",results.join("\\n")||"No published effective claims.");};
 byId("export-feedback").onclick=()=>{try{const payload=JSON.stringify(runtime.feedback(),null,2)+"\\n";const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([payload],{type:"application/json"}));link.download="spot-advice-feedback.json";link.click();URL.revokeObjectURL(link.href);}catch(error){alert("Export blocked: "+error.message);}};
-byId("import-feedback").onchange=async(event)=>{try{runtime.importPayload(await event.target.files[0].text());syncWorking();queueAutosave();selectedClaimId=null;render();}catch(error){alert("Import blocked: "+error.message);}};
+byId("import-feedback").onchange=async(event)=>{try{const file=event.target.files[0];if(!file)return;if(file.size>MAX_REVIEW_PAYLOAD_BYTES)throw new Error("feedback payload is too large; maximum size is "+MAX_REVIEW_PAYLOAD_BYTES+" bytes");runtime.importPayload(await file.text());syncWorking();queueAutosave();selectedClaimId=null;render();}catch(error){alert("Import blocked: "+error.message);}};
 byId("reset-review").onclick=()=>{if(!confirm("Reset all local review edits?"))return;clearTimeout(saveTimer);runtime.reset();syncWorking();selectedClaimId=null;render();};
 byId("autosave-status").textContent=runtime.autosaveStatus();renderFilters();render();
 </script>

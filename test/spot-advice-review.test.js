@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -10,7 +11,8 @@ import {
   canonicalJson,
   compileSpotAdvice,
   digestClaim,
-  digestDocument
+  digestDocument,
+  validateSpotAdvice
 } from "../scripts/lib/spot-advice-build.js";
 import {
   addClaim,
@@ -34,6 +36,7 @@ import {
   resolveSpotAdvicePreview,
   serializeAutosave,
   setEditorDraft,
+  signOffClaim,
   splitClaim,
   updateClaim,
   updateEvidence,
@@ -200,6 +203,33 @@ test("material edits cannot be republished until a second canonical review pass 
   assert.equal(secondPass.document.advice.find((claim) => claim.id === id).publicationStatus, "published");
 });
 
+test("sole Nazaré claim supports explicit two-step signoff and exact coverage-valid apply", () => {
+  const initial = stateFixture();
+  const runtime = createReviewRuntime({
+    canonicalDocument: initial.canonicalDocument,
+    baseDigest: initial.baseDigest,
+    storage: { getItem: () => null, setItem() {}, removeItem() {} },
+    validationContext: fixtureContext()
+  });
+  let state = runtime.replaceState(updateClaim(runtime.state(), "research-nazare-swell", { summary: "Corrected Nazaré swell guidance." }));
+  assert.equal(state.document.advice[0].publicationStatus, "draft");
+  assert.equal(state.document.advice[0].reviewedAt, null);
+  assert.equal(pendingCount(state), 1);
+  assert.throws(() => signOffClaim(state, "research-nazare-swell", "2026-07-10T12:00:00.000Z"), /fresh/i);
+  state = runtime.replaceState(signOffClaim(state, "research-nazare-swell", "2026-07-12T12:00:00.000Z"));
+  assert.equal(state.document.advice[0].publicationStatus, "published");
+  assert.equal(state.document.advice[0].reviewedAt, "2026-07-12T12:00:00.000Z");
+  const feedback = runtime.feedback();
+  assert.doesNotThrow(() => validateSpotAdvice(feedback.document, fixtureContext()));
+  const { canonicalPath } = tempCanonical();
+  const applied = applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() });
+  assert.deepEqual(applied.document, feedback.document);
+  assert.deepEqual(readJson(canonicalPath), feedback.document);
+  const html = renderSpotAdviceReviewHtml(buildSpotAdviceReviewModel({ document: fixtureDocument(), context: fixtureContext() }));
+  assert.match(html, /Review \/ Sign off/);
+  assert.match(html, /signOffClaim/);
+});
+
 test("claim CRUD, evidence CRUD, split, merge, and re-scope keep review state coherent", () => {
   let state = stateFixture();
   const before = state.document.advice.length;
@@ -352,6 +382,9 @@ test("review model and HTML expose all 44 spots, filters, cockpit panes, and edi
   assert.doesNotThrow(() => new Function(executable.replace(/^\s*import[\s\S]*?;\s*/, "")));
   assert.match(executable, /setAttribute\("aria-current"/);
   assert.match(executable, /ariaPressed|aria-pressed/);
+  const fileSizeGuard = executable.indexOf("file.size");
+  const fileTextRead = executable.indexOf("file.text()");
+  assert.ok(fileSizeGuard >= 0 && fileTextRead > fileSizeGuard, "File.size must be checked before File.text()");
   for (const marker of [
     "filter-area", "filter-scope", "filter-topic", "filter-confidence", "filter-publication", "filter-consensus", "filter-expiry", "filter-missing-direct",
     "research outcome", "direct evidence", "coverage", "conflicts", "claim-editor", "evidence-editor", "Split claim", "Merge claim", "Re-scope",
@@ -504,11 +537,7 @@ test("Save Claim scope changes route through membership-safe editor patch behavi
 });
 
 function browserValidationContext() {
-  const context = fixtureContext();
-  return {
-    spotIds: context.promotions.promoted.map((row) => row.surflineSpotId),
-    stretches: context.stretches
-  };
+  return fixtureContext();
 }
 
 test("browser validation blocks deleting inference inputs and the last evidence without replacing runtime state", () => {
@@ -567,6 +596,27 @@ test("browser validator rejects stale and geographically inapplicable inherited 
   assert.throws(() => validateReviewDocument(inapplicable, browserValidationContext()), /inapplicable|membership/i);
 });
 
+test("review validation has exact Task2 parity for strict dates and a mutation corpus", () => {
+  const context = fixtureContext();
+  const cases = [
+    (document) => { document.advice[0].evidence[0].accessedAt = "2026-02-30"; },
+    (document) => { document.advice[0].scope = null; },
+    (document) => { document.advice[0].confidence = "certain"; },
+    (document) => { document.spotResearch[0].checkedSources[0].url = "javascript:bad"; },
+    (document) => { document.advice[0].rule = { type: "formula" }; },
+    (document) => { document.advice.push(clone(document.advice[0])); }
+  ];
+  for (const mutate of cases) {
+    const document = fixtureDocument(); mutate(document);
+    let task2Error; let reviewError;
+    try { validateSpotAdvice(document, context); } catch (error) { task2Error = error; }
+    try { validateReviewDocument(document, context); } catch (error) { reviewError = error; }
+    assert.equal(Boolean(reviewError), Boolean(task2Error));
+  }
+  const strictDate = fixtureDocument(); strictDate.advice[0].evidence[0].accessedAt = "2026-02-30";
+  assert.throws(() => validateReviewDocument(strictDate, context), /valid.*date/i);
+});
+
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {
   const document = fixtureDocument();
   document.spotResearch[0].checkedSources.push({
@@ -603,10 +653,15 @@ test("prepareFeedbackCandidate rejects stale feedback and defensively resets unr
   assert.equal(candidate.advice[0].reviewedAt, null);
   assert.equal(candidate.advice[0].calculationCandidate, false);
   feedback.document.advice[0].publicationStatus = "published";
+  feedback.document.advice[0].reviewedAt = "2026-07-10T10:00:00.000Z";
+  const staleRepublish = prepareFeedbackCandidate(canonical, feedback);
+  assert.equal(staleRepublish.advice[0].publicationStatus, "draft");
+  assert.equal(staleRepublish.advice[0].reviewedAt, null);
+  feedback.document.advice[0].publicationStatus = "published";
   feedback.document.advice[0].reviewedAt = "2026-07-12T10:00:00.000Z";
   const explicitlyRepublished = prepareFeedbackCandidate(canonical, feedback);
-  assert.equal(explicitlyRepublished.advice[0].publicationStatus, "draft");
-  assert.equal(explicitlyRepublished.advice[0].reviewedAt, null);
+  assert.equal(explicitlyRepublished.advice[0].publicationStatus, "published");
+  assert.equal(explicitlyRepublished.advice[0].reviewedAt, "2026-07-12T10:00:00.000Z");
   assert.throws(() => prepareFeedbackCandidate(canonical, { ...feedback, baseDigest: "0".repeat(64) }), /stale|digest/i);
 });
 
@@ -645,6 +700,47 @@ function canonicalLockPath(canonicalPath) {
   return path.join(path.dirname(canonicalPath), `.${path.basename(canonicalPath)}.lock`);
 }
 
+function canonicalLockPaths(canonicalPath) {
+  const prefix = path.basename(canonicalLockPath(canonicalPath));
+  return fs.readdirSync(path.dirname(canonicalPath))
+    .filter((name) => name === prefix || name.startsWith(`${prefix}.owner.`))
+    .map((name) => path.join(path.dirname(canonicalPath), name));
+}
+
+function spawnApplyChild({ canonicalPath, feedbackPath, holdMs = 0 }) {
+  const script = `
+    import fs from "node:fs";
+    import { applyFeedback } from ${JSON.stringify(new URL("../scripts/apply-spot-advice-feedback.js", import.meta.url).href)};
+    import { DEFAULT_FAVORITE_IDS } from ${JSON.stringify(new URL("../src/config.js", import.meta.url).href)};
+    const read = (name) => JSON.parse(fs.readFileSync(process.env.DATA_ROOT + "/" + name, "utf8"));
+    const context = { promotions: read("surfline-promotions.json"), surflineSpots: read("surfline-spots.json"), stretches: read("stretches.json"), promotedDb: read("promoted-spots.json"), enrichmentDb: read("spot-metadata-enrichment.json"), defaultFavoriteIds: DEFAULT_FAVORITE_IDS };
+    const feedback = JSON.parse(fs.readFileSync(process.env.FEEDBACK_PATH, "utf8"));
+    try {
+      applyFeedback({ canonicalPath: process.env.CANONICAL_PATH, feedback, context, afterLock: Number(process.env.HOLD_MS) ? () => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.HOLD_MS)) : undefined });
+      console.log("applied");
+    } catch (error) { console.error(error.message); process.exitCode = 2; }
+  `;
+  const child = spawn(process.execPath, ["--input-type=module", "-e", script], {
+    cwd: process.cwd(),
+    env: { ...process.env, CANONICAL_PATH: canonicalPath, FEEDBACK_PATH: feedbackPath, DATA_ROOT: path.join(process.cwd(), "data"), HOLD_MS: String(holdMs) },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  let stdout = ""; let stderr = "";
+  child.stdout.on("data", (chunk) => { stdout += chunk; }); child.stderr.on("data", (chunk) => { stderr += chunk; });
+  const completion = new Promise((resolve) => child.on("exit", (code, signal) => resolve({ code, signal, stdout, stderr })));
+  return { child, completion };
+}
+
+async function waitForOwnedLock(canonicalPath, timeoutMs = 3000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const [ownerPath] = canonicalLockPaths(canonicalPath).filter((candidate) => candidate.includes(".owner."));
+    if (ownerPath) return ownerPath;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`timed out waiting for owned lock for ${canonicalPath}`);
+}
+
 test("atomic feedback rejects stale digest without writing", () => {
   const { dir, canonicalPath } = tempCanonical();
   const before = fs.readFileSync(canonicalPath, "utf8");
@@ -653,21 +749,7 @@ test("atomic feedback rejects stale digest without writing", () => {
   assert.throws(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() }), /stale|digest/i);
   assert.equal(fs.readFileSync(canonicalPath, "utf8"), before);
   assert.deepEqual(tempFiles(dir), []);
-  assert.equal(fs.existsSync(canonicalLockPath(canonicalPath)), false);
-});
-
-test("exclusive apply lock allows only one simultaneous feedback apply and leaves no lock or temp files", async () => {
-  const { dir, canonicalPath } = tempCanonical();
-  const canonical = readJson(canonicalPath);
-  const feedback = feedbackFor(canonical);
-  const results = await Promise.allSettled([
-    Promise.resolve().then(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() })),
-    Promise.resolve().then(() => applyFeedbackFile({ canonicalPath, feedback, context: fixtureContext() }))
-  ]);
-  assert.equal(results.filter((result) => result.status === "fulfilled").length, 1);
-  assert.equal(results.filter((result) => result.status === "rejected").length, 1);
-  assert.deepEqual(tempFiles(dir), []);
-  assert.equal(fs.existsSync(canonicalLockPath(canonicalPath)), false);
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
 });
 
 test("pre-existing exclusive apply lock blocks before digest read and preserves canonical", () => {
@@ -680,6 +762,66 @@ test("pre-existing exclusive apply lock blocks before digest read and preserves 
   assert.deepEqual(tempFiles(dir), []);
   assert.equal(fs.readFileSync(lockPath, "utf8"), "held");
   fs.unlinkSync(lockPath);
+});
+
+test("partial metadata from a dead generation is recoverable and removed", () => {
+  const { canonicalPath } = tempCanonical();
+  const partialPath = `${canonicalLockPath(canonicalPath)}.owner.999999.partial`;
+  fs.writeFileSync(partialPath, "");
+  assert.doesNotThrow(() => applyFeedbackFile({
+    canonicalPath,
+    feedback: feedbackFor(readJson(canonicalPath)),
+    context: fixtureContext(),
+    processIsAlive: (pid) => pid === process.pid
+  }));
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+});
+
+test("real overlapping processes enforce ownership, recover a crashed holder, and leave no residue", async () => {
+  const { dir, canonicalPath } = tempCanonical();
+  const feedbackPath = path.join(dir, "feedback.json");
+  fs.writeFileSync(feedbackPath, JSON.stringify(feedbackFor(readJson(canonicalPath))));
+  const first = spawnApplyChild({ canonicalPath, feedbackPath, holdMs: 10_000 });
+  const lockPath = await waitForOwnedLock(canonicalPath);
+  const metadata = readJson(lockPath);
+  assert.equal(metadata.pid, first.child.pid);
+  assert.match(metadata.token, /^[a-f0-9-]+$/i);
+  assert.match(metadata.createdAt, /^\d{4}-\d{2}-\d{2}T/);
+  assert.equal(metadata.state, "active");
+  const second = spawnApplyChild({ canonicalPath, feedbackPath });
+  const busy = await second.completion;
+  assert.equal(busy.code, 2);
+  assert.match(busy.stderr, /lock.*busy/i);
+  first.child.kill("SIGKILL");
+  await first.completion;
+  const third = spawnApplyChild({ canonicalPath, feedbackPath });
+  const recovered = await third.completion;
+  assert.equal(recovered.code, 0, recovered.stderr);
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
+  assert.deepEqual(tempFiles(dir), []);
+});
+
+test("committed lock cleanup errors surface and the committed owner state is safely reclaimable", () => {
+  const { canonicalPath } = tempCanonical();
+  const lockPrefix = canonicalLockPath(canonicalPath);
+  let failed = false;
+  const fileSystem = new Proxy(fs, {
+    get(target, property) {
+      if (property === "unlinkSync") return (filePath) => {
+        if (path.basename(filePath).startsWith(path.basename(lockPrefix)) && !failed) { failed = true; throw new Error("injected lock cleanup failure"); }
+        return target.unlinkSync(filePath);
+      };
+      const value = target[property]; return typeof value === "function" ? value.bind(target) : value;
+    }
+  });
+  let cleanupError;
+  try { applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext(), fileSystem }); } catch (error) { cleanupError = error; }
+  assert.match(cleanupError?.message ?? "", /committed.*cleanup/i);
+  assert.equal(cleanupError?.committed, true);
+  const [lockPath] = canonicalLockPaths(canonicalPath);
+  assert.equal(readJson(lockPath).state, "committed");
+  assert.doesNotThrow(() => applyFeedbackFile({ canonicalPath, feedback: feedbackFor(readJson(canonicalPath)), context: fixtureContext() }));
+  assert.deepEqual(canonicalLockPaths(canonicalPath), []);
 });
 
 test("atomic feedback catches a concurrent canonical change immediately before rename", () => {
