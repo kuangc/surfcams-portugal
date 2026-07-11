@@ -35,6 +35,11 @@ import {
   findSurflineMatches,
   loadSpotData
 } from "./spot-data.js";
+import {
+  findAdviceTideSnapshot,
+  formatSpotPlaybook,
+  selectLocalLens
+} from "./spot-advice.js";
 import { stretchMembers } from "./stretch-view.js";
 import {
   DEFAULT_SURF_PREFERENCES,
@@ -74,6 +79,7 @@ const state = {
   reportLinkEl: null,
   stretchChipEl: null,
   stretchPanelEl: null,
+  spotPlaybookEl: null,
   map: null,
   mapHasInitialFit: false
 };
@@ -394,8 +400,11 @@ function createMonitorTile(slot, index) {
   const tile = document.createElement("article");
   tile.className = "monitor-tile";
 
+  const conditionStrip = createConditionStrip(camera, { showName: true });
+  renderLocalLens(conditionStrip, camera);
+
   if (isReportOnlyCamera(camera)) {
-    tile.append(createReportFrame(camera), createConditionStrip(camera, { showName: true }));
+    tile.append(createReportFrame(camera), conditionStrip);
     return tile;
   }
 
@@ -415,7 +424,7 @@ function createMonitorTile(slot, index) {
   status.textContent = camera.streamUrl ? "Queued" : "No feed";
 
   frame.append(video, status);
-  tile.append(frame, createConditionStrip(camera, { showName: true }));
+  tile.append(frame, conditionStrip);
 
   const player = createFeedTilePlayer({ video, status, hlsScriptUrl: HLS_SCRIPT_URL });
   frame.addEventListener("click", () => restartMonitorTile(camera, index, player));
@@ -683,6 +692,21 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
   return strip;
 }
 
+function renderLocalLens(container, camera) {
+  const now = new Date();
+  const resolved = getConditions(camera);
+  const tide = findAdviceTideSnapshot(camera, state.spotData, state.tideData, now);
+  const lens = selectLocalLens(camera, state.spotData, resolved, tide, now.getTime());
+  if (!lens) return null;
+
+  const line = document.createElement("p");
+  line.className = "local-lens";
+  line.dataset.role = "local-lens";
+  line.textContent = `${lens.scopeLabel} · ${lens.text}`;
+  container.appendChild(line);
+  return line;
+}
+
 function toggleFavorite(camera, checked) {
   if (!camera || camera.adviceGuideOnly) return;
 
@@ -742,7 +766,9 @@ function createFavoriteCard(camera) {
   meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
 
   header.append(title, meta);
-  body.append(header, createConditionStrip(camera, { compact: true }));
+  const conditionStrip = createConditionStrip(camera, { compact: true });
+  renderLocalLens(conditionStrip, camera);
+  body.append(header, conditionStrip);
   card.append(body, createFavoriteToggle(camera));
   return card;
 }
@@ -1013,6 +1039,206 @@ function renderStretchView(camera) {
   state.stretchChipEl = chip;
 }
 
+let spotPlaybookRegionSequence = 0;
+
+function safeAdviceSourceUrl(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function appendAdviceMeta(container, item) {
+  const meta = document.createElement("p");
+  meta.className = "advice-meta";
+
+  const scope = document.createElement("span");
+  scope.className = "advice-scope";
+  scope.textContent = item.scopeLabel || "Spot advice";
+  meta.appendChild(scope);
+
+  if (item.provenanceLabel && item.provenanceLabel !== item.scopeLabel) {
+    const provenance = document.createElement("span");
+    provenance.className = "advice-scope advice-scope--observation";
+    provenance.textContent = item.provenanceLabel;
+    meta.appendChild(provenance);
+  }
+
+  const confidence = document.createElement("span");
+  confidence.className = "advice-confidence";
+  confidence.textContent = `Confidence: ${item.confidence || "unknown"}`;
+  meta.appendChild(confidence);
+
+  if (item.consensus === "unresolved") {
+    const conflict = document.createElement("span");
+    conflict.className = "advice-conflict";
+    conflict.textContent = "Guidance differs";
+    meta.appendChild(conflict);
+  }
+
+  if (item.needsRevalidation) {
+    const expired = document.createElement("span");
+    expired.className = "advice-expired";
+    expired.textContent = "Needs revalidation";
+    meta.appendChild(expired);
+  }
+
+  container.appendChild(meta);
+}
+
+function createAdviceClaim(claim) {
+  const item = document.createElement("article");
+  item.className = claim.consensus === "unresolved"
+    ? "advice-claim advice-claim--conflict"
+    : "advice-claim";
+
+  const summary = document.createElement("p");
+  summary.className = "advice-claim__summary";
+  summary.textContent = claim.summary;
+  item.appendChild(summary);
+  appendAdviceMeta(item, claim);
+  return item;
+}
+
+function createAdviceSource(source) {
+  const item = document.createElement("li");
+  const url = safeAdviceSourceUrl(source.url);
+
+  if (url) {
+    const link = document.createElement("a");
+    link.textContent = source.title || "Source";
+    link.setAttribute("href", url);
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+    item.appendChild(link);
+  } else {
+    const title = document.createElement("span");
+    title.textContent = source.title || "Source";
+    item.appendChild(title);
+  }
+
+  if (source.publisher) {
+    const publisher = document.createElement("span");
+    publisher.className = "advice-source__publisher";
+    publisher.textContent = ` · ${source.publisher}`;
+    item.appendChild(publisher);
+  }
+  if (source.supportedClaim) {
+    const support = document.createElement("p");
+    support.className = "advice-source__support";
+    support.textContent = source.supportedClaim;
+    item.appendChild(support);
+  }
+  appendAdviceMeta(item, source);
+  return item;
+}
+
+function createSpotPlaybook(playbook) {
+  const shell = document.createElement("section");
+  shell.className = "spot-playbook-shell";
+
+  const safeSubjectId = String(playbook.subjectId || "spot").replace(/[^a-z0-9_-]+/gi, "-");
+  const regionId = `spot-playbook-${safeSubjectId}-${spotPlaybookRegionSequence += 1}`;
+  const toggle = document.createElement("button");
+  toggle.className = "spot-playbook-toggle";
+  toggle.type = "button";
+  toggle.textContent = "Local playbook";
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.setAttribute("aria-controls", regionId);
+
+  const region = document.createElement("div");
+  region.className = "spot-playbook";
+  region.id = regionId;
+  region.hidden = true;
+  region.tabIndex = -1;
+  region.setAttribute("role", "region");
+  region.setAttribute("aria-label", `Local playbook for ${playbook.name}`);
+
+  if (playbook.guideOnly) {
+    const guide = document.createElement("p");
+    guide.className = "spot-playbook__guide-note";
+    guide.textContent = "Guide only · no live camera or conditions";
+    region.appendChild(guide);
+  }
+
+  if (playbook.conflicts?.length) {
+    const conflict = document.createElement("p");
+    conflict.className = "advice-conflict advice-conflict--banner";
+    conflict.textContent = "Guidance differs · Published sources disagree; compare the alternatives below.";
+    region.appendChild(conflict);
+  }
+
+  const sectionDefinitions = [
+    ["size-here", "Size here"],
+    ["best-window", "Best window"],
+    ["how-it-breaks", "How it breaks"],
+    ["know-before-you-go", "Know before you go"],
+    ["why-we-say-this", "Why we say this"]
+  ];
+  const sectionsById = new Map((playbook.sections || []).map((section) => [section.id, section]));
+
+  sectionDefinitions.forEach(([id, title]) => {
+    const data = sectionsById.get(id) || { claims: [], sources: [] };
+    const section = document.createElement("section");
+    section.className = "spot-playbook__section";
+
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    section.appendChild(heading);
+
+    (data.claims || []).forEach((claim) => section.appendChild(createAdviceClaim(claim)));
+    if (id === "why-we-say-this") {
+      const list = document.createElement("ul");
+      list.className = "advice-source-list";
+      (data.sources || []).forEach((source) => list.appendChild(createAdviceSource(source)));
+      section.appendChild(list);
+    }
+    region.appendChild(section);
+  });
+
+  function closePlaybook({ returnFocus = false } = {}) {
+    region.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+    if (returnFocus) toggle.focus();
+  }
+
+  toggle.addEventListener("click", (event) => {
+    const opening = region.hidden;
+    if (!opening) {
+      closePlaybook({ returnFocus: true });
+      return;
+    }
+
+    region.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+    if (event.detail === 0) region.focus();
+  });
+
+  region.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !window.matchMedia("(max-width: 900px)").matches) return;
+    event.preventDefault();
+    closePlaybook({ returnFocus: true });
+  });
+
+  shell.append(toggle, region);
+  return shell;
+}
+
+function renderSpotPlaybook(camera) {
+  state.spotPlaybookEl?.remove();
+  state.spotPlaybookEl = null;
+  if (!camera) return;
+
+  const playbook = formatSpotPlaybook(camera, state.spotData);
+  if (!playbook) return;
+  const shell = createSpotPlaybook(playbook);
+  els.detailConditionStrip.insertAdjacentElement("afterend", shell);
+  state.spotPlaybookEl = shell;
+}
+
 function renderExploreSelection(camera) {
   state.selectedExploreCamera = camera || null;
   els.detailConditionStrip.textContent = "";
@@ -1026,6 +1252,7 @@ function renderExploreSelection(camera) {
     renderSlCamBadge(null);
     renderReportLink(null);
     renderStretchView(null);
+    renderSpotPlaybook(null);
     renderMarkers();
     state.explorePlayer.clear();
     return;
@@ -1037,8 +1264,11 @@ function renderExploreSelection(camera) {
   syncFavoriteToggle(els.detailFavorite, camera);
   renderSlCamBadge(camera);
   renderReportLink(camera);
-  els.detailConditionStrip.appendChild(createConditionStrip(camera));
+  const conditionStrip = createConditionStrip(camera);
+  renderLocalLens(conditionStrip, camera);
+  els.detailConditionStrip.appendChild(conditionStrip);
   renderStretchView(camera);
+  renderSpotPlaybook(camera);
   updateExploreRowSelection(camera.id);
   renderMarkers();
   playExploreCamera(camera);
