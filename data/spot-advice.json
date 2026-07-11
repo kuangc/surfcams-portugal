@@ -1,0 +1,2835 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-11",
+  "areas": [
+    {
+      "id": "peniche",
+      "name": "Peniche and Baleal",
+      "spotIds": [
+        "surfline-baleal",
+        "surfline-lagide",
+        "surfline-cantinho-da-baia",
+        "surfline-supertubos",
+        "surfline-consolacao"
+      ]
+    },
+    {
+      "id": "ericeira",
+      "name": "Santa Cruz and Ericeira",
+      "spotIds": [
+        "surfline-santa-cruz",
+        "surfline-cave",
+        "surfline-ribeira-d-ilhas",
+        "surfline-reef",
+        "surfline-pedra-branca",
+        "surfline-matadouro",
+        "surfline-praia-do-sul",
+        "surfline-foz-do-lizandro",
+        "surfline-sao-juliao"
+      ]
+    },
+    {
+      "id": "sintra",
+      "name": "Sintra and Guincho",
+      "spotIds": [
+        "surfline-praia-das-macas",
+        "surfline-praia-pequena",
+        "surfline-praia-grande",
+        "surfline-praia-da-adraga",
+        "surfline-praia-da-ursa",
+        "surfline-praia-do-guincho"
+      ]
+    },
+    {
+      "id": "linha",
+      "name": "Linha de Cascais and Oeiras",
+      "spotIds": [
+        "surfline-sao-pedro-do-estoril",
+        "surfline-parede"
+      ]
+    },
+    {
+      "id": "south",
+      "name": "Sesimbra west and south coasts",
+      "spotIds": [
+        "surfline-lagoa-de-albufeira",
+        "surfline-bicas",
+        "surfline-sesimbra"
+      ]
+    }
+  ],
+  "spotResearch": [
+    {
+      "spotId": "surfline-nazare",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Nazaré Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Nazaré by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Nazaré Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Nazare",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Nazaré and supports the paraphrased swell guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-nazare-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-baleal",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Baleal Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Baleal by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Surf Spots in Peniche",
+          "publisher": "Peniche Rentals",
+          "url": "https://penicherentals.com/en/surf-spots",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Baleal and supports the paraphrased mechanics guidance."
+        },
+        {
+          "title": "Baleal Sul surf listing",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Baleal-Sul",
+          "locationMatch": "area",
+          "decision": "rejected",
+          "rationale": "This listing is for Baleal Sul rather than the selected peninsula-wide Baleal subject, so it is not used to support the direct claim."
+        }
+      ],
+      "directClaimIds": [
+        "research-baleal-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-lagide",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Lagide Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Lagide by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Lagide Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Lagide",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Lagide and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-lagide-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-cantinho-da-baia",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Cantinho da Baía Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Cantinho da Baía by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Cantinho da Baía Surf Forecast Guide",
+          "publisher": "Surfnerd",
+          "url": "https://www.surfnerd.com/surf-forecast/cantinho-da-baia",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Cantinho da Baía and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-cantinho-da-baia-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-supertubos",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Supertubos Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Supertubos by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Supertubos Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Supertubos",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Supertubos and supports the paraphrased swell guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-supertubos-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-consolacao",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Consolação Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/consolacao/5a53f6e5a8b6a9001b017369",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Consolação by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Consolação Surf and Spot Description",
+          "publisher": "Surfing Portugal",
+          "url": "https://surfingportugal.net/spots/consolacao/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Consolação and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-consolacao-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-santa-cruz",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Santa Cruz Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Santa Cruz by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Santa Cruz Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Santa-Cruz",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Santa Cruz and supports the paraphrased wind guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-santa-cruz-wind"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-cave",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Cave Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/cave/5d702a08b8be350001890108",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Cave by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Cave - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/cave-2/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Cave and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-cave-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-ribeira-d-ilhas",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Ribeira D’Ilhas Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Ribeira D’Ilhas by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Ribeira D'Ilhas Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Ribeira-Dilhas",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Ribeira D’Ilhas and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-ribeira-d-ilhas-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-reef",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Reef Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/reef/5842041f4e65fad6a7708bc1",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Reef by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Reef - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/reef-2/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Reef and supports the paraphrased tide guidance."
+        },
+        {
+          "title": "Ericeira Surf Guide",
+          "publisher": "Ericeira.com",
+          "url": "https://ericeira.com/surf",
+          "locationMatch": "area",
+          "decision": "rejected",
+          "rationale": "The overview uses Reef inconsistently and does not distinguish this selected break precisely enough for the tide claim."
+        }
+      ],
+      "directClaimIds": [
+        "research-reef-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-pedra-branca",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Pedra Branca Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/pedra-branca/584204204e65fad6a77096ae",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Pedra Branca by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Pedra Branca - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/pedra-branca-2/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Pedra Branca and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-pedra-branca-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-matadouro",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Matadouro Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/matadouro/64bbfc3868c6112c8d112deb",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Matadouro by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Matadouro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Matadouro",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Matadouro and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-matadouro-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-do-sul",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia do Sul Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia do Sul by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia do Sul Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia do Sul and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-do-sul-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-foz-do-lizandro",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Foz do Lizandro Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Foz do Lizandro by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Foz do Lizandro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Foz-do-Lizandro",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Foz do Lizandro and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-foz-do-lizandro-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-sao-juliao",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "São Julião Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches São Julião by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "São Julião Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Sao-Juliao",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated spot guide corroborates São Julião's location and provides independent tide and beachbreak context; the mid-tide preference itself remains user-observed."
+        }
+      ],
+      "directClaimIds": [
+        "user-sao-juliao-mid-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-das-macas",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia das Maçãs Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-das-macas/601853a64071addd994eeb43",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia das Maçãs by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia das Maçãs Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-das-Macas",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia das Maçãs and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-das-macas-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-pequena",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia Pequena Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia Pequena by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia Pequena Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-Pequena",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia Pequena and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-pequena-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-grande",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia Grande Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia Grande by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia Grande (Sintra)",
+          "publisher": "Surfspots.pt",
+          "url": "https://www.surfspots.pt/praia-grande-sintra.html",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia Grande and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-grande-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-da-adraga",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia da Adraga Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-adraga/640b9d054878eb35041e35bb",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia da Adraga by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Adraga Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Adraga",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia da Adraga and supports the paraphrased mechanics guidance."
+        },
+        {
+          "title": "Adraga Beach",
+          "publisher": "Visit Sintra",
+          "url": "https://visitsintra.travel/en/visit/beaches/adraga-beach",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The page matches Adraga but focuses on scenery and beach awards rather than surf conditions."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-da-adraga-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-da-ursa",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia da Ursa Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-ursa/640b9d174519050958e08490",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia da Ursa by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia da Ursa Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-da-Ursa",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia da Ursa and supports the paraphrased mechanics guidance."
+        },
+        {
+          "title": "Sintra beaches and beach guide",
+          "publisher": "Sintra Portugal",
+          "url": "https://www.sintra-portugal.com/guides/sintra-beaches-beach-guide.html",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The page confirms the beach and access but does not provide decision-grade surf guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-da-ursa-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-do-guincho",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia Do Guincho Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia Do Guincho by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Surfing Praia do Guincho",
+          "publisher": "The Portugal Guides",
+          "url": "https://www.theportugalguides.com/surf/guincho/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia Do Guincho and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-do-guincho-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-de-caxias",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia de Caxias Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-de-caxias/640b9d60606c45bbe5f4841b",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia de Caxias by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Caxias Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Caxias",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This source corroborates that the selected Praia de Caxias location is sheltered or condition-sensitive; the numeric threshold itself remains user-observed."
+        }
+      ],
+      "directClaimIds": [
+        "user-caxias-minimum-primary-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-sao-pedro-do-estoril",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "São Pedro do Estoril Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches São Pedro do Estoril by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "São Pedro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Sao-Pedro",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches São Pedro do Estoril and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-sao-pedro-do-estoril-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-paco-de-arcos",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Paco de Arcos Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/paco-de-arcos/584204214e65fad6a7709d0c",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Paco de Arcos by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Paço de Arcos Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Paco-D-arcos",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Paco de Arcos and supports the paraphrased swell guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-paco-de-arcos-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-parede",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Parede Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Parede by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Parede Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Parede",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Parede and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-parede-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-da-laje",
+      "status": "complete",
+      "directEvidenceOutcome": "no-credible-spot-source-found",
+      "checkedSources": [
+        {
+          "title": "Praia da Laje Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-laje/640b9d10de81d566960e2892",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The provider record matches Praia da Laje by id and coordinates but contains no decision-grade spot guide or exposure guidance."
+        },
+        {
+          "title": "Bica Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Bica",
+          "locationMatch": "mismatch",
+          "decision": "rejected",
+          "rationale": "Bica is a different break west of the selected Praia da Laje, so it is not used as evidence for this claim."
+        },
+        {
+          "title": "Praia da Laje",
+          "publisher": "PlayOcean",
+          "url": "https://www.playocean.net/portugal/oeiras/praias/praia-da-laje",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The exact-location general beach directory describes geography but does not provide credible surf-condition guidance."
+        }
+      ],
+      "directClaimIds": [],
+      "inheritedApprovals": [
+        { "claimId": "linha-stretch-sheltered-size-translation", "claimDigest": "2e8b85bbd5427004a148a6abd85559c8bc01dbcae37199eadec2e59ba7e9f6da" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-santo-amaro",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Santo Amaro Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/santo-amaro/584204214e65fad6a7709d13",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Santo Amaro by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Santo Amaro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Santo-Amaro",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Santo Amaro and supports the paraphrased swell guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-santo-amaro-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-carcavelos",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Carcavelos Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Carcavelos by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Guia prático de previsões do mar em Carcavelos",
+          "publisher": "Carcavelos Surf School",
+          "url": "https://carcavelossurfschool.com/pt/blog/918/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Carcavelos and supports the paraphrased swell guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-carcavelos-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-praia-de-torre",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia de Torre Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-de-torre/602d64e1d663ff28d7a951c2",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia de Torre by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia da Torre Surf Spot Details",
+          "publisher": "Ericeira Surf House",
+          "url": "https://www.ericeirasurfhouse.com/surf-spots/praia-da-torre/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This source corroborates that the selected Praia de Torre location is sheltered or condition-sensitive; the numeric threshold itself remains user-observed."
+        }
+      ],
+      "directClaimIds": [
+        "user-torre-minimum-primary-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-cova-do-vapor",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Cova Do Vapor Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/cova-do-vapor/584204204e65fad6a77096ad",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Cova Do Vapor by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Cova do Vapor Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Cova-do-Vapor",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Cova Do Vapor and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-cova-do-vapor-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
+    },
+    {
+      "spotId": "surfline-sao-joao-da-caparica",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "São João da Caparica Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/sao-joao-da-caparica/5dbb587ff387900001fee288",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches São João da Caparica by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "São João da Caparica Surf Spot Guide",
+          "publisher": "Mondo Surf",
+          "url": "https://www.mondo.surf/surf-spot/sao-joao-da-caparica/guide/5048",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated exact-spot guide identifies a sandy left-and-right beachbreak and a medium-to-high tide preference."
+        }
+      ],
+      "directClaimIds": [
+        "research-sao-joao-da-caparica-tide"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-de-caparica-sao-joao-cova-do-vapor"
+    },
+    {
+      "spotId": "surfline-marcelino",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Marcelino Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/marcelino/584204214e65fad6a7709d15",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Marcelino by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "locationMatch": "stretch",
+          "decision": "rejected",
+          "rationale": "The local guide is useful for the stretch but does not identify Marcelino precisely enough to support a spot-specific claim on its own."
+        },
+        {
+          "title": "Marcelino",
+          "publisher": "Nomad Surfers",
+          "url": "https://nomadsurfers.com/marcelino/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated Marcelino guide identifies the two bounding jetties and the sandbars they help form."
+        }
+      ],
+      "directClaimIds": [
+        "research-marcelino-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-de-caparica-praia-do-norte"
+    },
+    {
+      "spotId": "surfline-praia-do-barbas",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia do Barbas Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia do Barbas by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia do Barbas Surf Spot Guide",
+          "publisher": "Wave Safari",
+          "url": "https://www.wavesafari.com/praia-do-barbas/",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The exact-location guide identifies shifting sandbars and rights and lefts near the main jetty."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-do-barbas-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-tarquinio"
+    },
+    {
+      "spotId": "surfline-costa-da-caparica",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Costa da Caparica Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Costa da Caparica by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Costada-Caparica",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Costa da Caparica and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-costa-da-caparica-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-cds"
+    },
+    {
+      "spotId": "surfline-praia-da-saude",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia da Saude Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-saude/640b9d48b6d7692692951263",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia da Saude by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia da Saúde Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-da-Saude",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia da Saude and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-da-saude-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-nova-praia"
+    },
+    {
+      "spotId": "surfline-praia-da-cornelia",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia da Cornelia Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-cornelia/5dbf6037eb8ddf00015a883f",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia da Cornelia by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "locationMatch": "stretch",
+          "decision": "rejected",
+          "rationale": "The guide supports the shifting-bank stretch pattern but does not isolate Cornélia as an exact spot."
+        },
+        {
+          "title": "Praia da Cornelia Surf Forecast",
+          "publisher": "Surftrips.co",
+          "url": "https://surftrips.co/portugal/zona-oeste-portugal/praia-da-cornelia",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated exact-location guide describes Cornélia's shifting sand-bottom peaks and exposed Caparica setting."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-da-cornelia-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-riviera"
+    },
+    {
+      "spotId": "surfline-praia-da-rainha",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia da Rainha Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia da Rainha by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Praia da Rainha and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-da-rainha-tide"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-riviera"
+    },
+    {
+      "spotId": "surfline-castelo",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Costa da Caparica | Costelo (Irmao) Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Costa da Caparica | Costelo (Irmao) by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Praia do Castello Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-do-Castello",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Costa da Caparica | Costelo (Irmao) and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-castelo-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-da-caparica-riviera"
+    },
+    {
+      "spotId": "surfline-praia-do-pescador",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Praia do Pescador Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-do-pescador/640b9d4ede81d58fdf0e363b",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Praia do Pescador by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "locationMatch": "stretch",
+          "decision": "rejected",
+          "rationale": "The guide does not isolate Praia do Pescador, so it cannot independently support a spot-specific claim."
+        },
+        {
+          "title": "Surfing in Costa da Caparica",
+          "publisher": "Lost Caparica Surf House",
+          "url": "https://lostcaparica.com/surfing-in-costa-da-caparica-waves-stories-surf-spots-and-local-life",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The local guide identifies Cabana do Pescador in this southern zone and describes its greater exposure to wind and more powerful surf."
+        }
+      ],
+      "directClaimIds": [
+        "research-praia-do-pescador-mechanics"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
+    },
+    {
+      "spotId": "surfline-praia-do-rei",
+      "status": "complete",
+      "directEvidenceOutcome": "no-credible-spot-source-found",
+      "checkedSources": [
+        {
+          "title": "Praia do Rei Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/praia-do-rei/640b9d54de81d5217b0e37a6",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The provider record matches Praia do Rei by id and coordinates but contains no decision-grade spot guide or mechanics evidence."
+        },
+        {
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "locationMatch": "stretch",
+          "decision": "rejected",
+          "rationale": "The guide is credible for Caparica but does not isolate Praia do Rei precisely enough for direct evidence."
+        },
+        {
+          "title": "Praia do Rei",
+          "publisher": "Praias.pt",
+          "url": "https://praias.pt/lisboa-e-oeste/almada/praia-do-rei/",
+          "locationMatch": "exact-spot",
+          "decision": "rejected",
+          "rationale": "The exact-location beach directory confirms surf use but provides no tide, swell, wind, or mechanics guidance."
+        }
+      ],
+      "directClaimIds": [],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "costa-de-caparica-praia-da-sereia-morena"
+    },
+    {
+      "spotId": "surfline-fonte-da-telha",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Fonte da Telha Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Fonte da Telha by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Fonte da Telha Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Fonte da Telha and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-fonte-da-telha-tide"
+      ],
+      "inheritedApprovals": [
+        { "claimId": "user-caparica-high-tide", "claimDigest": "8aff84b369919e77f373f91ef74993e538552de7c7c99f9b51c6a60cdb67be98" }
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "tideCameraId": "fonte-da-telha"
+    },
+    {
+      "spotId": "surfline-lagoa-de-albufeira",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Lagoa de Albufeira Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/lagoa-de-albufeira/640b9cfe4878eb47751e344d",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Lagoa de Albufeira by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Lagoa de Albufeira - Mar",
+          "publisher": "Visit Sesimbra",
+          "url": "https://www.visitsesimbra.pt/en/praias/298/lagoa-de-albufeira-mar",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Lagoa de Albufeira and supports the paraphrased mechanics guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-lagoa-de-albufeira-mechanics"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-bicas",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Bicas Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/bicas/640b9cf8606c45e808f46d79",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Bicas by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Bicas Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Bicas_1",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This dedicated or local guide matches Bicas and supports the paraphrased tide guidance."
+        }
+      ],
+      "directClaimIds": [
+        "research-bicas-tide"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    },
+    {
+      "spotId": "surfline-sesimbra",
+      "status": "complete",
+      "directEvidenceOutcome": "found",
+      "checkedSources": [
+        {
+          "title": "Sesimbra Surf Report",
+          "publisher": "Surfline",
+          "url": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "The dedicated provider record matches Sesimbra by id and coordinates and was checked for spot metadata and exposure."
+        },
+        {
+          "title": "Beaches of Sesimbra",
+          "publisher": "Visit Sesimbra",
+          "url": "https://www.visitsesimbra.pt/en/experiences/73/beaches-",
+          "locationMatch": "exact-spot",
+          "decision": "accepted",
+          "rationale": "This source corroborates that the selected Sesimbra location is sheltered or condition-sensitive; the numeric threshold itself remains user-observed."
+        }
+      ],
+      "directClaimIds": [
+        "user-sesimbra-minimum-primary-swell"
+      ],
+      "reviewedAt": "2026-07-11T00:00:00.000Z"
+    }
+  ],
+  "advice": [
+    {
+      "id": "research-nazare-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-nazare"
+      },
+      "topic": "swell",
+      "overrideKey": "swell.useful-direction",
+      "summary": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
+      "rule": {
+        "type": "direction-preference",
+        "input": "primary-swell-direction-deg",
+        "arcs": [
+          {
+            "start": 270,
+            "end": 315
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Nazaré Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Nazare",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "West to northwest swell is useful, with west-northwest energy receiving the strongest canyon focus.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-baleal-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-baleal"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.peninsula-shelter",
+      "summary": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Surf Spots in Peniche",
+          "publisher": "Peniche Rentals",
+          "url": "https://penicherentals.com/en/surf-spots",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The two sides of the Baleal peninsula offer different exposure, so check both when wind or swell makes one side unsuitable.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-lagide-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-lagide"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Lagide Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Lagide",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The reef is generally best from low through mid tide; low water also makes the shallow bottom more consequential.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-cantinho-da-baia-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-cantinho-da-baia"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.bay-shelter",
+      "summary": "The corner of the bay softens Atlantic energy and is most useful when northerly or northwesterly swell reaches the bay.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Cantinho da Baía Surf Forecast Guide",
+          "publisher": "Surfnerd",
+          "url": "https://www.surfnerd.com/surf-forecast/cantinho-da-baia",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The corner of the bay softens Atlantic energy and is most useful when northerly or northwesterly swell reaches the bay.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-supertubos-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-supertubos"
+      },
+      "topic": "swell",
+      "overrideKey": "swell.useful-direction",
+      "summary": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
+      "rule": {
+        "type": "direction-preference",
+        "input": "primary-swell-direction-deg",
+        "arcs": [
+          {
+            "start": 247.5,
+            "end": 303.75
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Supertubos Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Supertubos",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "West and west-northwest swell reaches Supertubos best; too much north is shadowed by Peniche.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-consolacao-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-consolacao"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Mid tide usually gives the reef point its best shape, while the two sides of the headland behave differently.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Consolação Surf and Spot Description",
+          "publisher": "Surfing Portugal",
+          "url": "https://surfingportugal.net/spots/consolacao/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Mid tide usually gives the reef point its best shape, while the two sides of the headland behave differently.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-santa-cruz-wind",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-santa-cruz"
+      },
+      "topic": "wind",
+      "overrideKey": "wind.preferred-direction",
+      "summary": "This exposed beach is vulnerable to wind and is most useful with an easterly or southeasterly offshore flow.",
+      "rule": {
+        "type": "direction-preference",
+        "input": "wind-direction-deg",
+        "arcs": [
+          {
+            "start": 78.75,
+            "end": 146.25
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Santa Cruz Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Santa-Cruz",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "This exposed beach is vulnerable to wind and is most useful with an easterly or southeasterly offshore flow.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-cave-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-cave"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "low",
+        "direction": "falling"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Cave - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/cave-2/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Cave is a shallow, technical reef that is generally approached on low or falling tide by expert surfers.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-ribeira-d-ilhas-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-ribeira-d-ilhas"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.flexible-reef-right",
+      "summary": "The main reef right starts working small, holds substantial size, and offers a channel-assisted paddle compared with nearby reefs.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Ribeira D'Ilhas Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Ribeira-Dilhas",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The main reef right starts working small, holds substantial size, and offers a channel-assisted paddle compared with nearby reefs.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-reef-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-reef"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "high",
+        "direction": "rising"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Reef - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/reef-2/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Reef is a shallow reef option that is best considered on a rising tide toward high water.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-pedra-branca-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-pedra-branca"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "The reef is exposed at low water, so the useful window runs from mid tide toward high tide.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "high",
+        "direction": "rising"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Pedra Branca - Ericeira World Surfing Reserve",
+          "publisher": "Ericeira World Surfing Reserve",
+          "url": "https://ericeirawsr10.com/en/pedra-branca-2/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The reef is exposed at low water, so the useful window runs from mid tide toward high tide.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-matadouro-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-matadouro"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.mixed-bottom",
+      "summary": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Matadouro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Matadouro",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Matadouro combines beach and reef peaks; inspect the working peak and rock exposure rather than treating it as a uniform beachbreak.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-do-sul-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-do-sul"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.sheltered-mixed-break",
+      "summary": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia do Sul Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-do-Sul",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Praia do Sul is relatively sheltered, with beach and reef peaks that become heavier as swell size increases.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-foz-do-lizandro-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-foz-do-lizandro"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.river-mouth-beachbreak",
+      "summary": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Foz do Lizandro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Foz-do-Lizandro",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "This sandy river-mouth beachbreak offers several shifting peaks and is generally friendlier than Ericeira's shallow reef breaks.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "user-sao-juliao-mid-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-sao-juliao"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Mid tide is the preferred window at São Julião.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "user-observed",
+          "title": "User observation",
+          "publisher": "Local knowledge",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Mid tide is the preferred window at São Julião.",
+          "quality": "first-hand",
+          "status": "accepted"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-das-macas-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-das-macas"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.exposed-beachbreak",
+      "summary": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia das Maçãs Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-das-Macas",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Praia das Maçãs is an Atlantic beachbreak whose peaks depend on the current sandbanks and clean wind.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-pequena-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-pequena"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.exposed-beachbreak",
+      "summary": "Praia Pequena is an exposed beachbreak that collects Atlantic swell and can be powerful when size rises.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia Pequena Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-Pequena",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Praia Pequena is an exposed beachbreak that collects Atlantic swell and can be powerful when size rises.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-grande-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-grande"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia Grande (Sintra)",
+          "publisher": "Surfspots.pt",
+          "url": "https://www.surfspots.pt/praia-grande-sintra.html",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Low through mid tide is normally the more useful window; high tide can turn sections into heavy shorebreak.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-da-adraga-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-da-adraga"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.exposed-atlantic-beach",
+      "summary": "Adraga is an exposed Atlantic beach where swell and currents can be substantially stronger than at sheltered Lisbon beaches.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Adraga Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Adraga",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Adraga is an exposed Atlantic beach where swell and currents can be substantially stronger than at sheltered Lisbon beaches.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-da-ursa-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-da-ursa"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.exposed-remote-beach",
+      "summary": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia da Ursa Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-da-Ursa",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Ursa is a remote, exposed Atlantic beach; conditions should be assessed on site rather than inferred from sheltered nearby bays.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-praia-do-guincho-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-do-guincho"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Surfing Praia do Guincho",
+          "publisher": "The Portugal Guides",
+          "url": "https://www.theportugalguides.com/surf/guincho/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Guincho works across the tide but usually has its best shape from low through mid tide before wind becomes dominant.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "user-caxias-minimum-primary-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-de-caxias"
+      },
+      "topic": "size-translation",
+      "overrideKey": "size.minimum-primary-swell",
+      "summary": "Usually needs a 2 m primary swell before baby waves appear.",
+      "rule": {
+        "type": "minimum",
+        "input": "primary-swell-height-m",
+        "value": 2,
+        "comparison": "greater-than-or-equal",
+        "effectBelow": "likely-flat"
+      },
+      "evidence": [
+        {
+          "kind": "user-observed",
+          "title": "User observation",
+          "publisher": "Local knowledge",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Caxias only starts to show baby waves near a 2 m outside swell.",
+          "quality": "first-hand",
+          "status": "accepted"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-sao-pedro-do-estoril-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-sao-pedro-do-estoril"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.reef-point",
+      "summary": "São Pedro is a right-hand reef point, so rock exposure and the defined takeoff matter more than at a sandy beachbreak.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "São Pedro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Sao-Pedro",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "São Pedro is a right-hand reef point, so rock exposure and the defined takeoff matter more than at a sandy beachbreak.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-paco-de-arcos-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-paco-de-arcos"
+      },
+      "topic": "swell",
+      "overrideKey": "swell.sheltered-exposure",
+      "summary": "Paço de Arcos is deeply sheltered inside the Tagus-facing coast and needs swell that wraps into the Linha.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Paço de Arcos Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Paco-D-arcos",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Paço de Arcos is deeply sheltered inside the Tagus-facing coast and needs swell that wraps into the Linha.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-parede-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-parede"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.rare-reef-break",
+      "summary": "Parede is a reef/point option that breaks infrequently; a nearby open-ocean forecast can overstate what reaches it.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Parede Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Parede",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Parede is a reef/point option that breaks infrequently; a nearby open-ocean forecast can overstate what reaches it.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-santo-amaro-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-santo-amaro"
+      },
+      "topic": "swell",
+      "overrideKey": "swell.sheltered-exposure",
+      "summary": "Santo Amaro is a sheltered Linha break that is far less exposed than Carcavelos and depends on swell wrapping into the bay.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Santo Amaro Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Santo-Amaro",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Santo Amaro is a sheltered Linha break that is far less exposed than Carcavelos and depends on swell wrapping into the bay.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-carcavelos-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-carcavelos"
+      },
+      "topic": "swell",
+      "overrideKey": "swell.useful-direction",
+      "summary": "West through southwest swell is much more relevant at Carcavelos than a northerly swell reading.",
+      "rule": {
+        "type": "direction-preference",
+        "input": "primary-swell-direction-deg",
+        "arcs": [
+          {
+            "start": 225,
+            "end": 270
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Guia prático de previsões do mar em Carcavelos",
+          "publisher": "Carcavelos Surf School",
+          "url": "https://carcavelossurfschool.com/pt/blog/918/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "West through southwest swell is much more relevant at Carcavelos than a northerly swell reading.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "user-torre-minimum-primary-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-de-torre"
+      },
+      "topic": "size-translation",
+      "overrideKey": "size.minimum-primary-swell",
+      "summary": "Begins working around a 1.5 m primary swell.",
+      "rule": {
+        "type": "minimum",
+        "input": "primary-swell-height-m",
+        "value": 1.5,
+        "comparison": "greater-than-or-equal",
+        "effectBelow": "likely-flat",
+        "effectAtOrAbove": "may-start-working"
+      },
+      "evidence": [
+        {
+          "kind": "user-observed",
+          "title": "User observation",
+          "publisher": "Local knowledge",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Torre starts to work near a 1.5 m outside swell.",
+          "quality": "first-hand",
+          "status": "accepted"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-cova-do-vapor-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-cova-do-vapor"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.river-mouth-wedge",
+      "summary": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Cova do Vapor Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Cova-do-Vapor",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The Tagus mouth and groynes create short, powerful wedges; swell angle can remove much of the incoming size.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-sao-joao-da-caparica-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-sao-joao-da-caparica"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "The sandy left-and-right beachbreak is generally favored from mid tide toward high water.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "high"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "São João da Caparica Surf Spot Guide",
+          "publisher": "Mondo Surf",
+          "url": "https://www.mondo.surf/surf-spot/sao-joao-da-caparica/guide/5048",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The sandy left-and-right beachbreak is generally favored from mid tide toward high water.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-marcelino-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-marcelino"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.shifting-sandbank",
+      "summary": "Marcelino is a sandy Caparica peak whose shape changes with bank placement and the adjacent coastal structures.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Marcelino",
+          "publisher": "Nomad Surfers",
+          "url": "https://nomadsurfers.com/marcelino/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Marcelino is a sandy Caparica peak whose shape changes with bank placement and the adjacent coastal structures.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-do-barbas-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-do-barbas"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.groyne-sandbank",
+      "summary": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia do Barbas Surf Spot Guide",
+          "publisher": "Wave Safari",
+          "url": "https://www.wavesafari.com/praia-do-barbas/",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Barbas sits in the central groyne corridor, where trapped sand forms changing left and right peaks.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-costa-da-caparica-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-costa-da-caparica"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.groyne-sandbanks",
+      "summary": "Groynes help organize otherwise shifting sandbanks, but the best peak still changes with tide and recent swell.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Costada-Caparica",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Groynes help organize otherwise shifting sandbanks, but the best peak still changes with tide and recent swell.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-da-saude-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-da-saude"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.shifting-sandbank",
+      "summary": "Saúde is a sandy beachbreak where bank quality changes, so the visible peak matters more than a fixed takeoff location.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia da Saúde Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-da-Saude",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Saúde is a sandy beachbreak where bank quality changes, so the visible peak matters more than a fixed takeoff location.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-da-cornelia-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-da-cornelia"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.shifting-sandbank",
+      "summary": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia da Cornelia Surf Forecast",
+          "publisher": "Surftrips.co",
+          "url": "https://surftrips.co/portugal/zona-oeste-portugal/praia-da-cornelia",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Cornélia is part of the open southern beachbreak corridor, with conditions controlled by shifting banks and exposure.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-da-rainha-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-da-rainha"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Published local guidance favors mid tide at Praia da Rainha, even though the user's broader Caparica preference is high tide.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Costa da Caparica Surf Guide",
+          "publisher": "Dr. Bernard",
+          "url": "https://www.drbernard.pt/en/caparica-surf-guide",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Published local guidance favors mid tide at Praia da Rainha, even though the user's broader Caparica preference is high tide.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-castelo-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-castelo"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.shifting-sandbank",
+      "summary": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Praia do Castello Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Praia-do-Castello",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Castelo's shifting banks can produce good small-to-medium walls but become prone to closing out as size builds.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-praia-do-pescador-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-praia-do-pescador"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.shifting-sandbank",
+      "summary": "Cabana do Pescador sits in the more open southern zone, where surf has more punch and wind has greater effect.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Surfing in Costa da Caparica",
+          "publisher": "Lost Caparica Surf House",
+          "url": "https://lostcaparica.com/surfing-in-costa-da-caparica-waves-stories-surf-spots-and-local-life",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Cabana do Pescador sits in the more open southern zone, where surf has more punch and wind has greater effect.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": "2027-01-15"
+    },
+    {
+      "id": "research-fonte-da-telha-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-fonte-da-telha"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "Fonte da Telha is generally best between the tide extremes; dead low may close out and dead high may shorebreak.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Fonte da Telha Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Fonte-da-Telha",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Fonte da Telha is generally best between the tide extremes; dead low may close out and dead high may shorebreak.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-lagoa-de-albufeira-mechanics",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-lagoa-de-albufeira"
+      },
+      "topic": "mechanics",
+      "overrideKey": "mechanics.exposed-lagoon-mouth",
+      "summary": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "local-guide",
+          "title": "Lagoa de Albufeira - Mar",
+          "publisher": "Visit Sesimbra",
+          "url": "https://www.visitsesimbra.pt/en/praias/298/lagoa-de-albufeira-mar",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The ocean side of Lagoa de Albufeira is an exposed, dynamic beachbreak near the lagoon channel and receives surf on many days.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "research-bicas-tide",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-bicas"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "The left reef is best around mid tide, with rocks, rips, and urchins making the window consequential.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "mid"
+      },
+      "evidence": [
+        {
+          "kind": "specialist-guide",
+          "title": "Bicas Surf Guide",
+          "publisher": "Surf-Forecast",
+          "url": "https://www.surf-forecast.com/breaks/Bicas_1",
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The left reef is best around mid tide, with rocks, rips, and urchins making the window consequential.",
+          "quality": "dedicated-spot-guide",
+          "status": "accepted",
+          "locationMatch": "exact-spot"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "user-sesimbra-minimum-primary-swell",
+      "scope": {
+        "type": "spot",
+        "id": "surfline-sesimbra"
+      },
+      "topic": "size-translation",
+      "overrideKey": "size.minimum-primary-swell",
+      "summary": "Usually needs a 2 m primary swell before baby waves appear.",
+      "rule": {
+        "type": "minimum",
+        "input": "primary-swell-height-m",
+        "value": 2,
+        "comparison": "greater-than-or-equal",
+        "effectBelow": "likely-flat"
+      },
+      "evidence": [
+        {
+          "kind": "user-observed",
+          "title": "User observation",
+          "publisher": "Local knowledge",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Sesimbra only starts to show baby waves near a 2 m outside swell.",
+          "quality": "first-hand",
+          "status": "accepted"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "linha-stretch-sheltered-size-translation",
+      "scope": {
+        "type": "stretch",
+        "id": "linha"
+      },
+      "topic": "size-translation",
+      "overrideKey": "size.sheltered-primary-swell",
+      "summary": "Inner Linha beaches can remain flat while primary swell is present outside; verify the actual beach before relying on the swell height.",
+      "rule": {
+        "type": "qualitative"
+      },
+      "evidence": [
+        {
+          "kind": "inference",
+          "title": "Inference from nearby Caxias and Torre observations",
+          "publisher": "Local synthesis",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "Nearby Caxias and Torre both need substantial primary swell before small waves begin, supporting a cautious sheltered-Linha pattern.",
+          "quality": "two-nearby-first-hand-inputs",
+          "status": "accepted",
+          "inputClaimIds": [
+            "user-caxias-minimum-primary-swell",
+            "user-torre-minimum-primary-swell"
+          ]
+        }
+      ],
+      "confidence": "low",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    },
+    {
+      "id": "user-caparica-high-tide",
+      "scope": {
+        "type": "stretch",
+        "id": "caparica"
+      },
+      "topic": "tide",
+      "overrideKey": "tide.preferred-stage",
+      "summary": "High tide is the user's preferred pattern across the Caparica stretch.",
+      "rule": {
+        "type": "tide-preference",
+        "stage": "high"
+      },
+      "evidence": [
+        {
+          "kind": "user-observed",
+          "title": "User observation",
+          "publisher": "Local knowledge",
+          "url": null,
+          "accessedAt": "2026-07-11",
+          "supportedClaim": "The user finds the Caparica coastline works best around high tide.",
+          "quality": "first-hand",
+          "status": "accepted"
+        }
+      ],
+      "confidence": "medium",
+      "publicationStatus": "published",
+      "consensus": "settled",
+      "calculationCandidate": false,
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "revalidateAfter": null
+    }
+  ]
+}
