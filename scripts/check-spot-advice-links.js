@@ -2,7 +2,10 @@
 
 import dns from "node:dns/promises";
 import fs from "node:fs/promises";
+import http from "node:http";
+import https from "node:https";
 import net from "node:net";
+import tls from "node:tls";
 import { pathToFileURL } from "node:url";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -167,7 +170,10 @@ function parsedHttpUrl(value) {
 
 function canonicalAcceptedUrl(value) {
   try {
-    return parsedHttpUrl(value).href;
+    const parsed = new URL(value);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    parsed.hash = "";
+    return parsed.href;
   } catch {
     return null;
   }
@@ -198,7 +204,7 @@ async function defaultResolver(hostname) {
 async function validateTarget(parsed, resolver) {
   const safe = parsedHttpUrl(parsed.href);
   const hostname = stripIpv6Brackets(safe.hostname.toLowerCase());
-  if (net.isIP(hostname)) return safe;
+  if (net.isIP(hostname)) return { url: safe, addresses: [hostname] };
 
   let records;
   try {
@@ -210,7 +216,66 @@ async function validateTarget(parsed, resolver) {
   if (addresses.length === 0 || addresses.some((address) => !isPublicAddress(address))) {
     throw new BlockedTargetError("DNS returned a non-public or invalid address");
   }
-  return safe;
+  return { url: safe, addresses: [...new Set(addresses)].sort() };
+}
+
+function responseHeaders(headers) {
+  return {
+    get(name) {
+      const value = headers?.[String(name).toLowerCase()];
+      if (Array.isArray(value)) return value.join(", ");
+      return value ?? null;
+    }
+  };
+}
+
+export function createPinnedRequester({
+  httpRequest = http.request,
+  httpsRequest = https.request
+} = {}) {
+  return ({ url, address, method, signal }) => new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const originalHostname = stripIpv6Brackets(parsed.hostname);
+    const isHttps = parsed.protocol === "https:";
+    const options = {
+      protocol: parsed.protocol,
+      hostname: address,
+      family: net.isIP(address),
+      port: parsed.port || (isHttps ? 443 : 80),
+      method,
+      path: `${parsed.pathname}${parsed.search}`,
+      headers: { Host: parsed.host },
+      signal,
+      agent: false
+    };
+    if (isHttps && !net.isIP(originalHostname)) {
+      options.servername = originalHostname;
+      options.checkServerIdentity = (_hostname, certificate) => (
+        tls.checkServerIdentity(originalHostname, certificate)
+      );
+    }
+
+    const request = (isHttps ? httpsRequest : httpRequest)(options, (response) => {
+      resolve({
+        status: response.statusCode,
+        headers: responseHeaders(response.headers),
+        body: {
+          cancel: async () => { response.destroy(); }
+        }
+      });
+    });
+    request.on("error", reject);
+    request.end();
+  });
+}
+
+function requesterFromFetcher(fetcher) {
+  return ({ url, address, method, signal }) => fetcher(url, {
+    method,
+    redirect: "manual",
+    signal,
+    validatedAddress: address
+  });
 }
 
 export function collectAcceptedUrls(document) {
@@ -245,7 +310,7 @@ async function closeResponseBody(response) {
 }
 
 async function fetchHop(parsed, method, {
-  fetcher,
+  requester,
   resolver,
   timeoutMs,
   onTimeout
@@ -254,15 +319,24 @@ async function fetchHop(parsed, method, {
   const timeoutError = new AttemptTimeoutError(method, timeoutMs);
   let timer;
   const operation = (async () => {
-    const safe = await validateTarget(parsed, resolver);
-    if (controller.signal.aborted) throw timeoutError;
-    const response = await fetcher(safe.href, {
-      method,
-      redirect: "manual",
-      signal: controller.signal
-    });
-    await closeResponseBody(response);
-    return response;
+    const target = await validateTarget(parsed, resolver);
+    let lastError;
+    for (const address of target.addresses) {
+      if (controller.signal.aborted) throw timeoutError;
+      try {
+        const response = await requester({
+          url: target.url.href,
+          address,
+          method,
+          signal: controller.signal
+        });
+        await closeResponseBody(response);
+        return response;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError ?? new Error("No validated address was available");
   })();
   operation.catch(() => {});
 
@@ -393,14 +467,22 @@ function statusLine(result) {
 }
 
 export async function auditUrls(urls, {
-  fetcher = globalThis.fetch,
+  fetcher,
+  requester,
   resolver = defaultResolver,
   concurrency = 4,
   timeoutMs = DEFAULT_TIMEOUT_MS,
   maxRedirects = DEFAULT_MAX_REDIRECTS,
   logger = console.log
 } = {}) {
-  if (typeof fetcher !== "function") throw new TypeError("auditUrls requires a fetcher");
+  if (fetcher !== undefined && typeof fetcher !== "function") {
+    throw new TypeError("fetcher must be a function");
+  }
+  if (requester !== undefined && typeof requester !== "function") {
+    throw new TypeError("requester must be a function");
+  }
+  const effectiveRequester = requester
+    ?? (fetcher ? requesterFromFetcher(fetcher) : createPinnedRequester());
   if (typeof resolver !== "function") throw new TypeError("auditUrls requires a DNS resolver");
   if (!Number.isInteger(concurrency) || concurrency < 1) {
     throw new RangeError("concurrency must be a positive integer");
@@ -424,7 +506,7 @@ export async function auditUrls(urls, {
       nextIndex += 1;
       if (index >= uniqueUrls.length) return;
       results[index] = await auditUrl(uniqueUrls[index], {
-        fetcher,
+        requester: effectiveRequester,
         resolver,
         timeoutMs,
         maxRedirects,
@@ -456,14 +538,15 @@ export async function auditUrls(urls, {
 
 export async function runCli({
   readFile = fs.readFile,
-  fetcher = globalThis.fetch,
+  fetcher,
+  requester,
   resolver = defaultResolver,
   logger = console.log
 } = {}) {
   const document = JSON.parse(await readFile("data/spot-advice.json", "utf8"));
   const urls = collectAcceptedUrls(document);
   logger(`Auditing ${urls.length} accepted spot-advice source URLs (manual, non-CI check)`);
-  const results = await auditUrls(urls, { fetcher, resolver, logger });
+  const results = await auditUrls(urls, { fetcher, requester, resolver, logger });
   const failures = results.filter((result) => !result.ok);
   logger(`${results.length - failures.length}/${results.length} source URLs reachable`);
   return failures.length > 0 ? 1 : 0;

@@ -64,9 +64,11 @@ test("collectAcceptedUrls returns sorted unique accepted HTTP evidence from publ
   };
 
   assert.deepEqual(collectAcceptedUrls(document), [
+    "http://127.0.0.1/internal",
     "http://a.example/spot",
     "https://example.com/guide",
     "https://m.example/research",
+    "https://user:secret@example.com/private?token=hidden",
     "https://z.example/guide"
   ]);
 });
@@ -199,6 +201,151 @@ test("runCli returns a nonzero exit code when any accepted source is unreachable
 
   assert.equal(exitCode, 1);
   assert.match(lines.at(-1), /^0\/1 source URLs reachable$/);
+});
+
+test("runCli reports every accepted but blocked URL instead of succeeding with an empty audit", async () => {
+  const document = {
+    advice: [{
+      publicationStatus: "published",
+      evidence: [
+        { status: "accepted", url: "http://localhost/admin?token=hidden" },
+        { status: "accepted", url: "http://2130706433/metadata" },
+        { status: "accepted", url: "https://user:secret@public.example/private" }
+      ]
+    }],
+    spotResearch: []
+  };
+  let fetchCalls = 0;
+  const lines = [];
+  const exitCode = await runCli({
+    readFile: async () => JSON.stringify(document),
+    resolver: publicResolver,
+    fetcher: async () => {
+      fetchCalls += 1;
+      return response(200);
+    },
+    logger: (line) => lines.push(line)
+  });
+
+  assert.equal(exitCode, 1);
+  assert.equal(fetchCalls, 0);
+  assert.match(lines[0], /^Auditing 3 accepted/);
+  assert.match(lines.at(-1), /^0\/3 source URLs reachable$/);
+  assert.doesNotMatch(lines.join("\n"), /secret|token=hidden/);
+});
+
+test("auditUrls resolves once and passes the validated address directly to its requester", async () => {
+  let resolverCalls = 0;
+  const requests = [];
+  const results = await auditUrls(["https://source.example/guide"], {
+    logger: () => {},
+    resolver: async () => {
+      resolverCalls += 1;
+      return resolverCalls === 1
+        ? [{ address: "93.184.216.34", family: 4 }]
+        : [{ address: "10.0.0.7", family: 4 }];
+    },
+    requester: async (request) => {
+      requests.push(request);
+      return response(200);
+    }
+  });
+
+  assert.equal(results[0].ok, true);
+  assert.equal(resolverCalls, 1);
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].address, "93.184.216.34");
+  assert.equal(requests[0].url, "https://source.example/guide");
+});
+
+test("a validated address set is sorted and retried without another DNS lookup", async () => {
+  let resolverCalls = 0;
+  const addresses = [];
+  const results = await auditUrls(["https://source.example/guide"], {
+    logger: () => {},
+    resolver: async () => {
+      resolverCalls += 1;
+      return [
+        { address: "93.184.216.34", family: 4 },
+        { address: "142.250.74.14", family: 4 }
+      ];
+    },
+    requester: async ({ address }) => {
+      addresses.push(address);
+      if (address === "142.250.74.14") throw new Error("connect failed");
+      return response(200);
+    }
+  });
+
+  assert.equal(results[0].ok, true);
+  assert.equal(resolverCalls, 1);
+  assert.deepEqual(addresses, ["142.250.74.14", "93.184.216.34"]);
+});
+
+test("validated redirect hops pin each requester call to that hop's resolved address", async () => {
+  const resolverCalls = [];
+  const requests = [];
+  const results = await auditUrls(["https://first.example/start"], {
+    logger: () => {},
+    resolver: async (hostname) => {
+      resolverCalls.push(hostname);
+      return [{
+        address: hostname === "first.example" ? "93.184.216.34" : "142.250.74.14",
+        family: 4
+      }];
+    },
+    requester: async (request) => {
+      requests.push(request);
+      return request.url.includes("first.example")
+        ? redirectResponse(302, "https://second.example/final")
+        : response(204);
+    }
+  });
+
+  assert.equal(results[0].ok, true);
+  assert.deepEqual(resolverCalls, ["first.example", "second.example"]);
+  assert.deepEqual(requests.map(({ address, url }) => ({ address, url })), [
+    { address: "93.184.216.34", url: "https://first.example/start" },
+    { address: "142.250.74.14", url: "https://second.example/final" }
+  ]);
+});
+
+test("the default pinned HTTPS requester connects by IP while preserving Host and TLS identity", async () => {
+  const module = await import("../scripts/check-spot-advice-links.js");
+  assert.equal(typeof module.createPinnedRequester, "function");
+  let capturedOptions;
+  const fakeHttpsRequest = (options, onResponse) => {
+    capturedOptions = options;
+    queueMicrotask(() => onResponse({
+      statusCode: 200,
+      headers: {},
+      destroy() {}
+    }));
+    return {
+      on() { return this; },
+      end() {}
+    };
+  };
+  const requester = module.createPinnedRequester({
+    httpRequest: () => { throw new Error("unexpected HTTP request"); },
+    httpsRequest: fakeHttpsRequest
+  });
+
+  const result = await requester({
+    url: "https://source.example/guide?lang=pt",
+    address: "93.184.216.34",
+    method: "HEAD",
+    signal: new AbortController().signal
+  });
+
+  assert.equal(result.status, 200);
+  assert.equal(capturedOptions.hostname, "93.184.216.34");
+  assert.equal(capturedOptions.servername, "source.example");
+  assert.equal(capturedOptions.headers.Host, "source.example");
+  assert.equal(capturedOptions.path, "/guide?lang=pt");
+  assert.equal(capturedOptions.agent, false);
+  assert.equal(typeof capturedOptions.checkServerIdentity, "function");
+  assert.equal("lookup" in capturedOptions, false);
 });
 
 test("auditUrls blocks lexical SSRF targets, alternate IP encodings, credentials, and unsafe ports before fetch", async () => {

@@ -195,18 +195,23 @@ test("spot advice operator scripts are exposed and local review artifacts stay i
   assert.match(gitignoreSource, /^\.local\/$/m);
 });
 
-test("CI pins official JavaScript actions and enables weekly action updates", () => {
-  const validateWorkflow = fs.readFileSync(".github/workflows/validate.yml", "utf8");
-  const refreshWorkflow = fs.readFileSync(".github/workflows/update-surfline-conditions.yml", "utf8");
+test("every external workflow action is commit-pinned and weekly updates stay enabled", () => {
+  const workflowSources = fs.readdirSync(".github/workflows")
+    .filter((name) => /\.ya?ml$/.test(name))
+    .sort()
+    .map((name) => fs.readFileSync(`.github/workflows/${name}`, "utf8"));
   const dependabot = fs.readFileSync(".github/dependabot.yml", "utf8");
-  const workflows = `${validateWorkflow}\n${refreshWorkflow}`;
+  const workflows = workflowSources.join("\n");
 
-  assert.doesNotMatch(workflows, /uses:\s*actions\/(?:checkout|setup-node)@v\d/);
-  assert.match(workflows, /actions\/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0\s+# v7\.0\.0/g);
-  assert.match(workflows, /actions\/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e\s+# v6\.4\.0/g);
-  for (const line of workflows.split("\n").filter((line) => /uses:\s*actions\/(?:checkout|setup-node)@/.test(line))) {
-    assert.match(line, /@[0-9a-f]{40}\s+# v\d/);
+  const externalUses = workflows.split("\n")
+    .filter((line) => /\buses:\s*(?!\.\/)/.test(line));
+  assert.ok(externalUses.length > 0);
+  for (const line of externalUses) {
+    assert.match(line, /uses:\s*[^\s@]+@[0-9a-f]{40}\s+# v\d+(?:\.\d+){0,2}\s*$/);
   }
+  assert.ok(externalUses.some((line) => line.includes("actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0")));
+  assert.ok(externalUses.some((line) => line.includes("actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0")));
+  assert.ok(externalUses.some((line) => line.includes("actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0")));
   assert.match(dependabot, /package-ecosystem:\s*"github-actions"/);
   assert.match(dependabot, /interval:\s*"weekly"/);
 });
