@@ -11,6 +11,7 @@ import { pathToFileURL } from "node:url";
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_MAX_REDIRECTS = 5;
 const HEAD_FALLBACK_STATUSES = new Set([403, 405, 501]);
+const AUDIT_USER_AGENT = "undici";
 
 class BlockedTargetError extends Error {
   constructor(message) {
@@ -244,7 +245,10 @@ export function createPinnedRequester({
       port: parsed.port || (isHttps ? 443 : 80),
       method,
       path: `${parsed.pathname}${parsed.search}`,
-      headers: { Host: parsed.host },
+      headers: {
+        Host: parsed.host,
+        "User-Agent": AUDIT_USER_AGENT
+      },
       signal,
       agent: false
     };

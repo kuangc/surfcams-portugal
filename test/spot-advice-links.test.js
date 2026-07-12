@@ -310,12 +310,12 @@ test("validated redirect hops pin each requester call to that hop's resolved add
   ]);
 });
 
-test("the default pinned HTTPS requester connects by IP while preserving Host and TLS identity", async () => {
+test("the pinned requester preserves identity and sets one non-overridable User-Agent on every method and hop", async () => {
   const module = await import("../scripts/check-spot-advice-links.js");
   assert.equal(typeof module.createPinnedRequester, "function");
-  let capturedOptions;
+  const capturedOptions = [];
   const fakeHttpsRequest = (options, onResponse) => {
-    capturedOptions = options;
+    capturedOptions.push(options);
     queueMicrotask(() => onResponse({
       statusCode: 200,
       headers: {},
@@ -332,20 +332,38 @@ test("the default pinned HTTPS requester connects by IP while preserving Host an
   });
 
   const result = await requester({
-    url: "https://source.example/guide?lang=pt",
+    url: "https://source.example/guide%0d%0aX-Evil:yes?lang=pt",
     address: "93.184.216.34",
     method: "HEAD",
-    signal: new AbortController().signal
+    signal: new AbortController().signal,
+    headers: { "User-Agent": "caller-override", Host: "attacker.example" }
+  });
+  await requester({
+    url: "https://redirect.example/final",
+    address: "142.250.74.14",
+    method: "GET",
+    signal: new AbortController().signal,
+    headers: { "User-Agent": "caller-override" }
   });
 
   assert.equal(result.status, 200);
-  assert.equal(capturedOptions.hostname, "93.184.216.34");
-  assert.equal(capturedOptions.servername, "source.example");
-  assert.equal(capturedOptions.headers.Host, "source.example");
-  assert.equal(capturedOptions.path, "/guide?lang=pt");
-  assert.equal(capturedOptions.agent, false);
-  assert.equal(typeof capturedOptions.checkServerIdentity, "function");
-  assert.equal("lookup" in capturedOptions, false);
+  assert.equal(capturedOptions[0].hostname, "93.184.216.34");
+  assert.equal(capturedOptions[0].servername, "source.example");
+  assert.equal(capturedOptions[0].headers.Host, "source.example");
+  assert.equal(capturedOptions[0].path, "/guide%0d%0aX-Evil:yes?lang=pt");
+  assert.equal(capturedOptions[0].agent, false);
+  assert.equal(typeof capturedOptions[0].checkServerIdentity, "function");
+  assert.equal("lookup" in capturedOptions[0], false);
+  assert.deepEqual(capturedOptions.map((options) => options.method), ["HEAD", "GET"]);
+  assert.deepEqual(capturedOptions.map((options) => options.headers["User-Agent"]), [
+    "undici",
+    "undici"
+  ]);
+  assert.deepEqual(capturedOptions.map((options) => options.headers.Host), [
+    "source.example",
+    "redirect.example"
+  ]);
+  assert.equal(capturedOptions.some((options) => "X-Evil" in options.headers), false);
 });
 
 test("auditUrls blocks lexical SSRF targets, alternate IP encodings, credentials, and unsafe ports before fetch", async () => {
