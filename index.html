@@ -6287,7 +6287,19 @@
             <button class="secondary-button" id="resetConfigButton" type="button">Reset</button>
           </div>
         </form>
-        <p class="status-line">The heuristic is a model, not a guarantee. Check the cam before leaving.</p>
+        <section class="feedback-tools" aria-labelledby="feedbackToolsTitle">
+          <div>
+            <h2 id="feedbackToolsTitle">Session feedback</h2>
+            <p>Stored only in this browser. Export a copy before clearing browser data.</p>
+          </div>
+          <div class="feedback-tools__actions">
+            <button class="secondary-button" id="exportSessionFeedback" type="button">Export JSON</button>
+            <label class="secondary-button feedback-import" for="importSessionFeedback">Import JSON</label>
+            <input id="importSessionFeedback" type="file" accept="application/json,.json" hidden>
+          </div>
+          <p class="status-line" id="sessionFeedbackStatus" aria-live="polite"></p>
+        </section>
+        <p class="status-line">Best bets are forecasts, not guarantees. Check the cam before leaving.</p>
       </section>
     </main>
   </div>

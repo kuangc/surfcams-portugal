@@ -68,3 +68,14 @@ test("today recommendation styles are focused, keyboard-visible, and mobile-scro
   assert.match(styleSource, /\.today-timeline__hour:focus-visible/);
   assert.match(styleSource, /\.today-timeline\s*{[^}]*overflow-x:\s*auto/s);
 });
+
+test("recommendation cards and Configure expose private session feedback controls", () => {
+  assert.match(mainSource, /createSessionFeedbackDisclosure/);
+  assert.match(mainSource, /How was it\?/);
+  assert.match(mainSource, /addSessionFeedback/);
+  assert.match(indexSource, /id="exportSessionFeedback"/);
+  assert.match(indexSource, /id="importSessionFeedback"/);
+  assert.match(indexSource, /Stored only in this browser/);
+  assert.match(styleSource, /\.session-feedback/);
+  assert.match(styleSource, /\.feedback-tools/);
+});

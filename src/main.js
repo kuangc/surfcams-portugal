@@ -28,6 +28,7 @@ import { formatRegion } from "./format.js";
 import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
 import { inSuggestionFence, monitorCameraSlots } from "./monitor-cameras.js";
+import { addSessionFeedback, exportSessionFeedback, importSessionFeedback } from "./session-feedback.js";
 import {
   applySpotMetadataToCameraDb,
   emptySpotData,
@@ -132,7 +133,10 @@ const els = {
   detailConditionStrip: document.querySelector("#detailConditionStrip"),
   detailFavorite: document.querySelector("#detailFavorite"),
   configForm: document.querySelector("#configForm"),
-  resetConfigButton: document.querySelector("#resetConfigButton")
+  resetConfigButton: document.querySelector("#resetConfigButton"),
+  exportSessionFeedbackButton: document.querySelector("#exportSessionFeedback"),
+  importSessionFeedbackInput: document.querySelector("#importSessionFeedback"),
+  sessionFeedbackStatus: document.querySelector("#sessionFeedbackStatus")
 };
 
 state.explorePlayer = createFeedTilePlayer({
@@ -584,6 +588,89 @@ function createRecommendationAction(camera) {
   return action;
 }
 
+function appendFeedbackOption(select, value, label) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = label;
+  select.appendChild(option);
+}
+
+function createSessionFeedbackDisclosure(recommendation) {
+  const details = document.createElement("details");
+  details.className = "session-feedback";
+  const summary = document.createElement("summary");
+  summary.textContent = "How was it?";
+
+  const form = document.createElement("form");
+  const faceLabel = document.createElement("label");
+  faceLabel.textContent = "Actual face size";
+  const face = document.createElement("select");
+  face.name = "actualFace";
+  face.required = true;
+  appendFeedbackOption(face, "", "Choose…");
+  appendFeedbackOption(face, "flat", "Flat");
+  appendFeedbackOption(face, "ankle", "Ankle");
+  appendFeedbackOption(face, "knee-waist", "Knee–waist");
+  appendFeedbackOption(face, "waist-chest", "Waist–chest");
+  appendFeedbackOption(face, "head-plus", "Head+");
+  faceLabel.appendChild(face);
+
+  const qualityLabel = document.createElement("label");
+  qualityLabel.textContent = "Actual quality";
+  const quality = document.createElement("select");
+  quality.name = "actualQuality";
+  quality.required = true;
+  appendFeedbackOption(quality, "", "Choose…");
+  appendFeedbackOption(quality, "poor", "Poor");
+  appendFeedbackOption(quality, "okay", "Okay");
+  appendFeedbackOption(quality, "good", "Good");
+  qualityLabel.appendChild(quality);
+
+  const noteLabel = document.createElement("label");
+  noteLabel.textContent = "Note (optional)";
+  const note = document.createElement("textarea");
+  note.name = "note";
+  note.maxLength = 500;
+  note.rows = 2;
+  noteLabel.appendChild(note);
+
+  const save = document.createElement("button");
+  save.className = "secondary-button";
+  save.type = "submit";
+  save.textContent = "Save check-in";
+  const status = document.createElement("span");
+  status.className = "session-feedback__status";
+  status.setAttribute("aria-live", "polite");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const predicted = recommendation.bestWindow.hours[0] || recommendation.evaluations[0];
+    try {
+      addSessionFeedback({
+        spotId: recommendation.camera.id,
+        startedAt: new Date().toISOString(),
+        predictedQuality: recommendation.quality,
+        predictedConfidence: recommendation.confidence,
+        predictedFaceMinM: predicted?.localFace?.minM ?? null,
+        predictedFaceMaxM: predicted?.localFace?.maxM ?? null,
+        actualFace: values.get("actualFace"),
+        actualQuality: values.get("actualQuality"),
+        tideStage: predicted?.tide?.stage || "unknown",
+        note: values.get("note")
+      });
+      status.textContent = "Saved privately in this browser.";
+      form.reset();
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  });
+
+  form.append(faceLabel, qualityLabel, noteLabel, save, status);
+  details.append(summary, form);
+  return details;
+}
+
 function createBestBetCard(recommendation) {
   const card = document.createElement("article");
   card.className = "best-bet-card";
@@ -620,7 +707,7 @@ function createBestBetCard(recommendation) {
   actions.className = "recommendation-actions";
   actions.appendChild(createRecommendationAction(recommendation.camera));
 
-  card.append(header, leaveCall, reasons, actions, createTodayTimeline(recommendation));
+  card.append(header, leaveCall, reasons, actions, createTodayTimeline(recommendation), createSessionFeedbackDisclosure(recommendation));
   return card;
 }
 
@@ -1640,6 +1727,32 @@ function readConfigForm() {
   };
 }
 
+function downloadSessionFeedbackExport() {
+  const blob = new Blob([exportSessionFeedback()], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const action = document.createElement("a");
+  action.href = url;
+  action.download = `surfcams-session-feedback-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(action);
+  action.click();
+  action.remove();
+  URL.revokeObjectURL(url);
+  els.sessionFeedbackStatus.textContent = "Session feedback exported.";
+}
+
+async function handleSessionFeedbackImport() {
+  const file = els.importSessionFeedbackInput.files?.[0];
+  if (!file) return;
+  try {
+    const records = importSessionFeedback(await file.text());
+    els.sessionFeedbackStatus.textContent = `Imported ${records.length} total session check-ins.`;
+  } catch (error) {
+    els.sessionFeedbackStatus.textContent = error.message;
+  } finally {
+    els.importSessionFeedbackInput.value = "";
+  }
+}
+
 function markerIcon(camera, active = false) {
   const rating = camera.adviceGuideOnly
     ? { key: "guide" }
@@ -1849,6 +1962,11 @@ function bindEvents() {
     renderFavorites();
     renderExploreList();
     renderExploreSelection(state.selectedExploreCamera);
+  });
+
+  els.exportSessionFeedbackButton.addEventListener("click", downloadSessionFeedbackExport);
+  els.importSessionFeedbackInput.addEventListener("change", () => {
+    void handleSessionFeedbackImport();
   });
 }
 
