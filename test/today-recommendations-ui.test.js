@@ -19,10 +19,11 @@ test("today recommendation time calls use Lisbon time and actionable departure l
 
   assert.equal(formatLisbonTime(window.start), "10:15am");
   assert.equal(formatWindowCall(window, Date.parse("2026-07-13T09:05:00Z")), "Go now · 10:15am–11:30am");
-  assert.equal(formatWindowCall(window, Date.parse("2026-07-13T08:00:00Z")), "Best 10:15am–11:30am");
+  assert.equal(formatWindowCall(window, Date.parse("2026-07-13T08:00:00Z")), "Surf 10:15am–11:30am");
   assert.equal(formatLeaveCall(window, 30, Date.parse("2026-07-13T08:00:00Z")), "Leave by 9:45am");
   assert.equal(formatLeaveCall(window, 30, Date.parse("2026-07-13T08:50:00Z")), "Leave now");
   assert.equal(formatLeaveCall(window, null, Date.parse("2026-07-13T08:00:00Z")), null);
+  assert.equal(formatLeaveCall({ ...window, leaveAt: "2026-07-13T08:15:00.000Z" }, 30, Date.parse("2026-07-13T08:00:00Z")), "Leave by 9:15am");
 });
 
 test("recommendation roster keeps one live representative per researched break and excludes favorite breaks", () => {
@@ -76,6 +77,7 @@ test("Might be good owns separate Best bets and collapsed Worth checking surface
   assert.doesNotMatch(indexSource.match(/<details[^>]*id="worthChecking"[^>]*>/)?.[0] || "", /\sopen(?:\s|>)/);
   assert.match(indexSource, /id="bestBetsList"/);
   assert.match(indexSource, /id="worthCheckingList"/);
+  assert.match(indexSource, /name="setupMinutes"/);
 });
 
 test("main renders decision records with timeline evidence instead of the legacy binary sorter", () => {
@@ -89,11 +91,14 @@ test("main renders decision records with timeline evidence instead of the legacy
   assert.match(mainSource, /Forecast loaded, but every researched spot misses a hard gate\./);
   assert.doesNotMatch(mainSource, /mightBeGoodCameras\(/);
   assert.doesNotMatch(mainSource, /bestNearMiss\(/);
+  assert.match(mainSource, /Best bets require fresh Surfline conditions/);
+  assert.match(mainSource, /state\.monitorMode === "might-be-good"\s*\? els\.todayRecommendations\s*:\s*els\.monitorGrid/);
 });
 
 test("today cards expose confidence, no more than three reasons, and accessible hourly controls", () => {
   assert.match(mainSource, /recommendation\.reasons\.slice\(0, 3\)/);
   assert.match(mainSource, /recommendation\.confidence/);
+  assert.match(mainSource, /recommendation\.bestWindow\.representativeHour/);
   assert.match(mainSource, /button\.setAttribute\("aria-label"/);
   assert.match(mainSource, /details\.dataset\.selectedTime/);
   assert.match(mainSource, /Open Surfline report|Watch live cam/);

@@ -243,6 +243,59 @@ test("window construction requires stable adjacent good hours and clamps to now 
   assert.equal(windows[0].confidence, "medium");
 });
 
+test("Best bets require 60 useful minutes after drive and the setup buffer", () => {
+  const short = candidate("short", {
+    driveMinutes: 30,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z"),
+      hour("2026-07-13T10:00:00.000Z")
+    ])
+  });
+  const long = candidate("long", {
+    driveMinutes: 30,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z"),
+      hour("2026-07-13T10:00:00.000Z", { offshoreWaveM: 1.2 }),
+      hour("2026-07-13T11:00:00.000Z", { offshoreWaveM: 1.3 })
+    ])
+  });
+
+  const result = recommendTodaySpots([short, long], DEFAULT_SURF_PREFERENCES, { now: NOW });
+
+  assert.deepEqual(result.bestBets.map((entry) => entry.camera.id), ["long"]);
+  assert.equal(result.bestBets[0].bestWindow.conditionStart, "2026-07-13T09:15:00.000Z");
+  assert.equal(result.bestBets[0].bestWindow.start, "2026-07-13T10:00:00.000Z");
+  assert.equal(result.bestBets[0].bestWindow.leaveAt, "2026-07-13T09:15:00.000Z");
+  assert.equal(result.bestBets[0].bestWindow.usefulMinutes, 90);
+  assert.equal(result.bestBets[0].bestWindow.representativeHour.time, "2026-07-13T10:00:00.000Z");
+  assert.equal(result.bestBets[0].reasons.filter((reason) => /local estimate/.test(reason)).length, 1);
+  assert.match(result.worthChecking[0].primaryReason, /too short after the drive/i);
+});
+
+test("a future window exposes the correct leave time after drive and setup", () => {
+  const future = candidate("future", {
+    driveMinutes: 30,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z", { primarySwellPeriodS: 4 }),
+      hour("2026-07-13T12:00:00.000Z"),
+      hour("2026-07-13T13:00:00.000Z")
+    ])
+  });
+
+  const result = recommendTodaySpots([future], { ...DEFAULT_SURF_PREFERENCES, setupMinutes: 15 }, { now: NOW });
+  assert.equal(result.bestBets[0].bestWindow.start, "2026-07-13T11:30:00.000Z");
+  assert.equal(result.bestBets[0].bestWindow.leaveAt, "2026-07-13T10:45:00.000Z");
+  assert.equal(result.bestBets[0].bestWindow.usefulMinutes, 120);
+});
+
+test("route-backed calls outrank otherwise equal calls without a usable leave time", () => {
+  const noRoute = candidate("no-route", { driveMinutes: null });
+  const routed = candidate("routed", { driveMinutes: 30 });
+  const result = recommendTodaySpots([noRoute, routed], DEFAULT_SURF_PREFERENCES, { now: NOW });
+
+  assert.deepEqual(result.bestBets.map((entry) => entry.camera.id), ["routed", "no-route"]);
+});
+
 test("recommendations keep low-confidence and marginal cases in Worth checking and rank quality before distance", () => {
   const farGood = candidate("far-good", { driveMinutes: 55 });
   const nearGood = candidate("near-good", { driveMinutes: 15, conditions: conditions({ rating: "GOOD" }) });

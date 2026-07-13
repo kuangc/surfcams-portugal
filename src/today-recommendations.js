@@ -4,6 +4,7 @@ import { getConditionVectors, SURFLINE_RATING_ORDER, windAlignment } from "./sur
 
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_WINDOW_MS = 90 * 60 * 1000;
+const MIN_USEFUL_WINDOW_MS = 60 * 60 * 1000;
 const HALF_HOUR_MS = 30 * 60 * 1000;
 const CONFIDENCE_RANK = { low: 0, medium: 1, high: 2 };
 const QUALITY_RANK = { poor: 0, possible: 1, good: 2 };
@@ -273,6 +274,41 @@ export function buildSurfWindows(evaluations, { now = Date.now(), lastLight = In
   });
 }
 
+function reachableSurfWindow(window, {
+  now,
+  driveMinutes,
+  setupMinutes
+}) {
+  const conditionStart = timestamp(window?.start);
+  const end = timestamp(window?.end);
+  const nowMs = timestamp(now);
+  if (conditionStart === null || end === null || nowMs === null) return null;
+
+  const hasDriveEstimate = Number.isFinite(driveMinutes) && driveMinutes >= 0;
+  const safeSetupMinutes = Number.isFinite(setupMinutes) && setupMinutes >= 0 ? setupMinutes : 15;
+  const earliestReachable = hasDriveEstimate
+    ? nowMs + ((driveMinutes + safeSetupMinutes) * 60 * 1000)
+    : nowMs;
+  const surfStart = Math.max(conditionStart, earliestReachable);
+  const usefulMs = end - surfStart;
+  if (usefulMs < MIN_USEFUL_WINDOW_MS) return null;
+  const representativeHour = (window.hours || []).find((hour) => timestamp(hour.time) >= surfStart)
+    || (window.hours || []).at(-1)
+    || null;
+
+  return {
+    ...window,
+    conditionStart: new Date(conditionStart).toISOString(),
+    start: new Date(surfStart).toISOString(),
+    leaveAt: hasDriveEstimate
+      ? new Date(surfStart - ((driveMinutes + safeSetupMinutes) * 60 * 1000)).toISOString()
+      : null,
+    usefulMinutes: Math.round(usefulMs / (60 * 1000)),
+    representativeHour,
+    reasons: representativeHour?.reasons || window.reasons
+  };
+}
+
 function daylightBounds(tide) {
   return {
     firstLight: timestamp(tide?.firstLight?.timeUtc),
@@ -303,9 +339,18 @@ function providerRank(conditions) {
   return SURFLINE_RATING_ORDER.indexOf(String(conditions?.rating || "").toUpperCase());
 }
 
+function confirmingObservationRank(recommendation) {
+  return recommendation.conditions?.ratingObserved === true
+    && providerRank(recommendation.conditions) >= SURFLINE_RATING_ORDER.indexOf("FAIR")
+    ? 1
+    : 0;
+}
+
 function compareRecommendations(a, b) {
-  return CONFIDENCE_RANK[b.confidence] - CONFIDENCE_RANK[a.confidence]
-    || providerRank(b.conditions) - providerRank(a.conditions)
+  return confirmingObservationRank(b) - confirmingObservationRank(a)
+    || CONFIDENCE_RANK[b.confidence] - CONFIDENCE_RANK[a.confidence]
+    || Number(Number.isFinite(b.driveMinutes)) - Number(Number.isFinite(a.driveMinutes))
+    || (b.bestWindow.usefulMinutes || 0) - (a.bestWindow.usefulMinutes || 0)
     || timestamp(a.bestWindow.start) - timestamp(b.bestWindow.start)
     || b.bestWindow.hours.length - a.bestWindow.hours.length
     || (Number.isFinite(a.driveMinutes) ? a.driveMinutes : Infinity) - (Number.isFinite(b.driveMinutes) ? b.driveMinutes : Infinity)
@@ -347,7 +392,15 @@ export function recommendTodaySpots(candidates, preferences, { now = Date.now() 
         now
       }));
     const windows = buildSurfWindows(evaluations, { now, lastLight });
-    const qualifying = windows.filter((window) => ["high", "medium"].includes(window.confidence));
+    const reachableWindows = windows.flatMap((window) => {
+      const reachable = reachableSurfWindow(window, {
+        now,
+        driveMinutes: candidate.driveMinutes,
+        setupMinutes: preferences.setupMinutes
+      });
+      return reachable ? [reachable] : [];
+    });
+    const qualifying = reachableWindows.filter((window) => ["high", "medium"].includes(window.confidence));
 
     if (qualifying.length) {
       const bestWindow = qualifying[0];
@@ -367,7 +420,9 @@ export function recommendTodaySpots(candidates, preferences, { now = Date.now() 
         quality: bestEvaluation?.quality || "poor",
         confidence: bestEvaluation?.confidence || "low",
         evaluations,
-        primaryReason: primaryExclusion(evaluations)
+        primaryReason: windows.length && !reachableWindows.length
+          ? "The remaining good window is too short after the drive."
+          : primaryExclusion(evaluations)
       });
     }
   }

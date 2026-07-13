@@ -5,6 +5,7 @@ export const DEFAULT_SURF_PREFERENCES = {
   maxSurfHeightM: 1.5,
   maxWindSpeedKmh: 18,
   minPeriodSeconds: 5,
+  setupMinutes: 15,
   preferOffshore: true,
   allowLightWind: true,
   surfSizeScale: 1
@@ -25,6 +26,7 @@ export function normalizeSurfPreferences(raw = {}) {
     maxSurfHeightM: Math.max(minSurfHeightM, maxSurfHeightM),
     maxWindSpeedKmh: numberInRange(raw.maxWindSpeedKmh, DEFAULT_SURF_PREFERENCES.maxWindSpeedKmh, 0, 80),
     minPeriodSeconds: numberInRange(raw.minPeriodSeconds, DEFAULT_SURF_PREFERENCES.minPeriodSeconds, 0, 20),
+    setupMinutes: numberInRange(raw.setupMinutes, DEFAULT_SURF_PREFERENCES.setupMinutes, 0, 60),
     preferOffshore: typeof raw.preferOffshore === "boolean" ? raw.preferOffshore : DEFAULT_SURF_PREFERENCES.preferOffshore,
     allowLightWind: typeof raw.allowLightWind === "boolean" ? raw.allowLightWind : DEFAULT_SURF_PREFERENCES.allowLightWind,
     surfSizeScale: numberInRange(raw.surfSizeScale, DEFAULT_SURF_PREFERENCES.surfSizeScale, 0.2, 2)
@@ -55,6 +57,7 @@ export function serializeSurfPreferences(preferences) {
     maxSurfHeightM: String(normalized.maxSurfHeightM),
     maxWindSpeedKmh: String(normalized.maxWindSpeedKmh),
     minPeriodSeconds: String(normalized.minPeriodSeconds),
+    setupMinutes: String(normalized.setupMinutes),
     surfSizeScale: String(normalized.surfSizeScale),
     preferOffshore: normalized.preferOffshore,
     allowLightWind: normalized.allowLightWind

@@ -397,7 +397,9 @@ function renderStalenessBanner() {
   banner.setAttribute("role", "status");
 
   const message = document.createElement("span");
-  message.textContent = `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}) — ratings fall back to model/MEO.`;
+  message.textContent = state.monitorMode === "might-be-good"
+    ? `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}). Best bets require fresh Surfline conditions, so stale spots stay out.`
+    : `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}) — ratings fall back to model/MEO.`;
 
   const dismiss = document.createElement("button");
   dismiss.className = "staleness-banner__dismiss";
@@ -411,7 +413,8 @@ function renderStalenessBanner() {
   });
 
   banner.append(message, dismiss);
-  els.monitorGrid.insertAdjacentElement("beforebegin", banner);
+  const anchor = state.monitorMode === "might-be-good" ? els.todayRecommendations : els.monitorGrid;
+  anchor.insertAdjacentElement("beforebegin", banner);
   state.stalenessBannerEl = banner;
 }
 
@@ -653,7 +656,9 @@ function createSessionFeedbackDisclosure(recommendation) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const values = new FormData(form);
-    const predicted = recommendation.bestWindow.hours[0] || recommendation.evaluations[0];
+    const predicted = recommendation.bestWindow.representativeHour
+      || recommendation.bestWindow.hours[0]
+      || recommendation.evaluations[0];
     try {
       addSessionFeedback({
         spotId: recommendation.camera.id,
@@ -1730,6 +1735,7 @@ function readConfigForm() {
     maxSurfHeightM: formField("maxSurfHeightM").value,
     maxWindSpeedKmh: formField("maxWindSpeedKmh").value,
     minPeriodSeconds: formField("minPeriodSeconds").value,
+    setupMinutes: formField("setupMinutes").value,
     surfSizeScale: formField("surfSizeScale").value,
     preferOffshore: formField("preferOffshore").checked,
     allowLightWind: formField("allowLightWind").checked

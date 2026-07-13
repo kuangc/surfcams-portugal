@@ -33,6 +33,7 @@ test("default surf preferences match the group baseline", () => {
     maxSurfHeightM: 1.5,
     maxWindSpeedKmh: 18,
     minPeriodSeconds: 5,
+    setupMinutes: 15,
     preferOffshore: true,
     allowLightWind: true,
     surfSizeScale: 1
@@ -45,6 +46,7 @@ test("normalizeSurfPreferences clamps invalid numeric values", () => {
     maxSurfHeightM: 20,
     maxWindSpeedKmh: -1,
     minPeriodSeconds: 40,
+    setupMinutes: 90,
     surfSizeScale: 0
   });
 
@@ -53,6 +55,7 @@ test("normalizeSurfPreferences clamps invalid numeric values", () => {
     maxSurfHeightM: 4,
     maxWindSpeedKmh: 0,
     minPeriodSeconds: 20,
+    setupMinutes: 60,
     preferOffshore: true,
     allowLightWind: true,
     surfSizeScale: 0.2
@@ -76,6 +79,7 @@ test("saveSurfPreferences stores normalized preferences", () => {
       maxSurfHeightM: 1.2,
       maxWindSpeedKmh: 18,
       minPeriodSeconds: 5,
+      setupMinutes: 15,
       preferOffshore: false,
       allowLightWind: true,
       surfSizeScale: 1
@@ -89,6 +93,7 @@ test("serializeSurfPreferences returns string values for the configure form", ()
     maxSurfHeightM: "1.5",
     maxWindSpeedKmh: "18",
     minPeriodSeconds: "5",
+    setupMinutes: "15",
     surfSizeScale: "1",
     preferOffshore: true,
     allowLightWind: true
