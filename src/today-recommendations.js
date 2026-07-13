@@ -5,6 +5,7 @@ import { getConditionVectors, SURFLINE_RATING_ORDER, windAlignment } from "./sur
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_WINDOW_MS = 90 * 60 * 1000;
 const MIN_USEFUL_WINDOW_MS = 60 * 60 * 1000;
+const SESSION_WINDOW_MS = 2 * HOUR_MS;
 const HALF_HOUR_MS = 30 * 60 * 1000;
 const CONFIDENCE_RANK = { low: 0, medium: 1, high: 2 };
 const QUALITY_RANK = { poor: 0, possible: 1, good: 2 };
@@ -19,7 +20,7 @@ function isFresh(fetchedAt, now, maxAgeHours) {
   const nowMs = timestamp(now);
   if (fetchedMs === null || nowMs === null) return false;
   const age = (nowMs - fetchedMs) / HOUR_MS;
-  return age >= 0 && age < maxAgeHours;
+  return age >= 0 && age <= maxAgeHours;
 }
 
 function clamp(value, min, max) {
@@ -45,7 +46,7 @@ function validSurflineAnchor(conditions, now) {
     && conditions.providerSpotSurfMaxM >= conditions.providerSpotSurfMinM
     && Number.isFinite(conditions.ageHours)
     && conditions.ageHours >= 0
-    && conditions.ageHours < SURFLINE_FRESH_MAX_AGE_HOURS
+    && conditions.ageHours <= SURFLINE_FRESH_MAX_AGE_HOURS
     && isFresh(conditions.fetchedAt, now, SURFLINE_FRESH_MAX_AGE_HOURS);
 }
 
@@ -175,7 +176,8 @@ export function evaluateTodayHour({
 
   const rating = String(conditions?.rating || "").toUpperCase();
   const providerPoor = rating === "POOR" || rating === "VERY_POOR";
-  if (providerPoor && conditions?.ratingObserved === true && sameUtcHour(hour?.time, now)) {
+  const providerApplies = sameUtcHour(hour?.time, now);
+  if (providerPoor && conditions?.ratingObserved === true && providerApplies) {
     const primaryReason = `Observed provider report is ${rating.toLowerCase().replaceAll("_", " ")}.`;
     return resultFor({ ...base, eligibility: "ineligible", quality: "poor", primaryReason, reasons: [primaryReason, localFaceReason(localFace)] });
   }
@@ -226,10 +228,10 @@ export function evaluateTodayHour({
       : "Primary swell period is unknown.";
   }
 
-  if (providerPoor) {
+  if (providerPoor && providerApplies) {
     quality = "possible";
     if (primaryReason === "Conditions line up for this hour.") primaryReason = `Modeled provider rating is ${rating.toLowerCase().replaceAll("_", " ")}.`;
-  } else if (SURFLINE_RATING_ORDER.indexOf(rating) >= SURFLINE_RATING_ORDER.indexOf("FAIR")) {
+  } else if (providerApplies && SURFLINE_RATING_ORDER.indexOf(rating) >= SURFLINE_RATING_ORDER.indexOf("FAIR")) {
     reasons.push(`Surfline ${rating.toLowerCase().replaceAll("_", " ")}`);
   }
 
@@ -238,6 +240,33 @@ export function evaluateTodayHour({
 
 function lowerConfidence(a, b) {
   return CONFIDENCE_RANK[a] <= CONFIDENCE_RANK[b] ? a : b;
+}
+
+function hasReason(evaluation, pattern) {
+  return (evaluation?.reasons || []).some((reason) => pattern.test(reason));
+}
+
+function compareSessionHours(a, b) {
+  const supportingObservationA = a?.provider?.observed === true && hasReason(a, /^Surfline /i);
+  const supportingObservationB = b?.provider?.observed === true && hasReason(b, /^Surfline /i);
+  const tideMatchA = hasReason(a, /tide matches local advice/i);
+  const tideMatchB = hasReason(b, /tide matches local advice/i);
+  const offshoreA = hasReason(a, /^Offshore wind$/i);
+  const offshoreB = hasReason(b, /^Offshore wind$/i);
+  const providerSupportA = hasReason(a, /^Surfline /i);
+  const providerSupportB = hasReason(b, /^Surfline /i);
+  const windA = Number.isFinite(a?.wind?.speedKmh) ? a.wind.speedKmh : Infinity;
+  const windB = Number.isFinite(b?.wind?.speedKmh) ? b.wind.speedKmh : Infinity;
+  const periodA = Number.isFinite(a?.offshore?.primarySwellPeriodS) ? a.offshore.primarySwellPeriodS : -Infinity;
+  const periodB = Number.isFinite(b?.offshore?.primarySwellPeriodS) ? b.offshore.primarySwellPeriodS : -Infinity;
+
+  return Number(supportingObservationB) - Number(supportingObservationA)
+    || Number(tideMatchB) - Number(tideMatchA)
+    || Number(offshoreB) - Number(offshoreA)
+    || Number(providerSupportB) - Number(providerSupportA)
+    || windA - windB
+    || periodB - periodA
+    || timestamp(a?.time) - timestamp(b?.time);
 }
 
 export function buildSurfWindows(evaluations, { now = Date.now(), lastLight = Infinity } = {}) {
@@ -289,24 +318,51 @@ function reachableSurfWindow(window, {
   const earliestReachable = hasDriveEstimate
     ? nowMs + ((driveMinutes + safeSetupMinutes) * 60 * 1000)
     : nowMs;
-  const surfStart = Math.max(conditionStart, earliestReachable);
-  const usefulMs = end - surfStart;
-  if (usefulMs < MIN_USEFUL_WINDOW_MS) return null;
-  const representativeHour = (window.hours || []).find((hour) => timestamp(hour.time) >= surfStart)
+  const availableStart = Math.max(conditionStart, earliestReachable);
+  const availableMs = end - availableStart;
+  if (availableMs < MIN_USEFUL_WINDOW_MS) return null;
+
+  const reachableHours = (window.hours || []).filter((hour) => {
+    const hourMs = timestamp(hour.time);
+    return hourMs !== null
+      && hourMs + HALF_HOUR_MS >= availableStart
+      && hourMs - HALF_HOUR_MS <= end;
+  });
+  const representativeHour = [...reachableHours].sort(compareSessionHours)[0]
     || (window.hours || []).at(-1)
     || null;
+  const sessionMs = Math.min(SESSION_WINDOW_MS, availableMs);
+  const latestStart = end - sessionMs;
+  const idealStart = timestamp(representativeHour?.time) === null
+    ? availableStart
+    : timestamp(representativeHour.time) - HOUR_MS;
+  const surfStart = clamp(idealStart, availableStart, latestStart);
+  const surfEnd = surfStart + sessionMs;
+  const selectedHours = (window.hours || []).filter((hour) => {
+    const hourMs = timestamp(hour.time);
+    return hourMs !== null && hourMs >= surfStart && hourMs <= surfEnd;
+  });
 
   return {
     ...window,
     conditionStart: new Date(conditionStart).toISOString(),
+    conditionEnd: new Date(end).toISOString(),
     start: new Date(surfStart).toISOString(),
+    end: new Date(surfEnd).toISOString(),
     leaveAt: hasDriveEstimate
       ? new Date(surfStart - ((driveMinutes + safeSetupMinutes) * 60 * 1000)).toISOString()
       : null,
-    usefulMinutes: Math.round(usefulMs / (60 * 1000)),
+    usefulMinutes: Math.round(sessionMs / (60 * 1000)),
+    hours: selectedHours,
     representativeHour,
     reasons: representativeHour?.reasons || window.reasons
   };
+}
+
+function compareSurfWindows(a, b) {
+  return compareSessionHours(a?.representativeHour, b?.representativeHour)
+    || CONFIDENCE_RANK[b?.confidence] - CONFIDENCE_RANK[a?.confidence]
+    || timestamp(a?.start) - timestamp(b?.start);
 }
 
 function daylightBounds(tide) {
@@ -340,8 +396,10 @@ function providerRank(conditions) {
 }
 
 function confirmingObservationRank(recommendation) {
-  return recommendation.conditions?.ratingObserved === true
-    && providerRank(recommendation.conditions) >= SURFLINE_RATING_ORDER.indexOf("FAIR")
+  const representative = recommendation?.bestWindow?.representativeHour;
+  return representative?.provider?.observed === true
+    && hasReason(representative, /^Surfline /i)
+    && providerRank(representative.provider) >= SURFLINE_RATING_ORDER.indexOf("FAIR")
     ? 1
     : 0;
 }
@@ -350,6 +408,7 @@ function compareRecommendations(a, b) {
   return confirmingObservationRank(b) - confirmingObservationRank(a)
     || CONFIDENCE_RANK[b.confidence] - CONFIDENCE_RANK[a.confidence]
     || Number(Number.isFinite(b.driveMinutes)) - Number(Number.isFinite(a.driveMinutes))
+    || compareSessionHours(a?.bestWindow?.representativeHour, b?.bestWindow?.representativeHour)
     || (b.bestWindow.usefulMinutes || 0) - (a.bestWindow.usefulMinutes || 0)
     || timestamp(a.bestWindow.start) - timestamp(b.bestWindow.start)
     || b.bestWindow.hours.length - a.bestWindow.hours.length
@@ -400,7 +459,9 @@ export function recommendTodaySpots(candidates, preferences, { now = Date.now() 
       });
       return reachable ? [reachable] : [];
     });
-    const qualifying = reachableWindows.filter((window) => ["high", "medium"].includes(window.confidence));
+    const qualifying = reachableWindows
+      .filter((window) => ["high", "medium"].includes(window.confidence))
+      .sort(compareSurfWindows);
 
     if (qualifying.length) {
       const bestWindow = qualifying[0];

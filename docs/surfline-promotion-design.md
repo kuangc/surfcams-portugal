@@ -188,7 +188,7 @@ keeps owning static metadata; a new `scripts/extract-surfline-conditions.js` own
 with provenance precedence:
 
 1. **`surfline-fresh`** — spot is promoted, or is a MEO cam with a **trusted Surfline association**
-   (§5.8 name-first rule); conditions entry exists with age < 36 h.
+   (§5.8 name-first rule); conditions entry exists with age at or under 6 h.
    Wave = Surfline `surfMinM..surfMaxM`; rating carried through.
    *Implementation note (final review):* enrichment carries two source fields —
    `sourceSpotId` (metadata-richest member, static metadata only) and
@@ -207,7 +207,7 @@ no-op for `surfline-fresh` (it exists to correct MEO bias, which Surfline data d
 ### 5.5 On-load refresh (out-of-fence or stale) — `src/live-forecast.js` (new)
 
 When a spot's resolved provenance would be `meo-static` (anything outside the fence, any spot whose
-Surfline conditions are older than 36 h, any unmatched cam):
+Surfline conditions are older than 6 h, any unmatched cam):
 
 - On spot open (detail/monitor tile render), fetch Open-Meteo **Marine** (`wave_height,
   wave_period, wave_direction, swell_wave_height…`) + **Forecast** (`wind_speed_10m,
@@ -221,7 +221,7 @@ Surfline conditions are older than 36 h, any unmatched cam):
 - Seam left for a future `surfline-live` provider (e.g. a personal Cloudflare Worker proxy with KV
   caching) — out of scope v1; revisit only if Open-Meteo proves insufficient.
 
-### 5.6 Daily polite refresh — scheduled runner (GH Action primary, local CDP fallback)
+### 5.6 Daylight refresh — scheduled runner (GH Action primary, local CDP fallback)
 
 - **Fresh set** = promoted spots ∪ Surfline matches of current default favorites ∪ in-fence
   might-be-good candidates. Fetch **primary pages only for a minimal covering set**: every cached
@@ -229,9 +229,10 @@ Surfline conditions are older than 36 h, any unmatched cam):
   in-fence spots (set-cover computed from `sourceRecords`; verify nearby snapshot completeness in
   implementation — if nearby records lack a needed field, fall back to primary fetches for promoted
   spots only).
-- Politeness budget (transport-independent): ≤ 20 requests/day, batch 4, ≥ 300 ms delay + jitter,
-  one retry max, random start minute inside a 06:00–07:00 Lisbon window (before the morning surf
-  check), abort-and-keep-stale on repeated failures.
+- Politeness budget (transport-independent): ≤ 20 requests/run, batch 4, ≥ 300 ms delay + jitter,
+  one retry max. Scheduled runs use off-peak minute 17 at 05:17, 11:17, and 17:17 UTC so the
+  six-hour current-condition contract covers the usable Lisbon day. Abort and keep the last good
+  cache on repeated failures.
 - Pipeline per run: fetch → `extract-surfline-conditions` → `build-surfline-spots` (static drift)
   → commit only `data/surfline-conditions.json` (+ static files when changed) with a conventional
   `chore(data): refresh surfline conditions` message → push (GH Pages redeploys).
@@ -249,11 +250,11 @@ Surfline conditions are older than 36 h, any unmatched cam):
 - **Logging & alerting:** per-spot fetch status table written to `$GITHUB_STEP_SUMMARY` each run;
   failed scheduled runs email the workflow actor (GitHub default notifications); plus a freshness
   guard step that opens/updates a pinned "surfline conditions stale" issue whenever newest
-  `fetchedAt` > 48 h — this catches *silent* stoppage too (GitHub auto-disables cron after 60 days
-  of repo inactivity; the daily data commits themselves keep the repo active). The in-app staleness
+  `fetchedAt` > 6 h — this catches *silent* stoppage too (GitHub auto-disables cron after 60 days
+  of repo inactivity; the data commits themselves keep the repo active). The in-app staleness
   banner (below) is the last line of defense.
 - Staleness surfacing: app shows the provenance chip age; Monitor shows a subtle "conditions data
-  from Jun 11" banner when the newest Surfline conditions are > 48 h old.
+  from Jun 11" banner when the newest Surfline conditions are > 6 h old.
 
 ### 5.7 Fence + Might-be-good changes — `src/monitor-cameras.js`
 
@@ -366,7 +367,7 @@ therefore a routine data-only commit, available any time — never a one-shot de
    merged, favoritable, on Explore map; fence + freshness gates on Might-be-good.
 3. **M3 — refresh:** step 0 probe workflow (report pages + KBYG from a runner); then scheduled GH
    Action with politeness budget, validate-before-commit, step summaries, failure alerting, and the
-   48 h freshness-guard issue — or launchd CDP fallback if the probe fails; staleness banner;
+   6 h freshness-guard issue — or launchd CDP fallback if the probe fails; staleness banner;
    on-load Open-Meteo refresher.
 4. Out of scope v1: Surfline live proxy, dual-entity refactor, per-user fence config, drive-time
    work (issue #1), service worker/offline.

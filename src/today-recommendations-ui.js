@@ -1,5 +1,27 @@
+import { SURFLINE_FRESH_MAX_AGE_HOURS } from "./config.js";
+
 const LISBON_TIME_ZONE = "Europe/Lisbon";
 export const BEST_BET_LIMIT = 3;
+
+export function formatRecommendationStatus({
+  loading = false,
+  readyCount = 0,
+  totalCandidates = 0,
+  visibleBestBets = 0,
+  totalBestBets = 0,
+  worthChecking = 0,
+  hasFreshAnchor = false
+} = {}) {
+  if (loading) return `Checking today · ${readyCount}/${totalCandidates} spots ready`;
+
+  const bestBets = totalBestBets > visibleBestBets
+    ? `${visibleBestBets} Best bets shown from ${totalBestBets} qualifying breaks`
+    : `${visibleBestBets} Best bets`;
+  const freshness = hasFreshAnchor
+    ? `Surfline local-face anchors updated within ${SURFLINE_FRESH_MAX_AGE_HOURS}h`
+    : `no Surfline local-face anchor updated within ${SURFLINE_FRESH_MAX_AGE_HOURS}h`;
+  return `${bestBets} · ${worthChecking} Worth checking · ${freshness}`;
+}
 
 function timestamp(value) {
   const ms = Number.isFinite(value) ? value : Date.parse(value || "");

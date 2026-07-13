@@ -185,10 +185,10 @@ function isFreshConditionSnapshot(snapshot, nowMs) {
   const fetchedAge = ageHours(snapshot?.fetchedAt, nowMs);
   return Number.isFinite(snapshot?.ageHours)
     && snapshot.ageHours >= 0
-    && snapshot.ageHours < SURFLINE_FRESH_MAX_AGE_HOURS
+    && snapshot.ageHours <= SURFLINE_FRESH_MAX_AGE_HOURS
     && fetchedAge !== null
     && fetchedAge >= 0
-    && fetchedAge < SURFLINE_FRESH_MAX_AGE_HOURS;
+    && fetchedAge <= SURFLINE_FRESH_MAX_AGE_HOURS;
 }
 
 function isExpired(claim, nowMs) {

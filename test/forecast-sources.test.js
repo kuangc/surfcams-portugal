@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import * as forecastSources from "../src/forecast-sources.js";
 import { resolveConditions, newestConditionsAgeHours } from "../src/forecast-sources.js";
 import { formatConditionChips, formatConditionLine } from "../src/condition-summary.js";
 import { monitorCameraSlots } from "../src/monitor-cameras.js";
@@ -38,6 +39,28 @@ test("promoted spot with fresh conditions -> surfline-fresh", () => {
   assert.equal(resolved.surfObserved, true);
   assert.equal(resolved.ratingObserved, true);
   assert.equal(Math.round(resolved.ageHours), 6);
+});
+
+test("Surfline snapshots older than six hours cannot anchor current conditions", () => {
+  const agedSpotData = {
+    ...spotData,
+    conditionsById: new Map([
+      ["surfline-aged-spot", {
+        rating: "FAIR",
+        surfMinM: 0.6,
+        surfMaxM: 0.9,
+        fetchedAt: "2026-07-06T05:59:00Z"
+      }]
+    ])
+  };
+
+  const resolved = resolveConditions(
+    { id: "surfline-aged-spot", promoted: true, forecast: { wave: "0.8 m" } },
+    agedSpotData,
+    { now: NOW }
+  );
+
+  assert.equal(resolved.source, "meo-static");
 });
 
 test("matched meo cam resolves via enrichment conditionsSourceSpotId", () => {
@@ -98,6 +121,13 @@ test("newestConditionsAgeHours reports freshest entry age", () => {
 
 test("newestConditionsAgeHours null when no conditions", () => {
   assert.equal(newestConditionsAgeHours({ conditionsById: new Map() }, Date.now()), null);
+});
+
+test("condition age labels stay useful inside the same day", () => {
+  assert.equal(typeof forecastSources.formatConditionsAgeLabel, "function");
+  assert.equal(forecastSources.formatConditionsAgeLabel(null), "no Surfline conditions data");
+  assert.equal(forecastSources.formatConditionsAgeLabel(7.8), "7h old");
+  assert.equal(forecastSources.formatConditionsAgeLabel(49), "2d old");
 });
 
 test("typed advice fields leave legacy forecast, formatting, rating, and monitor order unchanged", () => {

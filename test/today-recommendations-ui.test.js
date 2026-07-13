@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import * as todayRecommendationsUi from "../src/today-recommendations-ui.js";
 
 import {
   formatLeaveCall,
@@ -9,6 +10,7 @@ import {
   selectRecommendationCameras,
   shortlistBestBets
 } from "../src/today-recommendations-ui.js";
+import { CONDITIONS_STALE_BANNER_HOURS, SURFLINE_FRESH_MAX_AGE_HOURS } from "../src/config.js";
 
 const indexSource = fs.readFileSync("index.html", "utf8");
 const mainSource = fs.readFileSync("src/main.js", "utf8");
@@ -80,6 +82,32 @@ test("Might be good owns separate Best bets and collapsed Worth checking surface
   assert.match(indexSource, /name="setupMinutes"/);
 });
 
+test("the stale-data banner appears as soon as a recommendation anchor expires", () => {
+  assert.equal(SURFLINE_FRESH_MAX_AGE_HOURS, 6);
+  assert.equal(CONDITIONS_STALE_BANNER_HOURS, SURFLINE_FRESH_MAX_AGE_HOURS);
+});
+
+test("recommendation status distinguishes fresh decisions from stale holdouts", () => {
+  assert.equal(typeof todayRecommendationsUi.formatRecommendationStatus, "function");
+  assert.equal(todayRecommendationsUi.formatRecommendationStatus({
+    loading: true,
+    readyCount: 4,
+    totalCandidates: 26
+  }), "Checking today · 4/26 spots ready");
+  assert.equal(todayRecommendationsUi.formatRecommendationStatus({
+    visibleBestBets: 3,
+    totalBestBets: 25,
+    worthChecking: 10,
+    hasFreshAnchor: true
+  }), "3 Best bets shown from 25 qualifying breaks · 10 Worth checking · Surfline local-face anchors updated within 6h");
+  assert.equal(todayRecommendationsUi.formatRecommendationStatus({
+    visibleBestBets: 0,
+    totalBestBets: 0,
+    worthChecking: 35,
+    hasFreshAnchor: false
+  }), "0 Best bets · 35 Worth checking · no Surfline local-face anchor updated within 6h");
+});
+
 test("main renders decision records with timeline evidence instead of the legacy binary sorter", () => {
   assert.match(mainSource, /recommendTodaySpots/);
   assert.match(mainSource, /recommendationAdviceFor/);
@@ -90,6 +118,7 @@ test("main renders decision records with timeline evidence instead of the legacy
   assert.match(mainSource, /No trustworthy Best bets for the rest of today\./);
   assert.match(mainSource, /No fresh hourly forecast — cannot make a trustworthy call\./);
   assert.match(mainSource, /Forecast loaded, but every researched spot misses a hard gate\./);
+  assert.match(mainSource, /No Surfline local-face anchor updated within \$\{SURFLINE_FRESH_MAX_AGE_HOURS\} hours\./);
   assert.doesNotMatch(mainSource, /mightBeGoodCameras\(/);
   assert.doesNotMatch(mainSource, /bestNearMiss\(/);
   assert.match(mainSource, /Best bets require fresh Surfline conditions/);
@@ -105,6 +134,10 @@ test("today cards expose confidence, no more than three reasons, and accessible 
   assert.match(mainSource, /Open Surfline report|Watch live cam/);
   assert.match(mainSource, /summary\.textContent = "Hourly forecast & evidence"/);
   assert.doesNotMatch(mainSource, /const shell = document\.createElement\("section"\);\s*shell\.className = "recommendation-timeline"/);
+});
+
+test("hourly evidence opens on the hour that drove the session recommendation", () => {
+  assert.match(mainSource, /const selected = recommendation\.bestWindow\.representativeHour/);
 });
 
 test("today recommendation styles are focused, keyboard-visible, and mobile-scrollable", () => {

@@ -254,7 +254,7 @@ Local lens evaluation receives an explicit snapshot, never a generic “wave hei
 
 `primarySwell*` comes from Surfline's first swell component, preserving the provider's primary ordering. The user phrase “outside waves” is rendered as **primary swell** in the app. The seeded Sesimbra, Caxias, and Torre thresholds use `primary-swell-height-m`; they never compare against the already-local `surfMinM/surfMaxM` range.
 
-Condition-triggered text requires the same freshness contract as Surfline conditions: non-negative age under `SURFLINE_FRESH_MAX_AGE_HOURS` (currently 36 hours). Missing, future-dated, or stale inputs produce evaluator state `unknown` and suppress the triggered claim. Guide-only subjects without conditions show evergreen wording only.
+Condition-triggered text requires the same freshness contract as Surfline conditions: non-negative age at or under `SURFLINE_FRESH_MAX_AGE_HOURS` (currently 6 hours). Missing, future-dated, or stale inputs produce evaluator state `unknown` and suppress the triggered claim. Guide-only subjects without conditions show evergreen wording only.
 
 ## 8. Source and synthesis rules
 

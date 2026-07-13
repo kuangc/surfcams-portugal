@@ -21,11 +21,12 @@ import {
   CONDITIONS_STALE_BANNER_HOURS,
   DEFAULT_FAVORITE_IDS,
   HLS_SCRIPT_URL,
-  INITIAL_BOUNDS_IDS
+  INITIAL_BOUNDS_IDS,
+  SURFLINE_FRESH_MAX_AGE_HOURS
 } from "./config.js";
 import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
-import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
+import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
 import { inSuggestionFence, monitorCameraSlots } from "./monitor-cameras.js";
 import { addSessionFeedback, exportSessionFeedback, importSessionFeedback } from "./session-feedback.js";
@@ -57,6 +58,7 @@ import { recommendTodaySpots } from "./today-recommendations.js";
 import {
   formatLeaveCall,
   formatLisbonTime,
+  formatRecommendationStatus,
   formatWindowCall,
   selectRecommendationCameras,
   shortlistBestBets
@@ -381,10 +383,6 @@ function clearStalenessBanner() {
   state.stalenessBannerEl = null;
 }
 
-function stalenessAgeLabel(ageHours) {
-  return ageHours === null ? "no Surfline conditions data" : `${Math.floor(ageHours / 24)}d old`;
-}
-
 function renderStalenessBanner() {
   clearStalenessBanner();
   if (state.stalenessBannerDismissed) return;
@@ -398,8 +396,8 @@ function renderStalenessBanner() {
 
   const message = document.createElement("span");
   message.textContent = state.monitorMode === "might-be-good"
-    ? `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}). Best bets require fresh Surfline conditions, so stale spots stay out.`
-    : `Surfline conditions data is stale (${stalenessAgeLabel(ageHours)}) — ratings fall back to model/MEO.`;
+    ? `Surfline conditions data is stale (${formatConditionsAgeLabel(ageHours)}). Best bets require fresh Surfline conditions, so stale spots stay out.`
+    : `Surfline conditions data is stale (${formatConditionsAgeLabel(ageHours)}) — ratings fall back to model/MEO.`;
 
   const dismiss = document.createElement("button");
   dismiss.className = "staleness-banner__dismiss";
@@ -567,10 +565,12 @@ function createTodayTimeline(recommendation) {
     timeline.appendChild(button);
   });
 
-  const selected = recommendation.evaluations.find((evaluation) => (
-    Date.parse(evaluation.time) >= Date.parse(recommendation.bestWindow.start)
-    && evaluation.quality === "good"
-  )) || recommendation.evaluations[0];
+  const selected = recommendation.bestWindow.representativeHour
+    || recommendation.evaluations.find((evaluation) => (
+      Date.parse(evaluation.time) >= Date.parse(recommendation.bestWindow.start)
+      && evaluation.quality === "good"
+    ))
+    || recommendation.evaluations[0];
   if (selected) {
     const selectedIndex = recommendation.evaluations.indexOf(selected);
     buttons[selectedIndex]?.setAttribute("aria-pressed", "true");
@@ -757,6 +757,7 @@ function renderTodayRecommendations() {
   const inputs = recommendationInputs({ readyOnly });
   const result = recommendTodaySpots(inputs, state.preferences, { now: Date.now() });
   const visibleBestBets = shortlistBestBets(result.bestBets);
+  const hasFreshAnchor = inputs.some((input) => input.conditions?.source === "surfline-fresh");
   const wasWorthCheckingOpen = els.worthChecking.open;
 
   els.bestBetsList.textContent = "";
@@ -770,6 +771,11 @@ function renderTodayRecommendations() {
       appendTodayEmptyState("Checking the remaining daylight…", "Best bets appear only after the required inputs are ready.");
     } else if (!state.todayForecastLoading && (state.todayForecastSummary?.ready || 0) === 0) {
       appendTodayEmptyState("No trustworthy Best bets for the rest of today.", "No fresh hourly forecast — cannot make a trustworthy call.");
+    } else if (!hasFreshAnchor) {
+      appendTodayEmptyState(
+        "No trustworthy Best bets for the rest of today.",
+        `No Surfline local-face anchor updated within ${SURFLINE_FRESH_MAX_AGE_HOURS} hours.`
+      );
     } else {
       appendTodayEmptyState("No trustworthy Best bets for the rest of today.", "Forecast loaded, but every researched spot misses a hard gate.");
     }
@@ -783,9 +789,15 @@ function renderTodayRecommendations() {
   els.worthChecking.open = wasWorthCheckingOpen && !els.worthChecking.hidden;
 
   els.monitorStatus.hidden = false;
-  els.monitorStatus.textContent = state.todayForecastLoading
-    ? `Checking today · ${inputs.length}/${recommendationCameras().length} spots ready`
-    : `${visibleBestBets.length} Best bets shown${result.bestBets.length > visibleBestBets.length ? ` from ${result.bestBets.length} trusted breaks` : ""} · ${result.worthChecking.length} Worth checking · local face estimates anchored to fresh Surfline conditions`;
+  els.monitorStatus.textContent = formatRecommendationStatus({
+    loading: state.todayForecastLoading,
+    readyCount: inputs.length,
+    totalCandidates: recommendationCameras().length,
+    visibleBestBets: visibleBestBets.length,
+    totalBestBets: result.bestBets.length,
+    worthChecking: result.worthChecking.length,
+    hasFreshAnchor
+  });
 }
 
 function setMonitorMode(mode) {

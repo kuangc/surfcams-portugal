@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const MAX_AGE_HOURS = Number(process.env.MAX_AGE_HOURS || 48);
+const MAX_AGE_HOURS = Number(process.env.MAX_AGE_HOURS || 6);
 const db = JSON.parse(await fs.readFile(path.join(ROOT, 'data', 'surfline-conditions.json'), 'utf8'));
 let newest = null;
 for (const entry of Object.values(db.conditions || {})) {

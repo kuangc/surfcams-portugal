@@ -7,10 +7,12 @@ name: Update surfline conditions
 # Chrome on a home IP) remains as a documented fallback if Cloudflare tightens.
 on:
   schedule:
-    # Off-peak minute on purpose: top-of-hour crons (e.g. 0 6) get heavily
-    # queued by GitHub and land 3–4h late. 05:17 UTC ≈ Lisbon dawn (06:17
-    # summer / 05:17 winter) and runs close to on time.
+    # Off-peak minute on purpose: top-of-hour crons get heavily queued.
+    # Refresh at Lisbon dawn and every six hours through the usable day so a
+    # current-condition anchor never needs to masquerade as an all-day signal.
     - cron: "17 5 * * *"
+    - cron: "17 11 * * *"
+    - cron: "17 17 * * *"
   workflow_dispatch:
 
 permissions:

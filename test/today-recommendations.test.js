@@ -210,7 +210,7 @@ test("quality and confidence stay independent for missing research and conflicts
   assert.equal(conflicted.confidence, "low");
 });
 
-test("modeled POOR is a penalty while an observed POOR only vetoes the current hour", () => {
+test("provider ratings influence only the current hour", () => {
   const common = {
     camera: camera(),
     localFace: { localFaceMinM: 0.6, localFaceMaxM: 1, source: "surfline-anchored-model", confidence: "medium" },
@@ -221,14 +221,19 @@ test("modeled POOR is a penalty while an observed POOR only vetoes the current h
     now: NOW
   };
   const modeled = evaluateTodayHour({ ...common, hour: hour("2026-07-13T09:00:00.000Z"), conditions: conditions({ rating: "POOR", ratingObserved: false }) });
+  const modeledFuture = evaluateTodayHour({ ...common, hour: hour("2026-07-13T10:00:00.000Z"), conditions: conditions({ rating: "POOR", ratingObserved: false }) });
   const observedNow = evaluateTodayHour({ ...common, hour: hour("2026-07-13T09:00:00.000Z"), conditions: conditions({ rating: "POOR", ratingObserved: true }) });
   const observedFuture = evaluateTodayHour({ ...common, hour: hour("2026-07-13T10:00:00.000Z"), conditions: conditions({ rating: "POOR", ratingObserved: true }) });
+  const fairFuture = evaluateTodayHour({ ...common, hour: hour("2026-07-13T10:00:00.000Z"), conditions: conditions({ rating: "FAIR", ratingObserved: false }) });
 
   assert.equal(modeled.eligibility, "eligible");
   assert.equal(modeled.quality, "possible");
   assert.deepEqual(modeled.provider, { rating: "POOR", observed: false, fetchedAt: "2026-07-13T08:30:00.000Z" });
+  assert.equal(modeledFuture.quality, "good");
   assert.equal(observedNow.eligibility, "ineligible");
   assert.equal(observedFuture.eligibility, "eligible");
+  assert.equal(observedFuture.quality, "good");
+  assert.doesNotMatch(fairFuture.reasons.join(" "), /Surfline fair/i);
 });
 
 test("window construction requires stable adjacent good hours and clamps to now and last light", () => {
@@ -291,12 +296,143 @@ test("a future window exposes the correct leave time after drive and setup", () 
   assert.equal(result.bestBets[0].bestWindow.usefulMinutes, 120);
 });
 
+test("long good spans become focused two-hour sessions around the strongest hour", () => {
+  const focused = candidate("focused", {
+    driveMinutes: 30,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T10:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T11:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T12:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T13:00:00.000Z", { windDirectionDeg: 90 }),
+      hour("2026-07-13T14:00:00.000Z", { windDirectionDeg: 90 })
+    ])
+  });
+
+  const result = recommendTodaySpots([focused], DEFAULT_SURF_PREFERENCES, { now: NOW });
+  const window = result.bestBets[0].bestWindow;
+
+  assert.equal(window.conditionStart, "2026-07-13T09:15:00.000Z");
+  assert.equal(window.start, "2026-07-13T12:00:00.000Z");
+  assert.equal(window.end, "2026-07-13T14:00:00.000Z");
+  assert.equal(window.leaveAt, "2026-07-13T11:15:00.000Z");
+  assert.equal(window.usefulMinutes, 120);
+  assert.equal(window.representativeHour.time, "2026-07-13T13:00:00.000Z");
+  assert.ok(window.reasons.includes("Offshore wind"));
+});
+
+test("a stronger later session outranks an earlier marginal good window", () => {
+  const split = candidate("split", {
+    driveMinutes: 0,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T10:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T11:00:00.000Z", { windDirectionDeg: 270, windKmh: 25 }),
+      hour("2026-07-13T12:00:00.000Z", { windDirectionDeg: 90 }),
+      hour("2026-07-13T13:00:00.000Z", { windDirectionDeg: 90 })
+    ])
+  });
+
+  const result = recommendTodaySpots(
+    [split],
+    { ...DEFAULT_SURF_PREFERENCES, setupMinutes: 0 },
+    { now: NOW }
+  );
+  const window = result.bestBets[0].bestWindow;
+
+  assert.equal(window.start, "2026-07-13T11:30:00.000Z");
+  assert.equal(window.end, "2026-07-13T13:30:00.000Z");
+  assert.equal(window.representativeHour.time, "2026-07-13T12:00:00.000Z");
+  assert.ok(window.reasons.includes("Offshore wind"));
+});
+
 test("route-backed calls outrank otherwise equal calls without a usable leave time", () => {
   const noRoute = candidate("no-route", { driveMinutes: null });
   const routed = candidate("routed", { driveMinutes: 30 });
   const result = recommendTodaySpots([noRoute, routed], DEFAULT_SURF_PREFERENCES, { now: NOW });
 
   assert.deepEqual(result.bestBets.map((entry) => entry.camera.id), ["routed", "no-route"]);
+});
+
+test("a current observation can support a session beginning inside the current hour", () => {
+  const observed = candidate("observed", {
+    driveMinutes: 0,
+    conditions: conditions({ rating: "FAIR", ratingObserved: true }),
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z"),
+      hour("2026-07-13T10:00:00.000Z"),
+      hour("2026-07-13T11:00:00.000Z")
+    ])
+  });
+
+  const result = recommendTodaySpots(
+    [observed],
+    { ...DEFAULT_SURF_PREFERENCES, setupMinutes: 0 },
+    { now: NOW }
+  );
+
+  assert.equal(result.bestBets[0].bestWindow.representativeHour.time, "2026-07-13T09:00:00.000Z");
+  assert.ok(result.bestBets[0].reasons.includes("Surfline fair"));
+});
+
+test("a current observation does not promote a session reachable only hours later", () => {
+  const hours = [
+    hour("2026-07-13T09:00:00.000Z"),
+    hour("2026-07-13T10:00:00.000Z"),
+    hour("2026-07-13T11:00:00.000Z"),
+    hour("2026-07-13T12:00:00.000Z"),
+    hour("2026-07-13T13:00:00.000Z"),
+    hour("2026-07-13T14:00:00.000Z")
+  ];
+  const observedFar = candidate("observed-far", {
+    driveMinutes: 120,
+    conditions: conditions({ rating: "FAIR", ratingObserved: true }),
+    forecast: forecast(hours)
+  });
+  const modeledNear = candidate("modeled-near", {
+    driveMinutes: 30,
+    conditions: conditions({ rating: "FAIR", ratingObserved: false }),
+    forecast: forecast(hours)
+  });
+
+  const result = recommendTodaySpots(
+    [observedFar, modeledNear],
+    { ...DEFAULT_SURF_PREFERENCES, setupMinutes: 0 },
+    { now: NOW }
+  );
+
+  assert.deepEqual(result.bestBets.map((entry) => entry.camera.id), ["modeled-near", "observed-far"]);
+  assert.doesNotMatch(result.bestBets[1].reasons.join(" "), /Surfline fair/i);
+});
+
+test("stronger session evidence outranks a shorter drive", () => {
+  const nearLightWind = candidate("near-light-wind", {
+    driveMinutes: 15,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T10:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T11:00:00.000Z", { windDirectionDeg: 180 }),
+      hour("2026-07-13T12:00:00.000Z", { windDirectionDeg: 180 })
+    ])
+  });
+  const fartherOffshore = candidate("farther-offshore", {
+    driveMinutes: 55,
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z", { windDirectionDeg: 90 }),
+      hour("2026-07-13T10:00:00.000Z", { windDirectionDeg: 90 }),
+      hour("2026-07-13T11:00:00.000Z", { windDirectionDeg: 90 }),
+      hour("2026-07-13T12:00:00.000Z", { windDirectionDeg: 90 })
+    ])
+  });
+
+  const result = recommendTodaySpots(
+    [nearLightWind, fartherOffshore],
+    DEFAULT_SURF_PREFERENCES,
+    { now: NOW }
+  );
+
+  assert.deepEqual(result.bestBets.map((entry) => entry.camera.id), ["farther-offshore", "near-light-wind"]);
+  assert.ok(result.bestBets[0].reasons.includes("Offshore wind"));
 });
 
 test("recommendations keep low-confidence and marginal cases in Worth checking and rank quality before distance", () => {

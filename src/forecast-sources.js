@@ -6,6 +6,12 @@ function ageHoursSince(iso, now) {
   return Number.isFinite(t) ? (now - t) / 3600000 : null;
 }
 
+export function formatConditionsAgeLabel(ageHours) {
+  if (!Number.isFinite(ageHours)) return "no Surfline conditions data";
+  if (ageHours < 24) return `${Math.floor(ageHours)}h old`;
+  return `${Math.floor(ageHours / 24)}d old`;
+}
+
 function surflineIdFor(camera, spotData) {
   if (camera.promoted || String(camera.id).startsWith("surfline-")) return camera.id;
   const meta = spotData.spotMetadataById?.get(camera.id)?.surfMetadata;
@@ -18,7 +24,7 @@ export function resolveConditions(camera, spotData, { liveCache = null, now = Da
   const surflineId = surflineIdFor(camera, spotData);
   const entry = surflineId ? spotData.conditionsById?.get(surflineId) : null;
   const entryAge = entry ? ageHoursSince(entry.fetchedAt, now) : null;
-  if (entry && entryAge !== null && entryAge >= 0 && entryAge < SURFLINE_FRESH_MAX_AGE_HOURS) {
+  if (entry && entryAge !== null && entryAge >= 0 && entryAge <= SURFLINE_FRESH_MAX_AGE_HOURS) {
     const primarySwell = (entry.swells || [])[0] || {};
     return {
       source: "surfline-fresh",

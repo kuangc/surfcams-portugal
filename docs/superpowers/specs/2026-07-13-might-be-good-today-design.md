@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-Status: Design baseline selected; written specification awaiting final user review
+Status: Implemented and completion-audited on 2026-07-13
 
 Supersedes: the ranking and decision-surface portions of `2026-06-07-best-today-monitor-deck-design.md`
 
@@ -284,6 +284,8 @@ For a reviewed tide preference, a matching stage/direction is favorable and a no
 
 A modeled Surfline `POOR` or `VERY_POOR` is a negative quality factor, not an unconditional cross-spot veto. A fresh forecaster-observed `POOR` or `VERY_POOR` can veto the current hour. The extraction layer must preserve whether a provider rating is modeled or observed before this distinction is activated.
 
+Surfline's cached rating is a current observation or current model output, not an hourly forecast series. It may therefore support or penalize only the current UTC hour. Future hours use their own marine, wind, tide, and reviewed local evidence rather than repeating the current rating across the day.
+
 ### 8.4 Confidence
 
 Confidence depends on evidence coverage, not on whether conditions are good:
@@ -302,6 +304,7 @@ Only `good` windows with `high` or `medium` confidence enter **Best bets**.
 - Default setup buffer is 15 minutes and is user-configurable.
 - After travel and setup, at least 60 minutes of the candidate window must remain.
 - Exclude a window that ends after last light unless at least 60 daylight minutes remain.
+- Select the strongest reachable hour from tide, wind, provider, and swell evidence, then present a focused session of at most two hours around it. Preserve the broader qualifying span in detail rather than calling the entire day one surf window.
 - Select the best reachable window per spot for the primary card; other windows remain in detail.
 
 Public times should match the data resolution. Hourly forecasts use rounded, human-friendly windows such as `10am–12pm`, not minute-level false precision. Tide-event labels may include their actual event time in detail.
@@ -312,10 +315,12 @@ Rank Best bets in this order:
 
 1. a fresh structured human/provider observation confirming the current candidate window;
 2. confidence;
-3. useful in-water duration after travel;
-4. stability across adjacent forecast hours;
-5. drive time; and
-6. deterministic spot name tie-break.
+3. availability of a usable route-backed leave time;
+4. session evidence, including tide match, offshore wind, provider support, wind speed, and swell period;
+5. useful in-water duration after travel;
+6. earlier usable start;
+7. drive time; and
+8. deterministic spot name tie-break.
 
 Drive time must no longer outrank predicted session quality.
 
@@ -438,6 +443,8 @@ Freshness thresholds remain named configuration rather than scattered constants.
 - advice expiry.
 
 Future-dated, missing, or stale timestamps produce unknown evidence. Tests use fixed clocks at threshold boundaries.
+
+The implemented contracts are six hours for a Surfline current local-face anchor and two hours for the Open-Meteo hourly forecast cache. The Surfline workflow refreshes at 05:17, 11:17, and 17:17 UTC so the six-hour anchor remains current through Lisbon's usable daylight. A stale anchor produces no Best bet and is named explicitly in the status and empty state.
 
 ## 11. Feedback and calibration
 
@@ -601,4 +608,4 @@ The design objective is satisfied only when current evidence proves all of the f
 
 ## 16. Design completion note
 
-This specification defines the product behavior, data boundaries, evidence hierarchy, UX, failure states, and verification contract. Implementation begins only after final user review of this written spec and creation of a separate implementation plan.
+The implementation and live completion audit now satisfy this specification's product behavior, data boundaries, evidence hierarchy, UX, and failure-state contracts. The audit tightened three points that were too permissive in the first implementation: current Surfline data now expires after six hours, the current Surfline rating no longer leaks into future hours, and cards show a focused two-hour session around the strongest evidence instead of an all-day good span. Field calibration remains intentionally open and continues through private session feedback.

@@ -21,6 +21,8 @@ const browserSurflineCacheSource = fs.existsSync("scripts/cache-surfline-browser
   ? fs.readFileSync("scripts/cache-surfline-browser-cdp.js", "utf8")
   : "";
 const cacheSurflineSource = fs.readFileSync("scripts/cache-surfline-pages.js", "utf8");
+const surflineRefreshWorkflowSource = fs.readFileSync(".github/workflows/update-surfline-conditions.yml", "utf8");
+const conditionsFreshnessSource = fs.readFileSync("scripts/check-conditions-freshness.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-row=/);
@@ -246,6 +248,14 @@ test("every external workflow action is commit-pinned and weekly updates stay en
   assert.ok(externalUses.some((line) => line.includes("actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0")));
   assert.match(dependabot, /package-ecosystem:\s*"github-actions"/);
   assert.match(dependabot, /interval:\s*"weekly"/);
+});
+
+test("Surfline refresh coverage matches the six-hour recommendation freshness contract", () => {
+  const crons = [...surflineRefreshWorkflowSource.matchAll(/cron:\s*"([^"]+)"/g)]
+    .map((match) => match[1]);
+
+  assert.deepEqual(crons, ["17 5 * * *", "17 11 * * *", "17 17 * * *"]);
+  assert.match(conditionsFreshnessSource, /MAX_AGE_HOURS\s*=\s*Number\(process\.env\.MAX_AGE_HOURS\s*\|\|\s*6\)/);
 });
 
 test("spot data build can refresh road distances from a directions table API", () => {
