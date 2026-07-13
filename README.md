@@ -37,8 +37,10 @@ The editor is a generated local file and is never deployed:
 
 ```bash
 npm run build-spot-advice-review
-open .local/spot-advice-review.html
+npm run dev
 ```
+
+Open `http://127.0.0.1:8766/.local/spot-advice-review.html`.
 
 Review edits autosave in that browser. Export the complete feedback JSON from the cockpit, then validate and apply it with the digest-guarded command documented in `CLAUDE.md`. The `.local/` directory is intentionally ignored by Git.
 
