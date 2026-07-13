@@ -51,7 +51,7 @@ import {
   serializeSurfPreferences
 } from "./surf-preferences.js";
 import { rateSurfSpot } from "./surf-rating.js";
-import { emptyTideData, findTideSnapshot, loadTideData } from "./tide-data.js";
+import { emptyTideData, findNearestTideSnapshot, findTideSnapshot, loadTideData } from "./tide-data.js";
 import { createTodayForecastStore } from "./today-forecast-store.js";
 import { recommendTodaySpots } from "./today-recommendations.js";
 import {
@@ -500,7 +500,8 @@ function recommendationInputs({ readyOnly = false } = {}) {
       forecast: state.todayForecastStore?.get(camera) || null,
       conditions: getConditions(camera),
       advice: recommendationAdviceFor(camera, state.spotData, now.getTime()),
-      tide: findAdviceTideSnapshot(camera, state.spotData, state.tideData, now),
+      tide: findAdviceTideSnapshot(camera, state.spotData, state.tideData, now)
+        || findNearestTideSnapshot(camera, state.tideData, now),
       driveMinutes: driveMinutes(camera)
     }));
 }

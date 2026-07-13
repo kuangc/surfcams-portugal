@@ -5,6 +5,7 @@ import test from "node:test";
 import { DEFAULT_FAVORITE_IDS } from "../src/config.js";
 import {
   buildDaylightWindow,
+  findNearestTideSnapshot,
   findTideSnapshot,
   formatTideEventTime,
   normalizeGeomarExtremes,
@@ -73,6 +74,7 @@ test("normalizeGeomarExtremes keeps only official high and low tide events", () 
 
 test("findTideSnapshot infers current tide state and next high tide from cached official events", () => {
   const cache = normalizeTideCache({
+    generatedAt: "2026-06-10T10:00:00.000Z",
     cameraStations: {
       "sao-pedro-do-estoril": {
         portId: 15,
@@ -118,6 +120,39 @@ test("findTideSnapshot returns null when a camera has no cached official station
   const cache = normalizeTideCache();
 
   assert.equal(findTideSnapshot({ id: "unknown" }, cache, new Date("2026-06-10T12:00:00+01:00")), null);
+});
+
+test("findNearestTideSnapshot borrows only a nearby mapped official station", () => {
+  const cache = normalizeTideCache({
+    generatedAt: "2026-06-10T10:00:00.000Z",
+    cameraStations: {
+      "paco-de-arcos": {
+        cameraLat: 38.695,
+        cameraLon: -9.292,
+        portId: 15,
+        portName: "Cascais",
+        gaugeLat: 38.6916667,
+        gaugeLon: -9.4166667
+      }
+    },
+    eventsByPort: { 15: normalizeGeomarExtremes(rawCascaisExtremes) },
+    daylightByPort: {
+      15: {
+        "2026-06-10": {
+          firstLightUtc: "2026-06-10T04:38:00.000Z",
+          lastLightUtc: "2026-06-10T20:37:00.000Z"
+        }
+      }
+    }
+  });
+  const caxias = { id: "surfline-praia-de-caxias", lat: 38.6985, lon: -9.2796 };
+  const farAway = { id: "far-away", lat: 41.15, lon: -8.6 };
+
+  assert.equal(
+    findNearestTideSnapshot(caxias, cache, new Date("2026-06-10T12:00:00+01:00")).station.portName,
+    "Cascais"
+  );
+  assert.equal(findNearestTideSnapshot(farAway, cache, new Date("2026-06-10T12:00:00+01:00")), null);
 });
 
 test("buildDaylightWindow keeps civil dusk on the requested local day", () => {

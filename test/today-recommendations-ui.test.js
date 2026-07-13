@@ -83,6 +83,7 @@ test("Might be good owns separate Best bets and collapsed Worth checking surface
 test("main renders decision records with timeline evidence instead of the legacy binary sorter", () => {
   assert.match(mainSource, /recommendTodaySpots/);
   assert.match(mainSource, /recommendationAdviceFor/);
+  assert.match(mainSource, /findNearestTideSnapshot/);
   assert.match(mainSource, /function renderTodayRecommendations/);
   assert.match(mainSource, /function createBestBetCard/);
   assert.match(mainSource, /function createTodayTimeline/);

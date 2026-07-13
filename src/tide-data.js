@@ -154,6 +154,18 @@ function toRadians(degrees) {
   return (degrees * Math.PI) / 180;
 }
 
+function coordinateDistanceKm(a, b) {
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(b.lat - a.lat);
+  const dLon = toRadians(b.lon - a.lon);
+  const lat1 = toRadians(a.lat);
+  const lat2 = toRadians(b.lat);
+  const sinLat = Math.sin(dLat / 2);
+  const sinLon = Math.sin(dLon / 2);
+  const h = (sinLat * sinLat) + Math.cos(lat1) * Math.cos(lat2) * (sinLon * sinLon);
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
 function toDegrees(radians) {
   return (radians * 180) / Math.PI;
 }
@@ -323,6 +335,31 @@ export function findTideSnapshot(camera, tideData, now = new Date()) {
     firstLight: daylightEvent(daylight, "firstLightUtc", "first-light"),
     lastLight: daylightEvent(daylight, "lastLightUtc", "last-light")
   };
+}
+
+export function findNearestTideSnapshot(camera, tideData, now = new Date(), {
+  maxAgeHours = 48,
+  maxDistanceKm = 30
+} = {}) {
+  const direct = findTideSnapshot(camera, tideData, now);
+  if (direct) return direct;
+  if (!Number.isFinite(camera?.lat) || !Number.isFinite(camera?.lon)) return null;
+
+  const normalized = tideData?.stationsByCameraId ? tideData : normalizeTideCache(tideData);
+  const generatedMs = new Date(normalized.generatedAt || "").getTime();
+  const ageHours = (now.getTime() - generatedMs) / 3600000;
+  if (!Number.isFinite(ageHours) || ageHours < 0 || ageHours > maxAgeHours) return null;
+
+  let nearest = null;
+  for (const [cameraId, station] of normalized.stationsByCameraId) {
+    const lat = Number(station?.cameraLat);
+    const lon = Number(station?.cameraLon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+    const distanceKm = coordinateDistanceKm(camera, { lat, lon });
+    if (!nearest || distanceKm < nearest.distanceKm) nearest = { cameraId, distanceKm };
+  }
+  if (!nearest || nearest.distanceKm > maxDistanceKm) return null;
+  return findTideSnapshot({ id: nearest.cameraId }, normalized, now);
 }
 
 export function formatTideEventTime(event, timeZone = DEFAULT_TIME_ZONE) {
