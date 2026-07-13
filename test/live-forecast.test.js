@@ -29,6 +29,8 @@ function forecastBodies() {
         wave_height: [0.8, 1.2],
         wave_period: [7, 9],
         wave_direction: [280, 285],
+        swell_wave_height: [0.6, 0.9],
+        swell_wave_period: [8, 10],
         swell_wave_direction: [295, 300]
       }
     },
@@ -73,8 +75,29 @@ test("fetchLiveForecast merges marine + wind and caches", async () => {
   assert.equal(first.waveMinM, 1.2);
   assert.equal(first.waveMaxM, 1.2);
   assert.equal(first.windKmh, 22);
-  assert.equal(first.periodS, 9);
+  assert.equal(first.periodS, 10);
+  assert.deepEqual(first.hours, [
+    {
+      time: "2026-07-07T14:00:00.000Z",
+      offshoreWaveM: 0.8,
+      primarySwellHeightM: 0.6,
+      primarySwellPeriodS: 8,
+      primarySwellDirectionDeg: 295,
+      windKmh: 14,
+      windDirectionDeg: 330
+    },
+    {
+      time: "2026-07-07T15:00:00.000Z",
+      offshoreWaveM: 1.2,
+      primarySwellHeightM: 0.9,
+      primarySwellPeriodS: 10,
+      primarySwellDirectionDeg: 300,
+      windKmh: 22,
+      windDirectionDeg: 345
+    }
+  ]);
   assert.equal(second.waveMinM, 1.2);
+  assert.equal(second.hours.length, 2);
   assert.equal(fetcher.calls(), 2);
 });
 
@@ -130,4 +153,24 @@ test("wind endpoint rejection degrades to marine-only result", async () => {
   assert.equal(result.waveMinM, 1.2);
   assert.equal(result.windKmh, null);
   assert.equal(result.windDirDeg, null);
+  assert.equal(result.hours[1].windKmh, null);
+});
+
+test("hourly normalization joins wind by timestamp instead of array position", async () => {
+  const bodies = forecastBodies();
+  const wind = {
+    hourly: {
+      time: ["2026-07-07T13:00", CURRENT_HOUR],
+      wind_speed_10m: [99, 11],
+      wind_direction_10m: [180, 20]
+    }
+  };
+  const result = await fetchLiveForecast(
+    { id: "cam-shifted-wind", lat: 38.7, lon: -9.3 },
+    { fetchImpl: cannedFetch({ marine: bodies.marine, wind }).fetchImpl, storage: fakeStorage(), now: NOW }
+  );
+
+  assert.equal(result.hours[0].windKmh, null);
+  assert.equal(result.hours[1].windKmh, 11);
+  assert.equal(result.hours[1].windDirectionDeg, 20);
 });
