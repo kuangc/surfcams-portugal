@@ -63,7 +63,7 @@ function bearingDifference(a, b) {
   return diff > 180 ? 360 - diff : diff;
 }
 
-function windAlignment(windBearing, coastBearing) {
+export function windAlignment(windBearing, coastBearing) {
   if (!Number.isFinite(windBearing) || !Number.isFinite(coastBearing)) return "unknown";
   const diff = bearingDifference(windBearing, coastBearing);
   if (diff <= 45) return "onshore";
