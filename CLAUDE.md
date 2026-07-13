@@ -4,18 +4,25 @@
 
 `data/spot-advice.json` is the hand-reviewed canonical research file. Its schema v1 is display-only: advice may describe thresholds and fit, but it never changes provider estimates, local estimates, or surf ratings. `data/spot-advice-resolved.json` is generated and must not be hand-edited.
 
-Use these exact commands to build, validate, and review the advice:
+Prepare and validate the runtime artifact, then generate the review cockpit with:
 
 ```sh
 npm run build-spot-advice
 npm run check-spot-advice
 npm run build-spot-advice-review
-npm run apply-spot-advice-feedback -- .local/spot-advice-feedback.json
 ```
 
 The review cockpit is `.local/spot-advice-review.html`. `.local/` is local-only, gitignored, and never deployed. Its browser state is recovery state, not the source of truth. Export a complete schema-v1 feedback document before applying edits.
 
-Feedback contains a `baseDigest`. The apply command rejects stale feedback, validates the complete candidate, rechecks the canonical digest before its atomic rename, and then rebuilds the runtime artifact. Do not bypass that digest guard or copy browser-state fragments directly into `data/spot-advice.json`. Read back the canonical file and run `npm run check-spot-advice` after applying feedback.
+After exporting feedback, apply the canonical edit, rebuild the runtime artifact, and then verify that artifact is current:
+
+```sh
+npm run apply-spot-advice-feedback -- .local/spot-advice-feedback.json
+npm run build-spot-advice
+npm run check-spot-advice
+```
+
+Feedback contains a `baseDigest`. The apply command does not rebuild the runtime artifact; it rejects stale feedback, validates the complete candidate, rechecks the canonical digest before its atomic rename, and updates only `data/spot-advice.json`. Do not bypass that digest guard or copy browser-state fragments directly into `data/spot-advice.json`. Read back the canonical file after applying feedback, then run the post-export build and check sequence above.
 
 Source-link health is a separate, non-deterministic operator check:
 

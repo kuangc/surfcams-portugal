@@ -6,6 +6,7 @@ const mainSource = fs.readFileSync("src/main.js", "utf8");
 const configSource = fs.readFileSync("src/config.js", "utf8");
 const indexSource = fs.readFileSync("index.html", "utf8");
 const packageSource = fs.readFileSync("package.json", "utf8");
+const claudeSource = fs.readFileSync("CLAUDE.md", "utf8");
 const styleSource = fs.readFileSync("src/styles/app.css", "utf8");
 const videoSource = fs.readFileSync("src/video-player.js", "utf8");
 const buildSpotDataSource = fs.readFileSync("scripts/build-spot-data.js", "utf8");
@@ -193,6 +194,27 @@ test("spot advice operator scripts are exposed and local review artifacts stay i
 
   const gitignoreSource = fs.readFileSync(".gitignore", "utf8");
   assert.match(gitignoreSource, /^\.local\/$/m);
+});
+
+test("spot advice operator docs separate review preparation from the post-export workflow", () => {
+  const spotAdviceDocs = claudeSource.match(/## Spot Advice Research and Review[\s\S]*?(?=\n## |$)/)?.[0] ?? "";
+  const commandBlocks = [...spotAdviceDocs.matchAll(/```sh\n([\s\S]*?)\n```/g)]
+    .map((match) => match[1].split("\n").filter(Boolean));
+  const preparationCommands = commandBlocks.find((commands) => commands.includes("npm run build-spot-advice-review"));
+  const postExportCommands = commandBlocks.find((commands) => commands.some((command) => command.startsWith("npm run apply-spot-advice-feedback -- ")));
+
+  assert.deepEqual(preparationCommands, [
+    "npm run build-spot-advice",
+    "npm run check-spot-advice",
+    "npm run build-spot-advice-review"
+  ]);
+  assert.deepEqual(postExportCommands, [
+    "npm run apply-spot-advice-feedback -- .local/spot-advice-feedback.json",
+    "npm run build-spot-advice",
+    "npm run check-spot-advice"
+  ]);
+  assert.match(spotAdviceDocs, /apply command[^.]*does not rebuild the runtime artifact/i);
+  assert.doesNotMatch(spotAdviceDocs, /apply command[^.]*then rebuilds the runtime artifact/i);
 });
 
 test("every external workflow action is commit-pinned and weekly updates stay enabled", () => {
