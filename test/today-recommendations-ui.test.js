@@ -26,6 +26,14 @@ test("today recommendation time calls use Lisbon time and actionable departure l
   assert.equal(formatLeaveCall(window, 30, Date.parse("2026-07-13T08:50:00Z")), "Leave now");
   assert.equal(formatLeaveCall(window, null, Date.parse("2026-07-13T08:00:00Z")), null);
   assert.equal(formatLeaveCall({ ...window, leaveAt: "2026-07-13T08:15:00.000Z" }, 30, Date.parse("2026-07-13T08:00:00Z")), "Leave by 9:15am");
+
+  const modelClampedWindow = {
+    start: "2026-07-13T09:51:00.000Z",
+    end: "2026-07-13T11:51:00.000Z",
+    leaveAt: "2026-07-13T08:53:00.000Z"
+  };
+  assert.equal(formatWindowCall(modelClampedWindow, Date.parse("2026-07-13T08:00:00Z")), "Surf 11:00am–12:45pm");
+  assert.equal(formatLeaveCall(modelClampedWindow, 30, Date.parse("2026-07-13T07:00:00Z")), "Leave by 9:45am");
 });
 
 test("recommendation roster keeps one live representative per researched break and excludes favorite breaks", () => {

@@ -438,7 +438,12 @@ export function recommendTodaySpots(candidates, preferences, { now = Date.now() 
 
     const { lastLight } = daylightBounds(candidate.tide);
     const evaluations = curve
-      .filter((point) => timestamp(point.time) >= currentHourStart)
+      .filter((point) => {
+        const pointMs = timestamp(point.time);
+        return pointMs !== null
+          && pointMs >= currentHourStart
+          && (lastLight === null || pointMs <= lastLight);
+      })
       .map((point) => evaluateTodayHour({
         camera: candidate.camera,
         hour: point,

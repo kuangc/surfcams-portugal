@@ -1,6 +1,7 @@
 import { SURFLINE_FRESH_MAX_AGE_HOURS } from "./config.js";
 
 const LISBON_TIME_ZONE = "Europe/Lisbon";
+const PUBLIC_TIME_STEP_MS = 15 * 60 * 1000;
 export const BEST_BET_LIMIT = 3;
 
 export function formatRecommendationStatus({
@@ -44,7 +45,11 @@ export function formatWindowCall(window, now = Date.now()) {
   const end = timestamp(window?.end);
   const nowMs = timestamp(now);
   if (start === null || end === null || nowMs === null) return "";
-  const range = `${formatLisbonTime(start)}–${formatLisbonTime(end)}`;
+  const publicStart = Math.ceil(start / PUBLIC_TIME_STEP_MS) * PUBLIC_TIME_STEP_MS;
+  const publicEnd = Math.floor(end / PUBLIC_TIME_STEP_MS) * PUBLIC_TIME_STEP_MS;
+  const range = publicEnd > publicStart
+    ? `${formatLisbonTime(publicStart)}–${formatLisbonTime(publicEnd)}`
+    : `${formatLisbonTime(start)}–${formatLisbonTime(end)}`;
   return start <= nowMs + 15 * 60 * 1000 ? `Go now · ${range}` : `Surf ${range}`;
 }
 
@@ -54,7 +59,8 @@ export function formatLeaveCall(window, driveMinutes, now = Date.now()) {
   if (start === null || nowMs === null || !Number.isFinite(driveMinutes)) return null;
   const explicitLeaveAt = timestamp(window?.leaveAt);
   const leaveAt = explicitLeaveAt ?? start - (driveMinutes * 60 * 1000);
-  return leaveAt <= nowMs + 5 * 60 * 1000 ? "Leave now" : `Leave by ${formatLisbonTime(leaveAt)}`;
+  const publicLeaveAt = Math.floor(leaveAt / PUBLIC_TIME_STEP_MS) * PUBLIC_TIME_STEP_MS;
+  return leaveAt <= nowMs + 5 * 60 * 1000 ? "Leave now" : `Leave by ${formatLisbonTime(publicLeaveAt)}`;
 }
 
 function cameraUtility(camera) {

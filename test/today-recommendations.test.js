@@ -251,6 +251,27 @@ test("window construction requires stable adjacent good hours and clamps to now 
   assert.equal(windows[0].confidence, "medium");
 });
 
+test("today evidence stops at last light instead of showing after-dark forecast hours", () => {
+  const daylightOnly = candidate("daylight-only", {
+    forecast: forecast([
+      hour("2026-07-13T09:00:00.000Z"),
+      hour("2026-07-13T19:00:00.000Z"),
+      hour("2026-07-13T20:00:00.000Z"),
+      hour("2026-07-13T21:00:00.000Z"),
+      hour("2026-07-13T22:00:00.000Z")
+    ])
+  });
+
+  const result = recommendTodaySpots([daylightOnly], DEFAULT_SURF_PREFERENCES, { now: NOW });
+  const recommendation = result.bestBets[0] || result.worthChecking[0];
+
+  assert.deepEqual(recommendation.evaluations.map(({ time }) => time), [
+    "2026-07-13T09:00:00.000Z",
+    "2026-07-13T19:00:00.000Z",
+    "2026-07-13T20:00:00.000Z"
+  ]);
+});
+
 test("Best bets require 60 useful minutes after drive and the setup buffer", () => {
   const short = candidate("short", {
     driveMinutes: 30,
