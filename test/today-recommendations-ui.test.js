@@ -114,6 +114,7 @@ test("today recommendation styles are focused, keyboard-visible, and mobile-scro
   }
   assert.match(styleSource, /\.today-timeline__hour\s*{[^}]*min-height:\s*44px/s);
   assert.match(styleSource, /\.today-timeline__hour:focus-visible/);
+  assert.match(styleSource, /\.recommendation-timeline\s*>\s*summary:focus-visible/);
   assert.match(styleSource, /\.today-timeline\s*{[^}]*overflow-x:\s*auto/s);
 });
 

@@ -352,6 +352,8 @@ button:disabled {
 
 .recommendation-action:focus-visible,
 .today-timeline__hour:focus-visible,
+.recommendation-timeline > summary:focus-visible,
+.session-feedback > summary:focus-visible,
 .worth-checking summary:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 2px;
