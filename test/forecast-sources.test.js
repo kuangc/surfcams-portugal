@@ -9,7 +9,7 @@ import { rateSurfSpot } from "../src/surf-rating.js";
 const NOW = Date.parse("2026-07-06T12:00:00Z");
 const spotData = {
   conditionsById: new Map([
-    ["surfline-fresh-spot", { rating: "GOOD", ratingValue: 5, surfMinM: 0.9, surfMaxM: 1.5,
+    ["surfline-fresh-spot", { rating: "GOOD", ratingValue: 5, ratingObserved: true, surfObserved: true, surfMinM: 0.9, surfMaxM: 1.5,
       windKmh: 11, windDirDeg: 20, swells: [{ hM: 1.2, periodS: 12, dirDeg: 225 }],
       fetchedAt: "2026-07-06T06:00:00Z" }],
     ["surfline-stale-spot", { rating: "FAIR", surfMinM: 0.6, surfMaxM: 0.9, fetchedAt: "2026-06-11T12:00:00Z" }]
@@ -35,6 +35,8 @@ test("promoted spot with fresh conditions -> surfline-fresh", () => {
   assert.equal(resolved.primarySwellHeightM, 1.2);
   assert.equal(resolved.primarySwellPeriodS, 12);
   assert.equal(resolved.primarySwellDirectionDeg, 225);
+  assert.equal(resolved.surfObserved, true);
+  assert.equal(resolved.ratingObserved, true);
   assert.equal(Math.round(resolved.ageHours), 6);
 });
 

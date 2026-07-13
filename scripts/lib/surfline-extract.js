@@ -42,7 +42,8 @@ function normalizeRecord(spot, forecast, sourceKind, fetchedAt) {
   const wind = forecast?.wind || spot?.wind || null;
   const swells = (forecast?.swells ?? spot?.swells) || [];
   const waterTemp = forecast?.waterTemp ?? spot?.waterTemp;
-  const conditions = forecast?.conditions?.value ?? spot?.conditions?.value ?? null;
+  const conditionsRecord = forecast?.conditions ?? spot?.conditions ?? null;
+  const conditions = conditionsRecord?.value ?? null;
   const rating = conditions ? String(conditions).toUpperCase() : null;
   return {
     name: spot?.name ?? null,
@@ -51,9 +52,11 @@ function normalizeRecord(spot, forecast, sourceKind, fetchedAt) {
     fetchedAt,
     rating,
     ratingValue: ratingValue(rating),
+    ratingObserved: conditionsRecord?.human === true,
     surfRawFt: wave ? [wave.min ?? null, wave.max ?? null] : null,
     surfMinM: feetToMeters(wave?.min),
     surfMaxM: feetToMeters(wave?.max),
+    surfObserved: wave?.human === true,
     windKmh: knotsToKmh(wind?.speed),
     windDirDeg: Number.isFinite(wind?.direction) ? wind.direction : null,
     swells: swells.filter((s) => Number.isFinite(s?.height)).map((s) => ({

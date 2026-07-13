@@ -27,6 +27,7 @@ export function resolveConditions(camera, spotData, { liveCache = null, now = Da
       ageHours: entryAge,
       providerSpotSurfMinM: entry.surfMinM ?? null,
       providerSpotSurfMaxM: entry.surfMaxM ?? null,
+      surfObserved: entry.surfObserved === true,
       primarySwellHeightM: primarySwell.hM ?? null,
       primarySwellPeriodS: primarySwell.periodS ?? null,
       primarySwellDirectionDeg: primarySwell.dirDeg ?? null,
@@ -36,7 +37,8 @@ export function resolveConditions(camera, spotData, { liveCache = null, now = Da
       windDirDeg: entry.windDirDeg ?? null,
       periodS: primarySwell.periodS ?? null,
       swellDirDeg: primarySwell.dirDeg ?? null,
-      rating: entry.rating ?? null
+      rating: entry.rating ?? null,
+      ratingObserved: entry.ratingObserved === true
     };
   }
   const live = liveCache?.get(camera.id) || (surflineId ? liveCache?.get(surflineId) : null);

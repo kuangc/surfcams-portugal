@@ -50,6 +50,23 @@ test("extractConditionsRecords normalizes primary + nearby, FT->m, KTS->kmh", ()
   assert.equal(nearby.waterTempC, 15.6);
 });
 
+test("extraction preserves explicit human observation provenance", () => {
+  const state = structuredClone(parseNextDataState(html));
+  state.spot.report.data.forecast.waveHeight.human = true;
+  state.spot.report.data.forecast.conditions.human = true;
+  state.spot.nearby.data.spots[0].waveHeight.human = false;
+  state.spot.nearby.data.spots[0].conditions.human = false;
+
+  const records = extractConditionsRecords(state, { fetchedAt: "2026-07-06T06:00:00Z", idFor: (name) => name });
+  const primary = records.find((record) => record.sourceKind === "primary");
+  const nearby = records.find((record) => record.sourceKind === "nearby");
+
+  assert.equal(primary.surfObserved, true);
+  assert.equal(primary.ratingObserved, true);
+  assert.equal(nearby.surfObserved, false);
+  assert.equal(nearby.ratingObserved, false);
+});
+
 test("null and malformed inputs degrade to null/empty", () => {
   assert.equal(parseNextDataState("<html>no script</html>"), null);
   assert.equal(parseNextDataState('<script id="__NEXT_DATA__">not json</script>'), null);
