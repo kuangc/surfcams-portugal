@@ -162,8 +162,11 @@ test("reviewed minimum swell is a hard hourly gate for Sesimbra, Caxias, and Tor
 
   const torreBelow = evaluateTodayHour({ ...base, camera: camera("torre"), advice: advice([minimum(1.5, "may-start-working")]), hour: { ...base.hour, primarySwellHeightM: 1.4 } });
   const torreWorking = evaluateTodayHour({ ...base, camera: camera("torre"), advice: advice([minimum(1.5, "may-start-working")]), hour: { ...base.hour, primarySwellHeightM: 1.5 } });
+  const torreUnknown = evaluateTodayHour({ ...base, camera: camera("torre"), advice: advice([minimum(1.5, "may-start-working")]), hour: { ...base.hour, primarySwellHeightM: null } });
   assert.equal(torreBelow.eligibility, "ineligible");
   assert.equal(torreWorking.eligibility, "eligible");
+  assert.equal(torreUnknown.eligibility, "unknown");
+  assert.equal(torreUnknown.confidence, "low");
 });
 
 test("Caparica high tide and São Julião mid tide change hourly quality rather than face size", () => {

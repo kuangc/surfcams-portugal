@@ -165,7 +165,7 @@ export function evaluateTodayHour({
   for (const claim of claims.filter((candidate) => candidate.rule?.type === "minimum")) {
     const input = claim.rule.input === "primary-swell-height-m" ? hour?.primarySwellHeightM : null;
     if (!Number.isFinite(input)) {
-      return resultFor({ ...base, eligibility: "unknown", quality: "poor", primaryReason: "Primary swell height is missing for a reviewed local gate.", reasons: [localFaceReason(localFace)] });
+      return resultFor({ ...base, eligibility: "unknown", quality: "poor", confidence: "low", primaryReason: "Primary swell height is missing for a reviewed local gate.", reasons: [localFaceReason(localFace)] });
     }
     if (input < claim.rule.value) {
       const primaryReason = `Needs ${readableNumber(claim.rule.value)} m primary swell before it works here.`;

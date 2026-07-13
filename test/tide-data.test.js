@@ -153,6 +153,15 @@ test("findNearestTideSnapshot borrows only a nearby mapped official station", ()
     "Cascais"
   );
   assert.equal(findNearestTideSnapshot(farAway, cache, new Date("2026-06-10T12:00:00+01:00")), null);
+  assert.equal(
+    findNearestTideSnapshot(
+      { id: "paco-de-arcos", lat: 38.695, lon: -9.292 },
+      { ...cache, generatedAt: "2026-06-07T10:00:00.000Z" },
+      new Date("2026-06-10T12:00:00+01:00")
+    ),
+    null,
+    "stale directly mapped stations cannot bypass the recommendation freshness limit"
+  );
 });
 
 test("buildDaylightWindow keeps civil dusk on the requested local day", () => {
