@@ -5,7 +5,9 @@ import test from "node:test";
 import {
   formatLeaveCall,
   formatLisbonTime,
-  formatWindowCall
+  formatWindowCall,
+  selectRecommendationCameras,
+  shortlistBestBets
 } from "../src/today-recommendations-ui.js";
 
 const indexSource = fs.readFileSync("index.html", "utf8");
@@ -21,6 +23,50 @@ test("today recommendation time calls use Lisbon time and actionable departure l
   assert.equal(formatLeaveCall(window, 30, Date.parse("2026-07-13T08:00:00Z")), "Leave by 9:45am");
   assert.equal(formatLeaveCall(window, 30, Date.parse("2026-07-13T08:50:00Z")), "Leave now");
   assert.equal(formatLeaveCall(window, null, Date.parse("2026-07-13T08:00:00Z")), null);
+});
+
+test("recommendation roster keeps one live representative per researched break and excludes favorite breaks", () => {
+  const cameras = [
+    { id: "meo-ribeira", name: "Ribeira cam", streamUrl: "https://example.test/live.m3u8" },
+    { id: "surfline-ribeira", name: "Ribeira report", surfline: { pageUrl: "https://example.test/report" } },
+    { id: "meo-lagide", name: "Lagide cam", streamUrl: "https://example.test/lagide.m3u8" },
+    { id: "surfline-unresearched", name: "Unresearched" },
+    { id: "guide", name: "Guide", adviceGuideOnly: true }
+  ];
+  const subjects = new Map([
+    ["meo-ribeira", "surfline-ribeira"],
+    ["surfline-ribeira", "surfline-ribeira"],
+    ["meo-lagide", "surfline-lagide"]
+  ]);
+
+  const result = selectRecommendationCameras(cameras, {
+    subjectIdFor: (camera) => subjects.get(camera.id) || null,
+    inFence: () => true,
+    isFavorite: (camera) => camera.id === "surfline-ribeira"
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["meo-lagide"]);
+});
+
+test("recommendation roster prefers a live camera over a duplicate report", () => {
+  const cameras = [
+    { id: "surfline-ribeira", name: "Ribeira report", surfline: { pageUrl: "https://example.test/report" } },
+    { id: "meo-ribeira", name: "Ribeira cam", streamUrl: "https://example.test/live.m3u8" }
+  ];
+
+  const result = selectRecommendationCameras(cameras, {
+    subjectIdFor: () => "surfline-ribeira",
+    inFence: () => true,
+    isFavorite: () => false
+  });
+
+  assert.deepEqual(result.map((camera) => camera.id), ["meo-ribeira"]);
+});
+
+test("Best bets is a decisive top-three shortlist", () => {
+  const recommendations = [1, 2, 3, 4, 5].map((rank) => ({ rank }));
+  assert.deepEqual(shortlistBestBets(recommendations).map(({ rank }) => rank), [1, 2, 3]);
+  assert.deepEqual(shortlistBestBets(recommendations, 2).map(({ rank }) => rank), [1, 2]);
 });
 
 test("Might be good owns separate Best bets and collapsed Worth checking surfaces", () => {
@@ -51,6 +97,8 @@ test("today cards expose confidence, no more than three reasons, and accessible 
   assert.match(mainSource, /button\.setAttribute\("aria-label"/);
   assert.match(mainSource, /details\.dataset\.selectedTime/);
   assert.match(mainSource, /Open Surfline report|Watch live cam/);
+  assert.match(mainSource, /summary\.textContent = "Hourly forecast & evidence"/);
+  assert.doesNotMatch(mainSource, /const shell = document\.createElement\("section"\);\s*shell\.className = "recommendation-timeline"/);
 });
 
 test("today recommendation styles are focused, keyboard-visible, and mobile-scrollable", () => {

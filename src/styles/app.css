@@ -258,6 +258,7 @@ button:disabled {
 
 .best-bets-list {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -362,9 +363,17 @@ button:disabled {
   padding-top: 12px;
 }
 
-.recommendation-timeline h4 {
-  margin: 0 0 7px;
+.recommendation-timeline > summary {
+  min-height: 44px;
+  padding: 12px 0 0;
+  color: var(--teal-dark);
   font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.recommendation-timeline[open] > summary {
+  margin-bottom: 7px;
 }
 
 .today-timeline {
@@ -1632,6 +1641,10 @@ button.stretch-tile[aria-current="true"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .best-bets-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .map-layout {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
     grid-template-rows: minmax(420px, 1fr) minmax(180px, 260px);
@@ -1735,6 +1748,7 @@ button.stretch-tile[aria-current="true"] {
   }
 
   .monitor-grid,
+  .best-bets-list,
   .favorites-list,
   .map-layout,
   .config-form {

@@ -37,6 +37,7 @@ import {
   loadSpotData
 } from "./spot-data.js";
 import {
+  adviceSubjectIdFor,
   findAdviceTideSnapshot,
   formatSpotPlaybook,
   recommendationAdviceFor,
@@ -53,7 +54,13 @@ import { rateSurfSpot } from "./surf-rating.js";
 import { emptyTideData, findTideSnapshot, loadTideData } from "./tide-data.js";
 import { createTodayForecastStore } from "./today-forecast-store.js";
 import { recommendTodaySpots } from "./today-recommendations.js";
-import { formatLeaveCall, formatLisbonTime, formatWindowCall } from "./today-recommendations-ui.js";
+import {
+  formatLeaveCall,
+  formatLisbonTime,
+  formatWindowCall,
+  selectRecommendationCameras,
+  shortlistBestBets
+} from "./today-recommendations-ui.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
@@ -237,10 +244,11 @@ function getConditions(camera) {
 }
 
 function recommendationCameras() {
-  return state.cameras
-    .filter((camera) => !camera.adviceGuideOnly)
-    .filter((camera) => !state.favoriteIds.has(camera.id))
-    .filter(inSuggestionFence);
+  return selectRecommendationCameras(state.cameras, {
+    subjectIdFor: (camera) => adviceSubjectIdFor(camera, state.spotData),
+    inFence: inSuggestionFence,
+    isFavorite: (camera) => state.favoriteIds.has(camera.id)
+  });
 }
 
 async function loadTodayForecasts() {
@@ -525,11 +533,11 @@ function renderTimelineDetails(details, evaluation) {
 }
 
 function createTodayTimeline(recommendation) {
-  const shell = document.createElement("section");
+  const shell = document.createElement("details");
   shell.className = "recommendation-timeline";
 
-  const heading = document.createElement("h4");
-  heading.textContent = "Today by hour";
+  const summary = document.createElement("summary");
+  summary.textContent = "Hourly forecast & evidence";
 
   const timeline = document.createElement("div");
   timeline.className = "today-timeline";
@@ -565,7 +573,7 @@ function createTodayTimeline(recommendation) {
     renderTimelineDetails(details, selected);
   }
 
-  shell.append(heading, timeline, details);
+  shell.append(summary, timeline, details);
   return shell;
 }
 
@@ -742,11 +750,12 @@ function renderTodayRecommendations() {
   const readyOnly = state.todayForecastLoading;
   const inputs = recommendationInputs({ readyOnly });
   const result = recommendTodaySpots(inputs, state.preferences, { now: Date.now() });
+  const visibleBestBets = shortlistBestBets(result.bestBets);
   const wasWorthCheckingOpen = els.worthChecking.open;
 
   els.bestBetsList.textContent = "";
   els.worthCheckingList.textContent = "";
-  result.bestBets.forEach((recommendation) => {
+  visibleBestBets.forEach((recommendation) => {
     els.bestBetsList.appendChild(createBestBetCard(recommendation));
   });
 
@@ -770,7 +779,7 @@ function renderTodayRecommendations() {
   els.monitorStatus.hidden = false;
   els.monitorStatus.textContent = state.todayForecastLoading
     ? `Checking today · ${inputs.length}/${recommendationCameras().length} spots ready`
-    : `${result.bestBets.length} Best bets · ${result.worthChecking.length} Worth checking · local face estimates anchored to fresh Surfline conditions`;
+    : `${visibleBestBets.length} Best bets shown${result.bestBets.length > visibleBestBets.length ? ` from ${result.bestBets.length} trusted breaks` : ""} · ${result.worthChecking.length} Worth checking · local face estimates anchored to fresh Surfline conditions`;
 }
 
 function setMonitorMode(mode) {

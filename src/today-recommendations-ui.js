@@ -1,4 +1,5 @@
 const LISBON_TIME_ZONE = "Europe/Lisbon";
+export const BEST_BET_LIMIT = 3;
 
 function timestamp(value) {
   const ms = Number.isFinite(value) ? value : Date.parse(value || "");
@@ -31,4 +32,40 @@ export function formatLeaveCall(window, driveMinutes, now = Date.now()) {
   if (start === null || nowMs === null || !Number.isFinite(driveMinutes)) return null;
   const leaveAt = start - (driveMinutes * 60 * 1000);
   return leaveAt <= nowMs + 5 * 60 * 1000 ? "Leave now" : `Leave by ${formatLisbonTime(leaveAt)}`;
+}
+
+function cameraUtility(camera) {
+  if (camera?.streamUrl) return 3;
+  if (camera?.hasStream) return 2;
+  if (camera?.surfline?.pageUrl || camera?.pageUrl) return 1;
+  return 0;
+}
+
+export function selectRecommendationCameras(cameras, {
+  subjectIdFor,
+  inFence,
+  isFavorite
+}) {
+  const groups = new Map();
+  for (const camera of cameras || []) {
+    if (!camera || camera.adviceGuideOnly || !inFence(camera)) continue;
+    const subjectId = subjectIdFor(camera);
+    if (!subjectId) continue;
+
+    const group = groups.get(subjectId) || { favorite: false, representative: null };
+    group.favorite ||= isFavorite(camera);
+    if (!group.representative || cameraUtility(camera) > cameraUtility(group.representative)) {
+      group.representative = camera;
+    }
+    groups.set(subjectId, group);
+  }
+
+  return [...groups.values()]
+    .filter((group) => !group.favorite && group.representative)
+    .map((group) => group.representative);
+}
+
+export function shortlistBestBets(recommendations, limit = BEST_BET_LIMIT) {
+  const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : BEST_BET_LIMIT;
+  return (recommendations || []).slice(0, safeLimit);
 }
