@@ -361,7 +361,10 @@ export function validateReviewDocument(document, context) {
 }
 
 function validateWorkingDocument(document, context) {
-  return validateSpotAdvice(document, context, { requirePublishedCoverage: false });
+  return validateSpotAdvice(document, context, {
+    requirePublishedCoverage: false,
+    allowIncompleteDirectEvidenceTransition: true
+  });
 }
 
 export function recoverAutosave(canonicalDocument, baseDigest, serialized, { validationContext, maxBytes = MAX_REVIEW_PAYLOAD_BYTES } = {}) {

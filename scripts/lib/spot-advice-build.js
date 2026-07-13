@@ -326,7 +326,10 @@ function validateIdentity(context, contextInfo, selectedSet) {
   };
 }
 
-export function validateSpotAdvice(document, context, { requirePublishedCoverage = true } = {}) {
+export function validateSpotAdvice(document, context, {
+  requirePublishedCoverage = true,
+  allowIncompleteDirectEvidenceTransition = false
+} = {}) {
   requireValue(isObject(document), "document must be an object");
   requireValue(document.schemaVersion === 1, "schemaVersion must be 1");
   requireDate(document.updatedAt, "updatedAt");
@@ -365,8 +368,10 @@ export function validateSpotAdvice(document, context, { requirePublishedCoverage
     }
     requireValue(Array.isArray(research.directClaimIds), `${label} directClaimIds must be an array`);
     requireUnique(research.directClaimIds, `${label} direct claim id`);
-    if (research.directEvidenceOutcome === "found") requireValue(research.directClaimIds.length > 0, `${label} found outcome requires a direct claim`);
-    if (research.directEvidenceOutcome === "no-credible-spot-source-found") requireValue(research.directClaimIds.length === 0, `${label} no-source outcome cannot list direct claims`);
+    if (!allowIncompleteDirectEvidenceTransition) {
+      if (research.directEvidenceOutcome === "found") requireValue(research.directClaimIds.length > 0, `${label} found outcome requires a direct claim`);
+      if (research.directEvidenceOutcome === "no-credible-spot-source-found") requireValue(research.directClaimIds.length === 0, `${label} no-source outcome cannot list direct claims`);
+    }
     const acceptedUrls = new Set(research.checkedSources.filter((source) => source.decision === "accepted").map((source) => source.url));
     for (const claimId of research.directClaimIds) {
       const claim = claimsById.get(claimId);

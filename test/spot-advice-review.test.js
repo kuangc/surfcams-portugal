@@ -103,6 +103,26 @@ function draftClaim(id = "review-fixture-claim") {
   };
 }
 
+function browserDefaultClaim(id, spotId) {
+  return {
+    ...draftClaim(id),
+    scope: { type: "spot", id: spotId },
+    overrideKey: `wind.${id}`,
+    summary: "New local claim",
+    evidence: [{
+      kind: "user-observed",
+      title: "Local observation",
+      publisher: "Local knowledge",
+      url: null,
+      accessedAt: "2026-07-13",
+      supportedClaim: "New local claim",
+      quality: "first-hand",
+      status: "accepted"
+    }],
+    confidence: "low"
+  };
+}
+
 test("working state starts from an isolated canonical document and digest", () => {
   const canonical = fixtureDocument();
   const digest = digestDocument(canonical);
@@ -655,6 +675,89 @@ test("working validation skips only coverage while rejecting an unrelated invali
   const before = runtime.state().document;
   assert.throws(() => runtime.replaceState(updateClaim(runtime.state(), "research-baleal-mechanics", { reviewedAt: "invalid" })), /timestamp/i);
   assert.deepEqual(runtime.state().document, before);
+});
+
+test("actual no-source Add Claim can autosave and recover while strict boundaries reject it until the outcome is resolved", () => {
+  const context = fixtureContext();
+  const canonical = fixtureDocument();
+  const baseDigest = digestDocument(canonical);
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value),
+    removeItem: (key) => values.delete(key)
+  };
+  const runtime = createReviewRuntime({ canonicalDocument: canonical, baseDigest, storage, validationContext: context });
+  const spotId = "surfline-praia-da-laje";
+  const claimId = "browser-praia-da-laje-local-wind";
+  const canonicalResearch = canonical.spotResearch.find((row) => row.spotId === spotId);
+  assert.equal(canonicalResearch.directEvidenceOutcome, "no-credible-spot-source-found");
+  assert.deepEqual(canonicalResearch.directClaimIds, []);
+
+  const intermediate = runtime.replaceState(addClaim(runtime.state(), browserDefaultClaim(claimId, spotId), { directSpotId: spotId }));
+  assert.ok(intermediate.document.spotResearch.find((row) => row.spotId === spotId).directClaimIds.includes(claimId));
+  assert.throws(() => validateReviewDocument(intermediate.document, context), /no-source outcome cannot list direct claims/i);
+  assert.throws(() => runtime.feedback(), /no-source outcome cannot list direct claims/i);
+
+  const incompleteFeedback = exportFeedback(intermediate);
+  assert.throws(() => importFeedback(stateFixture(), incompleteFeedback, { validationContext: context }), /no-source outcome cannot list direct claims/i);
+  assert.throws(() => compileSpotAdvice(incompleteFeedback.document, context), /no-source outcome cannot list direct claims/i);
+  const { canonicalPath } = tempCanonical();
+  const beforeApply = fs.readFileSync(canonicalPath, "utf8");
+  assert.throws(() => applyFeedbackFile({ canonicalPath, feedback: incompleteFeedback, context }), /no-source outcome cannot list direct claims/i);
+  assert.equal(fs.readFileSync(canonicalPath, "utf8"), beforeApply);
+
+  runtime.saveNow();
+  const recovered = createReviewRuntime({ canonicalDocument: canonical, baseDigest, storage, validationContext: context });
+  assert.ok(recovered.state().document.advice.some((claim) => claim.id === claimId));
+  assert.equal(recovered.state().document.spotResearch.find((row) => row.spotId === spotId).directEvidenceOutcome, "no-credible-spot-source-found");
+
+  recovered.replaceState(updateResearchRow(recovered.state(), spotId, { directEvidenceOutcome: "found" }));
+  const completeFeedback = recovered.feedback();
+  assert.doesNotThrow(() => validateReviewDocument(completeFeedback.document, context));
+  const applied = applyFeedbackFile({ canonicalPath, feedback: completeFeedback, context });
+  assert.deepEqual(applied.document, completeFeedback.document);
+  assert.deepEqual(readJson(canonicalPath), completeFeedback.document);
+});
+
+test("working state accepts outcome-first and sole-direct-claim deletion transitions without relaxing unrelated validation", () => {
+  const context = fixtureContext();
+  const canonical = fixtureDocument();
+  const baseDigest = digestDocument(canonical);
+  const runtime = createReviewRuntime({
+    canonicalDocument: canonical,
+    baseDigest,
+    storage: { getItem: () => null, setItem() {}, removeItem() {} },
+    validationContext: context
+  });
+  const outcomeFirstSpotId = "surfline-praia-do-rei";
+  const outcomeFirst = runtime.replaceState(updateResearchRow(runtime.state(), outcomeFirstSpotId, { directEvidenceOutcome: "found" }));
+  assert.deepEqual(outcomeFirst.document.spotResearch.find((row) => row.spotId === outcomeFirstSpotId).directClaimIds, []);
+  assert.throws(() => runtime.feedback(), /found outcome requires a direct claim/i);
+  assert.doesNotThrow(() => recoverAutosave(canonical, baseDigest, serializeAutosave(outcomeFirst), { validationContext: context }));
+
+  const deletionRuntime = createReviewRuntime({
+    canonicalDocument: canonical,
+    baseDigest,
+    storage: { getItem: () => null, setItem() {}, removeItem() {} },
+    validationContext: context
+  });
+  const directSpotId = "surfline-nazare";
+  const directClaimId = "research-nazare-swell";
+  const canonicalDirectResearch = canonical.spotResearch.find((row) => row.spotId === directSpotId);
+  assert.equal(canonicalDirectResearch.directEvidenceOutcome, "found");
+  assert.deepEqual(canonicalDirectResearch.directClaimIds, [directClaimId]);
+  const deleted = deletionRuntime.replaceState(deleteClaim(deletionRuntime.state(), directClaimId));
+  assert.deepEqual(deleted.document.spotResearch.find((row) => row.spotId === directSpotId).directClaimIds, []);
+  assert.throws(() => deletionRuntime.feedback(), /found outcome requires a direct claim/i);
+  assert.doesNotThrow(() => recoverAutosave(canonical, baseDigest, serializeAutosave(deleted), { validationContext: context }));
+
+  const beforeInvalid = deletionRuntime.state().document;
+  assert.throws(
+    () => deletionRuntime.replaceState(updateResearchRow(deletionRuntime.state(), "surfline-baleal", { reviewedAt: "invalid" })),
+    /timestamp/i
+  );
+  assert.deepEqual(deletionRuntime.state().document, beforeInvalid);
 });
 
 test("all derived HTML is escaped and unsafe links are omitted while safe links are hardened", () => {
