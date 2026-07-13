@@ -29,6 +29,13 @@ function mergeActualAppSubjects() {
   );
 }
 
+function mainFunctionSource(name) {
+  const source = fs.readFileSync("src/main.js", "utf8");
+  const match = source.match(new RegExp(`function ${name}\\([^)]*\\) \\{[\\s\\S]*?^\\}`, "m"));
+  assert.ok(match, `${name} is defined in src/main.js`);
+  return match[0];
+}
+
 test("mergeAdviceGuideSubjects adds deferred selected spots without inventing cameras", () => {
   const merged = mergeAdviceGuideSubjects({ cameras: [] }, adviceRuntime);
 
@@ -268,6 +275,54 @@ test("deferred guides survive the real Explore collection, search, and playbook 
 
   const caveMatches = filterCameras(exploreCollection, { query: "Cave" });
   assert.ok(caveMatches.some((camera) => /carcavelos/i.test(camera.name)), "legacy substring matches remain visible after exact Cave");
+});
+
+test("real guide-only subjects stay in Explore but never enter Favorites manage lists", () => {
+  const merged = mergeActualAppSubjects();
+  const exploreCollection = firstClassCameras(merged);
+  const guideOnlyIds = ["surfline-cave", "surfline-praia-da-ursa"];
+  const collectFavorites = Function("state", "els", "filterCameras", `
+    const driveDistanceKm = () => null;
+    const getConditions = () => null;
+    const rateSurfSpot = () => null;
+    ${mainFunctionSource("manageSpotCameras")}
+    ${mainFunctionSource("favoriteManagerCameras")}
+    return {
+      manageCollection: manageSpotCameras(),
+      favoritesCollection: favoriteManagerCameras()
+    };
+  `);
+  const emptyControl = { value: "" };
+  const { manageCollection, favoritesCollection } = collectFavorites(
+    { db: merged, cameras: exploreCollection, favoriteIds: new Set(), preferences: {} },
+    {
+      favoritesSearchInput: emptyControl,
+      favoritesRegionSelect: emptyControl,
+      favoritesStatusSelect: emptyControl,
+      favoritesStreamSelect: emptyControl,
+      favoritesDistanceSelect: emptyControl,
+      favoritesSortSelect: emptyControl
+    },
+    filterCameras
+  );
+
+  assert.deepEqual(
+    exploreCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id).sort(),
+    guideOnlyIds
+  );
+  assert.deepEqual(
+    manageCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id),
+    []
+  );
+  assert.deepEqual(
+    favoritesCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id),
+    []
+  );
+  assert.deepEqual(
+    manageCollection.map((camera) => camera.id),
+    merged.cameras.filter((camera) => !camera.adviceGuideOnly).map((camera) => camera.id),
+    "normal spots retain their manage-list order"
+  );
 });
 
 test("main wires guides after metadata and promotion merges and labels them without live claims", () => {

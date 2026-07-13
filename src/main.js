@@ -185,7 +185,8 @@ function favoriteCameras() {
 }
 
 function manageSpotCameras() {
-  return state.db?.cameras || state.cameras;
+  return (state.db?.cameras || state.cameras)
+    .filter((camera) => !camera.adviceGuideOnly);
 }
 
 // The Explore screen has no sort control, so it renders state.cameras in whatever
