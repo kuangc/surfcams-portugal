@@ -114,6 +114,16 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.doesNotMatch(mainSource, /autoFill/i);
 });
 
+test("main controller loads hourly forecasts only for the Might be good roster", () => {
+  assert.match(mainSource, /createTodayForecastStore/);
+  assert.match(mainSource, /recommendationGeneration:\s*0/);
+  assert.match(mainSource, /function recommendationCameras/);
+  assert.match(mainSource, /inSuggestionFence/);
+  assert.match(mainSource, /function loadTodayForecasts/);
+  assert.match(mainSource, /state\.todayForecastStore\.load\(recommendationCameras\(\)\)/);
+  assert.match(mainSource, /mode === "might-be-good"[\s\S]*loadTodayForecasts/);
+});
+
 test("explore map refreshes after the visible layout has painted", () => {
   assert.match(mainSource, /function afterNextPaint/);
   assert.match(mainSource, /requestAnimationFrame/);

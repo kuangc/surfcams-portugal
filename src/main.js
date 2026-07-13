@@ -49,6 +49,7 @@ import {
 } from "./surf-preferences.js";
 import { rateSurfSpot } from "./surf-rating.js";
 import { emptyTideData, findTideSnapshot, loadTideData } from "./tide-data.js";
+import { createTodayForecastStore } from "./today-forecast-store.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
@@ -68,6 +69,11 @@ const state = {
   preferences: DEFAULT_SURF_PREFERENCES,
   liveForecastCache: new Map(),
   liveForecastPending: new Set(),
+  todayForecastStore: null,
+  todayForecastLoading: false,
+  todayForecastSummary: null,
+  todayForecastUnsubscribe: null,
+  recommendationGeneration: 0,
   monitorMode: "favorites",
   monitorPlayers: new Map(),
   adviceRefreshTimerId: null,
@@ -212,6 +218,28 @@ function getConditions(camera) {
     liveCache: state.liveForecastCache ?? null,
     now: Date.now()
   });
+}
+
+function recommendationCameras() {
+  return state.cameras
+    .filter((camera) => !camera.adviceGuideOnly)
+    .filter((camera) => !state.favoriteIds.has(camera.id))
+    .filter(inSuggestionFence);
+}
+
+async function loadTodayForecasts() {
+  if (!state.todayForecastStore) return;
+  const generation = state.recommendationGeneration + 1;
+  state.recommendationGeneration = generation;
+  state.todayForecastLoading = true;
+  state.todayForecastSummary = null;
+  renderMonitorIfActive();
+
+  const summary = await state.todayForecastStore.load(recommendationCameras());
+  if (state.recommendationGeneration !== generation) return;
+  state.todayForecastLoading = false;
+  state.todayForecastSummary = summary;
+  renderMonitorIfActive();
 }
 
 function requestLiveForecastForSelection(camera) {
@@ -441,6 +469,11 @@ function setMonitorMode(mode) {
   els.monitorFavoritesMode.setAttribute("aria-pressed", String(mode === "favorites"));
   els.monitorMightBeGoodMode.setAttribute("aria-pressed", String(mode === "might-be-good"));
   renderMonitor();
+  if (mode === "might-be-good") {
+    void loadTodayForecasts();
+  } else {
+    state.recommendationGeneration += 1;
+  }
 }
 
 function renderMonitor() {
@@ -1619,6 +1652,12 @@ async function init() {
   state.cameras = sortCamerasByLatitudeDescending(firstClassCameras(state.db));
   state.favoriteIds = sanitizeFavoriteIds(manageSpotCameras(), loadFavoriteIds(manageSpotCameras()));
   state.preferences = loadSurfPreferences();
+  state.todayForecastStore = createTodayForecastStore({
+    fetchForecast: (camera) => fetchLiveForecast(camera)
+  });
+  state.todayForecastUnsubscribe = state.todayForecastStore.subscribe(() => {
+    if (state.monitorMode === "might-be-good") renderMonitorIfActive();
+  });
 
   renderRegions();
   renderConfigure();
