@@ -27,7 +27,7 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
-import { bestNearMiss, inSuggestionFence, mightBeGoodCameras, monitorCameraSlots } from "./monitor-cameras.js";
+import { inSuggestionFence, monitorCameraSlots } from "./monitor-cameras.js";
 import {
   applySpotMetadataToCameraDb,
   emptySpotData,
@@ -38,6 +38,7 @@ import {
 import {
   findAdviceTideSnapshot,
   formatSpotPlaybook,
+  recommendationAdviceFor,
   selectLocalLens
 } from "./spot-advice.js";
 import { stretchMembers } from "./stretch-view.js";
@@ -50,6 +51,8 @@ import {
 import { rateSurfSpot } from "./surf-rating.js";
 import { emptyTideData, findTideSnapshot, loadTideData } from "./tide-data.js";
 import { createTodayForecastStore } from "./today-forecast-store.js";
+import { recommendTodaySpots } from "./today-recommendations.js";
+import { formatLeaveCall, formatLisbonTime, formatWindowCall } from "./today-recommendations-ui.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
 const MONITOR_DURATION_MS = 60_000;
@@ -98,6 +101,11 @@ const els = {
   monitorStatus: document.querySelector("#monitorStatus"),
   monitorWaterSummary: document.querySelector("#monitorWaterSummary"),
   monitorGrid: document.querySelector("#monitorGrid"),
+  todayRecommendations: document.querySelector("#todayRecommendations"),
+  bestBetsList: document.querySelector("#bestBetsList"),
+  worthChecking: document.querySelector("#worthChecking"),
+  worthCheckingCount: document.querySelector("#worthCheckingCount"),
+  worthCheckingList: document.querySelector("#worthCheckingList"),
   monitorFavoritesMode: document.querySelector("#monitorFavoritesMode"),
   monitorMightBeGoodMode: document.querySelector("#monitorMightBeGoodMode"),
   favoritesSearchInput: document.querySelector("#favoritesSearchInput"),
@@ -210,6 +218,10 @@ function sortCamerasByLatitudeDescending(cameras) {
 
 function driveDistanceKm(camera) {
   return findDriveEstimate(camera, state.spotData)?.routeDistanceKm;
+}
+
+function driveMinutes(camera) {
+  return findDriveEstimate(camera, state.spotData)?.estimatedMinutes ?? null;
 }
 
 function getConditions(camera) {
@@ -464,6 +476,216 @@ function createMonitorTile(slot, index) {
   return tile;
 }
 
+function recommendationInputs({ readyOnly = false } = {}) {
+  const now = new Date();
+  return recommendationCameras()
+    .filter((camera) => !readyOnly || state.todayForecastStore?.status(camera) === "ready")
+    .map((camera) => ({
+      camera,
+      forecast: state.todayForecastStore?.get(camera) || null,
+      conditions: getConditions(camera),
+      advice: recommendationAdviceFor(camera, state.spotData, now.getTime()),
+      tide: findAdviceTideSnapshot(camera, state.spotData, state.tideData, now),
+      driveMinutes: driveMinutes(camera)
+    }));
+}
+
+function appendEvidenceRow(container, label, value) {
+  if (!value) return;
+  const row = document.createElement("div");
+  const term = document.createElement("span");
+  const detail = document.createElement("strong");
+  term.textContent = label;
+  detail.textContent = value;
+  row.append(term, detail);
+  container.appendChild(row);
+}
+
+function renderTimelineDetails(details, evaluation) {
+  details.textContent = "";
+  details.dataset.selectedTime = evaluation.time;
+  appendEvidenceRow(details, "Time", formatLisbonTime(evaluation.time));
+  appendEvidenceRow(details, "Local face", evaluation.localFace
+    ? `${evaluation.localFace.minM.toFixed(1)}–${evaluation.localFace.maxM.toFixed(1)} m`
+    : "No trusted estimate");
+  appendEvidenceRow(details, "Primary swell", Number.isFinite(evaluation.offshore?.primarySwellHeightM)
+    ? `${evaluation.offshore.primarySwellHeightM.toFixed(1)} m · ${evaluation.offshore.primarySwellPeriodS ?? "?"} s`
+    : "Unknown");
+  appendEvidenceRow(details, "Wind", Number.isFinite(evaluation.wind?.speedKmh)
+    ? `${Math.round(evaluation.wind.speedKmh)} km/h · ${evaluation.wind.directionDeg ?? "?"}°`
+    : "Unknown");
+  appendEvidenceRow(details, "Tide", evaluation.tide?.stage
+    ? `${evaluation.tide.stage} · ${evaluation.tide.direction || "turning"}`
+    : "Unknown");
+  appendEvidenceRow(details, "Evidence", `${evaluation.confidence} confidence · ${evaluation.localFace?.source || "no local-face source"}`);
+}
+
+function createTodayTimeline(recommendation) {
+  const shell = document.createElement("section");
+  shell.className = "recommendation-timeline";
+
+  const heading = document.createElement("h4");
+  heading.textContent = "Today by hour";
+
+  const timeline = document.createElement("div");
+  timeline.className = "today-timeline";
+  timeline.setAttribute("role", "group");
+  timeline.setAttribute("aria-label", `Hourly forecast for ${recommendation.camera.name}`);
+
+  const details = document.createElement("div");
+  details.className = "today-timeline__details";
+  const buttons = [];
+  recommendation.evaluations.forEach((evaluation) => {
+    const button = document.createElement("button");
+    button.className = "today-timeline__hour";
+    button.type = "button";
+    button.dataset.tone = evaluation.quality;
+    button.textContent = formatLisbonTime(evaluation.time);
+    button.setAttribute("aria-label", `${formatLisbonTime(evaluation.time)}: ${evaluation.quality}. ${evaluation.primaryReason}`);
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", () => {
+      buttons.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+      renderTimelineDetails(details, evaluation);
+    });
+    buttons.push(button);
+    timeline.appendChild(button);
+  });
+
+  const selected = recommendation.evaluations.find((evaluation) => (
+    Date.parse(evaluation.time) >= Date.parse(recommendation.bestWindow.start)
+    && evaluation.quality === "good"
+  )) || recommendation.evaluations[0];
+  if (selected) {
+    const selectedIndex = recommendation.evaluations.indexOf(selected);
+    buttons[selectedIndex]?.setAttribute("aria-pressed", "true");
+    renderTimelineDetails(details, selected);
+  }
+
+  shell.append(heading, timeline, details);
+  return shell;
+}
+
+function createRecommendationAction(camera) {
+  if (isReportOnlyCamera(camera)) {
+    const action = document.createElement("a");
+    action.className = "recommendation-action";
+    action.href = reportUrl(camera);
+    action.target = "_blank";
+    action.rel = "noopener noreferrer";
+    action.textContent = "Open Surfline report";
+    return action;
+  }
+
+  const action = document.createElement("button");
+  action.className = "recommendation-action";
+  action.type = "button";
+  action.textContent = "Watch live cam";
+  action.addEventListener("click", () => selectExploreCamera(camera, { route: true, scroll: true }));
+  return action;
+}
+
+function createBestBetCard(recommendation) {
+  const card = document.createElement("article");
+  card.className = "best-bet-card";
+
+  const header = document.createElement("header");
+  header.className = "best-bet-card__header";
+  const identity = document.createElement("div");
+  const name = document.createElement("h3");
+  name.textContent = recommendation.camera.name;
+  const timeCall = document.createElement("p");
+  timeCall.className = "best-bet-card__time";
+  timeCall.textContent = formatWindowCall(recommendation.bestWindow);
+  identity.append(name, timeCall);
+
+  const confidence = document.createElement("span");
+  confidence.className = "recommendation-confidence";
+  confidence.dataset.confidence = recommendation.confidence;
+  confidence.textContent = `${recommendation.confidence} confidence`;
+  header.append(identity, confidence);
+
+  const leaveCall = document.createElement("p");
+  leaveCall.className = "best-bet-card__leave";
+  leaveCall.textContent = formatLeaveCall(recommendation.bestWindow, recommendation.driveMinutes) || "Travel time unavailable";
+
+  const reasons = document.createElement("ul");
+  reasons.className = "recommendation-reasons";
+  recommendation.reasons.slice(0, 3).forEach((reason) => {
+    const item = document.createElement("li");
+    item.textContent = reason;
+    reasons.appendChild(item);
+  });
+
+  const actions = document.createElement("div");
+  actions.className = "recommendation-actions";
+  actions.appendChild(createRecommendationAction(recommendation.camera));
+
+  card.append(header, leaveCall, reasons, actions, createTodayTimeline(recommendation));
+  return card;
+}
+
+function createWorthCheckingRow(recommendation) {
+  const row = document.createElement("article");
+  row.className = "worth-checking-row";
+  const copy = document.createElement("div");
+  const name = document.createElement("h3");
+  name.textContent = recommendation.camera.name;
+  const reason = document.createElement("p");
+  reason.textContent = recommendation.primaryReason;
+  copy.append(name, reason);
+  row.append(copy, createRecommendationAction(recommendation.camera));
+  return row;
+}
+
+function appendTodayEmptyState(message, detail = "") {
+  const empty = document.createElement("div");
+  empty.className = "today-empty-state";
+  const title = document.createElement("strong");
+  title.textContent = message;
+  empty.appendChild(title);
+  if (detail) {
+    const copy = document.createElement("p");
+    copy.textContent = detail;
+    empty.appendChild(copy);
+  }
+  els.bestBetsList.appendChild(empty);
+}
+
+function renderTodayRecommendations() {
+  const readyOnly = state.todayForecastLoading;
+  const inputs = recommendationInputs({ readyOnly });
+  const result = recommendTodaySpots(inputs, state.preferences, { now: Date.now() });
+  const wasWorthCheckingOpen = els.worthChecking.open;
+
+  els.bestBetsList.textContent = "";
+  els.worthCheckingList.textContent = "";
+  result.bestBets.forEach((recommendation) => {
+    els.bestBetsList.appendChild(createBestBetCard(recommendation));
+  });
+
+  if (!result.bestBets.length) {
+    if (state.todayForecastLoading && !inputs.length) {
+      appendTodayEmptyState("Checking the remaining daylight…", "Best bets appear only after the required inputs are ready.");
+    } else if (!state.todayForecastLoading && (state.todayForecastSummary?.ready || 0) === 0) {
+      appendTodayEmptyState("No trustworthy Best bets for the rest of today.", "No fresh hourly forecast — cannot make a trustworthy call.");
+    } else {
+      appendTodayEmptyState("No trustworthy Best bets for the rest of today.", "Forecast loaded, but every researched spot misses a hard gate.");
+    }
+  }
+
+  result.worthChecking.forEach((recommendation) => {
+    els.worthCheckingList.appendChild(createWorthCheckingRow(recommendation));
+  });
+  els.worthCheckingCount.textContent = result.worthChecking.length ? `(${result.worthChecking.length})` : "";
+  els.worthChecking.hidden = result.worthChecking.length === 0;
+  els.worthChecking.open = wasWorthCheckingOpen && !els.worthChecking.hidden;
+
+  els.monitorStatus.hidden = false;
+  els.monitorStatus.textContent = state.todayForecastLoading
+    ? `Checking today · ${inputs.length}/${recommendationCameras().length} spots ready`
+    : `${result.bestBets.length} Best bets · ${result.worthChecking.length} Worth checking · local face estimates anchored to fresh Surfline conditions`;
+}
+
 function setMonitorMode(mode) {
   state.monitorMode = mode;
   els.monitorFavoritesMode.setAttribute("aria-pressed", String(mode === "favorites"));
@@ -481,24 +703,24 @@ function renderMonitor() {
   renderWaterSummaries();
   renderStalenessBanner();
 
-  const slots = state.monitorMode === "favorites"
-    ? monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm })
-    : mightBeGoodCameras(state.cameras, state.favoriteIds, state.preferences, undefined, { getDriveDistanceKm: driveDistanceKm, getConditions })
-      .map((camera) => ({ camera, empty: false }));
+  const favoritesMode = state.monitorMode === "favorites";
+  els.monitorGrid.hidden = !favoritesMode;
+  els.todayRecommendations.hidden = favoritesMode;
+  if (!favoritesMode) {
+    els.monitorWaterSummary.hidden = true;
+    els.monitorGrid.textContent = "";
+    renderTodayRecommendations();
+    return;
+  }
+
+  const slots = monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm });
 
   els.monitorGrid.textContent = "";
 
   if (!slots.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    let emptyText = "No spots match the current might-be-good model.";
-    if (state.monitorMode === "might-be-good") {
-      const nearMiss = bestNearMiss(state.cameras, state.favoriteIds, state.preferences, { getConditions });
-      emptyText = nearMiss
-        ? `Nothing in your ${state.preferences.minSurfHeightM}\u2013${state.preferences.maxSurfHeightM}m window right now \u2014 best fresh reading: ${nearMiss.camera.name} ${nearMiss.resolved.waveMinM}\u2013${nearMiss.resolved.waveMaxM}m${nearMiss.resolved.rating ? ` (${nearMiss.resolved.rating.toLowerCase().replace(/_/g, " ")})` : ""}.`
-        : "No fresh Surfline conditions available yet \u2014 run the daily refresh.";
-    }
-    empty.textContent = emptyText;
+    empty.textContent = "No favorites selected.";
     els.monitorGrid.appendChild(empty);
   } else {
     slots.forEach((slot, index) => {
@@ -506,10 +728,8 @@ function renderMonitor() {
     });
   }
 
-  els.monitorStatus.hidden = state.monitorMode === "favorites";
-  els.monitorStatus.textContent = state.monitorMode === "favorites"
-    ? ""
-    : "Might be good is model-based. Check the cams before leaving.";
+  els.monitorStatus.hidden = true;
+  els.monitorStatus.textContent = "";
 }
 
 function createMetricIcon(icon, key, tone = "neutral") {

@@ -496,7 +496,9 @@ test("one advice scheduler updates persistent lens and expiry nodes in place wit
   assert.equal(timers.size, 0);
 });
 
-test("advice UI remains display-only and monitor ordering remains byte-equivalent", () => {
+test("advice presentation leaves legacy conditions and Favorites ordering unchanged", () => {
+  assert.match(mainSource, /recommendationAdviceFor/);
+  assert.match(mainSource, /recommendTodaySpots/);
   assert.doesNotMatch(mainSource, /rateSurfSpot\([^)]*(?:lens|advice|claim|playbook)/);
   assert.doesNotMatch(mainSource, /(?:waveMinM|waveMaxM|providerSpotSurfMinM|providerSpotSurfMaxM)\s*[+*]?=/);
 

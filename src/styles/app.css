@@ -223,6 +223,271 @@ button:disabled {
   gap: 14px;
 }
 
+.today-recommendations {
+  display: grid;
+  gap: 18px;
+  max-width: 980px;
+}
+
+.today-recommendations[hidden] {
+  display: none;
+}
+
+.recommendation-section__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.recommendation-section__header h2,
+.best-bet-card h3,
+.worth-checking-row h3 {
+  margin: 0;
+}
+
+.recommendation-section__header > p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.best-bets-list {
+  display: grid;
+  gap: 12px;
+}
+
+.best-bet-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.best-bet-card__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.best-bet-card__time {
+  margin: 4px 0 0;
+  color: var(--teal-dark);
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.best-bet-card__leave {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.recommendation-confidence {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.recommendation-confidence[data-confidence="high"] {
+  border-color: rgba(22, 116, 91, 0.45);
+  background: #e8f6ef;
+  color: var(--green);
+}
+
+.recommendation-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recommendation-reasons li {
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 820;
+}
+
+.recommendation-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.recommendation-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--teal);
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: var(--teal);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.recommendation-action:focus-visible,
+.today-timeline__hour:focus-visible,
+.worth-checking summary:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.recommendation-timeline {
+  min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.recommendation-timeline h4 {
+  margin: 0 0 7px;
+  font-size: 0.78rem;
+}
+
+.today-timeline {
+  display: flex;
+  gap: 6px;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.today-timeline__hour {
+  flex: 0 0 auto;
+  min-width: 68px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.today-timeline__hour[data-tone="good"] {
+  border-color: rgba(22, 116, 91, 0.5);
+  background: #e8f6ef;
+  color: var(--green);
+}
+
+.today-timeline__hour[data-tone="possible"] {
+  border-color: rgba(200, 145, 30, 0.5);
+  background: #fff8e0;
+  color: #765410;
+}
+
+.today-timeline__hour[data-tone="poor"] {
+  border-color: rgba(187, 75, 67, 0.34);
+  background: #fff0ee;
+  color: var(--red);
+}
+
+.today-timeline__hour[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.today-timeline__details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.today-timeline__details > div {
+  display: grid;
+  gap: 2px;
+}
+
+.today-timeline__details span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.today-timeline__details strong {
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.worth-checking {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px 14px;
+  background: var(--surface);
+}
+
+.worth-checking summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.worth-checking > p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.worth-checking-list {
+  display: grid;
+  gap: 8px;
+}
+
+.worth-checking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.worth-checking-row p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.today-empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.today-empty-state p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
 .water-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));

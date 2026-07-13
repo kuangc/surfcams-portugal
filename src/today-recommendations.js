@@ -97,7 +97,7 @@ function confidenceFor(localFace, advice) {
   return confidence;
 }
 
-function resultFor({ hour, localFace, advice, eligibility, quality, confidence, primaryReason, reasons }) {
+function resultFor({ hour, localFace, advice, tide, conditions, eligibility, quality, confidence, primaryReason, reasons }) {
   return {
     time: hour?.time || null,
     eligibility,
@@ -119,7 +119,13 @@ function resultFor({ hour, localFace, advice, eligibility, quality, confidence, 
     wind: hour ? {
       speedKmh: hour.windKmh ?? null,
       directionDeg: hour.windDirectionDeg ?? null
-    } : null
+    } : null,
+    tide: tide?.stage ? { stage: tide.stage, direction: tide.direction ?? null } : null,
+    provider: {
+      rating: conditions?.rating ?? null,
+      observed: conditions?.ratingObserved === true,
+      fetchedAt: conditions?.fetchedAt ?? null
+    }
   };
 }
 
@@ -135,7 +141,7 @@ export function evaluateTodayHour({
   now = Date.now()
 }) {
   const confidence = confidenceFor(localFace, advice);
-  const base = { hour, localFace, advice, confidence };
+  const base = { hour, localFace, advice, tide, conditions, confidence };
   if (daylight !== true) {
     const unknown = daylight == null;
     return resultFor({ ...base, eligibility: unknown ? "unknown" : "ineligible", quality: "poor", primaryReason: unknown ? "Daylight window is unknown." : "Outside daylight.", reasons: [] });

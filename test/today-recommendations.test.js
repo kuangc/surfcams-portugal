@@ -184,6 +184,7 @@ test("Caparica high tide and São Julião mid tide change hourly quality rather 
   assert.equal(caparicaHigh.quality, "good");
   assert.equal(juliaoMid.quality, "good");
   assert.deepEqual(caparicaHigh.localFace, caparicaMid.localFace);
+  assert.deepEqual(caparicaHigh.tide, { stage: "high", direction: "rising" });
 });
 
 test("quality and confidence stay independent for missing research and conflicts", () => {
@@ -222,6 +223,7 @@ test("modeled POOR is a penalty while an observed POOR only vetoes the current h
 
   assert.equal(modeled.eligibility, "eligible");
   assert.equal(modeled.quality, "possible");
+  assert.deepEqual(modeled.provider, { rating: "POOR", observed: false, fetchedAt: "2026-07-13T08:30:00.000Z" });
   assert.equal(observedNow.eligibility, "ineligible");
   assert.equal(observedFuture.eligibility, "eligible");
 });

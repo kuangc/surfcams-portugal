@@ -6148,6 +6148,23 @@
         </header>
         <p class="status-line" id="monitorStatus">Loading cameras...</p>
         <section class="water-summary" id="monitorWaterSummary" aria-label="Water and tide"></section>
+        <section class="today-recommendations" id="todayRecommendations" hidden aria-label="Surf recommendations for today">
+          <section class="recommendation-section" aria-labelledby="bestBetsTitle">
+            <header class="recommendation-section__header">
+              <div>
+                <p class="eyebrow">Remaining daylight</p>
+                <h2 id="bestBetsTitle">Best bets</h2>
+              </div>
+              <p>Strict matches for your surf range, reviewed local rules, wind, tide, and daylight.</p>
+            </header>
+            <div class="best-bets-list" id="bestBetsList"></div>
+          </section>
+          <details class="worth-checking" id="worthChecking">
+            <summary><span>Worth checking</span><span id="worthCheckingCount"></span></summary>
+            <p>Marginal, incomplete, or lower-confidence calls stay separate from Best bets.</p>
+            <div class="worth-checking-list" id="worthCheckingList"></div>
+          </details>
+        </section>
         <div class="monitor-grid" id="monitorGrid" aria-live="polite"></div>
       </section>
 

@@ -80,7 +80,7 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /findSurflineMatches/);
   assert.match(mainSource, /monitorMode:\s*"favorites"/);
   assert.match(mainSource, /monitorCameraSlots/);
-  assert.match(mainSource, /mightBeGoodCameras/);
+  assert.match(mainSource, /recommendTodaySpots/);
   assert.match(mainSource, /renderMonitor/);
   assert.match(mainSource, /renderFavorites/);
   assert.match(mainSource, /renderExploreSelection/);
@@ -110,7 +110,7 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderConfigure/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
   assert.doesNotMatch(mainSource, /Showing favorites only\. Empty slots are not auto-filled\./);
-  assert.match(mainSource, /monitorStatus\.hidden\s*=\s*state\.monitorMode === "favorites"/);
+  assert.match(mainSource, /renderTodayRecommendations/);
   assert.doesNotMatch(mainSource, /autoFill/i);
 });
 
