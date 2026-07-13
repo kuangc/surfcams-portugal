@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import * as spotAdviceModule from "../src/spot-advice.js";
 
 import {
   adviceConditionSnapshot,
@@ -107,6 +108,64 @@ test("subject identity accepts selected self and trusted conditions identity onl
   assert.equal(adviceSubjectIdFor({ id: "surfline-cave", guideOnly: true }, spotData()), "surfline-cave");
   assert.equal(adviceSubjectIdFor({ id: "ambiguous-stretch-cam" }, spotData()), null);
   assert.equal(adviceSubjectIdFor({ id: "made-up", promoted: true }, spotData()), null);
+});
+
+test("recommendation advice exposes active decisive rules and conflicts by trusted subject", () => {
+  assert.equal(typeof spotAdviceModule.recommendationAdviceFor, "function");
+  const recommendationAdviceFor = spotAdviceModule.recommendationAdviceFor;
+  const sd = spotData();
+
+  const sesimbra = recommendationAdviceFor({ id: "praia-sesimbra" }, sd, NOW);
+  const caxias = recommendationAdviceFor({ id: "surfline-praia-de-caxias", promoted: true }, sd, NOW);
+  const torre = recommendationAdviceFor({ id: "praia-da-torre" }, sd, NOW);
+  const caparica = recommendationAdviceFor({ id: "surfline-costa-da-caparica", promoted: true }, sd, NOW);
+  const saoJuliao = recommendationAdviceFor({ id: "sao-juliao" }, sd, NOW);
+  const supertubos = recommendationAdviceFor({ id: "surfline-supertubos", promoted: true }, sd, NOW);
+
+  assert.equal(sesimbra.claims.find((claim) => claim.topic === "size-translation").rule.value, 2);
+  assert.equal(caxias.claims.find((claim) => claim.topic === "size-translation").rule.value, 2);
+  assert.equal(torre.claims.find((claim) => claim.topic === "size-translation").rule.value, 1.5);
+  assert.deepEqual(caparica.claims.find((claim) => claim.topic === "tide").rule, { stage: "high", type: "tide-preference" });
+  assert.equal(caparica.claims.find((claim) => claim.topic === "tide").scope.type, "stretch");
+  assert.deepEqual(saoJuliao.claims.find((claim) => claim.topic === "tide").rule, { stage: "mid", type: "tide-preference" });
+  assert.equal(supertubos.claims.length, 0);
+  assert.equal(supertubos.conflicts.length, 1);
+  assert.equal(supertubos.researched, true);
+  assert.equal(Object.isFrozen(sesimbra), true);
+  assert.equal(Object.isFrozen(sesimbra.claims), true);
+});
+
+test("recommendation advice distinguishes missing research and omits expired decisive claims", () => {
+  const expiredSubject = {
+    id: "surfline-expired",
+    decisiveClaims: [{
+      id: "expired",
+      topic: "tide",
+      consensus: "settled",
+      revalidateAfter: "2026-07-11",
+      scope: { type: "spot", id: "surfline-expired" },
+      confidence: "high",
+      rule: { type: "tide-preference", stage: "mid" }
+    }],
+    conflicts: []
+  };
+  const customAdvice = normalizeSpotAdviceRuntime({
+    subjects: { [expiredSubject.id]: expiredSubject },
+    identityReport: { byCameraId: { [expiredSubject.id]: expiredSubject.id } }
+  });
+
+  assert.deepEqual(
+    spotAdviceModule.recommendationAdviceFor({ id: "missing" }, spotData(), NOW),
+    { subjectId: null, claims: [], conflicts: [], researched: false }
+  );
+  assert.deepEqual(
+    spotAdviceModule.recommendationAdviceFor(
+      { id: expiredSubject.id, promoted: true },
+      spotData({ advice: customAdvice }),
+      NOW
+    ),
+    { subjectId: expiredSubject.id, claims: [], conflicts: [], researched: true }
+  );
 });
 
 test("trusted tide camera resolves direct, linked, and explicit stretch identities", () => {

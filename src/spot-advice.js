@@ -197,6 +197,29 @@ function isExpired(claim, nowMs) {
   return Number.isFinite(expiryMs) && nowMs > expiryMs;
 }
 
+export function recommendationAdviceFor(camera, spotData, now = Date.now()) {
+  const empty = { subjectId: null, claims: [], conflicts: [], researched: false };
+  const nowMs = validDateMs(now);
+  const subjectId = adviceSubjectIdFor(camera, spotData);
+  const subject = subjectId ? runtimeAdvice(spotData).subjectsById.get(subjectId) : null;
+  if (!subject) return deepFreeze(empty);
+
+  const claims = nowMs === null
+    ? []
+    : safeArray(subject.decisiveClaims).filter((claim) => (
+      claim?.rule
+      && claim.consensus !== "unresolved"
+      && !isExpired(claim, nowMs)
+    ));
+
+  return deepFreeze(deepClone({
+    subjectId,
+    claims,
+    conflicts: safeArray(subject.conflicts),
+    researched: true
+  }));
+}
+
 function directionInArc(value, arc) {
   if (!Number.isFinite(value) || !Number.isFinite(arc?.start) || !Number.isFinite(arc?.end)) return false;
   const normalized = ((value % 360) + 360) % 360;
