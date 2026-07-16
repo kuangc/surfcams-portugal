@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createFeedTilePlayer } from "../src/video-player.js";
+import { createFeedTilePlayer, createVideoPlayer } from "../src/video-player.js";
 
 function videoStub() {
   return {
@@ -63,4 +63,49 @@ test("createFeedTilePlayer can expire and clear a tile", () => {
 
   assert.equal(status.textContent, "Tap to restart");
   assert.equal(player.state(), "expired");
+});
+
+test("fatal HLS playback failures stay local and report the feed unavailable", async () => {
+  const previousWindow = globalThis.window;
+
+  class HlsStub {
+    static Events = { ERROR: "error", MANIFEST_PARSED: "manifestParsed" };
+    static instance = null;
+
+    static isSupported() {
+      return true;
+    }
+
+    constructor() {
+      this.handlers = new Map();
+      HlsStub.instance = this;
+    }
+
+    loadSource() {}
+
+    attachMedia() {}
+
+    on(event, handler) {
+      this.handlers.set(event, handler);
+    }
+
+    destroy() {}
+  }
+
+  globalThis.window = { Hls: HlsStub };
+
+  try {
+    const video = videoStub();
+    video.canPlayType = () => "";
+    const status = { textContent: "" };
+    const player = createVideoPlayer({ video, status });
+
+    player.play({ streamUrl: "https://example.test/surfline.m3u8" });
+    await Promise.resolve();
+    HlsStub.instance.handlers.get(HlsStub.Events.ERROR)(null, { fatal: true });
+
+    assert.equal(status.textContent, "Feed unavailable");
+  } finally {
+    globalThis.window = previousWindow;
+  }
 });

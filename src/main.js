@@ -1,11 +1,10 @@
 import {
-  firstClassCameras,
   loadCameraDb,
   mergeAdviceGuideSubjects,
   mergePromotedSpots,
-  routeCameraPlayback,
   sanitizeFavoriteIds
 } from "./camera-data.js";
+import { resolveFeedBackedCameras } from "./feed-policy.js";
 import {
   camerasForInitialBounds,
   camerasInBounds,
@@ -34,7 +33,6 @@ import {
   applySpotMetadataToCameraDb,
   emptySpotData,
   findDriveEstimate,
-  findSurflineMatches,
   loadSpotData
 } from "./spot-data.js";
 import {
@@ -97,7 +95,6 @@ const state = {
   markerLayer: null,
   selectedExploreCamera: null,
   explorePlayer: null,
-  reportLinkEl: null,
   stretchChipEl: null,
   stretchPanelEl: null,
   spotPlaybookEl: null,
@@ -212,8 +209,7 @@ function favoriteCameras() {
 }
 
 function manageSpotCameras() {
-  return (state.db?.cameras || state.cameras)
-    .filter((camera) => !camera.adviceGuideOnly);
+  return state.cameras;
 }
 
 // The Explore screen has no sort control, so it renders state.cameras in whatever
@@ -416,39 +412,6 @@ function renderStalenessBanner() {
   state.stalenessBannerEl = banner;
 }
 
-function isReportOnlyCamera(camera) {
-  return !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
-}
-
-function reportUrl(camera) {
-  return camera?.surfline?.pageUrl || camera?.pageUrl || "";
-}
-
-function createReportFrame(camera) {
-  const frame = document.createElement("div");
-  frame.className = "feed-frame report-frame";
-
-  const logo = createProviderLogo("surfline", "Surfline");
-
-  const source = document.createElement("span");
-  source.className = "report-frame__source";
-  source.textContent = "Surfline";
-
-  const title = document.createElement("strong");
-  title.className = "report-frame__title";
-  title.textContent = camera.name;
-
-  const action = document.createElement("a");
-  action.className = "report-frame__action";
-  action.href = reportUrl(camera);
-  action.target = "_blank";
-  action.rel = "noopener noreferrer";
-  action.textContent = "Open Surfline report";
-
-  frame.append(logo, source, title, action);
-  return frame;
-}
-
 function createMonitorTile(slot, index) {
   if (slot.empty || !slot.camera) return createEmptyMonitorTile(index);
 
@@ -458,11 +421,6 @@ function createMonitorTile(slot, index) {
 
   const conditionStrip = createConditionStrip(camera, { showName: true });
   renderLocalLens(conditionStrip, camera);
-
-  if (isReportOnlyCamera(camera)) {
-    tile.append(createReportFrame(camera), conditionStrip);
-    return tile;
-  }
 
   const frame = document.createElement("div");
   frame.className = "feed-frame";
@@ -582,16 +540,6 @@ function createTodayTimeline(recommendation) {
 }
 
 function createRecommendationAction(camera) {
-  if (isReportOnlyCamera(camera)) {
-    const action = document.createElement("a");
-    action.className = "recommendation-action";
-    action.href = reportUrl(camera);
-    action.target = "_blank";
-    action.rel = "noopener noreferrer";
-    action.textContent = "Open Surfline report";
-    return action;
-  }
-
   const action = document.createElement("button");
   action.className = "recommendation-action";
   action.type = "button";
@@ -946,52 +894,7 @@ function createRatingToken(chip) {
   return token;
 }
 
-function createSurflineControl(camera) {
-  const matches = findSurflineMatches(camera, state.spotData);
-  if (!matches.length) return null;
-
-  const control = document.createElement("label");
-  control.className = "condition-chip surfline-control";
-  control.dataset.key = "surfline";
-  control.dataset.tone = "neutral";
-  control.title = "Open a nearby Surfline report";
-
-  const logo = createProviderLogo("surfline", "Surfline");
-
-  const externalIcon = document.createElement("span");
-  externalIcon.className = "external-link-icon";
-  externalIcon.setAttribute("aria-hidden", "true");
-  externalIcon.textContent = "↗";
-
-  const select = document.createElement("select");
-  select.className = "surfline-control__select";
-  select.setAttribute("aria-label", `Open Surfline report for ${camera.name}`);
-
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Nearby";
-  select.appendChild(placeholder);
-
-  matches.forEach((match) => {
-    const option = document.createElement("option");
-    option.value = match.url;
-    option.textContent = match.name;
-    select.appendChild(option);
-  });
-
-  select.addEventListener("click", (event) => event.stopPropagation());
-  select.addEventListener("change", () => {
-    const selectedUrl = select.value;
-    select.value = "";
-    if (!selectedUrl) return;
-    window.open(selectedUrl, "_blank", "noopener,noreferrer");
-  });
-
-  control.append(logo, externalIcon, select);
-  return control;
-}
-
-function createConditionStrip(camera, { showName = false, compact = false, showSurfline = !compact } = {}) {
+function createConditionStrip(camera, { showName = false, compact = false } = {}) {
   const strip = document.createElement("div");
   strip.className = compact ? "condition-strip condition-strip--compact" : "condition-strip";
   if (camera.adviceGuideOnly) {
@@ -1058,9 +961,6 @@ function createConditionStrip(camera, { showName = false, compact = false, showS
     if (chip) routeRow.appendChild(createConditionToken(chip));
   });
   if (routeRow.childElementCount) strip.appendChild(routeRow);
-
-  const surflineControl = showSurfline ? createSurflineControl(camera) : null;
-  if (surflineControl) strip.appendChild(surflineControl);
 
   return strip;
 }
@@ -1178,20 +1078,9 @@ function renderFavorites() {
   });
 }
 
-function linkedCamera(camera) {
-  if (!camera?.promoted || !camera.linkedCamId) return null;
-  return byId().get(camera.linkedCamId) || null;
-}
-
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
-  const linked = linkedCamera(camera);
-  const mode = routeCameraPlayback(camera, linked, state.explorePlayer);
-  if (mode === "guide") {
-    els.exploreFeedStatus.textContent = "Guide only · no live camera or conditions";
-  } else if (mode === "report") {
-    els.exploreFeedStatus.textContent = "Open Surfline report";
-  }
+  state.explorePlayer.play(camera);
 }
 
 function selectExploreCamera(camera, { pan = false, route = false, scroll = false } = {}) {
@@ -1271,34 +1160,6 @@ function renderSlCamBadge(camera) {
   badge.textContent = "SL cam";
   badge.title = camera.surflineCams.map((cam) => cam.title).filter(Boolean).join(", ");
   els.detailName.insertAdjacentElement("afterend", badge);
-}
-
-function renderReportLink(camera) {
-  state.reportLinkEl?.remove();
-  state.reportLinkEl = null;
-  if (!isReportOnlyCamera(camera)) return;
-
-  const linked = linkedCamera(camera);
-  const link = document.createElement("div");
-  link.className = "explore-report-link";
-
-  if (linked) {
-    const caption = document.createElement("p");
-    caption.className = "explore-report-link__caption muted";
-    caption.textContent = `via ${linked.name} cam · ${camera.linkedCamDistanceKm}km`;
-    link.appendChild(caption);
-  }
-
-  const action = document.createElement("a");
-  action.className = "report-frame__action explore-report-link__action";
-  action.href = reportUrl(camera);
-  action.target = "_blank";
-  action.rel = "noopener noreferrer";
-  action.textContent = "Open Surfline report";
-  link.appendChild(action);
-
-  els.spotPanel.insertBefore(link, els.detailConditionStrip);
-  state.reportLinkEl = link;
 }
 
 function ratingTone(rating) {
@@ -1699,7 +1560,6 @@ function renderExploreSelection(camera) {
     els.detailFavorite.disabled = true;
     syncFavoriteToggle(els.detailFavorite, null);
     renderSlCamBadge(null);
-    renderReportLink(null);
     renderExploreConditions(null);
     renderStretchView(null);
     renderSpotPlaybook(null);
@@ -1713,7 +1573,6 @@ function renderExploreSelection(camera) {
   els.detailFavorite.disabled = false;
   syncFavoriteToggle(els.detailFavorite, camera);
   renderSlCamBadge(camera);
-  renderReportLink(camera);
   renderExploreConditions(camera);
   renderStretchView(camera);
   renderSpotPlaybook(camera);
@@ -2006,17 +1865,22 @@ async function init() {
     loadTideData().catch(() => emptyTideData())
   ]);
 
+  const { localStreamOverrides = {}, ...baseCameraDb } = cameraDb;
   state.spotData = spotData;
   state.db = mergeAdviceGuideSubjects(
     mergePromotedSpots(
-      applySpotMetadataToCameraDb(cameraDb, spotData),
+      applySpotMetadataToCameraDb(baseCameraDb, spotData),
       spotData.promotedDb
     ),
     spotData.advice
   );
   state.tideData = tideData;
-  state.cameras = sortCamerasByLatitudeDescending(firstClassCameras(state.db));
-  state.favoriteIds = sanitizeFavoriteIds(manageSpotCameras(), loadFavoriteIds(manageSpotCameras()));
+  state.cameras = sortCamerasByLatitudeDescending(resolveFeedBackedCameras(
+    state.db,
+    spotData,
+    localStreamOverrides
+  ));
+  state.favoriteIds = sanitizeFavoriteIds(state.cameras, loadFavoriteIds(state.cameras));
   state.preferences = loadSurfPreferences();
   state.todayForecastStore = createTodayForecastStore({
     fetchForecast: (camera) => fetchLiveForecast(camera)

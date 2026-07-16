@@ -38,9 +38,21 @@ test("today recommendation time calls use Lisbon time and actionable departure l
 
 test("recommendation roster keeps one live representative per researched break and excludes favorite breaks", () => {
   const cameras = [
-    { id: "meo-ribeira", name: "Ribeira cam", streamUrl: "https://example.test/live.m3u8" },
+    {
+      id: "meo-ribeira",
+      name: "Ribeira cam",
+      streamUrl: "https://example.test/live.m3u8",
+      hasStream: true,
+      streamSource: "meo"
+    },
     { id: "surfline-ribeira", name: "Ribeira report", surfline: { pageUrl: "https://example.test/report" } },
-    { id: "meo-lagide", name: "Lagide cam", streamUrl: "https://example.test/lagide.m3u8" },
+    {
+      id: "meo-lagide",
+      name: "Lagide cam",
+      streamUrl: "https://example.test/lagide.m3u8",
+      hasStream: true,
+      streamSource: "meo"
+    },
     { id: "surfline-unresearched", name: "Unresearched" },
     { id: "guide", name: "Guide", adviceGuideOnly: true }
   ];
@@ -53,25 +65,40 @@ test("recommendation roster keeps one live representative per researched break a
   const result = selectRecommendationCameras(cameras, {
     subjectIdFor: (camera) => subjects.get(camera.id) || null,
     inFence: () => true,
-    isFavorite: (camera) => camera.id === "surfline-ribeira"
+    isFavorite: (camera) => camera.id === "meo-ribeira"
   });
 
   assert.deepEqual(result.map((camera) => camera.id), ["meo-lagide"]);
 });
 
-test("recommendation roster prefers a live camera over a duplicate report", () => {
+test("recommendation roster prefers raw Surfline over MEO and excludes report-only records", () => {
   const cameras = [
-    { id: "surfline-ribeira", name: "Ribeira report", surfline: { pageUrl: "https://example.test/report" } },
-    { id: "meo-ribeira", name: "Ribeira cam", streamUrl: "https://example.test/live.m3u8" }
+    {
+      id: "meo-ribeira",
+      name: "Ribeira MEO",
+      streamUrl: "https://example.test/meo.m3u8",
+      hasStream: true,
+      streamSource: "meo"
+    },
+    {
+      id: "surfline-ribeira",
+      name: "Ribeira raw",
+      streamUrl: "https://example.test/surfline.m3u8",
+      hasStream: true,
+      streamSource: "surfline-raw"
+    },
+    { id: "ribeira-report", name: "Ribeira report", surfline: { pageUrl: "https://example.test/report" } }
   ];
 
-  const result = selectRecommendationCameras(cameras, {
-    subjectIdFor: () => "surfline-ribeira",
-    inFence: () => true,
-    isFavorite: () => false
-  });
+  for (const ordered of [cameras, [...cameras].reverse()]) {
+    const result = selectRecommendationCameras(ordered, {
+      subjectIdFor: () => "surfline-ribeira",
+      inFence: () => true,
+      isFavorite: () => false
+    });
 
-  assert.deepEqual(result.map((camera) => camera.id), ["meo-ribeira"]);
+    assert.deepEqual(result.map((camera) => camera.id), ["surfline-ribeira"]);
+  }
 });
 
 test("Best bets is a decisive top-three shortlist", () => {
@@ -139,7 +166,8 @@ test("today cards expose confidence, no more than three reasons, and accessible 
   assert.match(mainSource, /recommendation\.bestWindow\.representativeHour/);
   assert.match(mainSource, /button\.setAttribute\("aria-label"/);
   assert.match(mainSource, /details\.dataset\.selectedTime/);
-  assert.match(mainSource, /Open Surfline report|Watch live cam/);
+  assert.match(mainSource, /Watch live cam/);
+  assert.doesNotMatch(mainSource, /Open Surfline report/);
   assert.match(mainSource, /summary\.textContent = "Hourly forecast & evidence"/);
   assert.doesNotMatch(mainSource, /const shell = document\.createElement\("section"\);\s*shell\.className = "recommendation-timeline"/);
 });
