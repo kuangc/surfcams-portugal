@@ -2,7 +2,7 @@
 
 Date: 2026-07-15
 
-Status: Approved in conversation; awaiting written-spec review
+Status: Approved; implementation authorized
 
 Builds on: `2026-07-11-spot-advice-local-lens-design.md`
 
@@ -23,6 +23,8 @@ For each researched Surfline subject, the feed precedence is:
 This precedence is unconditional at resolution time. A configured Surfline feed wins even when the same subject also has a working MEO stream.
 
 `stretchCamIds` do not satisfy the MEO fallback. They are nearby area cameras, not a feed of the selected spot. Evidence links in the Local playbook remain available as provenance, but they are not camera actions.
+
+Discovery-only aggregators such as GoSurf/Viewsurf do not enter this precedence and do not satisfy feed availability. Their inventory may inform offline research, but the runtime has no resolver, health job, or playback dependency for them.
 
 ## 3. Meaning of “available”
 
@@ -276,4 +278,5 @@ The work is complete when:
 - automatic provider failover after playback begins;
 - redesigning the broader Favorites or Explore information architecture;
 - changing Surfline forecast or face-height calibration logic; and
+- integrating discovery-only camera aggregators into runtime feed resolution; and
 - changing Local playbook evidence provenance.
