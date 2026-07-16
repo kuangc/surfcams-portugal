@@ -64,10 +64,8 @@ export function formatLeaveCall(window, driveMinutes, now = Date.now()) {
 }
 
 function cameraUtility(camera) {
-  if (camera?.streamUrl) return 3;
-  if (camera?.hasStream) return 2;
-  if (camera?.surfline?.pageUrl || camera?.pageUrl) return 1;
-  return 0;
+  if (!camera?.streamUrl || !camera?.hasStream) return 0;
+  return camera.streamSource === "surfline-raw" ? 2 : 1;
 }
 
 export function selectRecommendationCameras(cameras, {
@@ -78,12 +76,14 @@ export function selectRecommendationCameras(cameras, {
   const groups = new Map();
   for (const camera of cameras || []) {
     if (!camera || camera.adviceGuideOnly || !inFence(camera)) continue;
+    const utility = cameraUtility(camera);
+    if (!utility) continue;
     const subjectId = subjectIdFor(camera);
     if (!subjectId) continue;
 
     const group = groups.get(subjectId) || { favorite: false, representative: null };
     group.favorite ||= isFavorite(camera);
-    if (!group.representative || cameraUtility(camera) > cameraUtility(group.representative)) {
+    if (!group.representative || utility > cameraUtility(group.representative)) {
       group.representative = camera;
     }
     groups.set(subjectId, group);

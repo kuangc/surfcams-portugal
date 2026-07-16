@@ -4,7 +4,6 @@ import test from "node:test";
 
 import {
   availableCameras,
-  firstClassCameras,
   loadCameraDb,
   mergePromotedSpots
 } from "../src/camera-data.js";
@@ -22,45 +21,6 @@ test("camera database contains the expected indexed live feeds", () => {
   assert.equal(liveCameras.every((camera) => camera.hasStream), true);
 });
 
-test("first class cameras include live feeds and explicit Surfline-only spots", () => {
-  const cameras = firstClassCameras(db);
-  const castelo = cameras.find((item) => item.id === "surfline-castelo");
-
-  assert.equal(cameras.length, db.withStreams + 1);
-  assert.ok(castelo, "Surfline Castelo is visible as a first-class spot");
-  assert.equal(castelo.hasStream, false);
-  assert.equal(castelo.firstClass, true);
-  assert.equal(castelo.provider, "surfline");
-  assert.equal(castelo.name, "Costa da Caparica | Costelo (Irmao)");
-});
-
-test("first class cameras include promoted streamless spots", () => {
-  const cameras = firstClassCameras({ cameras: [
-    { id: "live-cam", hasStream: true },
-    { id: "promoted-only", hasStream: false, promoted: true }
-  ]});
-
-  assert.deepEqual(cameras.map((camera) => camera.id), ["live-cam", "promoted-only"]);
-});
-
-test("first class cameras exclude plain streamless spots", () => {
-  const cameras = firstClassCameras({ cameras: [
-    { id: "plain-streamless", hasStream: false, promoted: false, firstClass: false },
-    { id: "explicit-first-class", hasStream: false, firstClass: true }
-  ]});
-
-  assert.deepEqual(cameras.map((camera) => camera.id), ["explicit-first-class"]);
-});
-
-test("first class cameras include guide-only advice subjects without treating other streamless rows as spots", () => {
-  const cameras = firstClassCameras({ cameras: [
-    { id: "plain-streamless", hasStream: false },
-    { id: "guide-only", adviceGuideOnly: true }
-  ]});
-
-  assert.deepEqual(cameras.map((camera) => camera.id), ["guide-only"]);
-});
-
 test("loadCameraDb merges private stream overrides into embedded cameras", async () => {
   const streamUrl = "https://cams.surfline.example/castelo/playlist.m3u8";
   const documentRef = {
@@ -68,13 +28,18 @@ test("loadCameraDb merges private stream overrides into embedded cameras", async
       return selector === "#embeddedCameraDb" ? { textContent: JSON.stringify(db) } : null;
     }
   };
+  const localStreamOverrides = {
+    "surfline-castelo": streamUrl,
+    __rawSurflineFeeds: [{
+      id: "pt-castelo",
+      streamUrl: "https://hls.example.test/pt-castelo.m3u8"
+    }]
+  };
   const fetcher = async (url) => {
     assert.equal(url, "./data/local-stream-overrides.json");
     return {
       ok: true,
-      json: async () => ({
-        "surfline-castelo": streamUrl
-      })
+      json: async () => localStreamOverrides
     };
   };
 
@@ -84,6 +49,7 @@ test("loadCameraDb merges private stream overrides into embedded cameras", async
   assert.equal(castelo.streamUrl, streamUrl);
   assert.equal(castelo.hasStream, true);
   assert.equal(availableCameras(loadedDb).some((camera) => camera.id === "surfline-castelo"), true);
+  assert.deepEqual(loadedDb.localStreamOverrides, localStreamOverrides);
 });
 
 test("loadCameraDb treats missing private stream overrides as optional", async () => {
@@ -105,6 +71,7 @@ test("loadCameraDb treats missing private stream overrides as optional", async (
 
   assert.equal(castelo.streamUrl, "");
   assert.equal(castelo.hasStream, false);
+  assert.deepEqual(loadedDb.localStreamOverrides, {});
 });
 
 test("default favorites exist and only live-source favorites require streams", () => {
@@ -171,7 +138,7 @@ test("mergePromotedSpots carries forward stream override fields on collision", (
   assert.equal(merged.streamOverride, true);
 });
 
-test("mergePromotedSpots leaves stream-less promoted records report-only", () => {
+test("mergePromotedSpots leaves unresolved promoted records streamless for feed policy", () => {
   const cameraDb = { cameras: [{ id: "cam-1", name: "Cam 1" }] };
   const promotedDb = { promoted: [{ id: "surfline-coxos", name: "Coxos", promoted: true, hasStream: false }] };
   const merged = mergePromotedSpots(cameraDb, promotedDb).cameras.find((c) => c.id === "surfline-coxos");

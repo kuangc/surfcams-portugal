@@ -38,7 +38,7 @@ export function createVideoPlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SC
   function play(camera) {
     if (!camera || !camera.streamUrl) {
       clear();
-      status.textContent = "No feed URL found for this camera.";
+      status.textContent = "Feed unavailable";
       return;
     }
 
@@ -59,7 +59,7 @@ export function createVideoPlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SC
 
     ensureHls(hlsScriptUrl).then((HlsPlayer) => {
       if (!HlsPlayer || !HlsPlayer.isSupported()) {
-        status.textContent = "This browser cannot play HLS.";
+        status.textContent = "Feed unavailable";
         return;
       }
 
@@ -76,10 +76,10 @@ export function createVideoPlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SC
         status.textContent = "Feed loaded with hls.js.";
       });
       hls.on(HlsPlayer.Events.ERROR, (_event, data) => {
-        if (data.fatal) status.textContent = "Feed error. Try another camera.";
+        if (data.fatal) status.textContent = "Feed unavailable";
       });
-    }).catch((error) => {
-      status.textContent = error.message;
+    }).catch(() => {
+      status.textContent = "Feed unavailable";
     });
   }
 
@@ -145,10 +145,10 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
         setState("playing", "Playing");
       });
       hls.on(HlsPlayer.Events.ERROR, (_event, data) => {
-        if (data.fatal) setState("error", "Feed error");
+        if (data.fatal) setState("unavailable", "Feed unavailable");
       });
     }).catch(() => {
-      setState("error", "Feed error");
+      setState("unavailable", "Feed unavailable");
     });
   }
 

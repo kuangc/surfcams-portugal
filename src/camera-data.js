@@ -73,20 +73,14 @@ export async function loadCameraDb({
   })();
   const streamOverrides = await loadCameraStreamOverrides({ fetcher, url: streamOverridesUrl });
 
-  return applyCameraStreamOverrides(cameraDb, streamOverrides);
+  return {
+    ...applyCameraStreamOverrides(cameraDb, streamOverrides),
+    localStreamOverrides: streamOverrides
+  };
 }
 
 export function availableCameras(cameraDb) {
   return cameraDb.cameras.filter((camera) => camera.hasStream);
-}
-
-export function firstClassCameras(cameraDb) {
-  return cameraDb.cameras.filter((camera) => (
-    camera.hasStream
-    || camera.firstClass
-    || camera.promoted
-    || camera.adviceGuideOnly
-  ));
 }
 
 export function mergePromotedSpots(cameraDb, promotedDb) {
@@ -198,24 +192,4 @@ export function sanitizeFavoriteIds(cameras, favoriteIds) {
       ? [...favoriteIds].filter((id) => eligibleIds.has(id))
       : []
   );
-}
-
-export function routeCameraPlayback(camera, linkedCamera, player) {
-  if (camera?.adviceGuideOnly) {
-    player?.clear?.();
-    return "guide";
-  }
-
-  const reportOnly = !camera?.streamUrl && Boolean(camera?.surfline?.pageUrl);
-  if (reportOnly) {
-    if (linkedCamera?.streamUrl) {
-      player?.play?.(linkedCamera);
-      return "linked-live";
-    }
-    player?.clear?.();
-    return "report";
-  }
-
-  player?.play?.(camera);
-  return "live";
 }

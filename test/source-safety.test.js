@@ -79,7 +79,6 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /activeRoute:\s*"monitor"/);
   assert.match(mainSource, /loadSpotData/);
   assert.match(mainSource, /findDriveEstimate/);
-  assert.match(mainSource, /findSurflineMatches/);
   assert.match(mainSource, /monitorMode:\s*"favorites"/);
   assert.match(mainSource, /monitorCameraSlots/);
   assert.match(mainSource, /recommendTodaySpots/);
@@ -91,7 +90,12 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /restartMonitorTile/);
   assert.match(mainSource, /favoriteManagerCameras/);
   assert.match(mainSource, /manageSpotCameras/);
-  assert.match(mainSource, /state\.db\?\.cameras/);
+  assert.match(mainSource, /resolveFeedBackedCameras/);
+  assert.match(mainSource, /const \{ localStreamOverrides = \{\}, \.\.\.baseCameraDb \} = cameraDb/);
+  assert.match(mainSource, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(\s*resolveFeedBackedCameras\(/s);
+  assert.match(mainSource, /function manageSpotCameras\(\)\s*\{\s*return state\.cameras/s);
+  assert.doesNotMatch(mainSource, /state\.db\?\.cameras\s*\|\|\s*state\.cameras/);
+  assert.match(mainSource, /sanitizeFavoriteIds\(state\.cameras,\s*loadFavoriteIds\(state\.cameras\)\)/);
   assert.match(mainSource, /createFavoriteToggle/);
   assert.match(mainSource, /selectExploreCamera/);
   assert.match(mainSource, /renderWaterSummaries/);
@@ -99,15 +103,8 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /loadTideData/);
   assert.match(mainSource, /findTideSnapshot/);
   assert.match(mainSource, /tideSnapshot/);
-  assert.match(mainSource, /createSurflineControl/);
-  assert.match(mainSource, /isReportOnlyCamera/);
-  assert.match(mainSource, /createReportFrame/);
-  assert.match(mainSource, /Open Surfline report/);
   assert.match(mainSource, /PROVIDER_ICON_URLS/);
   assert.match(mainSource, /provider-logo/);
-  assert.match(mainSource, /external-link-icon/);
-  assert.match(mainSource, /placeholder\.textContent\s*=\s*"Nearby"/);
-  assert.match(mainSource, /window\.open\(selectedUrl,\s*"_blank"/);
   assert.match(mainSource, /explorePlayer/);
   assert.match(mainSource, /renderConfigure/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers/);
@@ -159,10 +156,6 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.condition-strip__metrics\s*{/);
   assert.match(styleSource, /\.condition-strip__route\s*{/);
   assert.match(styleSource, /\.provider-logo\s*{/);
-  assert.match(styleSource, /\.report-frame\s*{/);
-  assert.match(styleSource, /\.report-frame__action\s*{/);
-  assert.match(styleSource, /\.surfline-control\s*{/);
-  assert.match(styleSource, /\.surfline-control__select\s*{/);
   assert.doesNotMatch(styleSource, /provider-mark/);
   assert.match(styleSource, /\.water-summary\s*{/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(112px,\s*1fr\)\)/);
@@ -182,6 +175,28 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.doesNotMatch(indexSource, />Remove favorite</);
   assert.doesNotMatch(styleSource, /\.sidebar\b/);
   assert.doesNotMatch(styleSource, /\.detail\b/);
+});
+
+test("camera surfaces contain no report substitutes while advice evidence links remain safe", () => {
+  const cameraSurfaceSource = `${mainSource}\n${styleSource}\n${indexSource}`;
+  for (const forbidden of [
+    "Open Surfline report",
+    "isReportOnlyCamera",
+    "createReportFrame",
+    "createSurflineControl",
+    "renderReportLink",
+    "explore-report-link",
+    "report-frame",
+    "surfline-control",
+    "external-link-icon"
+  ]) {
+    assert.doesNotMatch(cameraSurfaceSource, new RegExp(forbidden));
+  }
+
+  assert.match(mainSource, /function createAdviceSource/);
+  assert.match(mainSource, /safeAdviceSourceUrl\(source\.url\)/);
+  assert.match(mainSource, /link\.setAttribute\("target", "_blank"\)/);
+  assert.match(mainSource, /link\.setAttribute\("rel", "noopener noreferrer"\)/);
 });
 
 test("official tide cache has a scheduled refresh path", () => {

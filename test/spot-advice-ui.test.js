@@ -206,8 +206,8 @@ test("detail playbook source contains an explicit accessible disclosure and five
   assert.match(mainSource, /Needs revalidation/);
   assert.match(mainSource, /Guidance differs/);
   assert.match(mainSource, /Guide only · no live camera or conditions/);
-  assert.match(mainSource, /target = "_blank"/);
-  assert.match(mainSource, /rel = "noopener noreferrer"/);
+  assert.match(mainSource, /link\.setAttribute\("target", "_blank"\)/);
+  assert.match(mainSource, /link\.setAttribute\("rel", "noopener noreferrer"\)/);
 });
 
 test("playbook behavior owns unique regions, toggles hidden state, and handles mobile Escape", () => {

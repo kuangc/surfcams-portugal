@@ -677,50 +677,6 @@ video {
   font-weight: 850;
 }
 
-.report-frame {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-content: center;
-  gap: 8px 10px;
-  min-height: 0;
-  aspect-ratio: 16 / 9;
-  padding: 18px;
-  background: #0c2b2b;
-  color: #ffffff;
-  cursor: default;
-}
-
-.report-frame .provider-logo {
-  grid-row: span 2;
-  align-self: center;
-  background: #ffffff;
-}
-
-.report-frame__source {
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.74rem;
-  font-weight: 850;
-  line-height: 1;
-}
-
-.report-frame__title {
-  overflow-wrap: anywhere;
-  font-size: 1rem;
-  line-height: 1.12;
-}
-
-.report-frame__action {
-  grid-column: 1 / -1;
-  justify-self: start;
-  border-radius: 8px;
-  padding: 8px 10px;
-  background: #ffffff;
-  color: #0c2b2b;
-  font-size: 0.82rem;
-  font-weight: 900;
-  text-decoration: none;
-}
-
 .condition-line,
 .condition-strip {
   margin: 0;
@@ -919,34 +875,6 @@ video {
 .provenance-meo-static {
   border-color: var(--muted);
   opacity: 0.6;
-}
-
-.surfline-control {
-  align-self: start;
-  gap: 5px;
-  min-height: 26px;
-}
-
-.surfline-control__select {
-  min-height: 24px;
-  max-width: 112px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-weight: 850;
-}
-
-.external-link-icon {
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.surfline-control__select:focus-visible {
-  outline: 2px solid var(--teal);
-  outline-offset: 2px;
 }
 
 .sr-only {
@@ -1235,22 +1163,6 @@ video {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   vertical-align: middle;
-}
-
-.explore-report-link {
-  display: grid;
-  gap: 6px;
-}
-
-.explore-report-link__caption {
-  margin: 0;
-}
-
-.explore-report-link__action {
-  grid-column: auto;
-  justify-self: start;
-  background: var(--teal);
-  color: #ffffff;
 }
 
 .stretch-chip {

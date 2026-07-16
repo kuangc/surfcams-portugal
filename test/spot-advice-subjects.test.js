@@ -3,13 +3,11 @@ import fs from "node:fs";
 import test from "node:test";
 
 import {
-  firstClassCameras,
   mergeAdviceGuideSubjects,
   mergePromotedSpots,
-  routeCameraPlayback,
   sanitizeFavoriteIds
 } from "../src/camera-data.js";
-import { filterCameras } from "../src/camera-filters.js";
+import { resolveFeedBackedCameras } from "../src/feed-policy.js";
 import { formatSpotPlaybook, normalizeSpotAdviceRuntime } from "../src/spot-advice.js";
 import { normalizeSpotData } from "../src/spot-data.js";
 
@@ -27,13 +25,6 @@ function mergeActualAppSubjects() {
     mergePromotedSpots(cameraDb, promotedDb),
     adviceRuntime
   );
-}
-
-function mainFunctionSource(name) {
-  const source = fs.readFileSync("src/main.js", "utf8");
-  const match = source.match(new RegExp(`function ${name}\\([^)]*\\) \\{[\\s\\S]*?^\\}`, "m"));
-  assert.ok(match, `${name} is defined in src/main.js`);
-  return match[0];
 }
 
 test("mergeAdviceGuideSubjects adds deferred selected spots without inventing cameras", () => {
@@ -226,23 +217,6 @@ test("persisted guide favorites are removed while real favorites retain their or
   assert.deepEqual([...sanitizeFavoriteIds(cameras, persisted)], ["real-b", "real-a"]);
 });
 
-test("guide playback always clears and never reaches the live player path", () => {
-  for (const guide of [
-    { id: "guide-safe", adviceGuideOnly: true, surfline: { pageUrl: "https://example.com/guide" } },
-    { id: "guide-no-url", adviceGuideOnly: true },
-    { id: "guide-unsafe", adviceGuideOnly: true, surfline: { pageUrl: "javascript:alert(1)" } }
-  ]) {
-    const calls = { clear: 0, play: [] };
-    const mode = routeCameraPlayback(guide, null, {
-      clear() { calls.clear += 1; },
-      play(camera) { calls.play.push(camera.id); }
-    });
-    assert.equal(mode, "guide");
-    assert.equal(calls.clear, 1);
-    assert.deepEqual(calls.play, []);
-  }
-});
-
 test("all 44 selected advice subjects are inspectable after the real app merges", () => {
   const merged = mergeActualAppSubjects();
   const inspectableIds = new Set(merged.cameras.map((row) => row.id));
@@ -255,84 +229,28 @@ test("all 44 selected advice subjects are inspectable after the real app merges"
   );
 });
 
-test("deferred guides survive the real Explore collection, search, and playbook selection", () => {
-  const exploreCollection = firstClassCameras(mergeActualAppSubjects());
+test("guide-only subjects remain canonical but never enter the feed-backed roster", () => {
+  const merged = mergeActualAppSubjects();
+  const resolved = resolveFeedBackedCameras(merged, spotData, {});
+  const guideOnlyIds = ["surfline-cave", "surfline-praia-da-ursa"];
 
-  for (const [query, expectedId] of [
-    ["Cave", "surfline-cave"],
-    ["Praia da Ursa", "surfline-praia-da-ursa"]
-  ]) {
-    const matches = filterCameras(exploreCollection, { query });
-    const guide = matches.find((camera) => camera.id === expectedId);
-    assert.ok(guide, `${expectedId} is present in the Explore search results`);
+  for (const id of guideOnlyIds) {
+    const guide = merged.cameras.find((camera) => camera.id === id);
+    assert.ok(guide, `${id} remains in the canonical merged database`);
     assert.equal(guide.adviceGuideOnly, true);
-    assert.equal(Object.hasOwn(guide, "streamUrl"), false);
+    assert.equal(resolved.some((camera) => camera.id === id), false);
     const playbook = formatSpotPlaybook(guide, spotData);
     assert.equal(playbook.guideOnly, true);
     assert.ok(playbook.sections.some((section) => section.claims.length > 0));
-    assert.equal(matches[0].id, expectedId, `${query} exact-name result is deterministic`);
   }
-
-  const caveMatches = filterCameras(exploreCollection, { query: "Cave" });
-  assert.ok(caveMatches.some((camera) => /carcavelos/i.test(camera.name)), "legacy substring matches remain visible after exact Cave");
 });
 
-test("real guide-only subjects stay in Explore but never enter Favorites manage lists", () => {
-  const merged = mergeActualAppSubjects();
-  const exploreCollection = firstClassCameras(merged);
-  const guideOnlyIds = ["surfline-cave", "surfline-praia-da-ursa"];
-  const collectFavorites = Function("state", "els", "filterCameras", `
-    const driveDistanceKm = () => null;
-    const getConditions = () => null;
-    const rateSurfSpot = () => null;
-    ${mainFunctionSource("manageSpotCameras")}
-    ${mainFunctionSource("favoriteManagerCameras")}
-    return {
-      manageCollection: manageSpotCameras(),
-      favoritesCollection: favoriteManagerCameras()
-    };
-  `);
-  const emptyControl = { value: "" };
-  const { manageCollection, favoritesCollection } = collectFavorites(
-    { db: merged, cameras: exploreCollection, favoriteIds: new Set(), preferences: {} },
-    {
-      favoritesSearchInput: emptyControl,
-      favoritesRegionSelect: emptyControl,
-      favoritesStatusSelect: emptyControl,
-      favoritesStreamSelect: emptyControl,
-      favoritesDistanceSelect: emptyControl,
-      favoritesSortSelect: emptyControl
-    },
-    filterCameras
-  );
-
-  assert.deepEqual(
-    exploreCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id).sort(),
-    guideOnlyIds
-  );
-  assert.deepEqual(
-    manageCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id),
-    []
-  );
-  assert.deepEqual(
-    favoritesCollection.filter((camera) => camera.adviceGuideOnly).map((camera) => camera.id),
-    []
-  );
-  assert.deepEqual(
-    manageCollection.map((camera) => camera.id),
-    merged.cameras.filter((camera) => !camera.adviceGuideOnly).map((camera) => camera.id),
-    "normal spots retain their manage-list order"
-  );
-});
-
-test("main wires guides after metadata and promotion merges and labels them without live claims", () => {
+test("main keeps guide research canonical and resolves the user-facing roster afterward", () => {
   const source = fs.readFileSync("src/main.js", "utf8");
 
-  assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*applySpotMetadataToCameraDb\(cameraDb, spotData\),\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
-  assert.match(source, /Guide only[^"'`]*no live camera or conditions/i);
-  assert.match(source, /camera\.adviceGuideOnly/);
-  assert.match(source, /sanitizeFavoriteIds\(manageSpotCameras\(\), loadFavoriteIds\(/);
-  assert.match(source, /button\.hidden = Boolean\(camera\?\.adviceGuideOnly\)/);
-  assert.match(source, /camera\.adviceGuideOnly\s*\?\s*\{ key: "guide" \}\s*:\s*rateSurfSpot/s);
-  assert.match(source, /routeCameraPlayback\(camera, linked, state\.explorePlayer\)/);
+  assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*applySpotMetadataToCameraDb\(baseCameraDb, spotData\),\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
+  assert.match(source, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(resolveFeedBackedCameras\(\s*state\.db,\s*spotData,\s*localStreamOverrides\s*\)\)/s);
+  assert.match(source, /sanitizeFavoriteIds\(state\.cameras, loadFavoriteIds\(state\.cameras\)\)/);
+  assert.match(source, /state\.explorePlayer\.play\(camera\)/);
+  assert.doesNotMatch(source, /routeCameraPlayback/);
 });
