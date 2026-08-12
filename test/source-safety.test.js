@@ -134,6 +134,8 @@ test("Monitor gallery scopes preview streams to one viewport observer lifecycle"
   assert.match(mainSource, /frame\.addEventListener\("click"[\s\S]*session\.restart\(\)/);
   assert.match(mainSource, /retryButton\.addEventListener\("click"[\s\S]*session\.retry\(\)/);
   const galleryTileSource = mainSource.match(/function createMonitorTile[\s\S]*?\n}\n\nfunction recommendationInputs/)?.[0] || "";
+  assert.match(galleryTileSource, /let session\s*=\s*null/);
+  assert.match(galleryTileSource, /onStateChange:[\s\S]*session\?\.reconcilePlayerState\(playerState\)/);
   assert.doesNotMatch(galleryTileSource, /void player\.play\(camera\)/);
   assert.match(mainSource, /(?:blocked|unavailable)[\s\S]*(?:Play|Retry)/);
   assert.doesNotMatch(mainSource, /scheduleMonitorTile|restartMonitorTile|MONITOR_DURATION_MS|playTimeoutId|350 \+ \(index \* 450\)/);
@@ -169,6 +171,7 @@ test("Focus and Compare use direct untimed pane-local players with replacement c
   assert.match(mainSource, /replaceFocusedCamera\(state\.monitorView,\s*paneIndex/);
   assert.match(mainSource, /removeComparisonCamera\(state\.monitorView,\s*paneIndex\)/);
   assert.match(mainSource, /playerState === "blocked"[\s\S]*playerState === "unavailable"[\s\S]*retryButton/);
+  assert.match(mainSource, /function createFocusedPane[\s\S]*retryButton\.addEventListener\("click",[\s\S]*player\.state\(\) === "blocked"\s*\?\s*player\.resume\(\)\s*:\s*player\.play\(camera\)/);
 
   const focusPaneSource = mainSource.match(/function createFocusedPane[\s\S]*?\n}\n\nfunction /)?.[0] || "";
   assert.doesNotMatch(focusPaneSource, /createGalleryPreviewSession|60_000|setTimeout/);
@@ -177,14 +180,41 @@ test("Focus and Compare use direct untimed pane-local players with replacement c
   assert.match(mainSource, /monitorComparePicker[\s\S]*addComparisonCamera\(state\.monitorView/);
 });
 
+test("gallery Play delegates synchronous resume and retry to the session lifecycle", () => {
+  const tileSource = mainSource.match(/function createMonitorTile[\s\S]*?\n}\n\nfunction recommendationInputs/)?.[0] || "";
+  assert.match(
+    tileSource,
+    /retryButton\.addEventListener\("click"[\s\S]*session\.resume\(\)[\s\S]*session\.retry\(\)/
+  );
+  assert.doesNotMatch(tileSource, /player\.state\(\) === "blocked"|player\.resume\(\)/);
+});
+
 test("Focus playback cleanup, visibility restoration, and gallery origin restoration are explicit", () => {
   assert.match(mainSource, /function clearFocusedPlayers\(\)[\s\S]*player\.clear\(\)[\s\S]*focusedPlayers\.clear\(\)/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearFocusedPlayers\(\)/);
   assert.match(mainSource, /mode === "might-be-good"[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*clearFocusedPlayers\(\)/);
   assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*clearFocusedPlayers\(\)[\s\S]*renderMonitor\(\)/);
   assert.match(mainSource, /function exitMonitorFocusView[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*afterNextPaint\([\s\S]*window\.scrollTo/);
+  assert.match(mainSource, /function exitMonitorFocusView[\s\S]*runAfterFullscreenExit\(state\.fullscreenController,[\s\S]*clearFocusedPlayers\(\)[\s\S]*exitMonitorFocus\(state\.monitorView\)/);
+  assert.doesNotMatch(mainSource, /fullscreenController\.isFullscreen\(\)\) void state\.fullscreenController\.exit\(\)/);
   assert.match(mainSource, /querySelectorAll\("\[data-camera-id\]"\)[\s\S]*\.find\(\(tile\) => tile\.dataset\.cameraId === originCameraId\)[\s\S]*focus\(\)/);
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-id=/);
+});
+
+test("Explore playback clears when the document is hidden or the page is left", () => {
+  const pagehideSource = mainSource.match(
+    /window\.addEventListener\("pagehide", \([^)]*\) => \{[\s\S]*?\n  \}\);/
+  )?.[0] || "";
+  const visibilitySource = mainSource.match(
+    /document\.addEventListener\("visibilitychange", \(\) => \{[\s\S]*?\n  \}\);/
+  )?.[0] || "";
+
+  assert.match(pagehideSource, /state\.explorePlayer\.clear\(\)/);
+  assert.match(visibilitySource, /document\.hidden[\s\S]*state\.explorePlayer\.clear\(\)/);
+  assert.match(
+    visibilitySource,
+    /state\.activeRoute\s*===\s*"explore"[\s\S]*state\.selectedExploreCamera[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/
+  );
 });
 
 test("app-owned fullscreen targets the complete Focus composition and reports errors locally", () => {
@@ -198,13 +228,45 @@ test("app-owned fullscreen targets the complete Focus composition and reports er
   assert.doesNotMatch(mainSource, /monitorFocusComposition\.textContent\s*=/);
 });
 
+test("BFCache pagehide preserves the live fullscreen controller", () => {
+  const pagehideSource = mainSource.match(
+    /window\.addEventListener\("pagehide",[\s\S]*?\n\s*}\);/
+  )?.[0] || "";
+
+  assert.match(pagehideSource, /\(event\)\s*=>/);
+  assert.match(
+    pagehideSource,
+    /if\s*\(!event\.persisted\)\s*state\.fullscreenController\.destroy\(\);/
+  );
+});
+
+test("BFCache pageshow reactivates the persisted current route", () => {
+  const pageshowSource = mainSource.match(
+    /window\.addEventListener\("pageshow",\s*\(event\)\s*=>\s*\{[\s\S]*?\n\s*}\);/
+  )?.[0] || "";
+
+  assert.match(pageshowSource, /if\s*\(!event\.persisted\)\s*return;/);
+  assert.match(
+    pageshowSource,
+    /state\.activeRoute\s*===\s*"monitor"[\s\S]*renderMonitor\(\)/
+  );
+  assert.match(
+    pageshowSource,
+    /state\.activeRoute\s*===\s*"explore"[\s\S]*state\.selectedExploreCamera[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/
+  );
+});
+
 test("Focus and Compare styling keeps one useful feed or two equal responsive panes", () => {
+  assert.match(styleSource, /\.monitor-grid\[hidden\]\s*\{[\s\S]*display:\s*none/);
   assert.match(styleSource, /\.monitor-focus\s*{[\s\S]*container-type:\s*inline-size/);
   assert.match(styleSource, /\.monitor-focus__composition\[data-view="focus-one"\][\s\S]*max-width:/);
   assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\]\s+\.monitor-focus__panes[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
   assert.match(styleSource, /\.monitor-focus__composition:fullscreen/);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styleSource, /\.monitor-focus[\s\S]*:focus-visible/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__header\s*{[^}]*flex-direction:\s*column/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__actions\s*{[^}]*width:\s*100%/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__select\s*{[^}]*min-width:\s*0/s);
 });
 
 test("main controller loads hourly forecasts only for the Might be good roster", () => {
@@ -229,17 +291,28 @@ test("explore map refreshes after the visible layout has painted", () => {
 test("Explore selection state starts map-first and explicit user choices promote detail", () => {
   assert.match(mainSource, /createExploreViewState/);
   assert.match(mainSource, /exploreView:\s*createExploreViewState\(\)/);
-  assert.match(mainSource, /function selectExploreCamera\(camera,\s*\{\s*explicit\s*=\s*false,\s*pan\s*=\s*false,\s*route\s*=\s*false,\s*scroll\s*=\s*false\s*\}\s*=\s*\{\}\)/);
+  assert.match(mainSource, /function selectExploreCamera\(camera,\s*\{\s*explicit\s*=\s*false,\s*pan\s*=\s*false,\s*route\s*=\s*false\s*\}\s*=\s*\{\}\)/);
   assert.match(mainSource, /state\.exploreView\s*=\s*selectExploreSpot\(state\.exploreView,\s*camera\.id,\s*\{\s*explicit\s*\}\)/);
 
   const userSelectionCalls = [...mainSource.matchAll(/selectExploreCamera\(camera,\s*\{([^}]*)\}\)/g)]
     .map((match) => match[1]);
   assert.equal(userSelectionCalls.length, 4, "recommendation, result, stretch, and marker actions select Explore spots");
   userSelectionCalls.forEach((options) => assert.match(options, /explicit:\s*true/));
+  assert.doesNotMatch(mainSource, /selectExploreCamera\([^)]*scroll:/);
 
   const initSource = mainSource.match(/async function init\(\)[\s\S]*?\n}\n\ninit\(\)/)?.[0] || "";
   assert.match(initSource, /initializeExploreSelection\(state\.exploreView,\s*initialExploreCamera\.id\)/);
   assert.doesNotMatch(initSource, /selectExploreCamera\(/);
+});
+
+test("explicit Explore selection moves focus to the promoted summary and restores the route top", () => {
+  const selectionSource = mainSource.match(
+    /function selectExploreCamera\(camera,[\s\S]*?\n}\n\nfunction renderExploreList/
+  )?.[0] || "";
+
+  assert.match(selectionSource, /if \(explicit && els\.exploreCameraSummary\)\s*{[\s\S]*exploreCameraSummary\.focus\(\{\s*preventScroll:\s*true\s*}\)/);
+  assert.match(selectionSource, /if \(explicit && els\.exploreCameraSummary\)[\s\S]*afterNextPaint\([\s\S]*window\.scrollTo\(\{\s*top:\s*0,\s*behavior:\s*"auto"\s*}\)/);
+  assert.doesNotMatch(selectionSource, /scrollIntoView/);
 });
 
 test("Explore emphasis changes resize the same map without changing its viewport", () => {
@@ -260,8 +333,17 @@ test("Explore emphasis changes resize the same map without changing its viewport
 
   assert.match(expandSource, /expandExploreMap\(state\.exploreView\)/);
   assert.match(expandSource, /applyExploreEmphasis\(\)/);
+  assert.match(
+    expandSource,
+    /afterNextPaint\(\(\)\s*=>\s*{[\s\S]*els\.map\.focus\(\{\s*preventScroll:\s*true\s*}\)/
+  );
+  assert.match(mainSource, /map:\s*document\.querySelector\("#map"\)/);
   assert.doesNotMatch(expandSource, /fitBounds|fitInitialBounds|\.panTo|ensureMap|selectedExploreCamera\s*=|renderExploreSelection/);
   assert.match(mainSource, /openSelectedExploreSpotView[\s\S]*openSelectedExploreSpot\(state\.exploreView\)/);
+});
+
+test("Explore map provides a persistent programmatic focus target", () => {
+  assert.match(indexSource, /id="map"[^>]*tabindex="-1"/);
 });
 
 test("Explore emphasis CSS preserves map and detail mobile reading orders", () => {
@@ -273,14 +355,18 @@ test("Explore emphasis CSS preserves map and detail mobile reading orders", () =
   assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.spot-panel\s*{[^}]*order:\s*3/s);
   assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.browse-panel\s*{[^}]*order:\s*4/s);
   assert.match(styleSource, /@media\s*\(min-width:\s*980px\)[\s\S]*minmax\(480px,[^)]*\)[\s\S]*minmax\(280px,/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s*{[\s\S]*grid-template-columns:\s*minmax\(280px,\s*0\.62fr\)\s+minmax\(480px,\s*1fr\)[\s\S]*"map summary"[\s\S]*"map detail"[\s\S]*"browse detail"/);
+  assert.match(styleSource, /\.expand-explore-map\s*{[^}]*top:\s*12px[^}]*right:\s*12px/s);
+  assert.doesNotMatch(styleSource, /\.expand-explore-map\s*{[^}]*bottom:/s);
 });
 
 test("explore list follows the visible map bounds and pins expose hover names", () => {
   assert.match(mainSource, /function exploreVisibleCameras/);
   assert.match(mainSource, /camerasInBounds\(exploreCameras\(\),\s*state\.map\.getBounds\(\)\)/);
   assert.match(mainSource, /state\.map\.on\("moveend zoomend"/);
-  assert.match(mainSource, /title:\s*camera\.name/);
-  assert.match(mainSource, /alt:\s*camera\.name/);
+  assert.match(mainSource, /function exploreMarkerLabel\(camera/);
+  assert.match(mainSource, /title:\s*markerLabel/);
+  assert.match(mainSource, /alt:\s*markerLabel/);
   assert.match(mainSource, /marker\.bindTooltip\(camera\.name/);
 });
 
@@ -327,6 +413,7 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
 });
 
 test("Favorites renderer shows saved cameras with poster, source status, and labeled removal", () => {
+  assert.match(mainSource, /function favoriteCameras\(\)\s*{[\s\S]*monitorFavoriteCameras\(/);
   assert.match(mainSource, /function renderFavorites\(\)[\s\S]*favoriteCameras\(\)/);
   assert.match(mainSource, /favorite-poster/);
   assert.match(mainSource, /poster\.src\s*=\s*camera\.image/);
@@ -356,7 +443,7 @@ test("Favorites combobox owns text-only options and implements APG keyboard beha
 
 test("Favorites mutations persist before state assignment and expose one ten-second undo", () => {
   assert.match(mainSource, /durationMs:\s*10_000/);
-  assert.match(mainSource, /favoriteUndo\.offer\(camera\)/);
+  assert.match(mainSource, /favoriteUndo\.offer\(removedCamera\)/);
   assert.match(mainSource, /favoriteUndo\.consume\(\)/);
   assert.match(mainSource, /favoriteUndo\.cancel\(\)/);
   assert.match(mainSource, /const nextFavoriteIds = commitFavoriteMutation\(state\.favoriteIds/);
@@ -364,6 +451,22 @@ test("Favorites mutations persist before state assignment and expose one ten-sec
   assert.match(mainSource, /try\s*{[\s\S]*commitFavoriteMutation[\s\S]*}\s*catch \(error\)\s*{[\s\S]*announceFavoriteStatus/s);
   assert.match(mainSource, /renderMonitorIfActive\(\)[\s\S]*renderFavorites\(\)[\s\S]*renderExploreList\(\)[\s\S]*renderMarkers\(\)/);
   assert.match(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
+  assert.match(mainSource, /function favoriteRecordForCamera[\s\S]*favoriteFeedRecord\(/);
+  assert.match(mainSource, /function syncFavoriteToggle[\s\S]*favoriteRecordForCamera\(camera\)[\s\S]*record\?\.saved/);
+  assert.match(mainSource, /function createFavoriteToggle[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
+  assert.match(mainSource, /detailFavorite\.addEventListener[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
+  assert.match(mainSource, /function isFavoriteCamera[\s\S]*favoriteRecordForCamera\(camera\)\?\.saved/);
+  assert.match(mainSource, /function exploreCameras[\s\S]*favoriteIds:\s*feedAwareFavoriteIds\(state\.cameras\)/);
+  assert.match(mainSource, /function markerIcon[\s\S]*data-favorite="\$\{isFavoriteCamera\(camera\)\}"/);
+});
+
+test("contextual Explore drill-in moves focus to the promoted summary", () => {
+  const openSource = mainSource.match(
+    /function openSelectedExploreSpotView\(\)[\s\S]*?\n}/
+  )?.[0] || "";
+
+  assert.match(openSource, /exploreCameraSummary\.focus\(\{\s*preventScroll:\s*true\s*}\)/);
+  assert.match(openSource, /afterNextPaint\([\s\S]*window\.scrollTo\(\{\s*top:\s*0,\s*behavior:\s*"auto"\s*}\)/);
 });
 
 test("Favorites cancel an old undo offer only after a new mutation commits", () => {
@@ -382,7 +485,7 @@ test("Favorites cancel an old undo offer only after a new mutation commits", () 
 
   const removeCommitIndex = removeSource.indexOf("state.favoriteIds = nextFavoriteIds;");
   const removeCancelIndex = removeSource.indexOf("cancelFavoriteUndoOffer();");
-  const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(camera);");
+  const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(removedCamera);");
   assert.ok(removeCommitIndex >= 0, "remove assigns only the successfully persisted Set");
   assert.ok(removeCancelIndex > removeCommitIndex, "remove preserves pending undo through no-op and failure exits");
   assert.ok(removeOfferIndex > removeCancelIndex, "a committed remove replaces the prior offer with the new camera");

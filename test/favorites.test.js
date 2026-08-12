@@ -54,6 +54,49 @@ test("invalid stored favorites fall back to defaults", () => {
   assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
 });
 
+test("unavailable storage falls back to default favorites", () => {
+  const storage = {
+    getItem() {
+      const error = new Error("Access to storage is denied");
+      error.name = "SecurityError";
+      throw error;
+    }
+  };
+
+  const favorites = loadFavoriteIds(cameras, storage);
+
+  assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
+});
+
+test("unavailable default localStorage falls back to default favorites", () => {
+  const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const testWindow = {};
+  Object.defineProperty(testWindow, "localStorage", {
+    configurable: true,
+    get() {
+      const error = new Error("Access to localStorage is denied");
+      error.name = "SecurityError";
+      throw error;
+    }
+  });
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: testWindow
+  });
+
+  try {
+    const favorites = loadFavoriteIds(cameras);
+
+    assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
+  } finally {
+    if (originalWindow) {
+      Object.defineProperty(globalThis, "window", originalWindow);
+    } else {
+      delete globalThis.window;
+    }
+  }
+});
+
 test("favorites save under the current versioned storage key", () => {
   const storage = storageWith();
 

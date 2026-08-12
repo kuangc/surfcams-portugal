@@ -1,3 +1,15 @@
+export function runAfterFullscreenExit(controller, transition) {
+  if (!controller.isFullscreen()) {
+    transition();
+    return Promise.resolve(true);
+  }
+  return controller.exit().then((exited) => {
+    if (!exited) return false;
+    transition();
+    return true;
+  });
+}
+
 export function createFullscreenController({
   target,
   document: fullscreenDocument,

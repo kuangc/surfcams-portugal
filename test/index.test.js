@@ -106,7 +106,8 @@ test("Explore keeps one persistent map between distinct summary and detail regio
 
   assert.match(layout, /^<div class="map-layout"[^>]*data-emphasis="map"/);
   assert.equal((exploreScreen.match(/id="map"/g) || []).length, 1);
-  assert.match(layout, /class="explore-camera-summary"[^>]*id="exploreCameraSummary"[\s\S]*id="openSelectedSpot"/);
+  assert.match(layout, /id="map"[^>]*tabindex="-1"/);
+  assert.match(layout, /class="explore-camera-summary"[^>]*id="exploreCameraSummary"[^>]*tabindex="-1"[\s\S]*id="openSelectedSpot"/);
   assert.match(layout, /class="map-shell"[\s\S]*id="map"[\s\S]*id="expandExploreMap"/);
   assert.match(layout, /id="expandExploreMap"[^>]*\bhidden\b/);
   assert.ok(spotPanel, "longer spot detail wrapper exists");

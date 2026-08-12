@@ -11,7 +11,11 @@ function ensureHls(hlsScriptUrl) {
     script.src = hlsScriptUrl;
     script.async = true;
     script.onload = () => resolve(window.Hls);
-    script.onerror = () => reject(new Error("Unable to load HLS player."));
+    script.onerror = () => {
+      sharedHlsLoader = null;
+      script.remove();
+      reject(new Error("Unable to load HLS player."));
+    };
     document.head.appendChild(script);
   });
 
@@ -96,6 +100,7 @@ export function createFeedTilePlayer({
   let currentState = "idle";
   let generation = 0;
   let pendingOperation = null;
+  let nativeErrorHandler = null;
 
   function setState(nextState, label) {
     currentState = nextState;
@@ -110,7 +115,14 @@ export function createFeedTilePlayer({
     }
   }
 
+  function detachNativeErrorHandler() {
+    if (!nativeErrorHandler) return;
+    video.removeEventListener("error", nativeErrorHandler);
+    nativeErrorHandler = null;
+  }
+
   function resetMedia() {
+    detachNativeErrorHandler();
     destroyHls();
     video.pause();
     video.removeAttribute("src");
@@ -159,6 +171,14 @@ export function createFeedTilePlayer({
       pendingOperation = { resolve, token };
 
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        const handleNativeError = () => {
+          if (token !== generation || nativeErrorHandler !== handleNativeError) return;
+          detachNativeErrorHandler();
+          advanceGeneration("unavailable");
+          setState("unavailable", "Feed unavailable");
+        };
+        nativeErrorHandler = handleNativeError;
+        video.addEventListener("error", handleNativeError);
         video.src = camera.streamUrl;
         video.load();
         let autoplay;
@@ -202,6 +222,29 @@ export function createFeedTilePlayer({
     });
   }
 
+  function resume() {
+    if (currentState !== "blocked") return Promise.resolve(currentState);
+    const token = generation;
+    let resumed;
+    try {
+      resumed = video.play();
+    } catch (error) {
+      resumed = Promise.reject(error);
+    }
+    return Promise.resolve(resumed).then(
+      () => {
+        if (token !== generation || currentState !== "blocked") return currentState;
+        setState("playing", "Playing");
+        return "playing";
+      },
+      () => {
+        if (token !== generation || currentState !== "blocked") return currentState;
+        setState("blocked", "Press play to start");
+        return "blocked";
+      }
+    );
+  }
+
   function expire() {
     advanceGeneration("expired");
     resetMedia();
@@ -212,5 +255,5 @@ export function createFeedTilePlayer({
     return currentState;
   }
 
-  return { clear, expire, play, state };
+  return { clear, expire, play, resume, state };
 }

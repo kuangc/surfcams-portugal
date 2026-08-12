@@ -4,6 +4,7 @@ import test from "node:test";
 import { createFeedTilePlayer, createVideoPlayer } from "../src/video-player.js";
 
 function videoStub() {
+  const listeners = new Map();
   return {
     poster: "",
     src: "",
@@ -26,6 +27,20 @@ function videoStub() {
     },
     removeAttribute(name) {
       if (name === "src") this.src = "";
+    },
+    addEventListener(type, listener) {
+      const handlers = listeners.get(type) || new Set();
+      handlers.add(listener);
+      listeners.set(type, handlers);
+    },
+    removeEventListener(type, listener) {
+      listeners.get(type)?.delete(listener);
+    },
+    dispatch(type) {
+      [...(listeners.get(type) || [])].forEach((listener) => listener({ type, target: this }));
+    },
+    listeners(type) {
+      return [...(listeners.get(type) || [])];
     }
   };
 }
@@ -79,6 +94,52 @@ function createHlsStub() {
   };
 }
 
+test("a failed shared HLS script load is removed and can be retried", async () => {
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const scripts = [];
+  globalThis.window = {};
+  globalThis.document = {
+    createElement() {
+      return {
+        removeCalled: false,
+        remove() {
+          this.removeCalled = true;
+        }
+      };
+    },
+    head: {
+      appendChild(script) {
+        scripts.push(script);
+      }
+    }
+  };
+
+  try {
+    const video = videoStub();
+    video.canPlayType = () => "";
+    const status = { textContent: "" };
+    const player = createFeedTilePlayer({ video, status, hlsScriptUrl: "https://example.com/hls.js" });
+
+    const first = player.play({ streamUrl: "https://example.com/live.m3u8" });
+    scripts[0].onerror();
+    assert.equal(await first, "unavailable");
+    assert.equal(scripts[0].removeCalled, true);
+
+    const HlsStub = createHlsStub();
+    const second = player.play({ streamUrl: "https://example.com/live.m3u8" });
+    assert.equal(scripts.length, 2, "retry injects a fresh loader");
+    globalThis.window.Hls = HlsStub;
+    scripts[1].onload();
+    await Promise.resolve();
+    HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+    assert.equal(await second, "playing");
+  } finally {
+    globalThis.window = previousWindow;
+    globalThis.document = previousDocument;
+  }
+});
+
 test("createFeedTilePlayer reports unavailable for missing streams", () => {
   const video = videoStub();
   const status = { textContent: "" };
@@ -101,6 +162,47 @@ test("createFeedTilePlayer uses native HLS when available", async () => {
   assert.equal(video.poster, "poster.jpg");
   assert.equal(status.textContent, "Playing");
   assert.equal(player.state(), "playing");
+});
+
+test("a later native HLS media error transitions a playing tile to unavailable", async () => {
+  const video = videoStub();
+  const status = { textContent: "" };
+  const stateChanges = [];
+  const player = createFeedTilePlayer({
+    video,
+    status,
+    onStateChange: (state) => stateChanges.push(state)
+  });
+
+  assert.equal(
+    await player.play({ streamUrl: "https://example.com/native.m3u8" }),
+    "playing"
+  );
+
+  video.dispatch("error");
+
+  assert.equal(player.state(), "unavailable");
+  assert.equal(status.textContent, "Feed unavailable");
+  assert.equal(stateChanges.at(-1), "unavailable");
+});
+
+test("native HLS error listeners are generation-safe and removed during cleanup", async () => {
+  const video = videoStub();
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({ video, status });
+
+  await player.play({ streamUrl: "https://example.com/first.m3u8" });
+  assert.equal(video.listeners("error").length, 1);
+  const [staleErrorListener] = video.listeners("error");
+
+  await player.play({ streamUrl: "https://example.com/second.m3u8" });
+  assert.equal(video.listeners("error").length, 1);
+  staleErrorListener();
+  assert.equal(player.state(), "playing");
+
+  player.clear();
+  assert.equal(video.listeners("error").length, 0);
+  assert.equal(player.state(), "idle");
 });
 
 test("createFeedTilePlayer can expire and clear a tile", () => {
@@ -223,6 +325,102 @@ test("native and hls.js autoplay rejection resolve as blocked with a manual-play
     assert.equal(await hlsResult, "blocked");
     assert.equal(hlsPlayer.state(), "blocked");
     assert.equal(hlsStatus.textContent, "Press play to start");
+  } finally {
+    globalThis.window = previousWindow;
+  }
+});
+
+test("resume retries blocked native and attached hls.js media inside the user action", async () => {
+  for (const mode of ["native", "hls"]) {
+    const previousWindow = globalThis.window;
+    const HlsStub = createHlsStub();
+    if (mode === "hls") globalThis.window = { Hls: HlsStub };
+    try {
+      const video = videoStub();
+      if (mode === "hls") video.canPlayType = () => "";
+      let allowPlay = false;
+      video.play = () => allowPlay
+        ? Promise.resolve()
+        : Promise.reject(new Error("autoplay blocked"));
+      const player = createFeedTilePlayer({ video, status: { textContent: "" } });
+      const initial = player.play({ streamUrl: `https://example.com/${mode}.m3u8` });
+      if (mode === "hls") {
+        await Promise.resolve();
+        HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+      }
+      assert.equal(await initial, "blocked");
+
+      allowPlay = true;
+      const hlsInstanceCount = HlsStub.instances.length;
+      assert.equal(await player.resume(), "playing");
+      assert.equal(player.state(), "playing");
+      if (mode === "hls") {
+        assert.equal(HlsStub.instances.length, hlsInstanceCount, "resume keeps the attached HLS instance");
+      }
+    } finally {
+      globalThis.window = previousWindow;
+    }
+  }
+});
+
+test("a pending resume cannot relabel a player after it is cleared", async () => {
+  const pendingResume = deferred();
+  const video = videoStub();
+  let playCount = 0;
+  video.play = () => {
+    playCount += 1;
+    return playCount === 1
+      ? Promise.reject(new Error("autoplay blocked"))
+      : pendingResume.promise;
+  };
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({ video, status });
+
+  assert.equal(
+    await player.play({ streamUrl: "https://example.com/native.m3u8" }),
+    "blocked"
+  );
+
+  const resumeResult = player.resume();
+  player.clear();
+  pendingResume.resolve();
+
+  assert.equal(await resumeResult, "idle");
+  assert.equal(player.state(), "idle");
+  assert.equal(status.textContent, "Preview paused");
+});
+
+test("a fatal HLS error wins over a pending manual resume", async () => {
+  const previousWindow = globalThis.window;
+  const HlsStub = createHlsStub();
+  globalThis.window = { Hls: HlsStub };
+
+  try {
+    const pendingResume = deferred();
+    const video = videoStub();
+    video.canPlayType = () => "";
+    let playCount = 0;
+    video.play = () => {
+      playCount += 1;
+      return playCount === 1
+        ? Promise.reject(new Error("autoplay blocked"))
+        : pendingResume.promise;
+    };
+    const status = { textContent: "" };
+    const player = createFeedTilePlayer({ video, status });
+
+    const initialPlay = player.play({ streamUrl: "https://example.com/hls.m3u8" });
+    await Promise.resolve();
+    HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+    assert.equal(await initialPlay, "blocked");
+
+    const resumeResult = player.resume();
+    HlsStub.instances[0].emit(HlsStub.Events.ERROR, { fatal: true });
+    pendingResume.resolve();
+
+    assert.equal(await resumeResult, "unavailable");
+    assert.equal(player.state(), "unavailable");
+    assert.equal(status.textContent, "Feed unavailable");
   } finally {
     globalThis.window = previousWindow;
   }

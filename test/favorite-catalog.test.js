@@ -3,8 +3,10 @@ import test from "node:test";
 
 import {
   addFavorite,
+  favoriteFeedRecord,
   playableFavoriteCatalog,
-  searchFavoriteCatalog
+  searchFavoriteCatalog,
+  uniquePlayableCameras
 } from "../src/favorite-catalog.js";
 
 function camera(id, overrides = {}) {
@@ -35,6 +37,54 @@ test("playableFavoriteCatalog returns only non-guide cameras with configured HTT
   ]);
 
   assert.deepEqual(ids(catalog), ["playable"]);
+});
+
+test("playableFavoriteCatalog keeps one stable choice per playable feed", () => {
+  const catalog = playableFavoriteCatalog([
+    camera("native", { name: "Carcavelos", streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { name: "Carcavelos", streamUrl: "https://example.com/shared.m3u8" }),
+    camera("distinct", { streamUrl: "https://example.com/distinct.m3u8" })
+  ]);
+
+  assert.deepEqual(ids(catalog), ["native", "distinct"]);
+});
+
+test("uniquePlayableCameras prefers the saved alias for a duplicate feed", () => {
+  const cameras = [
+    camera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { streamUrl: "https://example.com/shared.m3u8" })
+  ];
+
+  assert.deepEqual(uniquePlayableCameras(cameras, new Set(["promoted"])).map(({ id }) => id), ["promoted"]);
+});
+
+test("playableFavoriteCatalog marks a feed saved when any duplicate alias is saved", () => {
+  const catalog = playableFavoriteCatalog([
+    camera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { streamUrl: "https://example.com/shared.m3u8" })
+  ], new Set(["promoted"]));
+
+  assert.deepEqual(catalog.map(({ camera: item, saved }) => [item.id, saved]), [["promoted", true]]);
+});
+
+test("addFavorite replaces saved feed aliases with the catalog representative", () => {
+  const catalog = playableFavoriteCatalog([
+    camera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { streamUrl: "https://example.com/shared.m3u8" })
+  ]);
+
+  assert.deepEqual([...addFavorite(new Set(["promoted"]), "native", catalog)], ["native"]);
+});
+
+test("favoriteFeedRecord resolves any playable alias to the shared saved feed", () => {
+  const cameras = [
+    camera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { streamUrl: "https://example.com/shared.m3u8" })
+  ];
+  const catalog = playableFavoriteCatalog(cameras, new Set(["native"]));
+
+  assert.deepEqual(favoriteFeedRecord(catalog, cameras[1]), catalog[0]);
+  assert.equal(favoriteFeedRecord(catalog, camera("missing")), null);
 });
 
 test("searchFavoriteCatalog folds accents so Sao Juliao matches São Julião", () => {

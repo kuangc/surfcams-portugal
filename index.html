@@ -6260,7 +6260,7 @@
           </div>
         </header>
         <div class="map-layout" id="exploreLayout" data-emphasis="map">
-          <section class="explore-camera-summary" id="exploreCameraSummary" aria-labelledby="detailName">
+          <section class="explore-camera-summary" id="exploreCameraSummary" tabindex="-1" aria-labelledby="detailName">
             <div class="explore-video-shell">
               <video id="exploreVideo" muted playsinline controls></video>
               <span class="feed-status" id="exploreFeedStatus">Select a spot</span>
@@ -6276,7 +6276,7 @@
             <section class="water-summary water-summary--compact" id="detailWaterSummary" aria-label="Water and tide"></section>
           </section>
           <div class="map-shell">
-            <div id="map" class="map"></div>
+            <div id="map" class="map" tabindex="-1"></div>
             <button class="secondary-button expand-explore-map" id="expandExploreMap" type="button" hidden>Expand map</button>
           </div>
           <aside class="spot-panel" id="spotPanel" aria-label="Local spot details">

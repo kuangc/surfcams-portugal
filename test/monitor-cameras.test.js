@@ -62,6 +62,19 @@ test("monitorFavoriteCameras excludes non-HTTPS and malformed stream URLs", () =
   assert.deepEqual(favorites.map(({ id }) => id), ["playable"]);
 });
 
+test("monitorFavoriteCameras keeps one stable favorite per playable feed", () => {
+  const cameras = [
+    playableCamera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    playableCamera("promoted", { streamUrl: "https://example.com/shared.m3u8" }),
+    playableCamera("distinct", { streamUrl: "https://example.com/distinct.m3u8" })
+  ];
+  const favoriteOrder = ["native", "promoted", "distinct"];
+
+  const favorites = monitorFavoriteCameras(cameras, new Set(favoriteOrder), favoriteOrder);
+
+  assert.deepEqual(favorites.map(({ id }) => id), ["native", "distinct"]);
+});
+
 test("inSuggestionFence: lat band and west-of-lon guard", () => {
   assert.equal(inSuggestionFence({ lat: 39.65, lon: -9.09 }), true);
   assert.equal(inSuggestionFence({ lat: 38.40, lon: -9.10 }), true);

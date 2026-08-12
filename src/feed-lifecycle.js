@@ -108,6 +108,52 @@ export function createGalleryPreviewSession({
     return true;
   }
 
+  function settleResume(token, result) {
+    if (token !== generation) return;
+    const finalState = typeof result === "string" ? result : player.state?.();
+    if (finalState === "playing") {
+      currentState = "playing";
+      timerId = setTimer(() => expire(token), durationMs);
+      return;
+    }
+    currentState = finalState === "unavailable" ? "unavailable" : "blocked";
+  }
+
+  function resume() {
+    if (
+      currentState !== "blocked"
+      || !visible
+      || !isDocumentVisible()
+      || typeof player.resume !== "function"
+    ) return false;
+    const token = generation + 1;
+    generation = token;
+    cancelTimer();
+    currentState = "resuming";
+    let operation;
+    try {
+      operation = player.resume();
+    } catch {
+      settleResume(token, player.state?.());
+      return true;
+    }
+    Promise.resolve(operation)
+      .then((result) => settleResume(token, result))
+      .catch(() => settleResume(token, player.state?.()));
+    return true;
+  }
+
+  function reconcilePlayerState(nextState) {
+    if (
+      !["playing", "resuming"].includes(currentState)
+      || !["blocked", "unavailable"].includes(nextState)
+    ) return false;
+    generation += 1;
+    cancelTimer();
+    currentState = nextState;
+    return true;
+  }
+
   function restart() {
     if (currentState !== "expired") return false;
     return retry();
@@ -117,5 +163,5 @@ export function createGalleryPreviewSession({
     return currentState;
   }
 
-  return { clear, restart, retry, setVisible, state };
+  return { clear, reconcilePlayerState, restart, resume, retry, setVisible, state };
 }

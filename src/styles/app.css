@@ -226,6 +226,10 @@ button:disabled {
   gap: 14px;
 }
 
+.monitor-grid[hidden] {
+  display: none;
+}
+
 .monitor-focus {
   container-name: monitor-focus;
   container-type: inline-size;
@@ -1536,8 +1540,8 @@ video {
 
 .expand-explore-map {
   position: absolute;
+  top: 12px;
   right: 12px;
-  bottom: 12px;
   z-index: 900;
   box-shadow: var(--shadow);
 }
@@ -2031,6 +2035,25 @@ button.stretch-tile[aria-current="true"] {
 }
 
 @media (max-width: 640px) {
+  .monitor-focus__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .monitor-focus__actions {
+    width: 100%;
+  }
+
+  .monitor-focus__select {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .monitor-focus__select select {
+    width: 100%;
+    max-width: none;
+  }
+
   .water-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
@@ -2150,12 +2173,12 @@ button.stretch-tile[aria-current="true"] {
   }
 
   .map-layout[data-emphasis="detail"] {
-    grid-template-columns: minmax(480px, 1fr) minmax(280px, 0.62fr);
+    grid-template-columns: minmax(280px, 0.62fr) minmax(480px, 1fr);
     grid-template-rows: auto minmax(280px, 1fr) minmax(150px, 220px);
     grid-template-areas:
-      "summary map"
-      "detail map"
-      "detail browse";
+      "map summary"
+      "map detail"
+      "browse detail";
   }
 
   .explore-camera-summary {

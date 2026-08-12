@@ -4,19 +4,19 @@ export function defaultFavoriteSet(availableIds, defaultIds = DEFAULT_FAVORITE_I
   return new Set(defaultIds.filter((id) => availableIds.has(id)));
 }
 
-export function loadFavoriteIds(cameras, storage = window.localStorage) {
+export function loadFavoriteIds(cameras, storage) {
   const availableIds = new Set(cameras.map((camera) => camera.id));
-  const stored = storage.getItem(FAVORITE_STORAGE_KEY);
-
-  if (stored !== null) {
-    try {
+  try {
+    const resolvedStorage = storage === undefined ? window.localStorage : storage;
+    const stored = resolvedStorage.getItem(FAVORITE_STORAGE_KEY);
+    if (stored !== null) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
         return new Set(parsed.filter((id) => availableIds.has(id)));
       }
-    } catch (_error) {
-      // Fall through to defaults when stored data is invalid.
     }
+  } catch (_error) {
+    // Fall through to defaults when storage is unavailable or data is invalid.
   }
 
   return defaultFavoriteSet(availableIds);

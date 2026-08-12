@@ -83,6 +83,7 @@ function createControllablePlayer() {
   let currentState = "idle";
   const calls = [];
   const pendingPlays = [];
+  const pendingResumes = [];
   return {
     calls,
     clear() {
@@ -99,9 +100,22 @@ function createControllablePlayer() {
       pendingPlays.push(pending);
       return pending.promise;
     },
+    resume() {
+      calls.push(["resume"]);
+      const pending = deferred();
+      pendingResumes.push(pending);
+      return pending.promise;
+    },
     resolveNext(nextState) {
       currentState = nextState;
       pendingPlays.shift()?.resolve(nextState);
+    },
+    rejectNextResume() {
+      pendingResumes.shift()?.reject(new Error("manual play stayed blocked"));
+    },
+    resolveNextResume(nextState) {
+      currentState = nextState;
+      pendingResumes.shift()?.resolve(nextState);
     },
     state() {
       return currentState;
@@ -283,6 +297,101 @@ test("retry from blocked or unavailable owns a fresh full successful preview", a
     timers.advance(1);
     assert.equal(session.state(), "expired");
   }
+});
+
+test("manual resume calls the player synchronously and grants a fresh exact 60-second preview", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  player.resolveNext("blocked");
+  await Promise.resolve();
+
+  assert.equal(session.resume(), true);
+  assert.deepEqual(player.calls.at(-1), ["resume"]);
+  assert.equal(timers.pendingCount(), 0);
+
+  player.resolveNextResume("playing");
+  await Promise.resolve();
+  assert.equal(session.state(), "playing");
+  assert.equal(timers.scheduledDelays.at(-1), 60_000);
+  assert.equal(timers.pendingCount(), 1);
+
+  timers.advance(59_999);
+  assert.equal(session.state(), "playing");
+  timers.advance(1);
+  assert.equal(session.state(), "expired");
+});
+
+test("a failed manual resume remains blocked and can be resumed again", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  player.resolveNext("blocked");
+  await Promise.resolve();
+
+  assert.equal(session.resume(), true);
+  player.rejectNextResume();
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(session.state(), "blocked");
+  assert.equal(timers.pendingCount(), 0);
+  assert.equal(session.resume(), true);
+  assert.equal(player.calls.filter(([operation]) => operation === "resume").length, 2);
+});
+
+test("clearing or hiding a preview makes late manual-resume settlement inert", async () => {
+  for (const stop of [
+    (session) => session.clear(),
+    (session) => session.setVisible(false)
+  ]) {
+    const player = createControllablePlayer();
+    const { session, timers } = createSession({ player });
+
+    session.setVisible(true);
+    timers.advance(0);
+    player.resolveNext("blocked");
+    await Promise.resolve();
+    assert.equal(session.resume(), true);
+
+    stop(session);
+    player.resolveNextResume("playing");
+    await Promise.resolve();
+
+    assert.equal(session.state(), "idle");
+    assert.equal(timers.pendingCount(), 0);
+  }
+});
+
+test("a late player failure reconciles the session and retry owns a fresh preview", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  player.resolveNext("playing");
+  await Promise.resolve();
+  assert.equal(session.state(), "playing");
+  assert.equal(timers.pendingCount(), 1);
+
+  assert.equal(typeof session.reconcilePlayerState, "function");
+  session.reconcilePlayerState("unavailable");
+  assert.equal(session.state(), "unavailable");
+  assert.equal(timers.pendingCount(), 0);
+
+  assert.equal(session.retry(), true);
+  timers.advance(0);
+  assert.equal(player.calls.filter(([operation]) => operation === "play").length, 2);
+  assert.equal(timers.scheduledDelays.at(-1), 60_000);
+
+  player.resolveNext("playing");
+  await Promise.resolve();
+  assert.equal(session.state(), "playing");
+  assert.equal(timers.pendingCount(), 1);
 });
 
 test("leaving or clearing during pending play ignores its late result", async () => {

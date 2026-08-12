@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createFullscreenController } from "../src/fullscreen-controller.js";
+import {
+  createFullscreenController,
+  runAfterFullscreenExit
+} from "../src/fullscreen-controller.js";
 
 function createDocumentStub({ fullscreenEnabled = true } = {}) {
   const listeners = new Map();
@@ -121,6 +124,33 @@ test("request and exit rejection are reported without optimistic state changes",
     assert.equal(states.length, 1, "rejection does not fake a fullscreenchange");
     assert.deepEqual(monitorState, initialState, "external Monitor state remains untouched");
   }
+});
+
+test("a fullscreen-dependent transition runs only after a successful exit", async () => {
+  for (const exitResult of [true, false]) {
+    const calls = [];
+    const controller = {
+      isFullscreen: () => true,
+      exit: () => {
+        calls.push("exit");
+        return Promise.resolve(exitResult);
+      }
+    };
+
+    const result = await runAfterFullscreenExit(controller, () => calls.push("transition"));
+
+    assert.equal(result, exitResult);
+    assert.deepEqual(calls, exitResult ? ["exit", "transition"] : ["exit"]);
+  }
+
+  const calls = [];
+  const immediateResult = runAfterFullscreenExit(
+    { isFullscreen: () => false, exit: () => assert.fail("must not exit") },
+    () => calls.push("transition")
+  );
+
+  assert.deepEqual(calls, ["transition"], "non-fullscreen transitions synchronously");
+  assert.equal(await immediateResult, true);
 });
 
 test("fullscreenchange synchronizes active state and button labels", () => {
