@@ -88,12 +88,16 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreList/);
   assert.match(mainSource, /playExploreCamera/);
   assert.match(mainSource, /restartMonitorTile/);
-  assert.match(mainSource, /favoriteManagerCameras/);
-  assert.match(mainSource, /manageSpotCameras/);
+  assert.match(mainSource, /playableFavoriteCatalog/);
+  assert.match(mainSource, /searchFavoriteCatalog/);
+  assert.match(mainSource, /addFavorite/);
+  assert.match(mainSource, /commitFavoriteMutation/);
+  assert.match(mainSource, /createFavoriteUndo/);
+  assert.doesNotMatch(mainSource, /favoriteManagerCameras/);
+  assert.doesNotMatch(mainSource, /manageSpotCameras/);
   assert.match(mainSource, /resolveFeedBackedCameras/);
   assert.match(mainSource, /const \{ localStreamOverrides = \{\}, \.\.\.baseCameraDb \} = cameraDb/);
   assert.match(mainSource, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(\s*resolveFeedBackedCameras\(/s);
-  assert.match(mainSource, /function manageSpotCameras\(\)\s*\{\s*return state\.cameras/s);
   assert.doesNotMatch(mainSource, /state\.db\?\.cameras\s*\|\|\s*state\.cameras/);
   assert.match(mainSource, /sanitizeFavoriteIds\(state\.cameras,\s*loadFavoriteIds\(state\.cameras\)\)/);
   assert.match(mainSource, /createFavoriteToggle/);
@@ -147,7 +151,9 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.monitor-grid\s*{/);
   assert.match(styleSource, /\.browse-panel\s*{/);
   assert.match(styleSource, /\.explore-video-shell\s*{/);
-  assert.match(styleSource, /\.favorite-toolbar\s*{/);
+  assert.match(styleSource, /\.favorite-add-dialog\s*{/);
+  assert.match(styleSource, /\.favorite-add-results\s*{/);
+  assert.match(styleSource, /\.favorite-undo-toast\s*{/);
   assert.match(styleSource, /\.favorite-toggle\s*{/);
   assert.match(styleSource, /\.spot-panel__header\s*{/);
   assert.match(styleSource, /\.condition-chip\s*{/);
@@ -165,16 +171,59 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(indexSource, /id="monitorWaterSummary"/);
   assert.match(indexSource, /id="favoritesWaterSummary"/);
   assert.match(indexSource, /id="detailWaterSummary"/);
-  assert.match(indexSource, /id="favoritesSearchInput"/);
+  assert.match(indexSource, /id="addFavoriteCamera"/);
+  assert.match(indexSource, /id="favoriteAddDialog"/);
   assert.match(indexSource, /aria-label="Toggle favorite"/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(styleSource, /grid-template-areas:\s*"map detail"\s*"browse detail"/);
   assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
   assert.match(styleSource, /@media\s*\(max-width:\s*640px\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.favorite-add-dialog\s*{[\s\S]*inset:\s*auto\s+0\s+0/s);
+  assert.match(styleSource, /:focus-visible/);
   assert.doesNotMatch(mainSource, /danger-button/);
-  assert.doesNotMatch(indexSource, />Remove favorite</);
+  assert.match(indexSource, /id="favoriteUndoButton"[^>]*>Undo<\/button>/);
   assert.doesNotMatch(styleSource, /\.sidebar\b/);
   assert.doesNotMatch(styleSource, /\.detail\b/);
+});
+
+test("Favorites renderer shows saved cameras with poster, source status, and labeled removal", () => {
+  assert.match(mainSource, /function renderFavorites\(\)[\s\S]*favoriteCameras\(\)/);
+  assert.match(mainSource, /favorite-poster/);
+  assert.match(mainSource, /poster\.src\s*=\s*camera\.image/);
+  assert.match(mainSource, /poster\.alt\s*=\s*`Poster frame for \$\{camera\.name\}`/);
+  assert.match(mainSource, /favoriteSourceLabel\(camera\)/);
+  assert.match(mainSource, /favoriteFeedStatus\(camera\)/);
+  assert.match(mainSource, /removeButton\.textContent\s*=\s*"Remove"/);
+  assert.match(mainSource, /removeButton\.setAttribute\("aria-label",\s*`Remove \$\{camera\.name\} from favorites`\)/);
+});
+
+test("Favorites combobox owns text-only options and implements APG keyboard behavior", () => {
+  assert.match(mainSource, /function openFavoriteAddDialog/);
+  assert.match(mainSource, /favoriteAddDialog\.showModal\(\)/);
+  assert.match(mainSource, /favoriteAddInput\.focus\(\)/);
+  assert.match(mainSource, /function closeFavoriteAddDialog/);
+  assert.match(mainSource, /addFavoriteCamera\.focus\(\)/);
+  assert.match(mainSource, /favoriteAddInput\.addEventListener\("keydown"/);
+  for (const key of ["ArrowDown", "ArrowUp", "Home", "End", "Enter", "Escape"]) {
+    assert.match(mainSource, new RegExp(`case "${key}"`));
+  }
+  assert.match(mainSource, /aria-activedescendant/);
+  assert.match(mainSource, /document\.createElement\("div"\)/);
+  assert.match(mainSource, /option\.setAttribute\("role",\s*"option"\)/);
+  assert.match(mainSource, /option\.setAttribute\("aria-disabled",\s*"true"\)/);
+  assert.doesNotMatch(mainSource, /favorite-add-option[^\n]*(?:button|checkbox)/);
+});
+
+test("Favorites mutations persist before state assignment and expose one ten-second undo", () => {
+  assert.match(mainSource, /durationMs:\s*10_000/);
+  assert.match(mainSource, /favoriteUndo\.offer\(camera\)/);
+  assert.match(mainSource, /favoriteUndo\.consume\(\)/);
+  assert.match(mainSource, /favoriteUndo\.cancel\(\)/);
+  assert.match(mainSource, /const nextFavoriteIds = commitFavoriteMutation\(state\.favoriteIds/);
+  assert.match(mainSource, /state\.favoriteIds = nextFavoriteIds/);
+  assert.match(mainSource, /try\s*{[\s\S]*commitFavoriteMutation[\s\S]*}\s*catch \(error\)\s*{[\s\S]*announceFavoriteStatus/s);
+  assert.match(mainSource, /renderMonitorIfActive\(\)[\s\S]*renderFavorites\(\)[\s\S]*renderExploreList\(\)[\s\S]*renderMarkers\(\)/);
+  assert.match(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
 });
 
 test("camera surfaces contain no report substitutes while advice evidence links remain safe", () => {

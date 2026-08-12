@@ -27,19 +27,51 @@ test("index loads the v3 app shell", () => {
   assert.doesNotMatch(html, /id="streamUrl"/);
 });
 
-test("manage spots exposes practical filter and sort controls", () => {
-  assert.match(html, /id="favoritesSearchInput"/);
-  assert.match(html, /id="favoritesRegionSelect"/);
-  assert.match(html, /id="favoritesStatusSelect"/);
-  assert.match(html, /id="favoritesStreamSelect"/);
-  assert.match(html, /id="favoritesDistanceSelect"/);
-  assert.match(html, /id="favoritesSortSelect"/);
-  assert.match(html, /<label class="filter-field" for="favoritesDistanceSelect">[\s\S]*<span>Distance<\/span>/);
-  assert.match(html, /<label class="filter-field" for="favoritesSortSelect">[\s\S]*<span>Sort<\/span>/);
-  assert.match(html, /<option value="favorites">Favorites first<\/option>/);
-  assert.match(html, /<option value="distance">Nearest first<\/option>/);
-  assert.match(html, /<option value="50">Within 50 km<\/option>/);
-  assert.match(html, /<option value="fit">Best conditions<\/option>/);
-  assert.match(html, /<option value="wave">Wave height<\/option>/);
-  assert.match(html, /<option value="popular">Most viewed<\/option>/);
+test("Favorites defaults to saved cameras with one primary add action", () => {
+  const favoritesScreen = html.match(/<section class="screen favorites-screen"[\s\S]*?<dialog class="favorite-add-dialog"/)?.[0] || "";
+
+  assert.match(favoritesScreen, /<h1 id="favoritesTitle">Favorites<\/h1>/);
+  assert.match(favoritesScreen, /<button[^>]*class="primary-button"[^>]*id="addFavoriteCamera"[^>]*>Add camera<\/button>/);
+  assert.match(favoritesScreen, /id="favoritesList"/);
+  assert.doesNotMatch(favoritesScreen, /favorite-toolbar/);
+
+  for (const obsoleteId of [
+    "favoritesSearchInput",
+    "favoritesRegionSelect",
+    "favoritesStatusSelect",
+    "favoritesStreamSelect",
+    "favoritesDistanceSelect",
+    "favoritesSortSelect"
+  ]) {
+    assert.doesNotMatch(favoritesScreen, new RegExp(`id="${obsoleteId}"`));
+  }
+});
+
+test("Favorites add-camera dialog exposes an accessible combobox and compact filters", () => {
+  const dialog = html.match(/<dialog[^>]*id="favoriteAddDialog"[\s\S]*?<\/dialog>/)?.[0] || "";
+  const input = dialog.match(/<input[^>]*id="favoriteAddInput"[^>]*>/)?.[0] || "";
+  const filters = dialog.match(/<details[^>]*id="favoriteAddFilters"[^>]*>[\s\S]*?<\/details>/)?.[0] || "";
+
+  assert.match(dialog, /^<dialog\b/);
+  assert.match(dialog, /id="closeFavoriteAddDialog"/);
+  assert.match(input, /role="combobox"/);
+  assert.match(input, /aria-autocomplete="list"/);
+  assert.match(input, /aria-controls="favoriteAddResults"/);
+  assert.match(input, /aria-expanded="false"/);
+  assert.match(input, /autocomplete="off"/);
+  assert.match(dialog, /id="favoriteAddResults"[^>]*role="listbox"/);
+
+  assert.match(filters, /^<details(?![^>]*\bopen\b)/);
+  assert.match(filters, /id="favoriteAddRegion"/);
+  assert.match(filters, /id="favoriteAddProvider"/);
+  assert.equal((filters.match(/<select\b/g) || []).length, 2);
+  assert.doesNotMatch(filters, /status|stream|distance|sort/i);
+});
+
+test("Favorites has one dedicated live status and one ten-second Undo toast", () => {
+  assert.equal((html.match(/id="favoriteStatusLive"/g) || []).length, 1);
+  assert.match(html, /id="favoriteStatusLive"[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
+  assert.equal((html.match(/id="favoriteUndoToast"/g) || []).length, 1);
+  assert.match(html, /id="favoriteUndoToast"[^>]*hidden/);
+  assert.match(html, /id="favoriteUndoButton"[^>]*>Undo<\/button>/);
 });

@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { DEFAULT_FAVORITE_IDS, FAVORITE_STORAGE_KEY } from "../src/config.js";
-import { defaultFavoriteSet, loadFavoriteIds, saveFavoriteIds } from "../src/favorites.js";
+import {
+  commitFavoriteMutation,
+  createFavoriteUndo,
+  defaultFavoriteSet,
+  loadFavoriteIds,
+  saveFavoriteIds
+} from "../src/favorites.js";
 
 function storageWith(initialValue = null) {
   const values = new Map();
@@ -55,4 +61,132 @@ test("favorites save under the current versioned storage key", () => {
 
   assert.equal(storage.value(), JSON.stringify(["lagide-e-baia"]));
   assert.equal(FAVORITE_STORAGE_KEY, "surfcamFavoriteIds:v3");
+});
+
+function timerHarness() {
+  const timers = new Map();
+  const cleared = [];
+  let nextId = 1;
+
+  return {
+    setTimer(callback, delay) {
+      const id = nextId;
+      nextId += 1;
+      timers.set(id, { callback, delay });
+      return id;
+    },
+    clearTimer(id) {
+      cleared.push(id);
+      timers.delete(id);
+    },
+    fire(id) {
+      const timer = timers.get(id);
+      assert.ok(timer, `timer ${id} exists`);
+      timers.delete(id);
+      timer.callback();
+    },
+    timers,
+    cleared
+  };
+}
+
+test("favorite undo keeps one removed camera and can be consumed only once", () => {
+  const timers = timerHarness();
+  const undo = createFavoriteUndo({
+    durationMs: 10_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer
+  });
+  const removedCamera = { id: "lagide-e-baia", name: "Lagide" };
+
+  undo.offer(removedCamera);
+
+  assert.equal(undo.consume(), removedCamera);
+  assert.equal(undo.consume(), null);
+  assert.deepEqual(timers.cleared, [1]);
+});
+
+test("favorite undo expires at exactly ten seconds and notifies once", () => {
+  const timers = timerHarness();
+  const expired = [];
+  const undo = createFavoriteUndo({
+    durationMs: 10_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer,
+    onExpire: (camera) => expired.push(camera)
+  });
+  const removedCamera = { id: "carcavelos", name: "Carcavelos" };
+
+  undo.offer(removedCamera);
+  assert.equal(timers.timers.get(1).delay, 10_000);
+  assert.deepEqual(expired, []);
+
+  timers.fire(1);
+
+  assert.deepEqual(expired, [removedCamera]);
+  assert.equal(undo.consume(), null);
+});
+
+test("offering another favorite undo cancels the previous timer and offer", () => {
+  const timers = timerHarness();
+  const undo = createFavoriteUndo({
+    durationMs: 10_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer
+  });
+  const first = { id: "first" };
+  const second = { id: "second" };
+
+  undo.offer(first);
+  undo.offer(second);
+
+  assert.deepEqual(timers.cleared, [1]);
+  assert.equal(timers.timers.has(1), false);
+  assert.equal(undo.consume(), second);
+});
+
+test("favorite undo cleanup cancels the pending timer and offer", () => {
+  const timers = timerHarness();
+  const undo = createFavoriteUndo({
+    durationMs: 10_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer
+  });
+
+  undo.offer({ id: "lagide-e-baia" });
+  undo.cleanup();
+
+  assert.deepEqual(timers.cleared, [1]);
+  assert.equal(undo.consume(), null);
+});
+
+test("commitFavoriteMutation clones, mutates, persists, and returns the clone", () => {
+  const current = new Set(["lagide-e-baia", "carcavelos"]);
+  const storage = storageWith();
+
+  const next = commitFavoriteMutation(current, (nextFavoriteIds) => {
+    nextFavoriteIds.delete("carcavelos");
+  }, storage);
+
+  assert.notEqual(next, current);
+  assert.deepEqual([...next], ["lagide-e-baia"]);
+  assert.deepEqual([...current], ["lagide-e-baia", "carcavelos"]);
+  assert.equal(storage.value(), JSON.stringify(["lagide-e-baia"]));
+});
+
+test("commitFavoriteMutation propagates persistence failure without changing its input", () => {
+  const current = new Set(["lagide-e-baia"]);
+  const storage = {
+    setItem() {
+      throw new Error("storage unavailable");
+    }
+  };
+
+  assert.throws(() => {
+    commitFavoriteMutation(current, (nextFavoriteIds) => {
+      nextFavoriteIds.delete("lagide-e-baia");
+      nextFavoriteIds.add("carcavelos");
+    }, storage);
+  }, /storage unavailable/);
+  assert.deepEqual([...current], ["lagide-e-baia"]);
 });

@@ -6172,63 +6172,52 @@
         <header class="screen-header">
           <div>
             <p class="eyebrow">Favorites</p>
-            <h1 id="favoritesTitle">Manage spots</h1>
+            <h1 id="favoritesTitle">Favorites</h1>
           </div>
-          <div class="favorite-toolbar">
-            <label class="filter-field" for="favoritesSearchInput">
-              <span>Search</span>
-              <input id="favoritesSearchInput" type="search" placeholder="Search places" aria-label="Search places">
-            </label>
-            <label class="filter-field" for="favoritesRegionSelect">
+          <button class="primary-button" id="addFavoriteCamera" type="button">Add camera</button>
+        </header>
+        <section class="water-summary" id="favoritesWaterSummary" aria-label="Water and tide"></section>
+        <p class="status-line favorite-status-live" id="favoriteStatusLive" aria-live="polite" aria-atomic="true">Loading favorites...</p>
+        <div class="favorites-list" id="favoritesList"></div>
+      </section>
+
+      <dialog class="favorite-add-dialog" id="favoriteAddDialog" aria-labelledby="favoriteAddTitle">
+        <div class="favorite-add-dialog__header">
+          <div>
+            <p class="eyebrow">Favorites</p>
+            <h2 id="favoriteAddTitle">Add a camera</h2>
+          </div>
+          <button class="favorite-add-dialog__close" id="closeFavoriteAddDialog" type="button" aria-label="Close add-camera dialog">×</button>
+        </div>
+        <label class="favorite-add-label" for="favoriteAddInput">Camera name</label>
+        <div class="favorite-add-combobox">
+          <input id="favoriteAddInput" type="search" role="combobox" aria-autocomplete="list" aria-controls="favoriteAddResults" aria-expanded="false" autocomplete="off" placeholder="Search supported cameras">
+          <div class="favorite-add-results" id="favoriteAddResults" role="listbox" hidden></div>
+        </div>
+        <details class="favorite-add-filters" id="favoriteAddFilters">
+          <summary>Filters</summary>
+          <div class="favorite-add-filters__fields">
+            <label for="favoriteAddRegion">
               <span>Region</span>
-              <select id="favoritesRegionSelect" aria-label="Region">
+              <select id="favoriteAddRegion">
                 <option value="">All regions</option>
               </select>
             </label>
-            <label class="filter-field" for="favoritesStatusSelect">
-              <span>Saved</span>
-              <select id="favoritesStatusSelect" aria-label="Saved status">
-                <option value="all">All spots</option>
-                <option value="favorites">Favorites</option>
-                <option value="not-favorites">Not favorites</option>
-              </select>
-            </label>
-            <label class="filter-field" for="favoritesStreamSelect">
-              <span>Streams</span>
-              <select id="favoritesStreamSelect" aria-label="Stream status">
-                <option value="all">All streams</option>
-                <option value="live">Has stream</option>
-                <option value="no-stream">No stream</option>
-              </select>
-            </label>
-            <label class="filter-field" for="favoritesDistanceSelect">
-              <span>Distance</span>
-              <select id="favoritesDistanceSelect" aria-label="Maximum drive distance">
-                <option value="">All distances</option>
-                <option value="25">Within 25 km</option>
-                <option value="50">Within 50 km</option>
-                <option value="100">Within 100 km</option>
-                <option value="200">Within 200 km</option>
-              </select>
-            </label>
-            <label class="filter-field" for="favoritesSortSelect">
-              <span>Sort</span>
-              <select id="favoritesSortSelect" aria-label="Sort spots">
-                <option value="favorites">Favorites first</option>
-                <option value="distance">Nearest first</option>
-                <option value="fit">Best conditions</option>
-                <option value="name">Name A-Z</option>
-                <option value="region">Region</option>
-                <option value="wave">Wave height</option>
-                <option value="popular">Most viewed</option>
+            <label for="favoriteAddProvider">
+              <span>Provider/source</span>
+              <select id="favoriteAddProvider">
+                <option value="">All sources</option>
               </select>
             </label>
           </div>
-        </header>
-        <section class="water-summary" id="favoritesWaterSummary" aria-label="Water and tide"></section>
-        <p class="status-line" id="favoritesStatus">Loading spots...</p>
-        <div class="favorites-list" id="favoritesList"></div>
-      </section>
+        </details>
+        <p class="favorite-add-help">Only supported cameras with playable feeds appear here.</p>
+      </dialog>
+
+      <div class="favorite-undo-toast" id="favoriteUndoToast" hidden>
+        <span id="favoriteUndoMessage">Camera removed.</span>
+        <button id="favoriteUndoButton" type="button">Undo</button>
+      </div>
 
       <section class="screen explore-screen" id="exploreScreen" data-screen="explore" hidden aria-labelledby="exploreTitle">
         <header class="screen-header explore-header">

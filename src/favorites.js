@@ -26,3 +26,54 @@ export function saveFavoriteIds(favoriteIds, storage = window.localStorage) {
   storage.setItem(FAVORITE_STORAGE_KEY, JSON.stringify([...favoriteIds]));
 }
 
+export function commitFavoriteMutation(
+  currentFavoriteIds,
+  mutate,
+  storage = window.localStorage
+) {
+  const nextFavoriteIds = new Set(currentFavoriteIds);
+  mutate(nextFavoriteIds);
+  saveFavoriteIds(nextFavoriteIds, storage);
+  return nextFavoriteIds;
+}
+
+export function createFavoriteUndo({
+  durationMs = 10_000,
+  setTimer = globalThis.setTimeout,
+  clearTimer = globalThis.clearTimeout,
+  onExpire
+} = {}) {
+  let pendingCamera = null;
+  let timerId = null;
+
+  function clearPending() {
+    if (timerId !== null) clearTimer(timerId);
+    timerId = null;
+    pendingCamera = null;
+  }
+
+  function offer(camera) {
+    clearPending();
+    pendingCamera = camera;
+    timerId = setTimer(() => {
+      const expiredCamera = pendingCamera;
+      timerId = null;
+      pendingCamera = null;
+      if (expiredCamera !== null) onExpire?.(expiredCamera);
+    }, durationMs);
+  }
+
+  function consume() {
+    if (pendingCamera === null) return null;
+    const camera = pendingCamera;
+    clearPending();
+    return camera;
+  }
+
+  return {
+    offer,
+    consume,
+    cancel: clearPending,
+    cleanup: clearPending
+  };
+}

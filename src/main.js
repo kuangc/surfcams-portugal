@@ -23,7 +23,16 @@ import {
   INITIAL_BOUNDS_IDS,
   SURFLINE_FRESH_MAX_AGE_HOURS
 } from "./config.js";
-import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
+import {
+  addFavorite,
+  playableFavoriteCatalog,
+  searchFavoriteCatalog
+} from "./favorite-catalog.js";
+import {
+  commitFavoriteMutation,
+  createFavoriteUndo,
+  loadFavoriteIds
+} from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
@@ -115,13 +124,17 @@ const els = {
   worthCheckingList: document.querySelector("#worthCheckingList"),
   monitorFavoritesMode: document.querySelector("#monitorFavoritesMode"),
   monitorMightBeGoodMode: document.querySelector("#monitorMightBeGoodMode"),
-  favoritesSearchInput: document.querySelector("#favoritesSearchInput"),
-  favoritesRegionSelect: document.querySelector("#favoritesRegionSelect"),
-  favoritesStatusSelect: document.querySelector("#favoritesStatusSelect"),
-  favoritesStreamSelect: document.querySelector("#favoritesStreamSelect"),
-  favoritesDistanceSelect: document.querySelector("#favoritesDistanceSelect"),
-  favoritesSortSelect: document.querySelector("#favoritesSortSelect"),
-  favoritesStatus: document.querySelector("#favoritesStatus"),
+  addFavoriteCamera: document.querySelector("#addFavoriteCamera"),
+  favoriteAddDialog: document.querySelector("#favoriteAddDialog"),
+  closeFavoriteAddDialog: document.querySelector("#closeFavoriteAddDialog"),
+  favoriteAddInput: document.querySelector("#favoriteAddInput"),
+  favoriteAddResults: document.querySelector("#favoriteAddResults"),
+  favoriteAddRegion: document.querySelector("#favoriteAddRegion"),
+  favoriteAddProvider: document.querySelector("#favoriteAddProvider"),
+  favoriteStatusLive: document.querySelector("#favoriteStatusLive"),
+  favoriteUndoToast: document.querySelector("#favoriteUndoToast"),
+  favoriteUndoMessage: document.querySelector("#favoriteUndoMessage"),
+  favoriteUndoButton: document.querySelector("#favoriteUndoButton"),
   favoritesList: document.querySelector("#favoritesList"),
   favoritesWaterSummary: document.querySelector("#favoritesWaterSummary"),
   searchInput: document.querySelector("#searchInput"),
@@ -149,6 +162,16 @@ state.explorePlayer = createFeedTilePlayer({
   video: els.exploreVideo,
   status: els.exploreFeedStatus,
   hlsScriptUrl: HLS_SCRIPT_URL
+});
+
+let favoriteAddRecords = [];
+let favoriteAddActiveIndex = -1;
+
+const favoriteUndo = createFavoriteUndo({
+  durationMs: 10_000,
+  setTimer: (callback, delay) => window.setTimeout(callback, delay),
+  clearTimer: (timerId) => window.clearTimeout(timerId),
+  onExpire: hideFavoriteUndoToast
 });
 
 function afterNextPaint(callback) {
@@ -206,10 +229,6 @@ function favoriteCameras() {
     .filter((id) => state.favoriteIds.has(id))
     .map((id) => camerasById.get(id))
     .filter((camera) => camera && !camera.adviceGuideOnly);
-}
-
-function manageSpotCameras() {
-  return state.cameras;
 }
 
 // The Explore screen has no sort control, so it renders state.cameras in whatever
@@ -281,23 +300,6 @@ function requestLiveForecastForSelection(camera) {
     .finally(() => {
       state.liveForecastPending.delete(camera.id);
     });
-}
-
-function favoriteManagerCameras() {
-  return filterCameras(manageSpotCameras(), {
-    query: els.favoritesSearchInput.value,
-    region: els.favoritesRegionSelect.value,
-    favoriteIds: state.favoriteIds,
-    favoriteStatus: els.favoritesStatusSelect.value,
-    streamStatus: els.favoritesStreamSelect.value,
-    maxDistanceKm: els.favoritesDistanceSelect.value,
-    sort: els.favoritesSortSelect.value || "favorites",
-    getConditionRank(camera) {
-      if (camera.adviceGuideOnly) return null;
-      return rateSurfSpot(camera, state.preferences, getConditions(camera));
-    },
-    getDriveDistanceKm: driveDistanceKm
-  });
 }
 
 function hasWaterSummaryData(camera) {
@@ -996,22 +998,111 @@ function renderLocalLens(container, camera) {
   return line;
 }
 
-function toggleFavorite(camera, checked) {
-  if (!camera || camera.adviceGuideOnly) return;
+function announceFavoriteStatus(message) {
+  els.favoriteStatusLive.textContent = message;
+}
 
-  if (checked) {
-    state.favoriteIds.add(camera.id);
-  } else {
-    state.favoriteIds.delete(camera.id);
-  }
+function hideFavoriteUndoToast() {
+  els.favoriteUndoToast.hidden = true;
+  els.favoriteUndoMessage.textContent = "Camera removed.";
+}
 
-  saveFavoriteIds(state.favoriteIds);
+function cancelFavoriteUndoOffer() {
+  favoriteUndo.cancel();
+  hideFavoriteUndoToast();
+}
+
+function renderFavoriteMutationSurfaces(cameraId = null) {
   renderMonitorIfActive();
   renderFavorites();
   renderExploreList();
   renderMarkers();
-  if (state.selectedExploreCamera?.id === camera.id) {
-    renderExploreSelection(state.cameras.find((candidate) => candidate.id === camera.id) || null);
+  if (cameraId && state.selectedExploreCamera?.id === cameraId) {
+    renderExploreSelection(state.cameras.find((candidate) => candidate.id === cameraId) || null);
+  }
+}
+
+function addFavoriteCamera(cameraId) {
+  cancelFavoriteUndoOffer();
+  const catalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
+  const record = catalog.find(({ camera }) => camera.id === cameraId);
+  const candidateFavoriteIds = addFavorite(state.favoriteIds, cameraId, catalog);
+
+  if (!record) {
+    announceFavoriteStatus("That camera does not have a supported playable feed.");
+    return false;
+  }
+  if (state.favoriteIds.has(cameraId) || !candidateFavoriteIds.has(cameraId)) {
+    announceFavoriteStatus(`${record.camera.name} is already saved.`);
+    return false;
+  }
+
+  try {
+    const nextFavoriteIds = commitFavoriteMutation(state.favoriteIds, (nextFavoriteIds) => {
+      candidateFavoriteIds.forEach((id) => nextFavoriteIds.add(id));
+    });
+    state.favoriteIds = nextFavoriteIds;
+  } catch (error) {
+    announceFavoriteStatus(`Could not save ${record.camera.name}. Your favorites were not changed.`);
+    return false;
+  }
+
+  renderFavoriteMutationSurfaces(cameraId);
+  announceFavoriteStatus(`${record.camera.name} added to favorites.`);
+  if (els.favoriteAddDialog.open) {
+    els.favoriteAddInput.value = "";
+    renderFavoriteAddResults();
+  }
+  return true;
+}
+
+function removeFavoriteCamera(camera) {
+  cancelFavoriteUndoOffer();
+  if (!camera || !state.favoriteIds.has(camera.id)) return false;
+
+  try {
+    const nextFavoriteIds = commitFavoriteMutation(state.favoriteIds, (nextFavoriteIds) => {
+      nextFavoriteIds.delete(camera.id);
+    });
+    state.favoriteIds = nextFavoriteIds;
+  } catch (error) {
+    announceFavoriteStatus(`Could not remove ${camera.name}. Your favorites were not changed.`);
+    return false;
+  }
+
+  renderFavoriteMutationSurfaces(camera.id);
+  favoriteUndo.offer(camera);
+  els.favoriteUndoMessage.textContent = `${camera.name} removed.`;
+  els.favoriteUndoToast.hidden = false;
+  announceFavoriteStatus(`${camera.name} removed from favorites. Undo is available for 10 seconds.`);
+  return true;
+}
+
+function undoFavoriteRemoval() {
+  const camera = favoriteUndo.consume();
+  hideFavoriteUndoToast();
+  if (!camera) return;
+
+  try {
+    const nextFavoriteIds = commitFavoriteMutation(state.favoriteIds, (nextFavoriteIds) => {
+      nextFavoriteIds.add(camera.id);
+    });
+    state.favoriteIds = nextFavoriteIds;
+  } catch (error) {
+    announceFavoriteStatus(`Could not restore ${camera.name}. Your favorites were not changed.`);
+    return;
+  }
+
+  renderFavoriteMutationSurfaces(camera.id);
+  announceFavoriteStatus(`${camera.name} restored to favorites.`);
+}
+
+function toggleFavorite(camera, checked) {
+  if (!camera || camera.adviceGuideOnly) return;
+  if (checked) {
+    addFavoriteCamera(camera.id);
+  } else {
+    removeFavoriteCamera(camera);
   }
 }
 
@@ -1042,6 +1133,13 @@ function createFavoriteCard(camera) {
   card.className = "favorite-card";
   card.dataset.cameraRow = camera.id;
 
+  const poster = document.createElement("img");
+  poster.className = "favorite-poster";
+  poster.src = camera.image || camera.poster || camera.stillUrl || "";
+  poster.alt = `Poster frame for ${camera.name}`;
+  poster.loading = "lazy";
+  poster.decoding = "async";
+
   const body = document.createElement("div");
   body.className = "favorite-card__body";
 
@@ -1055,25 +1153,46 @@ function createFavoriteCard(camera) {
   meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
 
   header.append(title, meta);
+  const feed = document.createElement("p");
+  feed.className = "favorite-card__feed";
+  feed.textContent = `Source: ${favoriteSourceLabel(camera)} · ${favoriteFeedStatus(camera)}`;
+
   const conditionStrip = createConditionStrip(camera, { compact: true });
   renderLocalLens(conditionStrip, camera);
-  body.append(header, conditionStrip);
-  card.append(body, createFavoriteToggle(camera));
+  body.append(header, feed, conditionStrip);
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "secondary-button favorite-remove-button";
+  removeButton.type = "button";
+  removeButton.textContent = "Remove";
+  removeButton.setAttribute("aria-label", `Remove ${camera.name} from favorites`);
+  removeButton.addEventListener("click", () => removeFavoriteCamera(camera));
+
+  card.append(poster, body, removeButton);
   return card;
+}
+
+function favoriteSourceLabel(camera) {
+  const source = camera.streamSource || camera.provider || camera.source || "";
+  if (source === "meo" || source === "meo-beachcam") return "MEO Beachcam";
+  if (source === "surfline" || source === "surfline-raw") return "Surfline";
+  return source ? formatRegion(source) : "Supported source";
+}
+
+function favoriteFeedStatus(camera) {
+  return camera.hasStream && camera.streamUrl ? "Feed available" : "Feed unavailable";
 }
 
 function renderFavorites() {
   els.favoritesList.textContent = "";
   renderWaterSummaries();
-  const manageCameras = manageSpotCameras();
-  const cameras = favoriteManagerCameras();
-  const favoriteCount = manageCameras.filter((camera) => state.favoriteIds.has(camera.id)).length;
-  els.favoritesStatus.textContent = `${favoriteCount} favorites · ${cameras.length}/${manageCameras.length} spots shown`;
+  const cameras = favoriteCameras();
+  announceFavoriteStatus(`${cameras.length} saved camera${cameras.length === 1 ? "" : "s"}.`);
 
   if (!cameras.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
-    empty.textContent = "No spots match those filters.";
+    empty.textContent = "No cameras saved yet. Add a supported playable camera.";
     els.favoritesList.appendChild(empty);
     return;
   }
@@ -1081,6 +1200,177 @@ function renderFavorites() {
   cameras.forEach((camera) => {
     els.favoritesList.appendChild(createFavoriteCard(camera));
   });
+}
+
+function favoriteProviderValue(camera) {
+  return camera.streamSource || camera.provider || camera.source || "";
+}
+
+function renderFavoriteAddFilterOptions() {
+  const catalogCameras = playableFavoriteCatalog(state.cameras, state.favoriteIds)
+    .map(({ camera }) => camera);
+  renderRegionOptions(els.favoriteAddRegion, catalogCameras);
+
+  els.favoriteAddProvider.textContent = "";
+  const allSources = document.createElement("option");
+  allSources.value = "";
+  allSources.textContent = "All sources";
+  els.favoriteAddProvider.appendChild(allSources);
+
+  const providers = new Map();
+  catalogCameras.forEach((camera) => {
+    const value = favoriteProviderValue(camera);
+    if (value) providers.set(value, favoriteSourceLabel(camera));
+  });
+  [...providers.entries()]
+    .sort((a, b) => a[1].localeCompare(b[1], undefined, { sensitivity: "base" }))
+    .forEach(([value, label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      els.favoriteAddProvider.appendChild(option);
+    });
+}
+
+function hideFavoriteAddResults() {
+  favoriteAddActiveIndex = -1;
+  els.favoriteAddResults.hidden = true;
+  els.favoriteAddInput.setAttribute("aria-expanded", "false");
+  els.favoriteAddInput.removeAttribute("aria-activedescendant");
+}
+
+function setFavoriteAddActiveIndex(index) {
+  const options = [...els.favoriteAddResults.querySelectorAll("[data-favorite-option]")];
+  if (!options.length) {
+    favoriteAddActiveIndex = -1;
+    els.favoriteAddInput.removeAttribute("aria-activedescendant");
+    return;
+  }
+
+  favoriteAddActiveIndex = Math.max(0, Math.min(index, options.length - 1));
+  options.forEach((option, optionIndex) => {
+    option.setAttribute("aria-selected", String(optionIndex === favoriteAddActiveIndex));
+  });
+  const activeOption = options[favoriteAddActiveIndex];
+  els.favoriteAddInput.setAttribute("aria-activedescendant", activeOption.id);
+  activeOption.scrollIntoView({ block: "nearest" });
+}
+
+function acceptFavoriteAddRecord(index = favoriteAddActiveIndex) {
+  const record = favoriteAddRecords[index];
+  if (!record) return;
+  if (record.saved || state.favoriteIds.has(record.camera.id)) {
+    announceFavoriteStatus(`${record.camera.name} is already saved.`);
+    return;
+  }
+  addFavoriteCamera(record.camera.id);
+}
+
+function favoriteAddOptionLabel({ camera, saved }) {
+  const place = [camera.location, formatRegion(camera.region)].filter(Boolean).join(" · ");
+  const savedLabel = saved ? " · Saved" : "";
+  return `${camera.name} — ${place} · ${favoriteSourceLabel(camera)}${savedLabel}`;
+}
+
+function renderFavoriteAddResults() {
+  const catalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
+  favoriteAddRecords = searchFavoriteCatalog(catalog, {
+    query: els.favoriteAddInput.value,
+    region: els.favoriteAddRegion.value,
+    provider: els.favoriteAddProvider.value
+  });
+  favoriteAddActiveIndex = -1;
+  els.favoriteAddInput.removeAttribute("aria-activedescendant");
+  els.favoriteAddResults.textContent = "";
+
+  if (!favoriteAddRecords.length) {
+    const noResults = document.createElement("div");
+    noResults.className = "favorite-add-option favorite-add-option--empty";
+    noResults.setAttribute("role", "option");
+    noResults.setAttribute("aria-disabled", "true");
+    noResults.textContent = "No matches. Only supported cameras with playable feeds appear here.";
+    els.favoriteAddResults.appendChild(noResults);
+  } else {
+    favoriteAddRecords.forEach((record, index) => {
+      const option = document.createElement("div");
+      option.className = "favorite-add-option";
+      option.id = `favorite-add-option-${index}`;
+      option.dataset.favoriteOption = "";
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", "false");
+      if (record.saved) option.setAttribute("aria-disabled", "true");
+      option.textContent = favoriteAddOptionLabel(record);
+      option.addEventListener("mousedown", (event) => event.preventDefault());
+      option.addEventListener("click", () => {
+        setFavoriteAddActiveIndex(index);
+        acceptFavoriteAddRecord(index);
+        els.favoriteAddInput.focus();
+      });
+      els.favoriteAddResults.appendChild(option);
+    });
+  }
+
+  els.favoriteAddResults.hidden = false;
+  els.favoriteAddInput.setAttribute("aria-expanded", "true");
+}
+
+function openFavoriteAddDialog() {
+  if (!els.favoriteAddDialog.open) els.favoriteAddDialog.showModal();
+  renderFavoriteAddResults();
+  els.favoriteAddInput.focus();
+}
+
+function closeFavoriteAddDialog() {
+  hideFavoriteAddResults();
+  if (els.favoriteAddDialog.open) els.favoriteAddDialog.close();
+  els.addFavoriteCamera.focus();
+}
+
+function handleFavoriteAddKeydown(event) {
+  const resultCount = favoriteAddRecords.length;
+
+  switch (event.key) {
+    case "ArrowDown":
+      event.preventDefault();
+      if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+      if (resultCount) setFavoriteAddActiveIndex(
+        favoriteAddActiveIndex < resultCount - 1 ? favoriteAddActiveIndex + 1 : 0
+      );
+      break;
+    case "ArrowUp":
+      event.preventDefault();
+      if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+      if (resultCount) setFavoriteAddActiveIndex(
+        favoriteAddActiveIndex > 0 ? favoriteAddActiveIndex - 1 : resultCount - 1
+      );
+      break;
+    case "Home":
+      if (!resultCount) break;
+      event.preventDefault();
+      setFavoriteAddActiveIndex(0);
+      break;
+    case "End":
+      if (!resultCount) break;
+      event.preventDefault();
+      setFavoriteAddActiveIndex(resultCount - 1);
+      break;
+    case "Enter":
+      if (favoriteAddActiveIndex < 0) break;
+      event.preventDefault();
+      acceptFavoriteAddRecord();
+      break;
+    case "Escape":
+      event.preventDefault();
+      event.stopPropagation();
+      if (!els.favoriteAddResults.hidden) {
+        hideFavoriteAddResults();
+      } else {
+        closeFavoriteAddDialog();
+      }
+      break;
+    default:
+      break;
+  }
 }
 
 function playExploreCamera(camera) {
@@ -1748,7 +2038,7 @@ function renderRegionOptions(select, cameras = state.cameras) {
 
 function renderRegions() {
   renderRegionOptions(els.regionSelect, state.cameras);
-  renderRegionOptions(els.favoritesRegionSelect, manageSpotCameras());
+  renderFavoriteAddFilterOptions();
 }
 
 function ensureMap() {
@@ -1800,17 +2090,22 @@ function bindEvents() {
   els.monitorFavoritesMode.addEventListener("click", () => setMonitorMode("favorites"));
   els.monitorMightBeGoodMode.addEventListener("click", () => setMonitorMode("might-be-good"));
 
-  [
-    els.favoritesSearchInput,
-    els.favoritesRegionSelect,
-    els.favoritesStatusSelect,
-    els.favoritesStreamSelect,
-    els.favoritesDistanceSelect,
-    els.favoritesSortSelect
-  ].forEach((input) => {
-    input.addEventListener("input", renderFavorites);
-    input.addEventListener("change", renderFavorites);
+  els.addFavoriteCamera.addEventListener("click", openFavoriteAddDialog);
+  els.closeFavoriteAddDialog.addEventListener("click", closeFavoriteAddDialog);
+  els.favoriteAddDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeFavoriteAddDialog();
   });
+  els.favoriteAddInput.addEventListener("input", renderFavoriteAddResults);
+  els.favoriteAddInput.addEventListener("keydown", handleFavoriteAddKeydown);
+  els.favoriteAddInput.addEventListener("click", () => {
+    if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+  });
+  [els.favoriteAddRegion, els.favoriteAddProvider].forEach((select) => {
+    select.addEventListener("change", renderFavoriteAddResults);
+  });
+  els.favoriteUndoButton.addEventListener("click", undoFavoriteRemoval);
+  window.addEventListener("pagehide", () => favoriteUndo.cleanup());
 
   [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
     input.addEventListener("input", () => {
