@@ -80,6 +80,7 @@ test("Monitor includes a non-modal Focus and Compare shell beside the gallery", 
   const monitorScreen = html.match(/<section class="screen monitor-screen"[\s\S]*?<\/section>\s*<section class="screen favorites-screen"/)?.[0] || "";
   const focus = monitorScreen.match(/<section[^>]*id="monitorFocus"[\s\S]*?<\/section>/)?.[0] || "";
   const composition = focus.match(/<div[^>]*id="monitorFocusComposition"[^>]*>/)?.[0] || "";
+  const compositionScope = focus.slice(focus.indexOf(composition));
 
   assert.match(monitorScreen, /id="monitorGrid"[\s\S]*id="monitorFocus"/);
   assert.match(focus, /^<section\b[^>]*\bhidden\b/);
@@ -87,9 +88,11 @@ test("Monitor includes a non-modal Focus and Compare shell beside the gallery", 
   assert.match(focus, /id="monitorFocusCamera"/);
   assert.match(focus, /id="monitorCompareAction"[^>]*>Compare<\/button>/);
   assert.match(focus, /id="monitorComparePicker"/);
-  assert.match(focus, /id="monitorFullscreenAction"/);
   assert.match(focus, /id="monitorExitFocus"[^>]*>Exit Focus<\/button>/);
-  assert.match(focus, /id="monitorFocusStatus"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.ok(composition, "complete Focus composition wrapper exists");
   assert.doesNotMatch(composition, /aria-live/);
+  assert.match(compositionScope, /id="monitorFocusFullscreen"[^>]*>Enter fullscreen<\/button>/);
+  assert.match(compositionScope, /id="monitorFocusStatus"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(compositionScope, /id="monitorFocusPanes"/);
+  assert.match(compositionScope, /id="monitorFocusFullscreen"[\s\S]*id="monitorFocusPanes"/);
 });

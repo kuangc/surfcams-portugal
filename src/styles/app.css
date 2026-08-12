@@ -274,13 +274,27 @@ button:disabled {
 }
 
 .monitor-focus__status {
+  flex: 1 1 240px;
   min-height: 1.3em;
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--muted);
   font-size: 0.8rem;
 }
 
 .monitor-focus__composition {
+  display: grid;
+  gap: 8px;
+}
+
+.monitor-focus__fullscreen-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.monitor-focus__panes {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 14px;
@@ -335,14 +349,28 @@ button:disabled {
 }
 
 .monitor-focus__composition:fullscreen {
+  grid-template-rows: auto minmax(0, 1fr);
   width: 100vw;
   max-width: none;
   min-height: 100vh;
   margin: 0;
   padding: clamp(10px, 2vw, 24px);
   overflow: auto;
-  align-content: center;
+  align-content: stretch;
   background: var(--video);
+}
+
+.monitor-focus__composition:fullscreen .monitor-focus__fullscreen-tools {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(5, 6, 6, 0.86);
+}
+
+.monitor-focus__composition:fullscreen .monitor-focus__status {
+  color: #ffffff;
 }
 
 .monitor-focus__composition:fullscreen .monitor-focus__pane {
@@ -358,14 +386,14 @@ button:disabled {
 }
 
 @container monitor-focus (min-width: 654px) {
-  .monitor-focus__composition[data-view="compare-two"] {
+  .monitor-focus__composition[data-view="compare-two"] .monitor-focus__panes {
     grid-template-columns: repeat(2, minmax(320px, 1fr));
   }
 }
 
 @supports not (container-type: inline-size) {
   @media (min-width: 900px) {
-    .monitor-focus__composition[data-view="compare-two"] {
+    .monitor-focus__composition[data-view="compare-two"] .monitor-focus__panes {
       grid-template-columns: repeat(2, minmax(320px, 1fr));
     }
   }

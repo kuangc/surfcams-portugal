@@ -6182,12 +6182,16 @@
                 <span>Compare with</span>
                 <select id="monitorComparePicker"></select>
               </label>
-              <button class="secondary-button" id="monitorFullscreenAction" type="button">Enter fullscreen</button>
               <button class="secondary-button" id="monitorExitFocus" type="button">Exit Focus</button>
             </div>
           </header>
-          <p class="monitor-focus__status" id="monitorFocusStatus" role="status" aria-live="polite"></p>
-          <div class="monitor-focus__composition" id="monitorFocusComposition"></div>
+          <div class="monitor-focus__composition" id="monitorFocusComposition">
+            <div class="monitor-focus__fullscreen-tools">
+              <p class="monitor-focus__status" id="monitorFocusStatus" role="status" aria-live="polite"></p>
+              <button class="secondary-button" id="monitorFocusFullscreen" type="button">Enter fullscreen</button>
+            </div>
+            <div class="monitor-focus__panes" id="monitorFocusPanes"></div>
+          </div>
         </section>
       </section>
 

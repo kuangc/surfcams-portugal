@@ -137,10 +137,11 @@ const els = {
   monitorCompareAction: document.querySelector("#monitorCompareAction"),
   monitorComparePickerLabel: document.querySelector("#monitorComparePickerLabel"),
   monitorComparePicker: document.querySelector("#monitorComparePicker"),
-  monitorFullscreenAction: document.querySelector("#monitorFullscreenAction"),
+  monitorFocusFullscreen: document.querySelector("#monitorFocusFullscreen"),
   monitorExitFocus: document.querySelector("#monitorExitFocus"),
   monitorFocusStatus: document.querySelector("#monitorFocusStatus"),
   monitorFocusComposition: document.querySelector("#monitorFocusComposition"),
+  monitorFocusPanes: document.querySelector("#monitorFocusPanes"),
   todayRecommendations: document.querySelector("#todayRecommendations"),
   bestBetsList: document.querySelector("#bestBetsList"),
   worthChecking: document.querySelector("#worthChecking"),
@@ -192,9 +193,9 @@ state.fullscreenController = createFullscreenController({
   target: els.monitorFocusComposition,
   document,
   onStateChange: ({ supported, active, label }) => {
-    els.monitorFullscreenAction.disabled = !supported;
-    els.monitorFullscreenAction.textContent = label;
-    els.monitorFullscreenAction.setAttribute("aria-pressed", String(active));
+    els.monitorFocusFullscreen.disabled = !supported;
+    els.monitorFocusFullscreen.textContent = label;
+    els.monitorFocusFullscreen.setAttribute("aria-pressed", String(active));
     if (!supported) els.monitorFocusStatus.textContent = "Fullscreen is unavailable in this browser.";
   },
   onError: () => {
@@ -469,7 +470,7 @@ function populateFocusCameraSelect(select, cameras, selectedId, { placeholder = 
 function refreshPaneReplacementOptions() {
   const cameras = monitorFavoriteRoster();
   const selectedIds = state.monitorView.focusedCameraIds;
-  els.monitorFocusComposition
+  els.monitorFocusPanes
     .querySelectorAll('[data-focus-action="replace"]')
     .forEach((select) => {
       const paneIndex = Number(select.dataset.paneIndex);
@@ -506,7 +507,7 @@ function renderMonitorFocusControls(cameras) {
 }
 
 function replaceFocusedPaneElement(paneIndex, camera) {
-  const existingPane = els.monitorFocusComposition.children[paneIndex];
+  const existingPane = els.monitorFocusPanes.children[paneIndex];
   if (!existingPane) return;
   state.focusedPlayers.get(existingPane)?.clear();
   state.focusedPlayers.delete(existingPane);
@@ -615,9 +616,9 @@ function createFocusedPane(camera, paneIndex) {
 
 function renderMonitorFocus(cameras) {
   els.monitorFocus.hidden = false;
-  els.monitorFocusComposition.textContent = "";
+  els.monitorFocusPanes.textContent = "";
   cameras.forEach((camera, paneIndex) => {
-    els.monitorFocusComposition.appendChild(createFocusedPane(camera, paneIndex));
+    els.monitorFocusPanes.appendChild(createFocusedPane(camera, paneIndex));
   });
   renderMonitorFocusControls(cameras);
 }
@@ -1090,7 +1091,7 @@ function renderMonitor() {
   els.todayRecommendations.hidden = favoritesMode;
   if (!favoritesMode) {
     els.monitorFocus.hidden = true;
-    els.monitorFocusComposition.textContent = "";
+    els.monitorFocusPanes.textContent = "";
     els.monitorGrid.hidden = true;
     els.monitorWaterSummary.hidden = true;
     els.monitorGrid.textContent = "";
@@ -1118,7 +1119,7 @@ function renderMonitor() {
   }
 
   els.monitorFocus.hidden = true;
-  els.monitorFocusComposition.textContent = "";
+  els.monitorFocusPanes.textContent = "";
   els.monitorGrid.hidden = false;
   els.monitorGrid.textContent = "";
 
@@ -2468,7 +2469,7 @@ function bindEvents() {
     renderMonitor();
   });
   els.monitorExitFocus.addEventListener("click", exitMonitorFocusView);
-  els.monitorFullscreenAction.addEventListener("click", () => {
+  els.monitorFocusFullscreen.addEventListener("click", () => {
     void state.fullscreenController.toggle();
   });
 

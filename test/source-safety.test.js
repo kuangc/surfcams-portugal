@@ -189,15 +189,19 @@ test("Focus playback cleanup, visibility restoration, and gallery origin restora
 
 test("app-owned fullscreen targets the complete Focus composition and reports errors locally", () => {
   assert.match(mainSource, /createFullscreenController\(\{[\s\S]*target:\s*els\.monitorFocusComposition[\s\S]*document[\s\S]*onStateChange[\s\S]*onError/);
-  assert.match(mainSource, /monitorFullscreenAction[\s\S]*fullscreenController\.toggle\(\)/);
+  assert.match(mainSource, /monitorFocusFullscreen[\s\S]*fullscreenController\.toggle\(\)/);
   assert.match(mainSource, /monitorFocusStatus\.textContent\s*=\s*"Fullscreen could not be changed\."/);
-  assert.match(mainSource, /monitorFullscreenAction\.disabled\s*=\s*!supported/);
+  assert.match(mainSource, /monitorFocusFullscreen\.disabled\s*=\s*!supported/);
+  assert.match(mainSource, /monitorFocusPanes:\s*document\.querySelector\("#monitorFocusPanes"\)/);
+  assert.match(mainSource, /function renderMonitorFocus[\s\S]*monitorFocusPanes\.textContent\s*=\s*""[\s\S]*monitorFocusPanes\.appendChild/);
+  assert.match(mainSource, /monitorFocusPanes\.children\[paneIndex\]/);
+  assert.doesNotMatch(mainSource, /monitorFocusComposition\.textContent\s*=/);
 });
 
 test("Focus and Compare styling keeps one useful feed or two equal responsive panes", () => {
   assert.match(styleSource, /\.monitor-focus\s*{[\s\S]*container-type:\s*inline-size/);
   assert.match(styleSource, /\.monitor-focus__composition\[data-view="focus-one"\][\s\S]*max-width:/);
-  assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\][\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
+  assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\]\s+\.monitor-focus__panes[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
   assert.match(styleSource, /\.monitor-focus__composition:fullscreen/);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styleSource, /\.monitor-focus[\s\S]*:focus-visible/);
