@@ -27,7 +27,7 @@ import { loadFavoriteIds, saveFavoriteIds } from "./favorites.js";
 import { formatRegion } from "./format.js";
 import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
-import { inSuggestionFence, monitorCameraSlots } from "./monitor-cameras.js";
+import { inSuggestionFence, monitorFavoriteCameras } from "./monitor-cameras.js";
 import { addSessionFeedback, exportSessionFeedback, importSessionFeedback } from "./session-feedback.js";
 import {
   applySpotMetadataToCameraDb,
@@ -775,18 +775,23 @@ function renderMonitor() {
     return;
   }
 
-  const slots = monitorCameraSlots(state.cameras, state.favoriteIds, favoriteOrder(), undefined, { getDriveDistanceKm: driveDistanceKm });
+  const favoriteCameras = monitorFavoriteCameras(
+    state.cameras,
+    state.favoriteIds,
+    favoriteOrder(),
+    { getDriveDistanceKm: driveDistanceKm }
+  );
 
   els.monitorGrid.textContent = "";
 
-  if (!slots.length) {
+  if (!favoriteCameras.length) {
     const empty = document.createElement("p");
     empty.className = "empty-state";
     empty.textContent = "No favorites selected.";
     els.monitorGrid.appendChild(empty);
   } else {
-    slots.forEach((slot, index) => {
-      els.monitorGrid.appendChild(createMonitorTile(slot, index));
+    favoriteCameras.forEach((camera, index) => {
+      els.monitorGrid.appendChild(createMonitorTile({ camera }, index));
     });
   }
 

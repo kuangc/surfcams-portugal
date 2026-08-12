@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import * as forecastSources from "../src/forecast-sources.js";
 import { resolveConditions, newestConditionsAgeHours } from "../src/forecast-sources.js";
 import { formatConditionChips, formatConditionLine } from "../src/condition-summary.js";
-import { monitorCameraSlots } from "../src/monitor-cameras.js";
+import { monitorFavoriteCameras } from "../src/monitor-cameras.js";
 import { DEFAULT_SURF_PREFERENCES } from "../src/surf-preferences.js";
 import { rateSurfSpot } from "../src/surf-rating.js";
 
@@ -157,14 +157,15 @@ test("typed advice fields leave legacy forecast, formatting, rating, and monitor
   assert.deepEqual(formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, resolved), formatConditionChips(camera, DEFAULT_SURF_PREFERENCES, {}, before.resolved));
   assert.deepEqual(rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, resolved), rateSurfSpot(camera, DEFAULT_SURF_PREFERENCES, before.resolved));
 
-  const cameras = [{ id: "far" }, camera, { id: "near" }];
-  const orderBefore = monitorCameraSlots(cameras, new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), 3, {
+  const cameras = [{ id: "far" }, camera, { id: "near" }]
+    .map((item) => ({ ...item, hasStream: true, streamUrl: `https://example.com/${item.id}.m3u8` }));
+  const orderBefore = monitorFavoriteCameras(cameras, new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), {
     getDriveDistanceKm: ({ id }) => ({ far: 40, "surfline-fresh-spot": 20, near: 10 })[id]
   });
-  const orderAfter = monitorCameraSlots(cameras.map((item) => ({ ...item, advice: { populated: true } })), new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), 3, {
+  const orderAfter = monitorFavoriteCameras(cameras.map((item) => ({ ...item, advice: { populated: true } })), new Set(cameras.map(({ id }) => id)), cameras.map(({ id }) => id), {
     getDriveDistanceKm: ({ id }) => ({ far: 40, "surfline-fresh-spot": 20, near: 10 })[id]
   });
-  assert.deepEqual(orderAfter.map((slot) => slot.camera?.id), orderBefore.map((slot) => slot.camera?.id));
+  assert.deepEqual(orderAfter.map(({ id }) => id), orderBefore.map(({ id }) => id));
 });
 
 test("live-model and MEO-static legacy results do not gain typed Surfline fields", () => {

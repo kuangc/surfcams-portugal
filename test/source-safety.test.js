@@ -80,7 +80,7 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /loadSpotData/);
   assert.match(mainSource, /findDriveEstimate/);
   assert.match(mainSource, /monitorMode:\s*"favorites"/);
-  assert.match(mainSource, /monitorCameraSlots/);
+  assert.match(mainSource, /monitorFavoriteCameras/);
   assert.match(mainSource, /recommendTodaySpots/);
   assert.match(mainSource, /renderMonitor/);
   assert.match(mainSource, /renderFavorites/);

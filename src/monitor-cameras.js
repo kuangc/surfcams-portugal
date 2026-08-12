@@ -1,4 +1,4 @@
-import { MONITOR_CAMERA_LIMIT, SUGGESTION_FENCE } from "./config.js";
+import { SUGGESTION_FENCE } from "./config.js";
 
 function compareDistance(a, b, getDriveDistanceKm) {
   const aDistance = getDriveDistanceKm(a);
@@ -16,26 +16,20 @@ function sortByDistance(cameras, getDriveDistanceKm) {
   return [...cameras].sort((a, b) => compareDistance(a, b, getDriveDistanceKm));
 }
 
-export function monitorCameraSlots(
+export function monitorFavoriteCameras(
   cameras,
   favoriteIds,
   favoriteOrder,
-  limit = MONITOR_CAMERA_LIMIT,
   { getDriveDistanceKm = null } = {}
 ) {
   const byId = new Map(cameras.map((camera) => [camera.id, camera]));
-  const orderedFavorites = sortByDistance(favoriteOrder
-    .filter((id) => favoriteIds.has(id))
-    .map((id) => byId.get(id))
-    .filter((camera) => camera && !camera.adviceGuideOnly), getDriveDistanceKm)
-    .slice(0, limit);
-  const slots = orderedFavorites.map((camera) => ({ camera, empty: false }));
-
-  while (slots.length < limit) {
-    slots.push({ camera: null, empty: true });
-  }
-
-  return slots;
+  return sortByDistance(
+    favoriteOrder
+      .filter((id) => favoriteIds.has(id))
+      .map((id) => byId.get(id))
+      .filter((camera) => camera?.hasStream && camera.streamUrl && !camera.adviceGuideOnly),
+    getDriveDistanceKm
+  );
 }
 
 export function inSuggestionFence(camera) {

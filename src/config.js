@@ -25,7 +25,6 @@ export const COAST_EXPOSURES_URL = "./data/coast-exposures.json";
 export const SPOT_METADATA_ENRICHMENT_URL = "./data/spot-metadata-enrichment.json";
 export const PORTUGAL_TIDES_URL = "./data/portugal-tides.json";
 export const MAX_CAMERA_LIST_ROWS = 90;
-export const MONITOR_CAMERA_LIMIT = DEFAULT_FAVORITE_IDS.length;
 export const HLS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/hls.js@1.6.4/dist/hls.min.js";
 export const PROMOTED_SPOTS_URL = "./data/promoted-spots.json";
 export const SURFLINE_CONDITIONS_URL = "./data/surfline-conditions.json";

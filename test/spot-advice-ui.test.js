@@ -4,7 +4,7 @@ import vm from "node:vm";
 import test from "node:test";
 
 import { resolveConditions } from "../src/forecast-sources.js";
-import { monitorCameraSlots } from "../src/monitor-cameras.js";
+import { monitorFavoriteCameras } from "../src/monitor-cameras.js";
 import {
   formatSpotPlaybook,
   normalizeSpotAdviceRuntime,
@@ -502,11 +502,12 @@ test("advice presentation leaves legacy conditions and Favorites ordering unchan
   assert.doesNotMatch(mainSource, /rateSurfSpot\([^)]*(?:lens|advice|claim|playbook)/);
   assert.doesNotMatch(mainSource, /(?:waveMinM|waveMaxM|providerSpotSurfMinM|providerSpotSurfMaxM)\s*[+*]?=/);
 
-  const cameras = [{ id: "far" }, { id: "near" }];
+  const cameras = [{ id: "far" }, { id: "near" }]
+    .map((camera) => ({ ...camera, hasStream: true, streamUrl: `https://example.com/${camera.id}.m3u8` }));
   const options = { getDriveDistanceKm: (camera) => camera.id === "near" ? 10 : 40 };
-  const before = monitorCameraSlots(cameras, new Set(["far", "near"]), ["far", "near"], 2, options);
-  const after = monitorCameraSlots(cameras.map((camera) => ({ ...camera, advice: { localLens: true } })), new Set(["far", "near"]), ["far", "near"], 2, options);
-  assert.deepEqual(after.map((slot) => slot.camera.id), before.map((slot) => slot.camera.id));
+  const before = monitorFavoriteCameras(cameras, new Set(["far", "near"]), ["far", "near"], options);
+  const after = monitorFavoriteCameras(cameras.map((camera) => ({ ...camera, advice: { localLens: true } })), new Set(["far", "near"]), ["far", "near"], options);
+  assert.deepEqual(after.map(({ id }) => id), before.map(({ id }) => id));
 
   const camera = {
     id: "fixture", name: "Fixture", forecast: { wave: "1.0 m", wind: "8Km/h", windDirection: "north" },

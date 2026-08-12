@@ -1,36 +1,52 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { inSuggestionFence, monitorCameraSlots } from "../src/monitor-cameras.js";
+import { inSuggestionFence, monitorFavoriteCameras } from "../src/monitor-cameras.js";
 
-const cameras = ["a", "b", "c"].map((id) => ({ id }));
+function playableCamera(id, overrides = {}) {
+  return {
+    id,
+    hasStream: true,
+    streamUrl: `https://example.com/${id}.m3u8`,
+    ...overrides
+  };
+}
 
-test("monitorCameraSlots shows favorites only and leaves empty slots", () => {
-  const slots = monitorCameraSlots(cameras, new Set(["b"]), ["a", "b"], 3);
+test("monitorFavoriteCameras returns more than seven favorites without padding or truncation", () => {
+  const cameras = Array.from({ length: 9 }, (_, index) => playableCamera(`cam-${index + 1}`));
+  const favoriteOrder = cameras.map(({ id }) => id).reverse();
 
-  assert.equal(slots.length, 3);
-  assert.deepEqual(slots.map((slot) => slot.camera?.id || null), ["b", null, null]);
-  assert.equal(slots[1].empty, true);
+  const favorites = monitorFavoriteCameras(cameras, new Set(favoriteOrder), favoriteOrder);
+
+  assert.equal(favorites.length, 9);
+  assert.deepEqual(favorites.map(({ id }) => id), favoriteOrder);
 });
 
-test("monitorCameraSlots caps favorites and sorts by drive distance", () => {
-  const distances = new Map([["a", 45], ["b", 20], ["c", 85]]);
-  const slots = monitorCameraSlots(
+test("monitorFavoriteCameras stably sorts playable favorites by derived drive distance", () => {
+  const cameras = ["a", "b", "c", "d"].map((id) => playableCamera(id));
+  const distances = new Map([["a", 45], ["b", 20], ["c", 45]]);
+  const favorites = monitorFavoriteCameras(
     cameras,
-    new Set(["a", "b", "c"]),
-    ["a", "b", "c"],
-    2,
+    new Set(["a", "b", "c", "d"]),
+    ["a", "b", "c", "d"],
     { getDriveDistanceKm: (camera) => distances.get(camera.id) }
   );
 
-  assert.deepEqual(slots.map((slot) => slot.camera?.id), ["b", "a"]);
+  assert.deepEqual(favorites.map(({ id }) => id), ["b", "a", "c", "d"]);
 });
 
-test("persisted guide-only favorites never enter monitor slots", () => {
-  const guide = { id: "guide", adviceGuideOnly: true };
-  const slots = monitorCameraSlots([guide, cameras[0]], new Set(["guide", "a"]), ["guide", "a"], 2);
+test("monitorFavoriteCameras excludes guide-only, missing-stream, and missing-URL rows", () => {
+  const cameras = [
+    playableCamera("playable"),
+    playableCamera("guide", { adviceGuideOnly: true }),
+    playableCamera("missing-stream", { hasStream: false }),
+    playableCamera("missing-url", { streamUrl: "" })
+  ];
+  const favoriteOrder = cameras.map(({ id }) => id);
 
-  assert.deepEqual(slots.map((slot) => slot.camera?.id || null), ["a", null]);
+  const favorites = monitorFavoriteCameras(cameras, new Set(favoriteOrder), favoriteOrder);
+
+  assert.deepEqual(favorites.map(({ id }) => id), ["playable"]);
 });
 
 test("inSuggestionFence: lat band and west-of-lon guard", () => {
