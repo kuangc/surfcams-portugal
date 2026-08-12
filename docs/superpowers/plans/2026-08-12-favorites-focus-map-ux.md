@@ -18,8 +18,11 @@
 - Create: `test/favorite-catalog.test.js`
 - Modify: `src/monitor-cameras.js`
 - Modify: `src/config.js`
+- Modify: `src/main.js`
 - Modify: `test/monitor-cameras.test.js`
 - Modify: `test/forecast-sources.test.js`
+- Modify: `test/source-safety.test.js`
+- Modify: `test/spot-advice-ui.test.js`
 
 - [ ] **Step 1: Write the failing unlimited-Monitor tests**
 
@@ -131,7 +134,7 @@ Expected: all targeted tests pass.
 - [ ] **Step 9: Commit the domain foundation**
 
 ```bash
-git add src/favorite-catalog.js src/monitor-cameras.js src/config.js test/favorite-catalog.test.js test/monitor-cameras.test.js test/forecast-sources.test.js
+git add src/favorite-catalog.js src/monitor-cameras.js src/config.js src/main.js test/favorite-catalog.test.js test/monitor-cameras.test.js test/forecast-sources.test.js test/source-safety.test.js test/spot-advice-ui.test.js
 git commit -m "feat: remove favorite collection limit"
 ```
 
@@ -159,7 +162,15 @@ const undo = createFavoriteUndo({
 });
 ```
 
-Cover offering one removed ID, consuming it once, expiry at exactly 10 seconds, and cancellation by the next favorite mutation. Add a transactional persistence test showing a throwing storage adapter does not require mutating the current `Set`.
+Also import this wished-for transactional API:
+
+```js
+commitFavoriteMutation(currentFavoriteIds, (nextFavoriteIds) => {
+  nextFavoriteIds.delete(cameraId);
+}, storage);
+```
+
+`commitFavoriteMutation` must clone the current Set, pass only the clone to the mutation callback, persist the clone, and return it only after `setItem` succeeds. Cover offering one removed ID, consuming it once, expiry at exactly 10 seconds, and cancellation by the next favorite mutation. Add a transactional persistence test proving a throwing storage adapter propagates the error and leaves the input `Set` byte-for-byte unchanged.
 
 - [ ] **Step 2: Run the Favorites unit test and verify RED**
 
@@ -173,7 +184,7 @@ Expected: failure because `createFavoriteUndo` and immutable mutation helpers ar
 
 - [ ] **Step 3: Implement immutable mutation and undo helpers**
 
-Keep `saveFavoriteIds` throwing on storage failure. Add small helpers that construct the next `Set` before persistence, and an undo controller that owns one timer and one ID. Do not put DOM concerns in `src/favorites.js`.
+Keep `saveFavoriteIds` throwing on storage failure. Implement `commitFavoriteMutation(currentFavoriteIds, mutate, storage = window.localStorage)` with the exact clone → mutate clone → persist clone → return clone ordering, and an undo controller that owns one timer and one ID. Do not put DOM concerns in `src/favorites.js`.
 
 - [ ] **Step 4: Verify the Favorites unit test GREEN**
 
