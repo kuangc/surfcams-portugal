@@ -833,6 +833,7 @@ button:disabled {
 
 .feed-frame {
   position: relative;
+  overflow: hidden;
   background: var(--video);
   cursor: pointer;
 }
