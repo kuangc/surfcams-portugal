@@ -86,13 +86,21 @@ export function createVideoPlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SC
   return { clear, play };
 }
 
-export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SCRIPT_URL }) {
+export function createFeedTilePlayer({
+  video,
+  status,
+  hlsScriptUrl = DEFAULT_HLS_SCRIPT_URL,
+  onStateChange = () => {}
+}) {
   let hls = null;
   let currentState = "idle";
+  let generation = 0;
+  let pendingOperation = null;
 
   function setState(nextState, label) {
     currentState = nextState;
     status.textContent = label;
+    onStateChange(nextState);
   }
 
   function destroyHls() {
@@ -102,58 +110,101 @@ export function createFeedTilePlayer({ video, status, hlsScriptUrl = DEFAULT_HLS
     }
   }
 
-  function clear() {
+  function resetMedia() {
     destroyHls();
     video.pause();
     video.removeAttribute("src");
     video.load();
-    currentState = "idle";
   }
 
-  async function play(camera) {
+  function advanceGeneration(finalState) {
+    generation += 1;
+    if (pendingOperation) {
+      pendingOperation.resolve(finalState);
+      pendingOperation = null;
+    }
+    return generation;
+  }
+
+  function finishOperation(token, nextState, label) {
+    if (token !== generation) return false;
+    setState(nextState, label);
+    if (pendingOperation?.token === token) {
+      pendingOperation.resolve(nextState);
+      pendingOperation = null;
+    }
+    return true;
+  }
+
+  function clear() {
+    advanceGeneration("idle");
+    resetMedia();
+    setState("idle", "Preview paused");
+  }
+
+  function play(camera) {
+    const token = advanceGeneration("idle");
+
     if (!camera?.streamUrl) {
-      clear();
+      resetMedia();
       setState("unavailable", "Feed unavailable");
-      return;
+      return Promise.resolve("unavailable");
     }
 
-    destroyHls();
-    video.pause();
-    video.removeAttribute("src");
+    resetMedia();
     video.poster = camera.image || "";
     setState("loading", "Loading");
 
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = camera.streamUrl;
-      video.load();
-      await video.play().catch(() => {});
-      setState("playing", "Playing");
-      return;
-    }
+    return new Promise((resolve) => {
+      pendingOperation = { resolve, token };
 
-    return ensureHls(hlsScriptUrl).then((HlsPlayer) => {
-      if (!HlsPlayer || !HlsPlayer.isSupported()) {
-        setState("unavailable", "Feed unavailable");
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = camera.streamUrl;
+        video.load();
+        let autoplay;
+        try {
+          autoplay = video.play();
+        } catch (error) {
+          autoplay = Promise.reject(error);
+        }
+        Promise.resolve(autoplay)
+          .then(() => finishOperation(token, "playing", "Playing"))
+          .catch(() => finishOperation(token, "blocked", "Press play to start"));
         return;
       }
 
-      hls = new HlsPlayer({ backBufferLength: 30, maxBufferLength: 20 });
-      hls.loadSource(camera.streamUrl);
-      hls.attachMedia(video);
-      hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {});
-        setState("playing", "Playing");
+      ensureHls(hlsScriptUrl).then((HlsPlayer) => {
+        if (token !== generation) return;
+        if (!HlsPlayer || !HlsPlayer.isSupported()) {
+          finishOperation(token, "unavailable", "Feed unavailable");
+          return;
+        }
+
+        const instance = new HlsPlayer({ backBufferLength: 30, maxBufferLength: 20 });
+        hls = instance;
+        instance.loadSource(camera.streamUrl);
+        instance.attachMedia(video);
+        instance.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
+          if (token !== generation || hls !== instance || currentState !== "loading") return;
+          Promise.resolve()
+            .then(() => video.play())
+            .then(() => finishOperation(token, "playing", "Playing"))
+            .catch(() => finishOperation(token, "blocked", "Press play to start"));
+        });
+        instance.on(HlsPlayer.Events.ERROR, (_event, data) => {
+          if (!data.fatal || token !== generation || hls !== instance) return;
+          destroyHls();
+          finishOperation(token, "unavailable", "Feed unavailable");
+        });
+      }).catch(() => {
+        finishOperation(token, "unavailable", "Feed unavailable");
       });
-      hls.on(HlsPlayer.Events.ERROR, (_event, data) => {
-        if (data.fatal) setState("unavailable", "Feed unavailable");
-      });
-    }).catch(() => {
-      setState("unavailable", "Feed unavailable");
     });
   }
 
   function expire() {
-    clear();
+    advanceGeneration("expired");
+    resetMedia();
     setState("expired", "Tap to restart");
   }
 

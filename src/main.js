@@ -36,6 +36,7 @@ import {
 import { formatRegion } from "./format.js";
 import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
+import { createGalleryPreviewSession } from "./feed-lifecycle.js";
 import { inSuggestionFence, monitorFavoriteCameras } from "./monitor-cameras.js";
 import { addSessionFeedback, exportSessionFeedback, importSessionFeedback } from "./session-feedback.js";
 import {
@@ -72,7 +73,6 @@ import {
 } from "./today-recommendations-ui.js";
 import { createFeedTilePlayer } from "./video-player.js";
 
-const MONITOR_DURATION_MS = 60_000;
 const PROVIDER_ICON_URLS = {
   meo: "https://beachcam.meo.pt/favicon.ico",
   surfline: "https://www.surfline.com/favicon.ico",
@@ -95,7 +95,8 @@ const state = {
   todayForecastUnsubscribe: null,
   recommendationGeneration: 0,
   monitorMode: "favorites",
-  monitorPlayers: new Map(),
+  monitorSessions: new Map(),
+  monitorObserver: null,
   adviceRefreshTimerId: null,
   adviceRefreshGeneration: 0,
   stalenessBannerDismissed: false,
@@ -317,45 +318,23 @@ function waterSummaryCamera() {
 }
 
 function clearMonitorPlayers() {
-  state.monitorPlayers.forEach(({ player, playTimeoutId, timeoutId }) => {
-    window.clearTimeout(playTimeoutId);
-    window.clearTimeout(timeoutId);
-    player.clear();
-  });
-  state.monitorPlayers.clear();
+  state.monitorObserver?.disconnect();
+  state.monitorObserver = null;
+  state.monitorSessions.forEach((session) => session.clear());
+  state.monitorSessions.clear();
 }
 
 function renderMonitorIfActive() {
   if (state.activeRoute === "monitor") renderMonitor();
 }
 
-function monitorPlayerKey(camera, index) {
-  return `${camera.id}:${index}`;
-}
-
-function scheduleMonitorTile(camera, index, player, delayMs) {
-  const key = monitorPlayerKey(camera, index);
-  const playTimeoutId = window.setTimeout(() => {
-    if (state.activeRoute === "monitor") player.play(camera);
-  }, delayMs);
-  const timeoutId = window.setTimeout(() => player.expire(), delayMs + MONITOR_DURATION_MS);
-
-  state.monitorPlayers.set(key, { player, playTimeoutId, timeoutId });
-}
-
-function restartMonitorTile(camera, index, player) {
-  if (state.activeRoute !== "monitor" || player.state() !== "expired") return;
-
-  const key = monitorPlayerKey(camera, index);
-  const entry = state.monitorPlayers.get(key);
-  if (entry) {
-    window.clearTimeout(entry.playTimeoutId);
-    window.clearTimeout(entry.timeoutId);
-  }
-
-  player.play(camera);
-  const timeoutId = window.setTimeout(() => player.expire(), MONITOR_DURATION_MS);
-  state.monitorPlayers.set(key, { player, playTimeoutId: null, timeoutId });
+function createMonitorObserver() {
+  if (typeof window.IntersectionObserver !== "function") return null;
+  return new window.IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      state.monitorSessions.get(entry.target)?.setVisible(entry.isIntersecting);
+    });
+  }, { root: null, rootMargin: "0px" });
 }
 
 function createEmptyMonitorTile(index) {
@@ -439,12 +418,36 @@ function createMonitorTile(slot, index) {
   status.className = "feed-status";
   status.textContent = camera.streamUrl ? "Queued" : "No feed";
 
-  frame.append(video, status);
+  const retryButton = document.createElement("button");
+  retryButton.className = "feed-retry-button";
+  retryButton.type = "button";
+  retryButton.hidden = true;
+
+  frame.append(video, status, retryButton);
   tile.append(frame, conditionStrip);
 
-  const player = createFeedTilePlayer({ video, status, hlsScriptUrl: HLS_SCRIPT_URL });
-  frame.addEventListener("click", () => restartMonitorTile(camera, index, player));
-  scheduleMonitorTile(camera, index, player, 350 + (index * 450));
+  const player = createFeedTilePlayer({
+    video,
+    status,
+    hlsScriptUrl: HLS_SCRIPT_URL,
+    onStateChange: (playerState) => {
+      retryButton.hidden = playerState !== "blocked" && playerState !== "unavailable";
+      retryButton.textContent = playerState === "blocked" ? "Play" : "Retry";
+    }
+  });
+  const session = createGalleryPreviewSession({ camera, player });
+  state.monitorSessions.set(tile, session);
+  frame.addEventListener("click", () => session.restart());
+  retryButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    void player.play(camera);
+  });
+
+  if (state.monitorObserver) {
+    state.monitorObserver.observe(tile);
+  } else {
+    session.setVisible(true);
+  }
 
   return tile;
 }
@@ -792,6 +795,7 @@ function renderMonitor() {
     empty.textContent = "No favorites selected.";
     els.monitorGrid.appendChild(empty);
   } else {
+    state.monitorObserver = createMonitorObserver();
     favoriteCameras.forEach((camera, index) => {
       els.monitorGrid.appendChild(createMonitorTile({ camera }, index));
     });
@@ -2113,6 +2117,13 @@ function bindEvents() {
   });
   els.favoriteUndoButton.addEventListener("click", undoFavoriteRemoval);
   window.addEventListener("pagehide", () => favoriteUndo.cleanup());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearMonitorPlayers();
+    } else if (state.activeRoute === "monitor") {
+      renderMonitor();
+    }
+  });
 
   [els.searchInput, els.regionSelect, els.favoriteOnly, els.mightBeGoodOnly].forEach((input) => {
     input.addEventListener("input", () => {

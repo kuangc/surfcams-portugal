@@ -87,7 +87,7 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreSelection/);
   assert.match(mainSource, /renderExploreList/);
   assert.match(mainSource, /playExploreCamera/);
-  assert.match(mainSource, /restartMonitorTile/);
+  assert.match(mainSource, /createGalleryPreviewSession/);
   assert.match(mainSource, /playableFavoriteCatalog/);
   assert.match(mainSource, /searchFavoriteCatalog/);
   assert.match(mainSource, /addFavorite/);
@@ -115,6 +115,25 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.doesNotMatch(mainSource, /Showing favorites only\. Empty slots are not auto-filled\./);
   assert.match(mainSource, /renderTodayRecommendations/);
   assert.doesNotMatch(mainSource, /autoFill/i);
+});
+
+test("Monitor gallery scopes preview streams to one viewport observer lifecycle", () => {
+  assert.equal(mainSource.match(/new (?:window\.)?IntersectionObserver\(/g)?.length, 1);
+  assert.match(mainSource, /root:\s*null/);
+  assert.match(mainSource, /rootMargin:\s*"0px"/);
+  assert.match(mainSource, /state\.monitorSessions\.get\(entry\.target\)[\s\S]*setVisible\(entry\.isIntersecting\)/);
+  assert.match(mainSource, /state\.monitorSessions\.set\(tile,\s*session\)/);
+  assert.match(mainSource, /state\.monitorObserver\.observe\(tile\)/);
+
+  assert.match(mainSource, /function clearMonitorPlayers\(\)[\s\S]*monitorObserver\?\.disconnect\(\)[\s\S]*session\.clear\(\)[\s\S]*monitorSessions\.clear\(\)/);
+  assert.match(mainSource, /function renderMonitor\(\)\s*{\s*clearMonitorPlayers\(\)/);
+  assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers\(\)/);
+  assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*clearMonitorPlayers\(\)/);
+
+  assert.match(mainSource, /function createMonitorTile[\s\S]*video\.poster\s*=\s*camera\.image/);
+  assert.match(mainSource, /frame\.addEventListener\("click"[\s\S]*session\.restart\(\)/);
+  assert.match(mainSource, /(?:blocked|unavailable)[\s\S]*(?:Play|Retry)/);
+  assert.doesNotMatch(mainSource, /scheduleMonitorTile|restartMonitorTile|MONITOR_DURATION_MS|playTimeoutId|350 \+ \(index \* 450\)/);
 });
 
 test("main controller loads hourly forecasts only for the Might be good roster", () => {
