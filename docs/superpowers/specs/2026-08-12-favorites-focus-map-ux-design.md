@@ -95,11 +95,11 @@ The suggestion source is the feed-backed `state.cameras` roster, not canonical n
 
 Typing `Sao Juliao`, for example, finds `São Julião`. Selecting a result is the add action; listbox options do not contain nested buttons or checkboxes. An already-saved result is marked and cannot be added twice.
 
-After a successful add, the app persists the favorite, announces a short confirmation, clears the query, and keeps the add surface ready for another camera. Geographic and provider filters may remain as secondary controls within the add surface, but they do not occupy the main Favorites screen or push saved items below the mobile fold.
+After a successful add, the app persists the favorite, announces a non-blocking confirmation, clears the query, and keeps the add surface ready for another camera. The existing region and provider/source filters move into a collapsed `Filters` disclosure within the add surface. The current favorite-status, stream-status, distance, and sort controls do not appear in this focused add flow. No filter controls occupy the main Favorites screen or push saved items below the mobile fold.
 
 ### 5.3 Remove and undo
 
-`Remove` immediately updates Favorites and Monitor and persists the new favorite set. A short confirmation offers `Undo`; activating it restores and persists the camera using the collection's existing derived order. This feature does not introduce manual reordering.
+`Remove` immediately updates Favorites and Monitor and persists the new favorite set. A confirmation offers `Undo` for 10 seconds or until the next favorite mutation, whichever comes first. Activating it restores and persists the camera using the collection's existing derived order. This feature does not introduce manual reordering.
 
 A transient playback error never removes a favorite. If a previously configured feed is permanently absent from the loaded feed-backed roster, startup sanitation may remove the orphaned ID under the existing feed-precedence rules.
 
@@ -109,7 +109,7 @@ A transient playback error never removes a favorite. If a previously configured 
 
 Monitor renders every favorite in a responsive, scrollable gallery. Collection size and simultaneous playback are separate concerns: removing the collection cap must not cause every saved stream to stay active.
 
-Only visible tiles and a small nearby preload margin should own active player resources. A tile leaving that range is paused or cleared and can resume when it becomes relevant again. This is provider-neutral and applies to both native HLS and hls.js playback.
+Only tiles intersecting the visible gallery own active HLS streams. Tiles within one viewport above or below retain their poster and player shell but do not begin stream playback. A playing tile that leaves the visible gallery is cleared and can reactivate when it becomes visible again. This is provider-neutral and applies to both native HLS and hls.js playback.
 
 Ordinary gallery previews preserve the current behavior:
 
@@ -117,7 +117,7 @@ Ordinary gallery previews preserve the current behavior:
 - expiry unloads the stream and displays `Tap to restart`; and
 - restarting supplies another 60-second preview window.
 
-The 60 seconds begin when playback activation is requested, matching the existing preview policy. This timer exists only for gallery previews. It is not inherited by Focus, Compare, or the selected Explore player.
+The 60 seconds begin when a visible tile requests playback. A tile re-entering the visible gallery receives a fresh preview window. This timer exists only for gallery previews. It is not inherited by Focus, Compare, or the selected Explore player.
 
 ### 6.2 Entering and leaving Focus
 
@@ -130,11 +130,11 @@ Focus is an ordinary page layout, not a modal and not fullscreen. The user can:
 - enter fullscreen when supported; or
 - exit Focus and return to the prior gallery scroll position.
 
-Focus has no fixed playback deadline while the document remains visible. The player is cleaned up when Focus exits, the route changes, or document visibility/resource policy requires it. If playback cannot resume automatically after the document becomes visible, the player shows a clear manual play action.
+Focus has no fixed playback deadline while the document remains visible. The player is cleared when Focus exits, the route changes, or `document.hidden` becomes true. When the document becomes visible again, the still-selected Focus or Compare composition reactivates without adopting the gallery's 60-second timer. If browser autoplay policy blocks reactivation, the affected pane shows a clear manual play action.
 
 ### 6.3 Compare
 
-Compare contains exactly two equal-width feeds on a sufficiently wide screen. Neither feed is visually designated as secondary. Each side retains its own camera identity, condition summary, replace action, local playback state, and error state.
+Compare contains exactly two equal-width feeds whenever each pane can remain at least 320 CSS pixels wide. Below that threshold, the panes stack at equal visual weight. Neither feed is designated as secondary. Each side retains its own camera identity, condition summary, replace action, local playback state, and error state.
 
 The user can replace either camera, remove either side to return to one-camera Focus, exit to the gallery, or fullscreen the complete comparison container.
 
@@ -144,7 +144,7 @@ The app must not create duplicate comparison entries for the same camera. Compar
 
 One-camera Focus fills the useful content width above a compact favorite switcher.
 
-Two-camera Compare stacks in portrait so both feeds remain large enough to read wave texture. It becomes equal-width side by side when landscape width can support two readable players. The implementation must not force two narrow portrait columns.
+Two-camera Compare stacks in portrait so both feeds remain large enough to read wave texture. It becomes equal-width side by side only when each pane can remain at least 320 CSS pixels wide. The implementation must not force two narrow portrait columns.
 
 ## 7. Fullscreen
 
@@ -190,9 +190,9 @@ The same Leaflet instance remains mounted across emphasis changes. After the CSS
 
 ### 8.4 Mobile Explore
 
-Mobile uses the same two-state model. Map-primary devotes the useful viewport to the map and browsable result cards. An explicit selection promotes the spot to the main detail surface. `Expand map` returns to the same map position and selection.
+Mobile uses the same two-state model. Map-primary devotes the useful viewport to the map and browsable result cards. An explicit selection promotes the spot to a camera-first detail surface; the compact map sits directly below the camera summary and before longer conditions/playbook content. `Expand map` returns to the same map position and selection.
 
-Mobile may stack or sheet secondary content, but it must not squeeze a detailed camera and map into two unreadably narrow columns.
+Portrait mobile uses normal document flow in detail emphasis: camera summary, compact map, longer conditions/playbook content, then nearby results. It does not squeeze a detailed camera and map into two narrow columns.
 
 ## 9. Component and lifecycle boundaries
 
@@ -248,8 +248,8 @@ Pure search, state-transition, and selection helpers should be extracted into fo
 
 ### Landscape mobile and tablet
 
-- Compare may become equal-width side by side when both videos meet the minimum readable size.
-- Explore may show the smaller map beside detail when width permits; otherwise the map becomes a compact contextual region above or below detail.
+- Compare becomes equal-width side by side only when each pane is at least 320 CSS pixels wide; otherwise it remains stacked.
+- Explore places the smaller map beside the detail surface only when the map can remain at least 280 CSS pixels wide and detail can remain at least 480 CSS pixels wide. Otherwise it uses the same camera-first ordering as portrait mobile, with the compact map directly below the camera summary.
 
 ## 13. Testing strategy
 
@@ -323,11 +323,11 @@ The feature is complete when:
 
 ## 15. Design references
 
-- Surfline Favorites supports add-by-search and in-place edit/remove workflows.
-- YouTube playlists establish the add/search/remove-within-collection pattern.
-- YouTube Theater establishes a large in-page player distinct from fullscreen.
-- Surfline Multi-Cam establishes deliberate multi-feed viewing and a composition-level fullscreen action.
-- WAI-ARIA Authoring Practices define the editable combobox and listbox interaction requirements.
-- Leaflet guidance requires resizing the persistent map after its container changes and retaining a non-map result alternative.
+- [Surfline Favorites](https://support.surfline.com/hc/en-us/articles/360050973872-How-to-Add-Reorder-and-Delete-Favorites-on-the-Surfline-Website) supports add-by-search and in-place edit/remove workflows.
+- [YouTube playlist management](https://support.google.com/youtube/answer/6109639?hl=en) establishes the add/search-within-collection pattern.
+- [YouTube player sizing](https://support.google.com/youtube/answer/6052392?hl=en) establishes a large in-page player distinct from fullscreen.
+- [Surfline Multi-Cam](https://support.surfline.com/hc/en-us/articles/360051013932-How-to-use-Multi-Cam-on-the-website) establishes deliberate multi-feed viewing and a composition-level fullscreen action.
+- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) defines the editable combobox interaction requirements.
+- [Leaflet accessibility guidance](https://leafletjs.com/examples/accessibility/) supports retaining a non-map result alternative, while the Leaflet API requires resizing the persistent map after its container changes.
 
 The approved design adapts those conventions to this product's existing visual language and feed-backed static architecture rather than introducing a new design system.
