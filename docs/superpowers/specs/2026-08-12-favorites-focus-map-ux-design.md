@@ -2,7 +2,7 @@
 
 Date: 2026-08-12
 
-Status: Product design approved; written specification awaiting review
+Status: Approved for implementation
 
 Builds on:
 
