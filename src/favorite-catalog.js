@@ -6,7 +6,7 @@ function normalizeCatalogText(value) {
     .toLocaleLowerCase();
 }
 
-function hasValidHttpsStream(camera) {
+export function isPlayableFavoriteCamera(camera) {
   if (!camera?.hasStream || camera.adviceGuideOnly || typeof camera.streamUrl !== "string") {
     return false;
   }
@@ -30,7 +30,7 @@ function compareRecordNames(a, b) {
 
 export function playableFavoriteCatalog(cameras, favoriteIds = new Set()) {
   return cameras
-    .filter(hasValidHttpsStream)
+    .filter(isPlayableFavoriteCamera)
     .map((camera) => ({ camera, saved: favoriteIds.has(camera.id) }));
 }
 
@@ -42,7 +42,11 @@ export function searchFavoriteCatalog(
   const normalizedRegion = normalizeCatalogText(region);
   const normalizedProvider = normalizeCatalogText(provider);
   const results = catalog.filter(({ camera }) => {
-    const haystack = normalizeCatalogText(`${camera.name} ${camera.location} ${camera.region}`);
+    const haystack = [
+      normalizeCatalogText(camera.name ?? ""),
+      normalizeCatalogText(camera.location ?? ""),
+      normalizeCatalogText(camera.region ?? "")
+    ].join(" ");
     return (!normalizedQuery || haystack.includes(normalizedQuery))
       && (!normalizedRegion || normalizeCatalogText(camera.region) === normalizedRegion)
       && (!normalizedProvider || normalizeCatalogText(providerFor(camera)) === normalizedProvider);

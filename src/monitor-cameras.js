@@ -1,4 +1,5 @@
 import { SUGGESTION_FENCE } from "./config.js";
+import { isPlayableFavoriteCamera } from "./favorite-catalog.js";
 
 function compareDistance(a, b, getDriveDistanceKm) {
   const aDistance = getDriveDistanceKm(a);
@@ -27,7 +28,7 @@ export function monitorFavoriteCameras(
     favoriteOrder
       .filter((id) => favoriteIds.has(id))
       .map((id) => byId.get(id))
-      .filter((camera) => camera?.hasStream && camera.streamUrl && !camera.adviceGuideOnly),
+      .filter(isPlayableFavoriteCamera),
     getDriveDistanceKm
   );
 }

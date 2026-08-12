@@ -60,6 +60,17 @@ test("searchFavoriteCatalog matches name, location, and region case-insensitivel
   assert.deepEqual(ids(searchFavoriteCatalog(catalog, { query: "LISBOA" })), ["fixture"]);
 });
 
+test("searchFavoriteCatalog does not index missing fields as undefined or null", () => {
+  const catalog = playableFavoriteCatalog([
+    camera("fixture", { name: "Fixture", location: undefined, region: null })
+  ]);
+
+  assert.deepEqual(
+    ["undefined", "null"].map((query) => ids(searchFavoriteCatalog(catalog, { query }))),
+    [[], []]
+  );
+});
+
 test("searchFavoriteCatalog composes query, region, and provider filters", () => {
   const catalog = playableFavoriteCatalog([
     camera("match", { name: "Praia Norte", region: "lisboa", streamSource: "meo" }),
