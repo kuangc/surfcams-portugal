@@ -136,6 +136,17 @@ test("Monitor gallery scopes preview streams to one viewport observer lifecycle"
   assert.doesNotMatch(mainSource, /scheduleMonitorTile|restartMonitorTile|MONITOR_DURATION_MS|playTimeoutId|350 \+ \(index \* 450\)/);
 });
 
+test("Monitor keeps observer-less fallback playback bounded to one explicit preview", () => {
+  assert.match(mainSource, /monitorFallbackSession:\s*null/);
+  assert.match(mainSource, /function activateFallbackPreview\(session\)/);
+  assert.match(mainSource, /state\.monitorFallbackSession\?\.setVisible\(false\)/);
+  assert.match(mainSource, /state\.monitorFallbackSession\s*=\s*session[\s\S]*session\.setVisible\(true\)/);
+  assert.match(mainSource, /retryButton\.textContent\s*=\s*"Play preview"/);
+  assert.match(mainSource, /retryButton\.addEventListener\("click"[\s\S]*activateFallbackPreview\(session\)/);
+  assert.match(mainSource, /function clearMonitorPlayers\(\)[\s\S]*monitorFallbackSession\s*=\s*null/);
+  assert.doesNotMatch(mainSource, /else\s*{\s*session\.setVisible\(true\);\s*}/);
+});
+
 test("main controller loads hourly forecasts only for the Might be good roster", () => {
   assert.match(mainSource, /createTodayForecastStore/);
   assert.match(mainSource, /recommendationGeneration:\s*0/);

@@ -97,6 +97,7 @@ const state = {
   monitorMode: "favorites",
   monitorSessions: new Map(),
   monitorObserver: null,
+  monitorFallbackSession: null,
   adviceRefreshTimerId: null,
   adviceRefreshGeneration: 0,
   stalenessBannerDismissed: false,
@@ -322,6 +323,7 @@ function clearMonitorPlayers() {
   state.monitorObserver = null;
   state.monitorSessions.forEach((session) => session.clear());
   state.monitorSessions.clear();
+  state.monitorFallbackSession = null;
 }
 
 function renderMonitorIfActive() {
@@ -335,6 +337,13 @@ function createMonitorObserver() {
       state.monitorSessions.get(entry.target)?.setVisible(entry.isIntersecting);
     });
   }, { root: null, rootMargin: "0px" });
+}
+
+function activateFallbackPreview(session) {
+  if (state.monitorFallbackSession === session) return;
+  state.monitorFallbackSession?.setVisible(false);
+  state.monitorFallbackSession = session;
+  session.setVisible(true);
 }
 
 function createEmptyMonitorTile(index) {
@@ -421,7 +430,9 @@ function createMonitorTile(slot, index) {
   const retryButton = document.createElement("button");
   retryButton.className = "feed-retry-button";
   retryButton.type = "button";
-  retryButton.hidden = true;
+  const usesManualFallback = !state.monitorObserver;
+  retryButton.hidden = !usesManualFallback;
+  retryButton.textContent = usesManualFallback ? "Play preview" : "";
 
   frame.append(video, status, retryButton);
   tile.append(frame, conditionStrip);
@@ -431,8 +442,21 @@ function createMonitorTile(slot, index) {
     status,
     hlsScriptUrl: HLS_SCRIPT_URL,
     onStateChange: (playerState) => {
-      retryButton.hidden = playerState !== "blocked" && playerState !== "unavailable";
-      retryButton.textContent = playerState === "blocked" ? "Play" : "Retry";
+      if (playerState === "blocked") {
+        retryButton.hidden = false;
+        retryButton.textContent = "Play";
+      } else if (playerState === "unavailable") {
+        retryButton.hidden = false;
+        retryButton.textContent = "Retry";
+      } else if (playerState === "expired") {
+        retryButton.hidden = false;
+        retryButton.textContent = "Restart preview";
+      } else if (usesManualFallback && playerState === "idle") {
+        retryButton.hidden = false;
+        retryButton.textContent = "Play preview";
+      } else {
+        retryButton.hidden = true;
+      }
     }
   });
   const session = createGalleryPreviewSession({ camera, player });
@@ -440,13 +464,17 @@ function createMonitorTile(slot, index) {
   frame.addEventListener("click", () => session.restart());
   retryButton.addEventListener("click", (event) => {
     event.stopPropagation();
+    if (usesManualFallback && state.monitorFallbackSession !== session) {
+      activateFallbackPreview(session);
+      return;
+    }
+    if (session.restart()) return;
+    if (player.state() !== "blocked" && player.state() !== "unavailable") return;
     void player.play(camera);
   });
 
   if (state.monitorObserver) {
     state.monitorObserver.observe(tile);
-  } else {
-    session.setVisible(true);
   }
 
   return tile;
