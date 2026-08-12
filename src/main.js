@@ -1023,7 +1023,6 @@ function renderFavoriteMutationSurfaces(cameraId = null) {
 }
 
 function addFavoriteCamera(cameraId) {
-  cancelFavoriteUndoOffer();
   const catalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
   const record = catalog.find(({ camera }) => camera.id === cameraId);
   const candidateFavoriteIds = addFavorite(state.favoriteIds, cameraId, catalog);
@@ -1047,6 +1046,7 @@ function addFavoriteCamera(cameraId) {
     return false;
   }
 
+  cancelFavoriteUndoOffer();
   renderFavoriteMutationSurfaces(cameraId);
   announceFavoriteStatus(`${record.camera.name} added to favorites.`);
   if (els.favoriteAddDialog.open) {
@@ -1057,7 +1057,6 @@ function addFavoriteCamera(cameraId) {
 }
 
 function removeFavoriteCamera(camera) {
-  cancelFavoriteUndoOffer();
   if (!camera || !state.favoriteIds.has(camera.id)) return false;
 
   try {
@@ -1070,6 +1069,7 @@ function removeFavoriteCamera(camera) {
     return false;
   }
 
+  cancelFavoriteUndoOffer();
   renderFavoriteMutationSurfaces(camera.id);
   favoriteUndo.offer(camera);
   els.favoriteUndoMessage.textContent = `${camera.name} removed.`;
@@ -1326,32 +1326,39 @@ function closeFavoriteAddDialog() {
   els.addFavoriteCamera.focus();
 }
 
+function openFavoriteAddResultsForNavigation() {
+  if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+  return favoriteAddRecords.length;
+}
+
 function handleFavoriteAddKeydown(event) {
-  const resultCount = favoriteAddRecords.length;
+  let resultCount;
 
   switch (event.key) {
     case "ArrowDown":
       event.preventDefault();
-      if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+      resultCount = openFavoriteAddResultsForNavigation();
       if (resultCount) setFavoriteAddActiveIndex(
         favoriteAddActiveIndex < resultCount - 1 ? favoriteAddActiveIndex + 1 : 0
       );
       break;
     case "ArrowUp":
       event.preventDefault();
-      if (els.favoriteAddResults.hidden) renderFavoriteAddResults();
+      resultCount = openFavoriteAddResultsForNavigation();
       if (resultCount) setFavoriteAddActiveIndex(
         favoriteAddActiveIndex > 0 ? favoriteAddActiveIndex - 1 : resultCount - 1
       );
       break;
     case "Home":
-      if (!resultCount) break;
       event.preventDefault();
+      resultCount = openFavoriteAddResultsForNavigation();
+      if (!resultCount) break;
       setFavoriteAddActiveIndex(0);
       break;
     case "End":
-      if (!resultCount) break;
       event.preventDefault();
+      resultCount = openFavoriteAddResultsForNavigation();
+      if (!resultCount) break;
       setFavoriteAddActiveIndex(resultCount - 1);
       break;
     case "Enter":

@@ -226,6 +226,49 @@ test("Favorites mutations persist before state assignment and expose one ten-sec
   assert.match(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
 });
 
+test("Favorites cancel an old undo offer only after a new mutation commits", () => {
+  const addSource = mainSource.match(
+    /function addFavoriteCamera\(cameraId\)\s*{([\s\S]*?)\n}\n\nfunction removeFavoriteCamera/
+  )?.[1] || "";
+  const removeSource = mainSource.match(
+    /function removeFavoriteCamera\(camera\)\s*{([\s\S]*?)\n}\n\nfunction undoFavoriteRemoval/
+  )?.[1] || "";
+
+  const addCommitIndex = addSource.indexOf("state.favoriteIds = nextFavoriteIds;");
+  const addCancelIndex = addSource.indexOf("cancelFavoriteUndoOffer();");
+  assert.ok(addCommitIndex >= 0, "add assigns only the successfully persisted Set");
+  assert.ok(addCancelIndex > addCommitIndex, "add preserves pending undo through no-op and failure exits");
+  assert.equal(addSource.lastIndexOf("cancelFavoriteUndoOffer();"), addCancelIndex);
+
+  const removeCommitIndex = removeSource.indexOf("state.favoriteIds = nextFavoriteIds;");
+  const removeCancelIndex = removeSource.indexOf("cancelFavoriteUndoOffer();");
+  const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(camera);");
+  assert.ok(removeCommitIndex >= 0, "remove assigns only the successfully persisted Set");
+  assert.ok(removeCancelIndex > removeCommitIndex, "remove preserves pending undo through no-op and failure exits");
+  assert.ok(removeOfferIndex > removeCancelIndex, "a committed remove replaces the prior offer with the new camera");
+  assert.equal(removeSource.lastIndexOf("cancelFavoriteUndoOffer();"), removeCancelIndex);
+});
+
+test("Favorites navigation opens results before deriving Home, End, and arrow targets", () => {
+  const openForNavigationSource = mainSource.match(
+    /function openFavoriteAddResultsForNavigation\(\)\s*{([\s\S]*?)\n}/
+  )?.[1] || "";
+  const renderIndex = openForNavigationSource.indexOf("renderFavoriteAddResults();");
+  const countIndex = openForNavigationSource.indexOf("return favoriteAddRecords.length;");
+
+  assert.ok(renderIndex >= 0, "navigation opens a hidden result popup");
+  assert.ok(countIndex > renderIndex, "navigation derives the result count after rendering");
+
+  for (const key of ["ArrowDown", "ArrowUp", "Home", "End"]) {
+    const caseSource = mainSource.match(new RegExp(`case "${key}":[\\s\\S]*?break;`))?.[0] || "";
+    assert.match(
+      caseSource,
+      /openFavoriteAddResultsForNavigation\(\)/,
+      `${key} navigates only after the listbox is visible and current`
+    );
+  }
+});
+
 test("camera surfaces contain no report substitutes while advice evidence links remain safe", () => {
   const cameraSurfaceSource = `${mainSource}\n${styleSource}\n${indexSource}`;
   for (const forbidden of [
