@@ -6166,6 +6166,29 @@
           </details>
         </section>
         <div class="monitor-grid" id="monitorGrid" aria-live="polite"></div>
+        <section class="monitor-focus" id="monitorFocus" hidden aria-labelledby="monitorFocusTitle">
+          <header class="monitor-focus__header">
+            <div>
+              <p class="eyebrow">Focus</p>
+              <h2 id="monitorFocusTitle" tabindex="-1">Large camera view</h2>
+            </div>
+            <div class="monitor-focus__actions">
+              <label class="monitor-focus__select" for="monitorFocusCamera">
+                <span>Favorite camera</span>
+                <select id="monitorFocusCamera"></select>
+              </label>
+              <button class="secondary-button" id="monitorCompareAction" type="button">Compare</button>
+              <label class="monitor-focus__select" id="monitorComparePickerLabel" for="monitorComparePicker" hidden>
+                <span>Compare with</span>
+                <select id="monitorComparePicker"></select>
+              </label>
+              <button class="secondary-button" id="monitorFullscreenAction" type="button">Enter fullscreen</button>
+              <button class="secondary-button" id="monitorExitFocus" type="button">Exit Focus</button>
+            </div>
+          </header>
+          <p class="monitor-focus__status" id="monitorFocusStatus" role="status" aria-live="polite"></p>
+          <div class="monitor-focus__composition" id="monitorFocusComposition"></div>
+        </section>
       </section>
 
       <section class="screen favorites-screen" id="favoritesScreen" data-screen="favorites" hidden aria-labelledby="favoritesTitle">

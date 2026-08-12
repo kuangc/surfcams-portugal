@@ -133,7 +133,8 @@ test("Monitor gallery scopes preview streams to one viewport observer lifecycle"
   assert.match(mainSource, /function createMonitorTile[\s\S]*video\.poster\s*=\s*camera\.image/);
   assert.match(mainSource, /frame\.addEventListener\("click"[\s\S]*session\.restart\(\)/);
   assert.match(mainSource, /retryButton\.addEventListener\("click"[\s\S]*session\.retry\(\)/);
-  assert.doesNotMatch(mainSource, /void player\.play\(camera\)/);
+  const galleryTileSource = mainSource.match(/function createMonitorTile[\s\S]*?\n}\n\nfunction recommendationInputs/)?.[0] || "";
+  assert.doesNotMatch(galleryTileSource, /void player\.play\(camera\)/);
   assert.match(mainSource, /(?:blocked|unavailable)[\s\S]*(?:Play|Retry)/);
   assert.doesNotMatch(mainSource, /scheduleMonitorTile|restartMonitorTile|MONITOR_DURATION_MS|playTimeoutId|350 \+ \(index \* 450\)/);
 });
@@ -147,6 +148,59 @@ test("Monitor keeps observer-less fallback playback bounded to one explicit prev
   assert.match(mainSource, /retryButton\.addEventListener\("click"[\s\S]*activateFallbackPreview\(session\)/);
   assert.match(mainSource, /function clearMonitorPlayers\(\)[\s\S]*monitorFallbackSession\s*=\s*null/);
   assert.doesNotMatch(mainSource, /else\s*{\s*session\.setVisible\(true\);\s*}/);
+});
+
+test("Monitor and Favorites share one validated entry point for large Focus playback", () => {
+  assert.match(mainSource, /createMonitorViewState/);
+  assert.match(mainSource, /monitorView:\s*createMonitorViewState\(\)/);
+  assert.match(mainSource, /focusedPlayers:\s*new Map\(\)/);
+  assert.match(mainSource, /function enterMonitorFocus\(cameraId,\s*originElement/);
+  assert.match(mainSource, /function createMonitorTile[\s\S]*openLarge\.textContent\s*=\s*"Open large"[\s\S]*enterMonitorFocus\(camera\.id,\s*tile\)/);
+  assert.match(mainSource, /function createFavoriteCard[\s\S]*openLarge\.textContent\s*=\s*"Open large"[\s\S]*enterMonitorFocus\(camera\.id,\s*card\)/);
+  assert.match(mainSource, /function enterMonitorFocus[\s\S]*monitorFavoriteCameras\([\s\S]*window\.scrollY[\s\S]*openMonitorFocus\(/);
+});
+
+test("Focus and Compare use direct untimed pane-local players with replacement controls", () => {
+  assert.match(mainSource, /function createFocusedPane\(camera,\s*paneIndex/);
+  assert.match(mainSource, /function createFocusedPane[\s\S]*createFeedTilePlayer\([\s\S]*focusedPlayers\.set\([\s\S]*player\.play\(camera\)/);
+  assert.match(mainSource, /data-focus-action[\s\S]*"replace"/);
+  assert.match(mainSource, /data-focus-action[\s\S]*"remove"/);
+  assert.match(mainSource, /data-focus-action[\s\S]*"retry"/);
+  assert.match(mainSource, /replaceFocusedCamera\(state\.monitorView,\s*paneIndex/);
+  assert.match(mainSource, /removeComparisonCamera\(state\.monitorView,\s*paneIndex\)/);
+  assert.match(mainSource, /playerState === "blocked"[\s\S]*playerState === "unavailable"[\s\S]*retryButton/);
+
+  const focusPaneSource = mainSource.match(/function createFocusedPane[\s\S]*?\n}\n\nfunction /)?.[0] || "";
+  assert.doesNotMatch(focusPaneSource, /createGalleryPreviewSession|60_000|setTimeout/);
+  assert.match(mainSource, /monitorFocusCamera[\s\S]*replaceFocusedCamera\(state\.monitorView,\s*0/);
+  assert.match(mainSource, /populateFocusCameraSelect\(\s*els\.monitorFocusCamera,\s*roster\.filter\(\(camera\) => camera\.id === primary\.id \|\| !state\.monitorView\.focusedCameraIds\.includes\(camera\.id\)\)/);
+  assert.match(mainSource, /monitorComparePicker[\s\S]*addComparisonCamera\(state\.monitorView/);
+});
+
+test("Focus playback cleanup, visibility restoration, and gallery origin restoration are explicit", () => {
+  assert.match(mainSource, /function clearFocusedPlayers\(\)[\s\S]*player\.clear\(\)[\s\S]*focusedPlayers\.clear\(\)/);
+  assert.match(mainSource, /route !== "monitor"[\s\S]*clearFocusedPlayers\(\)/);
+  assert.match(mainSource, /mode === "might-be-good"[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*clearFocusedPlayers\(\)/);
+  assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*clearFocusedPlayers\(\)[\s\S]*renderMonitor\(\)/);
+  assert.match(mainSource, /function exitMonitorFocusView[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*afterNextPaint\([\s\S]*window\.scrollTo/);
+  assert.match(mainSource, /querySelectorAll\("\[data-camera-id\]"\)[\s\S]*\.find\(\(tile\) => tile\.dataset\.cameraId === originCameraId\)[\s\S]*focus\(\)/);
+  assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-id=/);
+});
+
+test("app-owned fullscreen targets the complete Focus composition and reports errors locally", () => {
+  assert.match(mainSource, /createFullscreenController\(\{[\s\S]*target:\s*els\.monitorFocusComposition[\s\S]*document[\s\S]*onStateChange[\s\S]*onError/);
+  assert.match(mainSource, /monitorFullscreenAction[\s\S]*fullscreenController\.toggle\(\)/);
+  assert.match(mainSource, /monitorFocusStatus\.textContent\s*=\s*"Fullscreen could not be changed\."/);
+  assert.match(mainSource, /monitorFullscreenAction\.disabled\s*=\s*!supported/);
+});
+
+test("Focus and Compare styling keeps one useful feed or two equal responsive panes", () => {
+  assert.match(styleSource, /\.monitor-focus\s*{[\s\S]*container-type:\s*inline-size/);
+  assert.match(styleSource, /\.monitor-focus__composition\[data-view="focus-one"\][\s\S]*max-width:/);
+  assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\][\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
+  assert.match(styleSource, /\.monitor-focus__composition:fullscreen/);
+  assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(styleSource, /\.monitor-focus[\s\S]*:focus-visible/);
 });
 
 test("main controller loads hourly forecasts only for the Might be good roster", () => {
