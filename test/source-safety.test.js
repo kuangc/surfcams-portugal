@@ -226,6 +226,55 @@ test("explore map refreshes after the visible layout has painted", () => {
   assert.doesNotMatch(mainSource, /ensureMap\(\);\s*renderExploreList\(\);\s*renderMarkers\(\);\s*state\.map\.invalidateSize\(\);/);
 });
 
+test("Explore selection state starts map-first and explicit user choices promote detail", () => {
+  assert.match(mainSource, /createExploreViewState/);
+  assert.match(mainSource, /exploreView:\s*createExploreViewState\(\)/);
+  assert.match(mainSource, /function selectExploreCamera\(camera,\s*\{\s*explicit\s*=\s*false,\s*pan\s*=\s*false,\s*route\s*=\s*false,\s*scroll\s*=\s*false\s*\}\s*=\s*\{\}\)/);
+  assert.match(mainSource, /state\.exploreView\s*=\s*selectExploreSpot\(state\.exploreView,\s*camera\.id,\s*\{\s*explicit\s*\}\)/);
+
+  const userSelectionCalls = [...mainSource.matchAll(/selectExploreCamera\(camera,\s*\{([^}]*)\}\)/g)]
+    .map((match) => match[1]);
+  assert.equal(userSelectionCalls.length, 4, "recommendation, result, stretch, and marker actions select Explore spots");
+  userSelectionCalls.forEach((options) => assert.match(options, /explicit:\s*true/));
+
+  const initSource = mainSource.match(/async function init\(\)[\s\S]*?\n}\n\ninit\(\)/)?.[0] || "";
+  assert.match(initSource, /initializeExploreSelection\(state\.exploreView,\s*initialExploreCamera\.id\)/);
+  assert.doesNotMatch(initSource, /selectExploreCamera\(/);
+});
+
+test("Explore emphasis changes resize the same map without changing its viewport", () => {
+  const applySource = mainSource.match(
+    /function applyExploreEmphasis\(\)[\s\S]*?\n}\n\nfunction openSelectedExploreSpotView/
+  )?.[0] || "";
+  const expandSource = mainSource.match(
+    /function expandExploreMapView\(\)[\s\S]*?\n}/
+  )?.[0] || "";
+
+  assert.match(applySource, /exploreLayout\.dataset\.emphasis\s*=\s*state\.exploreView\.emphasis/);
+  assert.match(applySource, /openSelectedSpot\.hidden/);
+  assert.match(applySource, /expandExploreMap\.hidden/);
+  assert.match(applySource, /afterNextPaint\(\(\)\s*=>\s*{/);
+  assert.match(applySource, /try\s*{[\s\S]*state\.map\.invalidateSize\(\{\s*pan:\s*false\s*\}\)[\s\S]*}\s*catch\s*\(error\)/);
+  assert.match(applySource, /exploreStatus\.textContent/);
+  assert.doesNotMatch(applySource, /fitBounds|fitInitialBounds|panTo|ensureMap/);
+
+  assert.match(expandSource, /expandExploreMap\(state\.exploreView\)/);
+  assert.match(expandSource, /applyExploreEmphasis\(\)/);
+  assert.doesNotMatch(expandSource, /fitBounds|fitInitialBounds|\.panTo|ensureMap|selectedExploreCamera\s*=|renderExploreSelection/);
+  assert.match(mainSource, /openSelectedExploreSpotView[\s\S]*openSelectedExploreSpot\(state\.exploreView\)/);
+});
+
+test("Explore emphasis CSS preserves map and detail mobile reading orders", () => {
+  assert.match(styleSource, /\.map-shell\s*{/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="map"\]/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.explore-camera-summary\s*{[^}]*order:\s*1/s);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.map-shell\s*{[^}]*order:\s*2/s);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.spot-panel\s*{[^}]*order:\s*3/s);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\]\s+\.browse-panel\s*{[^}]*order:\s*4/s);
+  assert.match(styleSource, /@media\s*\(min-width:\s*980px\)[\s\S]*minmax\(480px,[^)]*\)[\s\S]*minmax\(280px,/);
+});
+
 test("explore list follows the visible map bounds and pins expose hover names", () => {
   assert.match(mainSource, /function exploreVisibleCameras/);
   assert.match(mainSource, /camerasInBounds\(exploreCameras\(\),\s*state\.map\.getBounds\(\)\)/);
@@ -265,7 +314,8 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(indexSource, /id="favoriteAddDialog"/);
   assert.match(indexSource, /aria-label="Toggle favorite"/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(styleSource, /grid-template-areas:\s*"map detail"\s*"browse detail"/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="map"\][\s\S]*grid-template-areas:/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\][\s\S]*grid-template-areas:/);
   assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
   assert.match(styleSource, /@media\s*\(max-width:\s*640px\)/);
   assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.favorite-add-dialog\s*{[\s\S]*inset:\s*auto\s+0\s+0/s);

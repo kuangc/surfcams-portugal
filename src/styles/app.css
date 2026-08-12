@@ -120,6 +120,7 @@ button:disabled {
 }
 
 .screen-header h1,
+.explore-camera-summary h2,
 .spot-panel h2,
 .favorite-card h2 {
   margin: 0;
@@ -130,6 +131,7 @@ button:disabled {
   font-size: 1.7rem;
 }
 
+.explore-camera-summary h2,
 .spot-panel h2,
 .favorite-card h2 {
   font-size: 1.05rem;
@@ -810,6 +812,7 @@ button:disabled {
 .monitor-tile,
 .favorite-card,
 .browse-panel,
+.explore-camera-summary,
 .spot-panel,
 .explore-video-shell,
 .config-form {
@@ -1399,22 +1402,61 @@ video {
 
 .map-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
-  grid-template-rows: minmax(420px, 1fr) minmax(160px, 220px);
-  grid-template-areas:
-    "map detail"
-    "browse detail";
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
-  height: clamp(520px, calc(100vh - 132px), 720px);
+  height: auto;
   min-height: 0;
 }
 
+.map-layout[data-emphasis="map"] .map-shell {
+  order: 1;
+}
+
+.map-layout[data-emphasis="map"] .browse-panel {
+  order: 2;
+}
+
+.map-layout[data-emphasis="map"] .explore-camera-summary {
+  order: 3;
+}
+
+.map-layout[data-emphasis="map"] .spot-panel {
+  order: 4;
+}
+
+.map-layout[data-emphasis="detail"] .explore-camera-summary {
+  order: 1;
+}
+
+.map-layout[data-emphasis="detail"] .map-shell {
+  order: 2;
+}
+
+.map-layout[data-emphasis="detail"] .spot-panel {
+  order: 3;
+}
+
+.map-layout[data-emphasis="detail"] .browse-panel {
+  order: 4;
+}
+
+.explore-camera-summary {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.explore-open-selected {
+  justify-self: start;
+}
+
 .browse-panel {
-  grid-area: browse;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
   min-height: 0;
-  max-height: 100%;
   padding: 12px;
 }
 
@@ -1470,11 +1512,17 @@ video {
   white-space: nowrap;
 }
 
-.map {
-  grid-area: map;
+.map-shell {
   position: relative;
-  height: 100%;
+  min-width: 0;
+  height: clamp(380px, 58vh, 560px);
   min-height: 0;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  height: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
@@ -1486,15 +1534,21 @@ video {
   height: 100%;
 }
 
+.expand-explore-map {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 900;
+  box-shadow: var(--shadow);
+}
+
 .spot-panel {
-  grid-area: detail;
   display: grid;
   align-content: start;
   gap: 12px;
+  min-width: 0;
   min-height: 0;
-  max-height: 100%;
   padding: 14px;
-  overflow: auto;
 }
 
 .explore-video-shell {
@@ -1509,6 +1563,19 @@ video {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: start;
+}
+
+.explore-camera-summary button:focus-visible,
+.map-shell button:focus-visible,
+.spot-panel button:focus-visible,
+.browse-panel button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.explore-status {
+  min-height: 1.3em;
+  margin-top: 10px;
 }
 
 .sl-cam-badge {
@@ -1919,23 +1986,6 @@ button.stretch-tile[aria-current="true"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .map-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
-    grid-template-rows: minmax(420px, 1fr) minmax(180px, 260px);
-    height: auto;
-    min-height: 0;
-  }
-
-  .map {
-    height: 520px;
-    min-height: 0;
-  }
-
-  .browse-panel,
-  .spot-panel {
-    max-height: none;
-  }
-
   .explore-list {
     max-height: 420px;
   }
@@ -1973,20 +2023,6 @@ button.stretch-tile[aria-current="true"] {
     justify-content: flex-start;
   }
 
-  .map-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "map"
-      "detail"
-      "browse";
-    height: auto;
-  }
-
-  .map {
-    height: 460px;
-  }
-
   .spot-playbook {
     max-height: min(68vh, 520px);
     overflow-y: auto;
@@ -2021,14 +2057,6 @@ button.stretch-tile[aria-current="true"] {
   .map-layout,
   .config-form {
     grid-template-columns: 1fr;
-  }
-
-  .map-layout {
-    grid-template-areas:
-      "map"
-      "detail"
-      "browse";
-    grid-template-rows: auto;
   }
 
   .screen-header h1 {
@@ -2094,7 +2122,7 @@ button.stretch-tile[aria-current="true"] {
     width: 100%;
   }
 
-  .map {
+  .map-shell {
     height: 420px;
   }
 
@@ -2107,9 +2135,56 @@ button.stretch-tile[aria-current="true"] {
   }
 }
 
+@media (min-width: 980px) {
+  .map-layout {
+    height: clamp(600px, calc(100vh - 132px), 780px);
+  }
+
+  .map-layout[data-emphasis="map"] {
+    grid-template-columns: minmax(480px, 1fr) minmax(280px, 420px);
+    grid-template-rows: auto minmax(300px, 1fr) minmax(150px, 220px);
+    grid-template-areas:
+      "map summary"
+      "map detail"
+      "browse detail";
+  }
+
+  .map-layout[data-emphasis="detail"] {
+    grid-template-columns: minmax(480px, 1fr) minmax(280px, 0.62fr);
+    grid-template-rows: auto minmax(280px, 1fr) minmax(150px, 220px);
+    grid-template-areas:
+      "summary map"
+      "detail map"
+      "detail browse";
+  }
+
+  .explore-camera-summary {
+    grid-area: summary;
+  }
+
+  .map-shell {
+    grid-area: map;
+    height: auto;
+    min-height: 280px;
+  }
+
+  .spot-panel {
+    grid-area: detail;
+    max-height: 100%;
+    overflow: auto;
+  }
+
+  .browse-panel {
+    grid-area: browse;
+    max-height: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .monitor-focus,
-  .monitor-focus * {
+  .monitor-focus *,
+  .map-layout,
+  .map-layout * {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

@@ -38,6 +38,13 @@ import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions }
 import { fetchLiveForecast } from "./live-forecast.js";
 import { createGalleryPreviewSession } from "./feed-lifecycle.js";
 import { createFullscreenController } from "./fullscreen-controller.js";
+import {
+  createExploreViewState,
+  expandExploreMap,
+  initializeExploreSelection,
+  openSelectedExploreSpot,
+  selectExploreSpot
+} from "./explore-emphasis.js";
 import { inSuggestionFence, monitorFavoriteCameras } from "./monitor-cameras.js";
 import {
   addComparisonCamera,
@@ -116,6 +123,7 @@ const state = {
   stalenessBannerEl: null,
   markers: new Map(),
   markerLayer: null,
+  exploreView: createExploreViewState(),
   selectedExploreCamera: null,
   explorePlayer: null,
   stretchChipEl: null,
@@ -166,6 +174,11 @@ const els = {
   regionSelect: document.querySelector("#regionSelect"),
   favoriteOnly: document.querySelector("#favoriteOnly"),
   mightBeGoodOnly: document.querySelector("#mightBeGoodOnly"),
+  exploreLayout: document.querySelector("#exploreLayout"),
+  exploreCameraSummary: document.querySelector("#exploreCameraSummary"),
+  openSelectedSpot: document.querySelector("#openSelectedSpot"),
+  expandExploreMap: document.querySelector("#expandExploreMap"),
+  exploreStatus: document.querySelector("#exploreStatus"),
   exploreResultsSummary: document.querySelector("#exploreResultsSummary"),
   exploreList: document.querySelector("#exploreList"),
   exploreVideo: document.querySelector("#exploreVideo"),
@@ -217,6 +230,38 @@ function afterNextPaint(callback) {
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(callback);
   });
+}
+
+function applyExploreEmphasis() {
+  const detailPrimary = state.exploreView.emphasis === "detail";
+  els.exploreLayout.dataset.emphasis = state.exploreView.emphasis;
+  els.openSelectedSpot.hidden = detailPrimary || !state.selectedExploreCamera;
+  els.openSelectedSpot.disabled = !state.selectedExploreCamera;
+  els.expandExploreMap.hidden = !detailPrimary;
+  els.exploreStatus.textContent = "";
+
+  afterNextPaint(() => {
+    if (state.activeRoute !== "explore" || !state.map) return;
+    try {
+      state.map.invalidateSize({ pan: false });
+    } catch (error) {
+      els.exploreStatus.textContent = "The map could not resize. Try the map control again.";
+    }
+  });
+}
+
+function openSelectedExploreSpotView() {
+  const nextView = openSelectedExploreSpot(state.exploreView);
+  if (nextView === state.exploreView) return;
+  state.exploreView = nextView;
+  applyExploreEmphasis();
+}
+
+function expandExploreMapView() {
+  const nextView = expandExploreMap(state.exploreView);
+  if (nextView === state.exploreView) return;
+  state.exploreView = nextView;
+  applyExploreEmphasis();
 }
 
 function setRoute(route) {
@@ -862,7 +907,11 @@ function createRecommendationAction(camera) {
   action.className = "recommendation-action";
   action.type = "button";
   action.textContent = "Watch live cam";
-  action.addEventListener("click", () => selectExploreCamera(camera, { route: true, scroll: true }));
+  action.addEventListener("click", () => selectExploreCamera(camera, {
+    explicit: true,
+    route: true,
+    scroll: true
+  }));
   return action;
 }
 
@@ -1735,7 +1784,9 @@ function playExploreCamera(camera) {
   state.explorePlayer.play(camera);
 }
 
-function selectExploreCamera(camera, { pan = false, route = false, scroll = false } = {}) {
+function selectExploreCamera(camera, { explicit = false, pan = false, route = false, scroll = false } = {}) {
+  if (!camera) return;
+  state.exploreView = selectExploreSpot(state.exploreView, camera.id, { explicit });
   renderExploreSelection(camera);
 
   if (route) setRoute("explore");
@@ -1744,9 +1795,11 @@ function selectExploreCamera(camera, { pan = false, route = false, scroll = fals
     state.map.panTo([camera.lat, camera.lon]);
   }
 
-  if (scroll && els.spotPanel && window.matchMedia("(max-width: 900px)").matches) {
-    els.spotPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+  if (scroll && els.exploreCameraSummary && window.matchMedia("(max-width: 900px)").matches) {
+    els.exploreCameraSummary.scrollIntoView({ block: "start", behavior: "smooth" });
   }
+
+  applyExploreEmphasis();
 }
 
 function renderExploreList() {
@@ -1787,7 +1840,7 @@ function renderExploreList() {
 
     row.append(title, meta, createConditionStrip(camera, { compact: true }));
     row.addEventListener("click", () => {
-      selectExploreCamera(camera, { pan: true, scroll: true });
+      selectExploreCamera(camera, { explicit: true, pan: true, scroll: true });
     });
 
     els.exploreList.appendChild(row);
@@ -1884,7 +1937,7 @@ function createStretchCamTile(camera) {
 
   body.append(name, label);
   tile.appendChild(body);
-  tile.addEventListener("click", () => selectExploreCamera(camera, { pan: true, scroll: true }));
+  tile.addEventListener("click", () => selectExploreCamera(camera, { explicit: true, pan: true, scroll: true }));
   return tile;
 }
 
@@ -2354,7 +2407,7 @@ function renderMarkers() {
         sticky: true
       });
       marker.on("click", () => {
-        selectExploreCamera(camera, { scroll: true });
+        selectExploreCamera(camera, { explicit: true, scroll: true });
       });
       state.markers.set(camera.id, marker);
     }
@@ -2522,6 +2575,9 @@ function bindEvents() {
     });
   });
 
+  els.openSelectedSpot.addEventListener("click", openSelectedExploreSpotView);
+  els.expandExploreMap.addEventListener("click", expandExploreMapView);
+
   els.detailFavorite.addEventListener("click", () => {
     const camera = state.selectedExploreCamera;
     if (!camera) return;
@@ -2589,7 +2645,12 @@ async function init() {
   renderConfigure();
   renderFavorites();
   renderExploreList();
-  renderExploreSelection(favoriteCameras()[0] || state.cameras[0]);
+  const initialExploreCamera = favoriteCameras()[0] || state.cameras[0];
+  if (initialExploreCamera) {
+    state.exploreView = initializeExploreSelection(state.exploreView, initialExploreCamera.id);
+  }
+  renderExploreSelection(initialExploreCamera || null);
+  applyExploreEmphasis();
   setRoute("monitor");
   startAdviceRefreshScheduler();
 }

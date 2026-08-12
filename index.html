@@ -6259,13 +6259,8 @@
             <label class="toggle-row"><input id="mightBeGoodOnly" type="checkbox"> Might be good</label>
           </div>
         </header>
-        <div class="map-layout">
-          <aside class="browse-panel" aria-label="Browse surf spots">
-            <p class="status-line" id="exploreResultsSummary">Loading spots...</p>
-            <div class="explore-list" id="exploreList"></div>
-          </aside>
-          <div id="map" class="map"></div>
-          <aside class="spot-panel" id="spotPanel" aria-live="polite">
+        <div class="map-layout" id="exploreLayout" data-emphasis="map">
+          <section class="explore-camera-summary" id="exploreCameraSummary" aria-labelledby="detailName">
             <div class="explore-video-shell">
               <video id="exploreVideo" muted playsinline controls></video>
               <span class="feed-status" id="exploreFeedStatus">Select a spot</span>
@@ -6277,10 +6272,22 @@
               </div>
               <button id="detailFavorite" class="favorite-toggle" type="button" aria-label="Toggle favorite" aria-pressed="false">♡</button>
             </div>
+            <button class="primary-button explore-open-selected" id="openSelectedSpot" type="button" disabled>Open selected spot</button>
             <section class="water-summary water-summary--compact" id="detailWaterSummary" aria-label="Water and tide"></section>
+          </section>
+          <div class="map-shell">
+            <div id="map" class="map"></div>
+            <button class="secondary-button expand-explore-map" id="expandExploreMap" type="button" hidden>Expand map</button>
+          </div>
+          <aside class="spot-panel" id="spotPanel" aria-label="Local spot details">
             <div class="condition-strip" id="detailConditionStrip"></div>
           </aside>
+          <aside class="browse-panel" aria-label="Nearby surf spots">
+            <p class="status-line" id="exploreResultsSummary">Loading spots...</p>
+            <div class="explore-list" id="exploreList"></div>
+          </aside>
         </div>
+        <p class="status-line explore-status" id="exploreStatus" role="status" aria-live="polite" aria-atomic="true"></p>
       </section>
 
       <section class="screen configure-screen" id="configureScreen" data-screen="configure" hidden aria-labelledby="configureTitle">

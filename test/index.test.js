@@ -96,3 +96,28 @@ test("Monitor includes a non-modal Focus and Compare shell beside the gallery", 
   assert.match(compositionScope, /id="monitorFocusPanes"/);
   assert.match(compositionScope, /id="monitorFocusFullscreen"[\s\S]*id="monitorFocusPanes"/);
 });
+
+test("Explore keeps one persistent map between distinct summary and detail regions", () => {
+  const exploreScreen = html.match(
+    /<section class="screen explore-screen"[\s\S]*?<section class="screen configure-screen"/
+  )?.[0] || "";
+  const layout = exploreScreen.match(/<div class="map-layout"[\s\S]*?\n\s*<\/div>\n\s*<p[^>]*id="exploreStatus"/)?.[0] || "";
+  const spotPanel = exploreScreen.match(/<aside class="spot-panel"[^>]*id="spotPanel"[^>]*>/)?.[0] || "";
+
+  assert.match(layout, /^<div class="map-layout"[^>]*data-emphasis="map"/);
+  assert.equal((exploreScreen.match(/id="map"/g) || []).length, 1);
+  assert.match(layout, /class="explore-camera-summary"[^>]*id="exploreCameraSummary"[\s\S]*id="openSelectedSpot"/);
+  assert.match(layout, /class="map-shell"[\s\S]*id="map"[\s\S]*id="expandExploreMap"/);
+  assert.match(layout, /id="expandExploreMap"[^>]*\bhidden\b/);
+  assert.ok(spotPanel, "longer spot detail wrapper exists");
+  assert.doesNotMatch(spotPanel, /aria-live/);
+
+  const summaryIndex = layout.indexOf('id="exploreCameraSummary"');
+  const mapIndex = layout.indexOf('id="map"');
+  const detailIndex = layout.indexOf('id="spotPanel"');
+  const browseIndex = layout.indexOf('class="browse-panel"');
+  assert.ok(summaryIndex < mapIndex && mapIndex < detailIndex && detailIndex < browseIndex,
+    "detail mobile DOM order is summary, map, longer details, nearby results");
+
+  assert.match(exploreScreen, /id="exploreStatus"[^>]*role="status"[^>]*aria-live="polite"/);
+});
