@@ -132,6 +132,8 @@ test("Monitor gallery scopes preview streams to one viewport observer lifecycle"
 
   assert.match(mainSource, /function createMonitorTile[\s\S]*video\.poster\s*=\s*camera\.image/);
   assert.match(mainSource, /frame\.addEventListener\("click"[\s\S]*session\.restart\(\)/);
+  assert.match(mainSource, /retryButton\.addEventListener\("click"[\s\S]*session\.retry\(\)/);
+  assert.doesNotMatch(mainSource, /void player\.play\(camera\)/);
   assert.match(mainSource, /(?:blocked|unavailable)[\s\S]*(?:Play|Retry)/);
   assert.doesNotMatch(mainSource, /scheduleMonitorTile|restartMonitorTile|MONITOR_DURATION_MS|playTimeoutId|350 \+ \(index \* 450\)/);
 });

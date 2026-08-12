@@ -69,9 +69,48 @@ function createFakePlayer() {
   };
 }
 
-function createSession(options = {}) {
+function deferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
+}
+
+function createControllablePlayer() {
+  let currentState = "idle";
+  const calls = [];
+  const pendingPlays = [];
+  return {
+    calls,
+    clear() {
+      calls.push(["clear"]);
+      currentState = "idle";
+    },
+    expire() {
+      calls.push(["expire"]);
+      currentState = "expired";
+    },
+    play(camera) {
+      calls.push(["play", camera.id]);
+      const pending = deferred();
+      pendingPlays.push(pending);
+      return pending.promise;
+    },
+    resolveNext(nextState) {
+      currentState = nextState;
+      pendingPlays.shift()?.resolve(nextState);
+    },
+    state() {
+      return currentState;
+    }
+  };
+}
+
+function createSession({ player = createFakePlayer(), ...options } = {}) {
   const timers = createTimerHarness();
-  const player = createFakePlayer();
   const camera = { id: "fixture", streamUrl: "https://example.com/fixture.m3u8" };
   const session = createGalleryPreviewSession({
     camera,
@@ -184,4 +223,87 @@ test("a hidden document does not start until visibility is re-evaluated", () => 
   timers.advance(0);
   assert.deepEqual(player.calls, [["play", "fixture"]]);
   assert.equal(session.state(), "playing");
+});
+
+test("a blocked play result cancels preview expiry and becomes retryable", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  assert.equal(timers.pendingCount(), 1);
+
+  player.resolveNext("blocked");
+  await Promise.resolve();
+
+  assert.equal(session.state(), "blocked");
+  assert.equal(timers.pendingCount(), 0);
+  timers.advance(60_000);
+  assert.equal(player.calls.some(([operation]) => operation === "expire"), false);
+});
+
+test("an unavailable play result cancels preview expiry", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  player.resolveNext("unavailable");
+  await Promise.resolve();
+
+  assert.equal(session.state(), "unavailable");
+  assert.equal(timers.pendingCount(), 0);
+  timers.advance(60_000);
+  assert.equal(player.calls.some(([operation]) => operation === "expire"), false);
+});
+
+test("retry from blocked or unavailable owns a fresh full successful preview", async () => {
+  for (const failedState of ["blocked", "unavailable"]) {
+    const player = createControllablePlayer();
+    const { session, timers } = createSession({ player });
+
+    session.setVisible(true);
+    timers.advance(0);
+    player.resolveNext(failedState);
+    await Promise.resolve();
+
+    assert.equal(typeof session.retry, "function");
+    assert.equal(session.retry(), true);
+    timers.advance(0);
+    assert.equal(player.calls.filter(([operation]) => operation === "play").length, 2);
+    assert.equal(timers.scheduledDelays.at(-1), 60_000);
+
+    player.resolveNext("playing");
+    await Promise.resolve();
+    assert.equal(session.state(), "playing");
+    assert.equal(timers.pendingCount(), 1);
+
+    timers.advance(59_999);
+    assert.equal(session.state(), "playing");
+    timers.advance(1);
+    assert.equal(session.state(), "expired");
+  }
+});
+
+test("leaving or clearing during pending play ignores its late result", async () => {
+  for (const stop of [
+    (session) => session.setVisible(false),
+    (session) => session.clear()
+  ]) {
+    const player = createControllablePlayer();
+    const { session, timers } = createSession({ player });
+
+    session.setVisible(true);
+    timers.advance(0);
+    assert.equal(timers.pendingCount(), 1);
+
+    stop(session);
+    assert.equal(session.state(), "idle");
+    assert.equal(timers.pendingCount(), 0);
+
+    player.resolveNext("playing");
+    await Promise.resolve();
+    assert.equal(session.state(), "idle");
+    assert.equal(timers.pendingCount(), 0);
+  }
 });

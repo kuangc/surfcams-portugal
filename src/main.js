@@ -468,9 +468,7 @@ function createMonitorTile(slot, index) {
       activateFallbackPreview(session);
       return;
     }
-    if (session.restart()) return;
-    if (player.state() !== "blocked" && player.state() !== "unavailable") return;
-    void player.play(camera);
+    session.retry();
   });
 
   if (state.monitorObserver) {
