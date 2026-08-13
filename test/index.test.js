@@ -14,6 +14,7 @@ test("index embeds the same camera database that lives in data", () => {
 });
 
 test("index loads the v3 app shell", () => {
+  assert.match(html, /name="viewport"[^>]*viewport-fit=cover/);
   assert.match(html, /<script type="module" src="\.\/src\/main\.js"><\/script>/);
   assert.match(html, /data-route="monitor"/);
   assert.match(html, /data-route="favorites"/);
@@ -30,7 +31,7 @@ test("index loads the v3 app shell", () => {
 test("Favorites defaults to saved cameras with one primary add action", () => {
   const favoritesScreen = html.match(/<section class="screen favorites-screen"[\s\S]*?<dialog class="favorite-add-dialog"/)?.[0] || "";
 
-  assert.match(favoritesScreen, /<h1 id="favoritesTitle">Favorites<\/h1>/);
+  assert.match(favoritesScreen, /<h1 id="favoritesTitle"[^>]*>Favorites<\/h1>/);
   assert.match(favoritesScreen, /<button[^>]*class="primary-button"[^>]*id="addFavoriteCamera"[^>]*>Add camera<\/button>/);
   assert.match(favoritesScreen, /id="favoritesList"/);
   assert.doesNotMatch(favoritesScreen, /favorite-toolbar/);
@@ -121,4 +122,21 @@ test("Explore keeps one persistent map between distinct summary and detail regio
     "detail mobile DOM order is summary, map, longer details, nearby results");
 
   assert.match(exploreScreen, /id="exploreStatus"[^>]*role="status"[^>]*aria-live="polite"/);
+});
+
+test("Explore exposes its dense search controls through a native mobile disclosure", () => {
+  const exploreScreen = html.match(
+    /<section class="screen explore-screen"[\s\S]*?<section class="screen configure-screen"/
+  )?.[0] || "";
+  const disclosure = exploreScreen.match(
+    /<details[^>]*id="exploreFiltersDisclosure"[^>]*>[\s\S]*?<\/details>/
+  )?.[0] || "";
+
+  assert.match(disclosure, /^<details\b[^>]*\bopen\b/);
+  assert.match(disclosure, /<summary>Search &amp; filters<\/summary>/);
+  assert.match(disclosure, /class="explore-filters"/);
+  assert.match(disclosure, /id="searchInput"/);
+  assert.match(disclosure, /id="regionSelect"/);
+  assert.match(disclosure, /id="favoriteOnly"/);
+  assert.match(disclosure, /id="mightBeGoodOnly"/);
 });

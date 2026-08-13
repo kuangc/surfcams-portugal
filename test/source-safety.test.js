@@ -29,6 +29,47 @@ test("main UI avoids selector interpolation from camera IDs", () => {
   assert.match(mainSource, /row\.dataset\.cameraRow === cameraId/);
 });
 
+test("primary route changes start at the destination top without breaking Focus restoration", () => {
+  const setRouteSource = mainSource.match(/function setRoute\(route\)[\s\S]*?\n}\n\nfunction favoriteOrder/)?.[0] || "";
+
+  assert.match(setRouteSource, /const routeChanged\s*=\s*state\.activeRoute\s*!==\s*route/);
+  assert.match(setRouteSource, /routeChanged[\s\S]*afterNextPaint\([\s\S]*window\.scrollTo\(\{ top: 0, behavior: "auto" }\)/);
+  assert.doesNotMatch(setRouteSource, /scrollTo\([\s\S]*galleryScrollY/);
+  assert.match(mainSource, /function exitMonitorFocusView[\s\S]*window\.scrollTo\(\{ top: galleryScrollY/);
+});
+
+test("mobile Focus keeps media ahead of replacement controls and condition evidence", () => {
+  const paneSource = mainSource.match(/function createFocusedPane[\s\S]*?\n}\n\nfunction renderMonitorFocus/)?.[0] || "";
+  const mobileCss = styleSource.match(/@media \(max-width: 900px\)[\s\S]*?\n}\n\n@media \(min-width: 980px\)/)?.[0] || "";
+
+  assert.match(paneSource, /details\.append\(header, conditionStrip\)/);
+  assert.match(paneSource, /return \{ frame, details }/);
+  assert.match(mainSource, /monitorFocusMedia\.appendChild\(pane\.frame\)[\s\S]*monitorFocusDetails\.appendChild\(pane\.details\)/);
+  assert.match(mainSource, /monitorScreen:\s*document\.querySelector\("#monitorScreen"\)/);
+  assert.match(styleSource, /\.monitor-focus__media,\s*\.monitor-focus__details\s*\{[\s\S]*display:\s*grid/);
+  assert.match(mobileCss, /\.monitor-focus__media,\s*\.monitor-focus__details\s*\{[\s\S]*gap:/);
+  assert.match(mobileCss, /\.monitor-focus__pane-details > \.condition-strip/);
+  assert.doesNotMatch(mobileCss, /\.monitor-focus__[^{]+\{[^}]*order:/s);
+});
+
+test("mobile Add Camera is intent-gated, keyboard-safe, and touch-safe", () => {
+  assert.match(mainSource, /shouldShowFavoriteResults/);
+  assert.match(mainSource, /Type at least 2 characters, or choose a filter\./);
+  assert.match(styleSource, /\.favorite-add-dialog[\s\S]*max-height:\s*calc\(100dvh - env\(safe-area-inset-top/);
+  assert.match(styleSource, /\.favorite-add-dialog[\s\S]*padding-bottom:\s*calc\([^;]*env\(safe-area-inset-bottom/);
+  assert.match(styleSource, /\.favorite-add-dialog__close[\s\S]*min-width:\s*44px[\s\S]*min-height:\s*44px/);
+});
+
+test("mobile navigation and Explore account for the safe area and compact detail hierarchy", () => {
+  assert.match(styleSource, /--mobile-nav-height:/);
+  assert.match(styleSource, /\.app-shell[\s\S]*padding-bottom:\s*calc\(var\(--mobile-nav-height\) \+ env\(safe-area-inset-bottom/);
+  assert.match(styleSource, /\.app-nav[\s\S]*height:\s*calc\(var\(--mobile-nav-height\) \+ env\(safe-area-inset-bottom/);
+  assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\] \.map-shell[\s\S]*height:\s*240px/);
+  assert.match(mainSource, /groupMobileMapMarkers/);
+  assert.match(mainSource, /function createAggregateMarker/);
+  assert.match(mainSource, /map groups\. Move or zoom to refine\./);
+});
+
 test("CDN dependencies are pinned to explicit versions", () => {
   assert.doesNotMatch(`${configSource}\n${videoSource}`, /@latest/);
   assert.match(configSource, /hls\.js@1\.6\.4/);
@@ -164,7 +205,7 @@ test("Monitor and Favorites share one validated entry point for large Focus play
 
 test("Focus and Compare use direct untimed pane-local players with replacement controls", () => {
   assert.match(mainSource, /function createFocusedPane\(camera,\s*paneIndex/);
-  assert.match(mainSource, /function createFocusedPane[\s\S]*createFeedTilePlayer\([\s\S]*focusedPlayers\.set\([\s\S]*player\.play\(camera\)/);
+  assert.match(mainSource, /function createFocusedPane[\s\S]*createFeedTilePlayer\([\s\S]*focusedPlayers\.set\(frame,\s*player\)[\s\S]*player\.play\(camera\)/);
   assert.match(mainSource, /data-focus-action[\s\S]*"replace"/);
   assert.match(mainSource, /data-focus-action[\s\S]*"remove"/);
   assert.match(mainSource, /data-focus-action[\s\S]*"retry"/);
@@ -223,8 +264,9 @@ test("app-owned fullscreen targets the complete Focus composition and reports er
   assert.match(mainSource, /monitorFocusStatus\.textContent\s*=\s*"Fullscreen could not be changed\."/);
   assert.match(mainSource, /monitorFocusFullscreen\.disabled\s*=\s*!supported/);
   assert.match(mainSource, /monitorFocusPanes:\s*document\.querySelector\("#monitorFocusPanes"\)/);
-  assert.match(mainSource, /function renderMonitorFocus[\s\S]*monitorFocusPanes\.textContent\s*=\s*""[\s\S]*monitorFocusPanes\.appendChild/);
-  assert.match(mainSource, /monitorFocusPanes\.children\[paneIndex\]/);
+  assert.match(mainSource, /function renderMonitorFocus[\s\S]*monitorFocusPanes\.textContent\s*=\s*""[\s\S]*monitorFocusPanes\.append/);
+  assert.match(mainSource, /function focusedPanePart[\s\S]*container\.children[\s\S]*dataset\.paneIndex/);
+  assert.doesNotMatch(mainSource, /monitorFocusPanes\.children\[paneIndex\]/);
   assert.doesNotMatch(mainSource, /monitorFocusComposition\.textContent\s*=/);
 });
 
@@ -260,13 +302,13 @@ test("Focus and Compare styling keeps one useful feed or two equal responsive pa
   assert.match(styleSource, /\.monitor-grid\[hidden\]\s*\{[\s\S]*display:\s*none/);
   assert.match(styleSource, /\.monitor-focus\s*{[\s\S]*container-type:\s*inline-size/);
   assert.match(styleSource, /\.monitor-focus__composition\[data-view="focus-one"\][\s\S]*max-width:/);
-  assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\]\s+\.monitor-focus__panes[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
+  assert.match(styleSource, /@container[\s\S]*min-width:\s*(?:640|654)px[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\]\s+\.monitor-focus__media,[\s\S]*\.monitor-focus__composition\[data-view="compare-two"\]\s+\.monitor-focus__details[\s\S]*grid-template-columns:\s*repeat\(2,\s*minmax\(320px,\s*1fr\)\)/);
   assert.match(styleSource, /\.monitor-focus__composition:fullscreen/);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styleSource, /\.monitor-focus[\s\S]*:focus-visible/);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__header\s*{[^}]*flex-direction:\s*column/s);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__actions\s*{[^}]*width:\s*100%/s);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.monitor-focus__select\s*{[^}]*min-width:\s*0/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.monitor-focus__header\s*{[^}]*flex-direction:\s*column/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.monitor-focus__actions\s*{[^}]*width:\s*100%/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.monitor-focus__select\s*{[^}]*min-width:\s*0/s);
 });
 
 test("main controller loads hourly forecasts only for the Might be good roster", () => {
@@ -390,8 +432,8 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.doesNotMatch(styleSource, /provider-mark/);
   assert.match(styleSource, /\.water-summary\s*{/);
   assert.match(styleSource, /grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(112px,\s*1fr\)\)/);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.water-summary\s*{[\s\S]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.water-summary\s*{[\s\S]*gap:\s*8px/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.water-summary\s*{[\s\S]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.water-summary\s*{[\s\S]*gap:\s*8px/);
   assert.doesNotMatch(styleSource.match(/\.water-metric__value\s*{[^}]*}/)?.[0] || "", /font-size:\s*0\.[0-9]+rem/);
   assert.match(indexSource, /id="monitorWaterSummary"/);
   assert.match(indexSource, /id="favoritesWaterSummary"/);
@@ -403,8 +445,8 @@ test("v3 styles are monitor-first and responsive without the old side panels", (
   assert.match(styleSource, /\.map-layout\[data-emphasis="map"\][\s\S]*grid-template-areas:/);
   assert.match(styleSource, /\.map-layout\[data-emphasis="detail"\][\s\S]*grid-template-areas:/);
   assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)/);
-  assert.match(styleSource, /@media\s*\(max-width:\s*640px\)[\s\S]*\.favorite-add-dialog\s*{[\s\S]*inset:\s*auto\s+0\s+0/s);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*900px\)[\s\S]*\.favorite-add-dialog\s*{[\s\S]*inset:\s*auto\s+0\s+0/s);
   assert.match(styleSource, /:focus-visible/);
   assert.doesNotMatch(mainSource, /danger-button/);
   assert.match(indexSource, /id="favoriteUndoButton"[^>]*>Undo<\/button>/);
@@ -431,7 +473,7 @@ test("Favorites combobox owns text-only options and implements APG keyboard beha
   assert.match(mainSource, /function closeFavoriteAddDialog/);
   assert.match(mainSource, /addFavoriteCamera\.focus\(\)/);
   assert.match(mainSource, /favoriteAddInput\.addEventListener\("keydown"/);
-  for (const key of ["ArrowDown", "ArrowUp", "Home", "End", "Enter", "Escape"]) {
+  for (const key of ["ArrowDown", "ArrowUp", "Enter", "Escape"]) {
     assert.match(mainSource, new RegExp(`case "${key}"`));
   }
   assert.match(mainSource, /aria-activedescendant/);
@@ -443,8 +485,8 @@ test("Favorites combobox owns text-only options and implements APG keyboard beha
 
 test("Favorites mutations persist before state assignment and expose one ten-second undo", () => {
   assert.match(mainSource, /durationMs:\s*10_000/);
-  assert.match(mainSource, /favoriteUndo\.offer\(removedCamera\)/);
-  assert.match(mainSource, /favoriteUndo\.consume\(\)/);
+  assert.match(mainSource, /favoriteUndo\.offer\(removedCamera,\s*restoreFavoriteFocus\)/);
+  assert.match(mainSource, /favoriteUndo\.consumeOffer\(\)/);
   assert.match(mainSource, /favoriteUndo\.cancel\(\)/);
   assert.match(mainSource, /const nextFavoriteIds = commitFavoriteMutation\(state\.favoriteIds/);
   assert.match(mainSource, /state\.favoriteIds = nextFavoriteIds/);
@@ -485,7 +527,7 @@ test("Favorites cancel an old undo offer only after a new mutation commits", () 
 
   const removeCommitIndex = removeSource.indexOf("state.favoriteIds = nextFavoriteIds;");
   const removeCancelIndex = removeSource.indexOf("cancelFavoriteUndoOffer();");
-  const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(removedCamera);");
+  const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(removedCamera, restoreFavoriteFocus);");
   assert.ok(removeCommitIndex >= 0, "remove assigns only the successfully persisted Set");
   assert.ok(removeCancelIndex > removeCommitIndex, "remove preserves pending undo through no-op and failure exits");
   assert.ok(removeOfferIndex > removeCancelIndex, "a committed remove replaces the prior offer with the new camera");
@@ -497,19 +539,49 @@ test("Favorites navigation opens results before deriving Home, End, and arrow ta
     /function openFavoriteAddResultsForNavigation\(\)\s*{([\s\S]*?)\n}/
   )?.[1] || "";
   const renderIndex = openForNavigationSource.indexOf("renderFavoriteAddResults();");
-  const countIndex = openForNavigationSource.indexOf("return favoriteAddRecords.length;");
+  const navigableIndex = openForNavigationSource.indexOf("return favoriteAddNavigableIndexes();");
+  const keydownSource = mainSource.match(
+    /function handleFavoriteAddKeydown\(event\)\s*\{([\s\S]*?)\n}\n\nfunction playExploreCamera/
+  )?.[1] || "";
 
   assert.ok(renderIndex >= 0, "navigation opens a hidden result popup");
-  assert.ok(countIndex > renderIndex, "navigation derives the result count after rendering");
+  assert.ok(navigableIndex > renderIndex, "navigation derives navigable records after rendering");
 
-  for (const key of ["ArrowDown", "ArrowUp", "Home", "End"]) {
-    const caseSource = mainSource.match(new RegExp(`case "${key}":[\\s\\S]*?break;`))?.[0] || "";
+  for (const key of ["ArrowDown", "ArrowUp"]) {
+    const caseSource = keydownSource.match(new RegExp(`case "${key}":[\\s\\S]*?break;`))?.[0] || "";
     assert.match(
       caseSource,
       /openFavoriteAddResultsForNavigation\(\)/,
       `${key} navigates only after the listbox is visible and current`
     );
   }
+});
+
+test("Favorites Home and End always preserve native text caret movement", () => {
+  const keydownSource = mainSource.match(
+    /function handleFavoriteAddKeydown\(event\)\s*\{([\s\S]*?)\n}\n\nfunction playExploreCamera/
+  )?.[1] || "";
+
+  for (const key of ["Home", "End"]) {
+    assert.doesNotMatch(keydownSource, new RegExp(`case "${key}"`));
+  }
+});
+
+test("Favorites combobox keeps DOM focus in the input while options use active descendant", () => {
+  const renderSource = mainSource.match(
+    /function renderFavoriteAddResults\(\)\s*\{([\s\S]*?)\n}\n\nfunction openFavoriteAddDialog/
+  )?.[1] || "";
+  const activeIndexSource = mainSource.match(
+    /function setFavoriteAddActiveIndex\(index[^)]*\)\s*\{([\s\S]*?)\n}/
+  )?.[1] || "";
+
+  assert.match(renderSource, /option\.tabIndex\s*=\s*-1/);
+  assert.doesNotMatch(renderSource, /option\.addEventListener\("(?:focus|keydown)"/);
+  assert.doesNotMatch(activeIndexSource, /option\.tabIndex/);
+  assert.doesNotMatch(mainSource, /function handleFavoriteAddOptionKeydown/);
+  assert.match(mainSource, /favoriteAddInput\.addEventListener\("keydown"/);
+  assert.match(mainSource, /case "Enter"/);
+  assert.match(mainSource, /aria-activedescendant/);
 });
 
 test("camera surfaces contain no report substitutes while advice evidence links remain safe", () => {

@@ -203,6 +203,25 @@ test("favorite undo cleanup cancels the pending timer and offer", () => {
   assert.equal(undo.consume(), null);
 });
 
+test("favorite undo preserves a focus-restoration callback until consume or expiry", () => {
+  const timers = timerHarness();
+  const restored = [];
+  const undo = createFavoriteUndo({
+    durationMs: 10_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer
+  });
+  const camera = { id: "lagide-e-baia" };
+  const restoreFocus = (settledCamera) => restored.push(settledCamera);
+
+  undo.offer(camera, restoreFocus);
+  assert.deepEqual(undo.consumeOffer(), { camera, restoreFocus });
+
+  undo.offer(camera, restoreFocus);
+  timers.fire(2);
+  assert.deepEqual(restored, [camera]);
+});
+
 test("commitFavoriteMutation clones, mutates, persists, and returns the clone", () => {
   const current = new Set(["lagide-e-baia", "carcavelos"]);
   const storage = storageWith();

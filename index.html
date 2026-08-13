@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="A private, ad-free Portugal surfcam viewer built from indexed Beachcam/MEO public camera pages.">
   <meta name="theme-color" content="#08756f">
   <meta name="apple-mobile-web-app-title" content="Surfcams">
@@ -6122,15 +6122,19 @@
     <nav class="app-nav" aria-label="Primary">
       <button class="nav-button" type="button" data-route="monitor" aria-label="Monitor" aria-current="page">
         <span class="nav-icon" aria-hidden="true">▣</span>
+        <span class="nav-label" aria-hidden="true">Monitor</span>
       </button>
       <button class="nav-button" type="button" data-route="favorites" aria-label="Favorites">
         <span class="nav-icon" aria-hidden="true">★</span>
+        <span class="nav-label" aria-hidden="true">Favorites</span>
       </button>
       <button class="nav-button" type="button" data-route="explore" aria-label="Explore">
         <span class="nav-icon" aria-hidden="true">⌖</span>
+        <span class="nav-label" aria-hidden="true">Explore</span>
       </button>
-      <button class="nav-button" type="button" data-route="configure" aria-label="Configure">
+      <button class="nav-button" type="button" data-route="configure" aria-label="Settings">
         <span class="nav-icon" aria-hidden="true">☷</span>
+        <span class="nav-label" aria-hidden="true">Settings</span>
       </button>
     </nav>
 
@@ -6139,7 +6143,7 @@
         <header class="screen-header">
           <div>
             <p class="eyebrow">Monitor</p>
-            <h1 id="monitorTitle">Surfcams Portugal</h1>
+            <h1 id="monitorTitle" tabindex="-1">Surfcams Portugal</h1>
           </div>
           <div class="segmented-control" role="group" aria-label="Monitor mode">
             <button type="button" id="monitorFavoritesMode" data-monitor-mode="favorites" aria-pressed="true">Favorites</button>
@@ -6199,7 +6203,7 @@
         <header class="screen-header">
           <div>
             <p class="eyebrow">Favorites</p>
-            <h1 id="favoritesTitle">Favorites</h1>
+            <h1 id="favoritesTitle" tabindex="-1">Favorites</h1>
           </div>
           <button class="primary-button" id="addFavoriteCamera" type="button">Add camera</button>
         </header>
@@ -6238,7 +6242,7 @@
             </label>
           </div>
         </details>
-        <p class="favorite-add-help">Only supported cameras with playable feeds appear here.</p>
+        <p class="favorite-add-help">Type at least 2 characters or choose a filter. Only supported cameras with playable feeds appear here.</p>
       </dialog>
 
       <div class="favorite-undo-toast" id="favoriteUndoToast" hidden>
@@ -6250,20 +6254,24 @@
         <header class="screen-header explore-header">
           <div>
             <p class="eyebrow">Explore</p>
-            <h1 id="exploreTitle">Map</h1>
+            <h1 id="exploreTitle" tabindex="-1">Map</h1>
           </div>
-          <div class="explore-filters">
-            <input id="searchInput" type="search" placeholder="Search beaches">
-            <select id="regionSelect" aria-label="Region"></select>
-            <label class="toggle-row"><input id="favoriteOnly" type="checkbox"> Favorites</label>
-            <label class="toggle-row"><input id="mightBeGoodOnly" type="checkbox"> Might be good</label>
-          </div>
+          <details class="explore-filters-disclosure" id="exploreFiltersDisclosure" open>
+            <summary>Search &amp; filters</summary>
+            <div class="explore-filters">
+              <input id="searchInput" type="search" placeholder="Search beaches">
+              <select id="regionSelect" aria-label="Region"></select>
+              <label class="toggle-row"><input id="favoriteOnly" type="checkbox"> Favorites</label>
+              <label class="toggle-row"><input id="mightBeGoodOnly" type="checkbox"> Might be good</label>
+            </div>
+          </details>
         </header>
         <div class="map-layout" id="exploreLayout" data-emphasis="map">
           <section class="explore-camera-summary" id="exploreCameraSummary" tabindex="-1" aria-labelledby="detailName">
             <div class="explore-video-shell">
               <video id="exploreVideo" muted playsinline controls></video>
               <span class="feed-status" id="exploreFeedStatus">Select a spot</span>
+              <button class="feed-retry-button" id="exploreRetry" type="button" hidden>Retry</button>
             </div>
             <div class="spot-panel__header">
               <div>
@@ -6276,7 +6284,7 @@
             <section class="water-summary water-summary--compact" id="detailWaterSummary" aria-label="Water and tide"></section>
           </section>
           <div class="map-shell">
-            <div id="map" class="map" tabindex="-1"></div>
+            <div id="map" class="map" tabindex="-1" aria-label="Surf camera map"></div>
             <button class="secondary-button expand-explore-map" id="expandExploreMap" type="button" hidden>Expand map</button>
           </div>
           <aside class="spot-panel" id="spotPanel" aria-label="Local spot details">
@@ -6294,7 +6302,7 @@
         <header class="screen-header">
           <div>
             <p class="eyebrow">Configure</p>
-            <h1 id="configureTitle">Fit for us</h1>
+            <h1 id="configureTitle" tabindex="-1">Fit for us</h1>
           </div>
         </header>
         <form class="config-form" id="configForm">

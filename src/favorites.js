@@ -44,22 +44,28 @@ export function createFavoriteUndo({
   onExpire
 } = {}) {
   let pendingCamera = null;
+  let restoreFocus = null;
   let timerId = null;
 
   function clearPending() {
     if (timerId !== null) clearTimer(timerId);
     timerId = null;
     pendingCamera = null;
+    restoreFocus = null;
   }
 
-  function offer(camera) {
+  function offer(camera, onSettle = null) {
     clearPending();
     pendingCamera = camera;
+    restoreFocus = typeof onSettle === "function" ? onSettle : null;
     timerId = setTimer(() => {
       const expiredCamera = pendingCamera;
+      const settle = restoreFocus;
       timerId = null;
       pendingCamera = null;
+      restoreFocus = null;
       if (expiredCamera !== null) onExpire?.(expiredCamera);
+      settle?.(expiredCamera);
     }, durationMs);
   }
 
@@ -70,9 +76,17 @@ export function createFavoriteUndo({
     return camera;
   }
 
+  function consumeOffer() {
+    if (pendingCamera === null) return null;
+    const offer = { camera: pendingCamera, restoreFocus };
+    clearPending();
+    return offer;
+  }
+
   return {
     offer,
     consume,
+    consumeOffer,
     cancel: clearPending,
     cleanup: clearPending
   };
