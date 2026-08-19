@@ -12,6 +12,7 @@ import {
   formatDriveLabel,
   haversineKm
 } from "../src/spot-data.js";
+import { predecessorMeoCameraIds } from "../src/meo-camera-identities.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CAMERA_DB_PATH = path.join(ROOT, "data", "beachcam-cameras.json");
@@ -68,7 +69,7 @@ function normalizeMeoSpot(camera) {
   };
 }
 
-function driveEstimate(camera) {
+export function deterministicDriveEstimate(camera) {
   const profile = routeProfile(camera);
   const distanceKm = haversineKm(CENTRAL_LISBON, camera);
   const routeDistanceKm = estimateRouteDistanceKm(distanceKm, profile);
@@ -98,7 +99,7 @@ function osrmTableUrl(cameras) {
 }
 
 function routedEstimate(camera, routeDistanceMeters, durationSeconds) {
-  const estimate = driveEstimate(camera);
+  const estimate = deterministicDriveEstimate(camera);
   if (!Number.isFinite(routeDistanceMeters) || !Number.isFinite(durationSeconds)) return estimate;
 
   const routeDistanceKm = Number((routeDistanceMeters / 1000).toFixed(1));
@@ -140,13 +141,83 @@ async function fetchOsrmEstimates(cameras) {
     });
   }
 
-  return cameras.map((camera) => estimates.get(camera.id) || driveEstimate(camera));
+  return cameras.map((camera) => estimates.get(camera.id) || deterministicDriveEstimate(camera));
 }
 
-async function driveEstimates(cameras) {
+const PRESERVE_METHOD_NOTE = "Preserves plausible build-time OSRM routes for unchanged cameras and uses deterministic distance estimates for new or changed cameras.";
+
+function previousDatabaseCanContainOsrm(previousDriveDb) {
+  return ["osrm-table", "preserved-osrm-with-deterministic-fallback"]
+    .includes(previousDriveDb?.method?.type);
+}
+
+function priorOsrmEstimateIsSane(previous, baseline) {
+  if (!previous || previous.source !== "osrm-table") return false;
+  if (previous.profile !== baseline.profile) return false;
+  if (!Number.isFinite(previous.distanceKm) || previous.distanceKm < 0) return false;
+  if (Math.abs(previous.distanceKm - baseline.distanceKm) > 0.100001) return false;
+  if (!Number.isFinite(previous.routeDistanceKm) || previous.routeDistanceKm <= 0) return false;
+  if (!Number.isFinite(previous.routeDistanceMeters) || previous.routeDistanceMeters <= 0) return false;
+  if (Math.abs((previous.routeDistanceMeters / 1000) - previous.routeDistanceKm) > 0.2) return false;
+  if (previous.routeDistanceKm < baseline.distanceKm * 0.9) return false;
+  if (!Number.isFinite(previous.durationSeconds) || previous.durationSeconds <= 0) return false;
+  if (!Number.isFinite(previous.estimatedMinutes) || previous.estimatedMinutes <= 0) return false;
+  if (typeof previous.label !== "string" || !previous.label.trim()) return false;
+  if (typeof previous.distanceLabel !== "string" || !previous.distanceLabel.trim()) return false;
+  return true;
+}
+
+/**
+ * Carry forward trustworthy OSRM results without contacting the routing API.
+ * The current camera list owns membership, ordering, coordinates, and IDs.
+ */
+export function buildPreservedDriveEstimates(cameras, previousDriveDb = {}) {
+  const previousById = new Map(
+    (Array.isArray(previousDriveDb?.estimates) ? previousDriveDb.estimates : [])
+      .filter((estimate) => typeof estimate?.meoSpotId === "string")
+      .map((estimate) => [estimate.meoSpotId, estimate])
+  );
+  const canPreserve = previousDatabaseCanContainOsrm(previousDriveDb);
+  let preservedCount = 0;
+
+  const estimates = cameras.map((camera) => {
+    const baseline = deterministicDriveEstimate(camera);
+    const candidateIds = [camera.id, ...predecessorMeoCameraIds(camera.id)];
+    const previous = candidateIds
+      .map((candidateId) => previousById.get(candidateId))
+      .find(Boolean);
+
+    if (!canPreserve || !priorOsrmEstimateIsSane(previous, baseline)) {
+      return baseline;
+    }
+
+    preservedCount += 1;
+    return {
+      ...previous,
+      meoSpotId: camera.id
+    };
+  });
+
+  return {
+    estimates,
+    method: {
+      type: "preserved-osrm-with-deterministic-fallback",
+      preservedCount,
+      fallbackCount: estimates.length - preservedCount,
+      totalCount: estimates.length,
+      note: PRESERVE_METHOD_NOTE
+    }
+  };
+}
+
+async function driveEstimates(cameras, { previousDriveDb = null } = {}) {
+  if (ROUTING_PROVIDER === "preserve") {
+    return buildPreservedDriveEstimates(cameras, previousDriveDb);
+  }
+
   if (ROUTING_PROVIDER !== "osrm") {
     return {
-      estimates: cameras.map(driveEstimate),
+      estimates: cameras.map(deterministicDriveEstimate),
       method: {
         type: "deterministic-distance-estimate",
         note: "Approximate planning chip, not live traffic. Profiles inflate straight-line distance by corridor and round to the nearest five minutes."
@@ -168,7 +239,10 @@ async function main() {
   const spots = cameraDb.cameras.map(normalizeMeoSpot);
   const routableCameras = cameraDb.cameras
     .filter((camera) => Number.isFinite(camera.lat) && Number.isFinite(camera.lon));
-  const { estimates, method } = await driveEstimates(routableCameras);
+  const previousDriveDb = ROUTING_PROVIDER === "preserve"
+    ? JSON.parse(await fs.readFile(DRIVE_DB_PATH, "utf8"))
+    : null;
+  const { estimates, method } = await driveEstimates(routableCameras, { previousDriveDb });
 
   const meoDb = {
     schemaVersion: 1,
@@ -195,7 +269,12 @@ async function main() {
   console.log(`Wrote ${spots.length} MEO spots and ${estimates.length} drive estimates.`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+const isDirectExecution = process.argv[1]
+  && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectExecution) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

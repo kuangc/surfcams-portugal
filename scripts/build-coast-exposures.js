@@ -2,7 +2,11 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  canonicalMeoCameraId,
+  predecessorMeoCameraIds
+} from "../src/meo-camera-identities.js";
 import { getConditionVectors } from "../src/surf-rating.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -47,6 +51,32 @@ async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, "utf8"));
 }
 
+function canonicalRowRank(sourceId, canonicalId) {
+  if (sourceId === canonicalId) return 0;
+  const predecessorIndex = predecessorMeoCameraIds(canonicalId).indexOf(sourceId);
+  return predecessorIndex === -1 ? Number.MAX_SAFE_INTEGER : predecessorIndex + 1;
+}
+
+export function canonicalizeCuratedExposureEntries(entries = []) {
+  const selectedById = new Map();
+
+  for (const entry of entries) {
+    const canonicalId = canonicalMeoCameraId(entry?.id);
+    if (!canonicalId) continue;
+
+    const rank = canonicalRowRank(entry.id, canonicalId);
+    const selected = selectedById.get(canonicalId);
+    if (selected && selected.rank <= rank) continue;
+
+    selectedById.set(canonicalId, {
+      rank,
+      entry: entry.id === canonicalId ? entry : { ...entry, id: canonicalId }
+    });
+  }
+
+  return [...selectedById.values()].map(({ entry }) => entry);
+}
+
 function normalizeBearing(value) {
   const bearing = Number(value);
   if (!Number.isFinite(bearing)) return null;
@@ -62,15 +92,15 @@ function compassFromBearing(bearing) {
 async function readExistingCuratedExposures() {
   try {
     const existingDb = await readJson(OUTPUT_PATH);
-    return new Map((existingDb.exposures || [])
-      .filter((entry) => (
+    return new Map(canonicalizeCuratedExposureEntries(
+      (existingDb.exposures || []).filter((entry) => (
         entry?.id
         && (
           entry.coastExposure?.reviewStatus === "curated"
           || entry.coastExposure?.source === "manual"
         )
       ))
-      .map((entry) => [entry.id, entry.coastExposure]));
+    ).map((entry) => [entry.id, entry.coastExposure]));
   } catch (error) {
     if (error.code === "ENOENT") return new Map();
     throw error;
@@ -270,7 +300,9 @@ async function main() {
   console.log(`Wrote ${finiteCount}/${exposures.length} coast exposure entries to data/coast-exposures.json.`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

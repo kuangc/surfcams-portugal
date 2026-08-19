@@ -1,6 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
+import { predecessorMeoCameraIds } from "../src/meo-camera-identities.js";
 import { buildDaylightByPort, normalizeGeomarExtremes } from "../src/tide-data.js";
 
 const CAMERA_DB_PATH = "data/beachcam-cameras.json";
@@ -34,13 +36,15 @@ const CAMERA_PORT_OVERRIDES = {
   "costa-da-caparica-riviera": "15",
   "fonte-da-telha": "15",
   "lagide-e-baia": "29",
-  "sao-juliao": "15",
-  "surfline-castelo": "15"
+  "sao-juliao": "15"
 };
 
 const REGION_PORT_OVERRIDES = {
+  acores: "211",
   almada: "15",
   cascais: "15",
+  ilhas: "112",
+  madeira: "112",
   peniche: "29",
   sesimbra: "28",
   setubal: "20",
@@ -138,8 +142,8 @@ function tideExtremesUrl(portId, startDate, endDate) {
   return url;
 }
 
-function stationFromLocationResponse(camera, response) {
-  if (!response?.portId) return null;
+export function stationFromLocationResponse(camera, response) {
+  if (!response?.portId) return manualStationForCamera(camera);
 
   return {
     cameraId: camera.id,
@@ -172,9 +176,30 @@ function stationFromPort(camera, port, source) {
   };
 }
 
-function manualStationForCamera(camera) {
-  const portId = CAMERA_PORT_OVERRIDES[camera.id] || REGION_PORT_OVERRIDES[camera.region];
+export function manualStationForCamera(camera) {
+  const regionKey = String(camera?.region || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+  const portId = CAMERA_PORT_OVERRIDES[camera.id] || REGION_PORT_OVERRIDES[regionKey];
   return stationFromPort(camera, MANUAL_PORTS[portId], "manual-geomar-port-fallback");
+}
+
+export function previousStationForCamera(camera, previousStations = {}) {
+  const previous = [camera.id, ...predecessorMeoCameraIds(camera.id)]
+    .map((id) => previousStations[id])
+    .find((station) => station?.portId);
+  if (!previous) return null;
+
+  return {
+    ...previous,
+    cameraId: camera.id,
+    cameraName: camera.name,
+    cameraRegion: camera.region,
+    cameraLat: camera.lat,
+    cameraLon: camera.lon
+  };
 }
 
 function nearestStationForCamera(camera, stations) {
@@ -227,15 +252,9 @@ async function resolveCameraStations(cameras, previousCache, startDate, endDate)
   const missing = [];
 
   cameras.forEach((camera) => {
-    const previous = previousStations[camera.id];
-    if (previous?.portId) {
-      cameraStations[camera.id] = {
-        ...previous,
-        cameraName: camera.name,
-        cameraRegion: camera.region,
-        cameraLat: camera.lat,
-        cameraLon: camera.lon
-      };
+    const previous = previousStationForCamera(camera, previousStations);
+    if (previous) {
+      cameraStations[camera.id] = previous;
     } else {
       missing.push(camera);
     }
@@ -350,7 +369,9 @@ async function main() {
   console.log(`Wrote ${TIDE_CACHE_PATH} for ${Object.keys(cameraStations).length} cameras and ${Object.keys(stations).length} gauges.`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

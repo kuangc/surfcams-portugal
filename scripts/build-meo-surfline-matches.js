@@ -3,6 +3,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  canonicalMeoCameraId,
+  predecessorMeoCameraIds
+} from "../src/meo-camera-identities.js";
 import { haversineKm } from "../src/spot-data.js";
 import { classifyGeneratedMatch } from "./lib/spot-matching.js";
 
@@ -123,6 +127,34 @@ export function isPreservedMatch(match) {
   return isCuratedMatch(match) || isRejectedMatch(match);
 }
 
+function canonicalRowRank(sourceId, canonicalId) {
+  if (sourceId === canonicalId) return 0;
+  const predecessorIndex = predecessorMeoCameraIds(canonicalId).indexOf(sourceId);
+  return predecessorIndex === -1 ? Number.MAX_SAFE_INTEGER : predecessorIndex + 1;
+}
+
+export function canonicalizePreservedMatches(matches = []) {
+  const selectedByMeoId = new Map();
+
+  for (const match of matches) {
+    const canonicalId = canonicalMeoCameraId(match?.meoSpotId);
+    if (!canonicalId) continue;
+
+    const rank = canonicalRowRank(match.meoSpotId, canonicalId);
+    const selected = selectedByMeoId.get(canonicalId);
+    if (selected && selected.rank <= rank) continue;
+
+    selectedByMeoId.set(canonicalId, {
+      rank,
+      match: match.meoSpotId === canonicalId
+        ? match
+        : { ...match, meoSpotId: canonicalId }
+    });
+  }
+
+  return [...selectedByMeoId.values()].map(({ match }) => match);
+}
+
 // Shared by curated and rejected rows: both are terminal human decisions that must
 // survive regeneration verbatim. Only distancesKm/matchEvidence are re-derived (in case
 // the underlying spot databases shifted); source/confidence/reviewStatus are `||` fallbacks
@@ -206,8 +238,9 @@ async function main() {
   const surflineById = new Map((surflineDb.spots || []).map((spot) => [spot.id, spot]));
   // Curated (human-accepted) and rejected (human-declined) rows are both preserved verbatim
   // across regeneration; only the auto-generation pass is skipped for their MEO spot.
-  const preservedByMeoId = new Map((existingMappingDb.matches || [])
-    .filter(isPreservedMatch)
+  const preservedByMeoId = new Map(canonicalizePreservedMatches(
+    (existingMappingDb.matches || []).filter(isPreservedMatch)
+  )
     .map((match) => [match.meoSpotId, enrichPreservedMatch(match, meoById, surflineById)]));
 
   const matches = [];
