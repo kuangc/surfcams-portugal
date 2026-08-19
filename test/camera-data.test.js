@@ -21,57 +21,35 @@ test("camera database contains the expected indexed live feeds", () => {
   assert.equal(liveCameras.every((camera) => camera.hasStream), true);
 });
 
-test("loadCameraDb merges private stream overrides into embedded cameras", async () => {
-  const streamUrl = "https://cams.surfline.example/castelo/playlist.m3u8";
+test("loadCameraDb returns immutable provider data without consulting stream overrides", async () => {
   const documentRef = {
     querySelector(selector) {
       return selector === "#embeddedCameraDb" ? { textContent: JSON.stringify(db) } : null;
     }
   };
-  const localStreamOverrides = {
-    "surfline-castelo": streamUrl,
-    __rawSurflineFeeds: [{
-      id: "pt-castelo",
-      streamUrl: "https://hls.example.test/pt-castelo.m3u8"
-    }]
-  };
-  const fetcher = async (url) => {
-    assert.equal(url, "./data/local-stream-overrides.json");
+  let fetchCalls = 0;
+  const fetcher = async () => {
+    fetchCalls += 1;
     return {
       ok: true,
-      json: async () => localStreamOverrides
+      json: async () => ({
+        "surfline-castelo": "https://hls.cdn-surfline.com/castelo/playlist.m3u8",
+        __rawSurflineFeeds: [{
+          id: "pt-castelo",
+          streamUrl: "https://hls.cdn-surfline.com/pt-castelo/playlist.m3u8"
+        }]
+      })
     };
   };
 
   const loadedDb = await loadCameraDb({ documentRef, fetcher });
   const castelo = loadedDb.cameras.find((camera) => camera.id === "surfline-castelo");
 
-  assert.equal(castelo.streamUrl, streamUrl);
-  assert.equal(castelo.hasStream, true);
-  assert.equal(availableCameras(loadedDb).some((camera) => camera.id === "surfline-castelo"), true);
-  assert.deepEqual(loadedDb.localStreamOverrides, localStreamOverrides);
-});
-
-test("loadCameraDb treats missing private stream overrides as optional", async () => {
-  const documentRef = {
-    querySelector(selector) {
-      return selector === "#embeddedCameraDb" ? { textContent: JSON.stringify(db) } : null;
-    }
-  };
-  const fetcher = async () => ({
-    ok: false,
-    status: 404,
-    json: async () => {
-      throw new Error("not found");
-    }
-  });
-
-  const loadedDb = await loadCameraDb({ documentRef, fetcher });
-  const castelo = loadedDb.cameras.find((camera) => camera.id === "surfline-castelo");
-
+  assert.equal(fetchCalls, 0);
   assert.equal(castelo.streamUrl, "");
   assert.equal(castelo.hasStream, false);
-  assert.deepEqual(loadedDb.localStreamOverrides, {});
+  assert.equal(Object.hasOwn(loadedDb, "localStreamOverrides"), false);
+  assert.deepEqual(loadedDb, db);
 });
 
 test("default favorites exist and only live-source favorites require streams", () => {
@@ -121,7 +99,7 @@ test("mergePromotedSpots tolerates missing promotedDb", () => {
   assert.equal(mergePromotedSpots(cameraDb, null).cameras.length, 1);
 });
 
-test("mergePromotedSpots carries forward stream override fields on collision", () => {
+test("mergePromotedSpots cannot carry a legacy playback override into a promoted subject", () => {
   const cameraDb = { cameras: [
     { id: "surfline-castelo", name: "old embedded", hasStream: true, streamUrl: "https://hls.example/castelo.m3u8",
       image: "https://img.example/castelo.jpg", streamOverride: true, livecamId: "", videoId: "" }
@@ -132,10 +110,9 @@ test("mergePromotedSpots carries forward stream override fields on collision", (
   const merged = mergePromotedSpots(cameraDb, promotedDb).cameras.find((c) => c.id === "surfline-castelo");
   assert.equal(merged.promoted, true);
   assert.equal(merged.name, "Castelo");
-  assert.equal(merged.streamUrl, "https://hls.example/castelo.m3u8");
-  assert.equal(merged.hasStream, true);
-  assert.equal(merged.image, "https://img.example/castelo.jpg");
-  assert.equal(merged.streamOverride, true);
+  assert.equal(merged.streamUrl ?? "", "");
+  assert.equal(merged.hasStream, false);
+  assert.equal(Object.hasOwn(merged, "streamOverride"), false);
 });
 
 test("mergePromotedSpots leaves unresolved promoted records streamless for feed policy", () => {

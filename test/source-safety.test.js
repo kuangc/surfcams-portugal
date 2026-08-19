@@ -23,6 +23,8 @@ const browserSurflineCacheSource = fs.existsSync("scripts/cache-surfline-browser
 const cacheSurflineSource = fs.readFileSync("scripts/cache-surfline-pages.js", "utf8");
 const surflineRefreshWorkflowSource = fs.readFileSync(".github/workflows/update-surfline-conditions.yml", "utf8");
 const conditionsFreshnessSource = fs.readFileSync("scripts/check-conditions-freshness.js", "utf8");
+const feedPolicySource = fs.readFileSync("src/feed-policy.js", "utf8");
+const cameraDataSource = fs.readFileSync("src/camera-data.js", "utf8");
 
 test("main UI avoids selector interpolation from camera IDs", () => {
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-row=/);
@@ -136,9 +138,10 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /createFavoriteUndo/);
   assert.doesNotMatch(mainSource, /favoriteManagerCameras/);
   assert.doesNotMatch(mainSource, /manageSpotCameras/);
-  assert.match(mainSource, /resolveFeedBackedCameras/);
-  assert.match(mainSource, /const \{ localStreamOverrides = \{\}, \.\.\.baseCameraDb \} = cameraDb/);
-  assert.match(mainSource, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(\s*resolveFeedBackedCameras\(/s);
+  assert.match(mainSource, /resolveMeoPlaybackCameras/);
+  assert.match(mainSource, /const nativeCameraDb\s*=\s*applySpotMetadataToCameraDb\(cameraDb, spotData\)/);
+  assert.match(mainSource, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(\s*resolveMeoPlaybackCameras\(nativeCameraDb\)\s*\)/s);
+  assert.doesNotMatch(mainSource, /localStreamOverrides/);
   assert.doesNotMatch(mainSource, /state\.db\?\.cameras\s*\|\|\s*state\.cameras/);
   assert.match(mainSource, /sanitizeFavoriteIds\(state\.cameras,\s*loadFavoriteIds\(state\.cameras\)\)/);
   assert.match(mainSource, /createFavoriteToggle/);
@@ -156,6 +159,11 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.doesNotMatch(mainSource, /Showing favorites only\. Empty slots are not auto-filled\./);
   assert.match(mainSource, /renderTodayRecommendations/);
   assert.doesNotMatch(mainSource, /autoFill/i);
+});
+
+test("playback source code has no raw Surfline registry or stream-override bypass", () => {
+  assert.doesNotMatch(feedPolicySource, /rawSurfline|surfline-raw|camstills\.cdn-surfline/i);
+  assert.doesNotMatch(cameraDataSource, /localStreamOverrides|streamOverride|LOCAL_STREAM_OVERRIDES_URL/);
 });
 
 test("Monitor gallery scopes preview streams to one viewport observer lifecycle", () => {

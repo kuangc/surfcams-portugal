@@ -4,7 +4,7 @@ import {
   mergePromotedSpots,
   sanitizeFavoriteIds
 } from "./camera-data.js";
-import { resolveFeedBackedCameras } from "./feed-policy.js";
+import { resolveMeoPlaybackCameras } from "./feed-policy.js";
 import {
   camerasForInitialBounds,
   camerasInBounds,
@@ -2896,21 +2896,17 @@ async function init() {
     loadTideData().catch(() => emptyTideData())
   ]);
 
-  const { localStreamOverrides = {}, ...baseCameraDb } = cameraDb;
   state.spotData = spotData;
+  const nativeCameraDb = applySpotMetadataToCameraDb(cameraDb, spotData);
   state.db = mergeAdviceGuideSubjects(
     mergePromotedSpots(
-      applySpotMetadataToCameraDb(baseCameraDb, spotData),
+      nativeCameraDb,
       spotData.promotedDb
     ),
     spotData.advice
   );
   state.tideData = tideData;
-  state.cameras = sortCamerasByLatitudeDescending(resolveFeedBackedCameras(
-    state.db,
-    spotData,
-    localStreamOverrides
-  ));
+  state.cameras = sortCamerasByLatitudeDescending(resolveMeoPlaybackCameras(nativeCameraDb));
   state.favoriteIds = sanitizeFavoriteIds(state.cameras, loadFavoriteIds(state.cameras));
   state.preferences = loadSurfPreferences();
   state.todayForecastStore = createTodayForecastStore({

@@ -7,7 +7,7 @@ import {
   mergePromotedSpots,
   sanitizeFavoriteIds
 } from "../src/camera-data.js";
-import { resolveFeedBackedCameras } from "../src/feed-policy.js";
+import { resolveMeoPlaybackCameras } from "../src/feed-policy.js";
 import { formatSpotPlaybook, normalizeSpotAdviceRuntime } from "../src/spot-advice.js";
 import { normalizeSpotData } from "../src/spot-data.js";
 
@@ -231,7 +231,7 @@ test("all 44 selected advice subjects are inspectable after the real app merges"
 
 test("guide-only subjects remain canonical but never enter the feed-backed roster", () => {
   const merged = mergeActualAppSubjects();
-  const resolved = resolveFeedBackedCameras(merged, spotData, {});
+  const resolved = resolveMeoPlaybackCameras(merged);
   const guideOnlyIds = ["surfline-cave", "surfline-praia-da-ursa"];
 
   for (const id of guideOnlyIds) {
@@ -248,8 +248,9 @@ test("guide-only subjects remain canonical but never enter the feed-backed roste
 test("main keeps guide research canonical and resolves the user-facing roster afterward", () => {
   const source = fs.readFileSync("src/main.js", "utf8");
 
-  assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*applySpotMetadataToCameraDb\(baseCameraDb, spotData\),\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
-  assert.match(source, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(resolveFeedBackedCameras\(\s*state\.db,\s*spotData,\s*localStreamOverrides\s*\)\)/s);
+  assert.match(source, /const nativeCameraDb\s*=\s*applySpotMetadataToCameraDb\(cameraDb, spotData\)/);
+  assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*nativeCameraDb,\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
+  assert.match(source, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(resolveMeoPlaybackCameras\(nativeCameraDb\)\)/s);
   assert.match(source, /sanitizeFavoriteIds\(state\.cameras, loadFavoriteIds\(state\.cameras\)\)/);
   assert.match(source, /state\.explorePlayer\.play\(camera\)/);
   assert.doesNotMatch(source, /routeCameraPlayback/);

@@ -3,296 +3,212 @@ import fs from "node:fs";
 import test from "node:test";
 
 import { mergeAdviceGuideSubjects, mergePromotedSpots } from "../src/camera-data.js";
-import {
-  extractSurflineCameraId,
-  normalizeRawSurflineFeeds,
-  resolveFeedBackedCameras
-} from "../src/feed-policy.js";
+import { resolveMeoPlaybackCameras } from "../src/feed-policy.js";
 import { normalizeSpotAdviceRuntime } from "../src/spot-advice.js";
 
-function spotData(byCameraId = {}) {
+const readJson = (path) => JSON.parse(fs.readFileSync(path, "utf8"));
+
+function isProviderMeoStream(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:"
+      && url.hostname === "video-auth1.iol.pt"
+      && !url.username
+      && !url.password
+      && !url.port;
+  } catch {
+    return false;
+  }
+}
+
+function nativeCamera(overrides = {}) {
   return {
-    advice: normalizeSpotAdviceRuntime({
-      subjects: {
-        "surfline-alpha": { id: "surfline-alpha", name: "Alpha" },
-        "surfline-no-feed": { id: "surfline-no-feed", name: "No feed" }
-      },
-      identityReport: { byCameraId }
-    })
+    id: "meo-alpha",
+    name: "  Alpha   Beach  ",
+    location: "  CASCAIS  ",
+    region: "  lisboa  ",
+    lat: 38.7,
+    lon: -9.4,
+    image: "  http://beachcam.example/alpha.jpg  ",
+    streamUrl: "  https://video-auth1.iol.pt/beachcam/alpha/playlist.m3u8  ",
+    livecamId: " 42 ",
+    hasStream: true,
+    surfMetadata: { surflineSpotId: "surfline-alpha" },
+    ...overrides
   };
 }
 
-function registry(rows) {
-  return { __rawSurflineFeeds: rows };
+function distinctNativeCamera(id, overrides = {}) {
+  return nativeCamera({
+    id,
+    livecamId: `feed-${id}`,
+    streamUrl: `https://video-auth1.iol.pt/beachcam/${id}/playlist.m3u8`,
+    ...overrides
+  });
 }
 
-const RAW_MATCHES = new Map([
-  ["surfline-nazare", "pt-nazareov"],
-  ["surfline-baleal", "pt-baleal"],
-  ["surfline-lagide", "pt-lagide"],
-  ["surfline-cantinho-da-baia", "pt-baiaoverview"],
-  ["surfline-supertubos", "pt-supertubosoverview"],
-  ["surfline-ribeira-d-ilhas", "pt-ribeiradeilhas"],
-  ["surfline-reef", "pt-reef"],
-  ["surfline-pedra-branca", "pt-pedrabranca"],
-  ["surfline-praia-do-sul", "pt-praiadosulericeira"],
-  ["surfline-foz-do-lizandro", "pt-fozdolizandro"],
-  ["surfline-praia-pequena", "pt-praiapequena"],
-  ["surfline-praia-grande", "pt-praiagrande"],
-  ["surfline-praia-do-guincho", "pt-guincho"],
-  ["surfline-paco-de-arcos", "pt-pacodearcos"],
-  ["surfline-santo-amaro", "pt-santoamaro"],
-  ["surfline-carcavelos", "pt-carcavelosov"],
-  ["surfline-cova-do-vapor", "pt-covadovapor"],
-  ["surfline-sao-joao-da-caparica", "pt-saojoaocaparica"],
-  ["surfline-praia-do-barbas", "pt-barbas"],
-  ["surfline-costa-da-caparica", "pt-costadacaparicaoverview"],
-  ["surfline-castelo", "pt-castelo"],
-  ["surfline-fonte-da-telha", "pt-fontedatelhafront"]
-]);
+test("MEO playback keeps provider-native identity and ignores every Surfline or override path", () => {
+  const trusted = nativeCamera();
+  const database = { cameras: [
+    trusted,
+    distinctNativeCamera("promoted", { promoted: true, linkedCamId: trusted.id }),
+    distinctNativeCamera("guide", { adviceGuideOnly: true }),
+    distinctNativeCamera("provider-surfline", { provider: "Surfline" }),
+    distinctNativeCamera("promoted-provider", { provider: "surfline-promoted" }),
+    distinctNativeCamera("top-level-override", {
+      streamOverride: true,
+      streamUrl: "https://hls.cdn-surfline.com/override/playlist.m3u8"
+    }),
+    distinctNativeCamera("reported-offline", { hasStream: false }),
+    distinctNativeCamera("streamless", { streamUrl: "" }),
+    distinctNativeCamera("insecure-stream", { streamUrl: "http://video-auth1.iol.pt/beachcam/insecure/playlist.m3u8" }),
+    distinctNativeCamera("unlabeled-surfline-stream", { streamUrl: "https://hls.cdn-surfline.com/raw/playlist.m3u8" }),
+    distinctNativeCamera("lookalike-meo-host", { streamUrl: "https://video-auth1.iol.pt.evil.test/live.m3u8" }),
+    distinctNativeCamera("credentialed-meo-stream", { streamUrl: "https://user@video-auth1.iol.pt/live.m3u8" }),
+    distinctNativeCamera("ported-meo-stream", { streamUrl: "https://video-auth1.iol.pt:444/live.m3u8" }),
+    distinctNativeCamera("bad-id/segment"),
+    distinctNativeCamera("blank-name", { name: "  " }),
+    distinctNativeCamera("blank-location", { location: "  " }),
+    distinctNativeCamera("blank-region", { region: "  " }),
+    distinctNativeCamera("bad-lat", { lat: 91 }),
+    distinctNativeCamera("bad-lon", { lon: -181 })
+  ] };
+  const before = structuredClone(database);
 
-test("normalizeRawSurflineFeeds accepts the first valid HTTPS entry per safe id", () => {
-  const feeds = normalizeRawSurflineFeeds({
-    __rawSurflineFeeds: [
-      { id: "pt-good", streamUrl: "http://example.test/rejected.m3u8" },
-      {
-        id: "pt-good",
-        streamUrl: "https://hls.example.test/good.m3u8",
-        image: "https://images.example.test/good.jpg"
-      },
-      { id: "pt-good", streamUrl: "https://hls.example.test/duplicate.m3u8" },
-      { id: "__meta", streamUrl: "https://hls.example.test/meta.m3u8" },
-      { id: "bad/id", streamUrl: "https://hls.example.test/bad.m3u8" },
-      {
-        id: "pt-bad-image",
-        streamUrl: "https://hls.example.test/bad-image.m3u8",
-        image: "javascript:alert(1)"
-      }
-    ],
-    "pt-top-level": { streamUrl: "https://hls.example.test/top-level.m3u8" }
+  // A legacy raw registry is deliberately passed as a second argument. The
+  // MEO-only API must not inspect it or substitute any provider-owned fields.
+  const resolved = resolveMeoPlaybackCameras(database, {
+    "meo-alpha": "https://hls.cdn-surfline.com/top-level/playlist.m3u8",
+    __rawSurflineFeeds: [{
+      id: "pt-alpha",
+      streamUrl: "https://hls.cdn-surfline.com/raw/playlist.m3u8"
+    }]
   });
 
-  assert.deepEqual([...feeds], [["pt-good", {
-    id: "pt-good",
-    streamUrl: "https://hls.example.test/good.m3u8",
-    image: "https://images.example.test/good.jpg"
-  }]]);
+  assert.deepEqual(database, before);
+  assert.deepEqual(resolved, [{
+    ...trusted,
+    name: "Alpha Beach",
+    location: "CASCAIS",
+    region: "lisboa",
+    image: "http://beachcam.example/alpha.jpg",
+    streamUrl: "https://video-auth1.iol.pt/beachcam/alpha/playlist.m3u8",
+    livecamId: "42",
+    streamSource: "meo",
+    feedCameraId: "42",
+    hasStream: true
+  }]);
 });
 
-test("extractSurflineCameraId accepts only the known still host and safe final directory", () => {
-  assert.equal(
-    extractSurflineCameraId("https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"),
-    "pt-carcavelosov"
-  );
-  assert.equal(
-    extractSurflineCameraId("https://example.test/eu-west-1/pt-carcavelosov/latest_small.jpg"),
-    null
-  );
-  assert.equal(
-    extractSurflineCameraId("http://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"),
-    null
-  );
-  assert.equal(
-    extractSurflineCameraId("https://user@camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"),
-    null
-  );
-  assert.equal(
-    extractSurflineCameraId("https://camstills.cdn-surfline.com:444/eu-west-1/pt-carcavelosov/latest_small.jpg"),
-    null
-  );
-  assert.equal(
-    extractSurflineCameraId("https://camstills.cdn-surfline.com/eu-west-1/bad%2Fid/latest_small.jpg"),
-    null
-  );
+test("MEO playback emits one row per logical id and physical feed id or URL", () => {
+  const first = nativeCamera({ id: "first", livecamId: "101" });
+  const resolved = resolveMeoPlaybackCameras({ cameras: [
+    first,
+    nativeCamera({ id: "duplicate-id", livecamId: "101", streamUrl: "https://video-auth1.iol.pt/beachcam/other/playlist.m3u8" }),
+    nativeCamera({ id: "duplicate-url", livecamId: "102", streamUrl: first.streamUrl }),
+    nativeCamera({ id: "first", livecamId: "103", streamUrl: "https://video-auth1.iol.pt/beachcam/id-duplicate/playlist.m3u8" }),
+    nativeCamera({ id: "fallback-feed-id", livecamId: "", streamUrl: "https://video-auth1.iol.pt/beachcam/unique/playlist.m3u8" })
+  ] });
+
+  assert.deepEqual(resolved.map(({ id, feedCameraId }) => ({ id, feedCameraId })), [
+    { id: "first", feedCameraId: "101" },
+    { id: "fallback-feed-id", feedCameraId: "fallback-feed-id" }
+  ]);
+  assert.equal(new Set(resolved.map((camera) => camera.id)).size, resolved.length);
+  assert.equal(new Set(resolved.map((camera) => camera.feedCameraId)).size, resolved.length);
+  assert.equal(new Set(resolved.map((camera) => camera.streamUrl)).size, resolved.length);
 });
 
-test("raw Surfline feed wins for promoted and trusted native representations", () => {
-  const cameras = [
-    {
-      id: "meo-alpha",
-      streamUrl: "https://meo.example/alpha.m3u8",
-      image: "https://meo.example/alpha.jpg",
-      hasStream: true,
-      livecamId: "42"
-    },
-    {
-      id: "surfline-alpha",
-      promoted: true,
-      linkedCamId: "meo-alpha",
-      surflineCams: [
-        { stillUrl: "https://bad.example/eu-west-1/pt-missing/latest_small.jpg" },
-        { stillUrl: "https://camstills.cdn-surfline.com/eu-west-1/pt-alpha/latest_small.jpg" }
-      ]
-    }
-  ];
-  const resolved = resolveFeedBackedCameras(
-    { cameras },
-    spotData({ "meo-alpha": "surfline-alpha" }),
-    registry([{
-      id: "pt-alpha",
-      streamUrl: "https://surfline.example/alpha.m3u8",
-      image: "https://surfline.example/alpha.jpg"
-    }])
-  );
+test("the real playback roster is exactly the unique provider-native playable set", () => {
+  const cameraDb = readJson("data/beachcam-cameras.json");
+  const promotedDb = readJson("data/promoted-spots.json");
+  const resolved = resolveMeoPlaybackCameras(cameraDb);
+  const expectedNative = cameraDb.cameras.filter((camera) => (
+    camera.hasStream === true
+    && isProviderMeoStream(camera.streamUrl)
+    && !camera.promoted
+    && !camera.adviceGuideOnly
+    && !camera.streamOverride
+    && !String(camera.provider || "").toLowerCase().startsWith("surfline")
+  ));
 
   assert.deepEqual(
-    resolved.map(({ id, streamSource, feedCameraId, streamUrl }) => ({
-      id,
-      streamSource,
-      feedCameraId,
-      streamUrl
-    })),
-    [
-      {
-        id: "meo-alpha",
-        streamSource: "surfline-raw",
-        feedCameraId: "pt-alpha",
-        streamUrl: "https://surfline.example/alpha.m3u8"
-      },
-      {
-        id: "surfline-alpha",
-        streamSource: "surfline-raw",
-        feedCameraId: "pt-alpha",
-        streamUrl: "https://surfline.example/alpha.m3u8"
-      }
-    ]
+    new Set(resolved.map((camera) => camera.id)),
+    new Set(expectedNative.map((camera) => camera.id))
   );
-  assert.equal(resolved.every((camera) => camera.hasStream), true);
-  assert.equal(resolved.every((camera) => camera.image === "https://surfline.example/alpha.jpg"), true);
-});
+  assert.equal(resolved.length, expectedNative.length);
+  assert.equal(new Set(resolved.map((camera) => camera.feedCameraId)).size, resolved.length);
+  assert.equal(new Set(resolved.map((camera) => camera.streamUrl)).size, resolved.length);
+  assert.equal(resolved.every((camera) => camera.streamSource === "meo"), true);
 
-test("the first provider-ordered matching raw camera wins", () => {
-  const resolved = resolveFeedBackedCameras({ cameras: [{
-    id: "surfline-alpha",
-    promoted: true,
-    linkedCamId: null,
-    surflineCams: [
-      { stillUrl: "https://camstills.cdn-surfline.com/eu-west-1/pt-first/latest_small.jpg" },
-      { stillUrl: "https://camstills.cdn-surfline.com/eu-west-1/pt-second/latest_small.jpg" }
-    ]
-  }] }, spotData(), registry([
-    { id: "pt-first", streamUrl: "https://surfline.example/first.m3u8" },
-    { id: "pt-second", streamUrl: "https://surfline.example/second.m3u8" }
-  ]));
+  const expectedById = new Map(cameraDb.cameras.map((camera) => [camera.id, camera]));
+  const resolvedById = new Map(resolved.map((camera) => [camera.id, camera]));
+  for (const id of [
+    "costa-da-caparica-riviera",
+    "santo-amaro",
+    "praia-da-nazare",
+    "lagide-e-baia",
+    "costa-da-caparica-cds"
+  ]) {
+    const source = expectedById.get(id);
+    const playback = resolvedById.get(id);
+    assert.ok(playback, `${id} remains playable`);
+    assert.deepEqual({
+      id: playback.id,
+      name: playback.name,
+      location: playback.location,
+      lat: playback.lat,
+      lon: playback.lon,
+      image: playback.image,
+      streamUrl: playback.streamUrl,
+      feedCameraId: playback.feedCameraId
+    }, {
+      id: source.id,
+      name: source.name.trim().replace(/\s+/g, " "),
+      location: source.location.trim().replace(/\s+/g, " "),
+      lat: source.lat,
+      lon: source.lon,
+      image: source.image.trim(),
+      streamUrl: source.streamUrl.trim(),
+      feedCameraId: source.livecamId.trim()
+    });
+  }
 
-  assert.equal(resolved[0].feedCameraId, "pt-first");
-  assert.equal(resolved[0].streamUrl, "https://surfline.example/first.m3u8");
-});
-
-test("promoted subjects use only exact linked MEO fallback and never stretch cameras", () => {
-  const resolved = resolveFeedBackedCameras({ cameras: [
-    {
-      id: "meo-alpha",
-      streamUrl: "https://meo.example/alpha.m3u8",
-      image: "https://meo.example/alpha.jpg",
-      hasStream: true,
-      livecamId: "42"
-    },
-    { id: "stretch", streamUrl: "https://meo.example/stretch.m3u8", hasStream: true },
-    {
-      id: "surfline-alpha",
-      promoted: true,
-      linkedCamId: "meo-alpha",
-      stretchCamIds: ["stretch"],
-      surflineCams: []
-    },
-    {
-      id: "surfline-no-feed",
-      promoted: true,
-      linkedCamId: null,
-      stretchCamIds: ["stretch"],
-      surflineCams: []
-    }
-  ] }, spotData({ "meo-alpha": "surfline-alpha" }), registry([]));
-
-  const alpha = resolved.find((camera) => camera.id === "surfline-alpha");
-  assert.equal(alpha.streamSource, "meo");
-  assert.equal(alpha.feedCameraId, "42");
-  assert.equal(alpha.streamUrl, "https://meo.example/alpha.m3u8");
-  assert.equal(alpha.image, "https://meo.example/alpha.jpg");
-  assert.equal(resolved.some((camera) => camera.id === "surfline-no-feed"), false);
-  assert.equal(resolved.some((camera) => camera.id === "stretch"), true);
-});
-
-test("an unrelated native MEO camera retains its stream and missing feeds are excluded", () => {
-  const resolved = resolveFeedBackedCameras({ cameras: [
-    { id: "native", streamUrl: "https://meo.example/native.m3u8", hasStream: true },
-    { id: "broken", streamUrl: "", hasStream: false },
-    {
-      id: "surfline-orphan",
-      provider: "surfline",
-      streamUrl: "https://legacy.example/orphan.m3u8",
-      hasStream: true
-    }
-  ] }, spotData(), registry([]));
-
+  const representativeNativeIds = new Set([
+    "costa-da-caparica-riviera",
+    "santo-amaro",
+    "praia-da-nazare",
+    "lagide-e-baia",
+    "costa-da-caparica-cds"
+  ]);
+  const aliases = promotedDb.promoted.filter((row) => representativeNativeIds.has(row.linkedCamId));
+  assert.ok(aliases.length > 0, "fixture still exercises promoted Surfline aliases");
   assert.deepEqual(
-    resolved.map(({ id, streamSource, feedCameraId }) => ({ id, streamSource, feedCameraId })),
-    [{ id: "native", streamSource: "meo", feedCameraId: "native" }]
+    aliases.map((row) => row.id).filter((id) => resolvedById.has(id)),
+    []
   );
+  assert.equal(resolvedById.get("costa-da-caparica-riviera").name, "Costa de Caparica | Riviera");
+  assert.equal(resolvedById.get("santo-amaro").name, "Santo Amaro");
+  assert.equal(resolvedById.get("praia-da-nazare").name, "Nazaré | Praia da Vila");
+  assert.equal(resolvedById.get("lagide-e-baia").name, "Peniche | Lagide | Cantinho da baía");
+  assert.equal(resolvedById.get("costa-da-caparica-cds").name, "Costa de Caparica | CDS SUL");
 });
 
-test("the real 44-subject fixture resolves to the approved provider partition", () => {
-  const cameraDb = JSON.parse(fs.readFileSync("data/beachcam-cameras.json", "utf8"));
-  const promotedDb = JSON.parse(fs.readFileSync("data/promoted-spots.json", "utf8"));
-  const adviceDb = JSON.parse(fs.readFileSync("data/spot-advice-resolved.json", "utf8"));
-  const advice = normalizeSpotAdviceRuntime(adviceDb);
+test("Surfline advice subjects remain canonical but cannot become playback identities", () => {
+  const cameraDb = readJson("data/beachcam-cameras.json");
+  const promotedDb = readJson("data/promoted-spots.json");
+  const advice = normalizeSpotAdviceRuntime(readJson("data/spot-advice-resolved.json"));
   const canonicalDb = mergeAdviceGuideSubjects(
     mergePromotedSpots(cameraDb, promotedDb),
     advice
   );
-  const localOverrides = registry([...RAW_MATCHES.values()].map((id) => ({
-    id,
-    streamUrl: `https://hls.example.test/${id}.m3u8`,
-    image: `https://images.example.test/${id}.jpg`
-  })));
+  const canonicalIds = new Set(canonicalDb.cameras.map((camera) => camera.id));
+  const playbackIds = new Set(resolveMeoPlaybackCameras(cameraDb).map((camera) => camera.id));
 
-  const resolved = resolveFeedBackedCameras(canonicalDb, { advice }, localOverrides);
-  const resolvedById = new Map(resolved.map((camera) => [camera.id, camera]));
-  const promotedIds = new Set(promotedDb.promoted.map((camera) => camera.id));
-  const resolvedPromoted = resolved.filter((camera) => promotedIds.has(camera.id));
-  const surflineRaw = resolvedPromoted
-    .filter((camera) => camera.streamSource === "surfline-raw")
-    .map((camera) => camera.id);
-  const meo = resolvedPromoted
-    .filter((camera) => camera.streamSource === "meo")
-    .map((camera) => camera.id);
-  const excludedPromoted = promotedDb.promoted
-    .map((camera) => camera.id)
-    .filter((id) => !resolvedById.has(id));
-
-  assert.deepEqual(surflineRaw, [...RAW_MATCHES.keys()]);
-  assert.deepEqual(meo, [
-    "surfline-consolacao",
-    "surfline-santa-cruz",
-    "surfline-matadouro",
-    "surfline-sao-juliao",
-    "surfline-praia-das-macas",
-    "surfline-praia-da-adraga",
-    "surfline-sao-pedro-do-estoril",
-    "surfline-parede",
-    "surfline-praia-da-laje",
-    "surfline-praia-de-torre",
-    "surfline-praia-da-rainha",
-    "surfline-lagoa-de-albufeira",
-    "surfline-bicas",
-    "surfline-sesimbra"
-  ]);
-  assert.deepEqual(excludedPromoted, [
-    "surfline-praia-de-caxias",
-    "surfline-marcelino",
-    "surfline-praia-da-saude",
-    "surfline-praia-da-cornelia",
-    "surfline-praia-do-pescador",
-    "surfline-praia-do-rei"
-  ]);
-  assert.equal(resolvedById.has("surfline-cave"), false);
-  assert.equal(resolvedById.has("surfline-praia-da-ursa"), false);
-  assert.equal(advice.subjectsById.size, 44);
-  assert.deepEqual(
-    advice.identityReport.selectedSurflineIds.filter((id) => (
-      !canonicalDb.cameras.some((camera) => camera.id === id)
-    )),
-    []
-  );
+  for (const id of advice.identityReport.selectedSurflineIds) {
+    assert.equal(canonicalIds.has(id), true, `${id} remains available to Surfline intelligence`);
+  }
+  assert.equal([...playbackIds].some((id) => id.startsWith("surfline-")), false);
+  assert.equal(playbackIds.has("surfline-cave"), false);
+  assert.equal(playbackIds.has("surfline-praia-da-ursa"), false);
 });

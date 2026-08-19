@@ -71,7 +71,7 @@ test("recommendation roster keeps one live representative per researched break a
   assert.deepEqual(result.map((camera) => camera.id), ["meo-lagide"]);
 });
 
-test("recommendation roster prefers raw Surfline over MEO and excludes report-only records", () => {
+test("recommendation roster accepts only MEO playback and excludes raw or report-only records", () => {
   const cameras = [
     {
       id: "meo-ribeira",
@@ -97,7 +97,7 @@ test("recommendation roster prefers raw Surfline over MEO and excludes report-on
       isFavorite: () => false
     });
 
-    assert.deepEqual(result.map((camera) => camera.id), ["surfline-ribeira"]);
+    assert.deepEqual(result.map((camera) => camera.id), ["meo-ribeira"]);
   }
 });
 

@@ -64,8 +64,7 @@ export function formatLeaveCall(window, driveMinutes, now = Date.now()) {
 }
 
 function cameraUtility(camera) {
-  if (!camera?.streamUrl || !camera?.hasStream) return 0;
-  return camera.streamSource === "surfline-raw" ? 2 : 1;
+  return camera?.streamSource === "meo" && camera.streamUrl && camera.hasStream ? 1 : 0;
 }
 
 export function selectRecommendationCameras(cameras, {

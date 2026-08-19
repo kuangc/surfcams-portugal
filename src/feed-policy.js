@@ -1,135 +1,118 @@
-import { adviceSubjectIdFor } from "./spot-advice.js";
-
-const RAW_REGISTRY_KEY = "__rawSurflineFeeds";
 const RESERVED_IDS = new Set(["__meta", "__proto__", "constructor", "prototype"]);
 const SAFE_CAMERA_ID = /^[a-z0-9][a-z0-9_-]{0,127}$/i;
-const SURFLINE_STILL_HOSTS = new Set(["camstills.cdn-surfline.com"]);
+const MEO_STREAM_HOST = "video-auth1.iol.pt";
 
-function safeHttpsUrl(value) {
+function normalizeText(value) {
+  return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
+}
+
+function httpsStreamUrl(value) {
   if (typeof value !== "string") return null;
-
+  const normalized = value.trim();
   try {
-    const url = new URL(value);
-    if (url.protocol !== "https:" || url.username || url.password) return null;
-    return url.href;
+    const url = new URL(normalized);
+    return url.protocol === "https:"
+      && url.hostname === MEO_STREAM_HOST
+      && !url.username
+      && !url.password
+      && !url.port
+      ? normalized
+      : null;
   } catch {
     return null;
   }
 }
 
-export function normalizeRawSurflineFeeds(localOverrides = {}) {
-  const rows = Array.isArray(localOverrides?.[RAW_REGISTRY_KEY])
-    ? localOverrides[RAW_REGISTRY_KEY]
-    : [];
-  const feeds = new Map();
-
-  for (const row of rows) {
-    const id = typeof row?.id === "string" ? row.id.trim() : "";
-    if (!SAFE_CAMERA_ID.test(id) || RESERVED_IDS.has(id) || feeds.has(id)) continue;
-
-    const streamUrl = safeHttpsUrl(row.streamUrl);
-    const hasImage = Object.hasOwn(row, "image");
-    const image = hasImage ? safeHttpsUrl(row.image) : null;
-    if (!streamUrl || (hasImage && !image)) continue;
-
-    feeds.set(id, { id, streamUrl, ...(image ? { image } : {}) });
-  }
-
-  return feeds;
+function hasValidCoordinates(camera) {
+  return Number.isFinite(camera?.lat)
+    && camera.lat >= -90
+    && camera.lat <= 90
+    && Number.isFinite(camera?.lon)
+    && camera.lon >= -180
+    && camera.lon <= 180;
 }
 
-export function extractSurflineCameraId(stillUrl) {
-  if (typeof stillUrl !== "string") return null;
+function isSurflineRecord(camera) {
+  return normalizeText(camera?.provider).toLowerCase().startsWith("surfline");
+}
 
-  try {
-    const url = new URL(stillUrl);
-    if (url.protocol !== "https:" || url.username || url.password || url.port) return null;
-    if (!SURFLINE_STILL_HOSTS.has(url.hostname)) return null;
-
-    const parts = url.pathname.split("/").filter(Boolean);
-    const id = parts.at(-2) || "";
-    return SAFE_CAMERA_ID.test(id) && !RESERVED_IDS.has(id) ? id : null;
-  } catch {
+function normalizeNativeCamera(camera) {
+  if (
+    !camera
+    || typeof camera !== "object"
+    || camera.promoted
+    || camera.adviceGuideOnly
+    || camera.streamOverride
+    || isSurflineRecord(camera)
+    || camera.hasStream !== true
+    || !hasValidCoordinates(camera)
+  ) {
     return null;
   }
-}
 
-function hasHttpsStream(camera) {
-  return Boolean(safeHttpsUrl(camera?.streamUrl));
-}
-
-function logicalSubjectId(camera, spotData) {
-  if (camera?.promoted && typeof camera.id === "string") return camera.id;
-  return adviceSubjectIdFor(camera, spotData);
-}
-
-function rawFeedForSubject(subject, rawFeeds) {
-  for (const camera of subject?.surflineCams || []) {
-    const id = extractSurflineCameraId(camera?.stillUrl);
-    if (id && rawFeeds.has(id)) return rawFeeds.get(id);
+  const id = normalizeText(camera.id);
+  const name = normalizeText(camera.name);
+  const location = normalizeText(camera.location);
+  const region = normalizeText(camera.region);
+  const streamUrl = httpsStreamUrl(camera.streamUrl);
+  if (
+    !SAFE_CAMERA_ID.test(id)
+    || RESERVED_IDS.has(id)
+    || !name
+    || !location
+    || !region
+    || !streamUrl
+  ) {
+    return null;
   }
-  return null;
-}
 
-function withRawSurflineFeed(camera, feed) {
-  return {
+  const livecamId = normalizeText(camera.livecamId);
+  const feedCameraId = livecamId || id;
+  const normalized = {
     ...camera,
-    streamSource: "surfline-raw",
-    feedCameraId: feed.id,
-    streamUrl: feed.streamUrl,
-    image: feed.image || camera.image || "",
-    hasStream: true
-  };
-}
-
-function withMeoFeed(camera, source) {
-  if (!hasHttpsStream(source)) return null;
-
-  return {
-    ...camera,
+    id,
+    name,
+    location,
+    region,
+    streamUrl,
     streamSource: "meo",
-    feedCameraId: source.livecamId || source.id,
-    streamUrl: safeHttpsUrl(source.streamUrl),
-    image: source.image || camera.image || "",
+    feedCameraId,
     hasStream: true
   };
+  if (typeof camera.image === "string") normalized.image = camera.image.trim();
+  if (typeof camera.livecamId === "string") normalized.livecamId = livecamId;
+  return normalized;
 }
 
-export function resolveFeedBackedCameras(cameraDb, spotData, localOverrides = {}) {
+/**
+ * Build the playable catalog from the provider-native MEO database only.
+ *
+ * Surfline-enriched fields already attached to native rows are preserved for
+ * conditions and advice. Promoted/report identities and any legacy stream
+ * substitution are deliberately excluded from playback.
+ */
+export function resolveMeoPlaybackCameras(cameraDb) {
   const cameras = Array.isArray(cameraDb?.cameras) ? cameraDb.cameras : [];
-  const camerasById = new Map(cameras.map((camera) => [camera.id, camera]));
-  const rawFeeds = normalizeRawSurflineFeeds(localOverrides);
-  const rawFeedsBySubject = new Map();
-
-  for (const camera of cameras) {
-    if (!camera?.promoted || typeof camera.id !== "string") continue;
-    const feed = rawFeedForSubject(camera, rawFeeds);
-    if (feed) rawFeedsBySubject.set(camera.id, feed);
-  }
-
+  const seenIds = new Set();
+  const seenFeedIds = new Set();
+  const seenStreamUrls = new Set();
   const resolved = [];
+
   for (const camera of cameras) {
-    if (!camera || typeof camera.id !== "string") continue;
-
-    const subjectId = logicalSubjectId(camera, spotData);
-    const rawFeed = subjectId ? rawFeedsBySubject.get(subjectId) : null;
-    if (rawFeed) {
-      resolved.push(withRawSurflineFeed(camera, rawFeed));
+    const normalized = normalizeNativeCamera(camera);
+    if (
+      !normalized
+      || seenIds.has(normalized.id)
+      || seenFeedIds.has(normalized.feedCameraId)
+      || seenStreamUrls.has(normalized.streamUrl)
+    ) {
       continue;
     }
 
-    if (camera.promoted) {
-      const linked = typeof camera.linkedCamId === "string"
-        ? camerasById.get(camera.linkedCamId)
-        : null;
-      const fallback = withMeoFeed(camera, linked);
-      if (fallback) resolved.push(fallback);
-      continue;
-    }
-
-    if (camera.provider === "surfline") continue;
-    const native = withMeoFeed(camera, camera);
-    if (native) resolved.push(native);
+    seenIds.add(normalized.id);
+    seenFeedIds.add(normalized.feedCameraId);
+    seenStreamUrls.add(normalized.streamUrl);
+    resolved.push(normalized);
   }
 
   return resolved;
