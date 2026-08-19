@@ -52,16 +52,16 @@ test("loadCameraDb returns immutable provider data without consulting stream ove
   assert.deepEqual(loadedDb, db);
 });
 
-test("default favorites exist and only live-source favorites require streams", () => {
+test("default favorites are all playable native MEO cameras", () => {
   for (const id of DEFAULT_FAVORITE_IDS) {
     const camera = db.cameras.find((item) => item.id === id);
     assert.ok(camera, `${id} exists in DB`);
-    if (camera.provider !== "surfline") {
-      assert.equal(camera.hasStream, true, `${id} has an available feed`);
-    }
+    assert.notEqual(camera.provider, "surfline", `${id} is not a Surfline camera identity`);
+    assert.equal(camera.hasStream, true, `${id} has an available feed`);
   }
 
-  assert.ok(DEFAULT_FAVORITE_IDS.includes("surfline-castelo"));
+  assert.equal(DEFAULT_FAVORITE_IDS.includes("surfline-castelo"), false);
+  assert.ok(DEFAULT_FAVORITE_IDS.includes("costa-da-caparica-riviera"));
 
   const lagide = db.cameras.find((item) => item.id === "lagide-e-baia");
   assert.equal(lagide.name.trim(), "Peniche | Lagide | Cantinho da baía");

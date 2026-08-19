@@ -1,11 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import * as forecastSources from "../src/forecast-sources.js";
 import { resolveConditions, newestConditionsAgeHours } from "../src/forecast-sources.js";
 import { formatConditionChips, formatConditionLine } from "../src/condition-summary.js";
 import { monitorFavoriteCameras } from "../src/monitor-cameras.js";
 import { DEFAULT_SURF_PREFERENCES } from "../src/surf-preferences.js";
 import { rateSurfSpot } from "../src/surf-rating.js";
+import { applySpotMetadataToCameraDb, normalizeSpotData } from "../src/spot-data.js";
 
 const NOW = Date.parse("2026-07-06T12:00:00Z");
 const spotData = {
@@ -67,6 +69,26 @@ test("matched meo cam resolves via enrichment conditionsSourceSpotId", () => {
   const resolved = resolveConditions({ id: "cam-matched" }, spotData, { now: NOW });
   assert.equal(resolved.source, "surfline-fresh");
   assert.equal(resolved.windKmh, 11);
+});
+
+test("real native MEO Riviera camera keeps Surfline conditions without Surfline camera media", () => {
+  const cameraDb = JSON.parse(fs.readFileSync("data/beachcam-cameras.json", "utf8"));
+  const spotMetadataDb = JSON.parse(fs.readFileSync("data/spot-metadata-enrichment.json", "utf8"));
+  const conditionsDb = JSON.parse(fs.readFileSync("data/surfline-conditions.json", "utf8"));
+  const realSpotData = normalizeSpotData({ spotMetadataDb, conditionsDb });
+  const enrichedDb = applySpotMetadataToCameraDb(cameraDb, realSpotData);
+  const camera = enrichedDb.cameras.find(({ id }) => id === "costa-da-caparica-riviera");
+  const sourceSpotId = camera.surfMetadata.conditionsSourceSpotId;
+  const entry = realSpotData.conditionsById.get(sourceSpotId);
+  const now = Date.parse(entry.fetchedAt) + (60 * 60 * 1000);
+
+  const resolved = resolveConditions(camera, realSpotData, { now });
+
+  assert.equal(camera.provider === "surfline", false);
+  assert.equal(camera.streamUrl.includes("video-auth1.iol.pt"), true);
+  assert.equal(resolved.source, "surfline-fresh");
+  assert.equal(resolved.sourceSpotId, sourceSpotId);
+  assert.equal(resolved.rating, entry.rating);
 });
 
 test("needs-review enrichment never yields surfline-fresh", () => {

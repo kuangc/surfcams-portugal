@@ -139,11 +139,13 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.doesNotMatch(mainSource, /favoriteManagerCameras/);
   assert.doesNotMatch(mainSource, /manageSpotCameras/);
   assert.match(mainSource, /resolveMeoPlaybackCameras/);
+  assert.match(mainSource, /buildFavoriteIdAliases/);
+  assert.match(mainSource, /MEO_FAVORITE_ID_REPLACEMENTS/);
   assert.match(mainSource, /const nativeCameraDb\s*=\s*applySpotMetadataToCameraDb\(cameraDb, spotData\)/);
   assert.match(mainSource, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(\s*resolveMeoPlaybackCameras\(nativeCameraDb\)\s*\)/s);
   assert.doesNotMatch(mainSource, /localStreamOverrides/);
   assert.doesNotMatch(mainSource, /state\.db\?\.cameras\s*\|\|\s*state\.cameras/);
-  assert.match(mainSource, /sanitizeFavoriteIds\(state\.cameras,\s*loadFavoriteIds\(state\.cameras\)\)/);
+  assert.match(mainSource, /loadFavoriteIds\(state\.cameras,\s*undefined,\s*favoriteIdAliases\)/);
   assert.match(mainSource, /createFavoriteToggle/);
   assert.match(mainSource, /selectExploreCamera/);
   assert.match(mainSource, /renderWaterSummaries/);
@@ -164,6 +166,14 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
 test("playback source code has no raw Surfline registry or stream-override bypass", () => {
   assert.doesNotMatch(feedPolicySource, /rawSurfline|surfline-raw|camstills\.cdn-surfline/i);
   assert.doesNotMatch(cameraDataSource, /localStreamOverrides|streamOverride|LOCAL_STREAM_OVERRIDES_URL/);
+});
+
+test("camera UI has no retired Surfline camera badges, still tiles, or promoted markers", () => {
+  const stretchTileSource = mainSource.match(/function createStretchSpotTile[\s\S]*?\n}\n\nfunction createStretchCamTile/)?.[0] || "";
+
+  assert.doesNotMatch(mainSource, /renderSlCamBadge|sl-cam-badge|surfline-raw|data-promoted/);
+  assert.doesNotMatch(stretchTileSource, /createElement\("img"\)|stillUrl|Surfline still/);
+  assert.doesNotMatch(styleSource, /\.sl-cam-badge|\.stretch-tile__image|\[data-promoted=/);
 });
 
 test("Monitor gallery scopes preview streams to one viewport observer lifecycle", () => {

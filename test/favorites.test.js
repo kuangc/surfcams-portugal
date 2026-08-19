@@ -3,27 +3,37 @@ import test from "node:test";
 
 import { DEFAULT_FAVORITE_IDS, FAVORITE_STORAGE_KEY } from "../src/config.js";
 import {
+  buildFavoriteIdAliases,
+  canonicalFavoriteId,
   commitFavoriteMutation,
   createFavoriteUndo,
   defaultFavoriteSet,
   loadFavoriteIds,
   saveFavoriteIds
 } from "../src/favorites.js";
+import {
+  MEO_CAMERA_ID_RENAMES,
+  MEO_FAVORITE_ID_REPLACEMENTS,
+  RETIRED_MEO_CAMERA_IDS
+} from "../src/meo-camera-identities.js";
 
 function storageWith(initialValue = null) {
   const values = new Map();
   if (initialValue !== null) values.set(FAVORITE_STORAGE_KEY, initialValue);
+  const writes = [];
 
   return {
     getItem(key) {
       return values.has(key) ? values.get(key) : null;
     },
     setItem(key, value) {
+      writes.push([key, value]);
       values.set(key, value);
     },
     value(key = FAVORITE_STORAGE_KEY) {
       return values.get(key);
-    }
+    },
+    writes
   };
 }
 
@@ -38,6 +48,62 @@ test("default favorites include the requested Peniche Lagide camera", () => {
 
   assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
   assert.ok(favorites.has("lagide-e-baia"));
+  assert.equal(favorites.has("surfline-castelo"), false);
+});
+
+test("MEO identity changes stay namespaced and preserve Surfline intelligence IDs", () => {
+  assert.deepEqual(MEO_CAMERA_ID_RENAMES, {
+    "espinho-silvade": "espinho-silvalde",
+    espinhosilvadeestatica: "espinhosilvaldeestatica"
+  });
+  assert.deepEqual(RETIRED_MEO_CAMERA_IDS, ["surfline-castelo"]);
+  assert.deepEqual(MEO_FAVORITE_ID_REPLACEMENTS, {
+    "espinho-silvade": "espinho-silvalde",
+    espinhosilvadeestatica: "espinhosilvaldeestatica",
+    "surfline-castelo": "costa-da-caparica-riviera"
+  });
+});
+
+test("favorite aliases combine promoted links and static MEO identity replacements", () => {
+  const aliases = buildFavoriteIdAliases(
+    {
+      promoted: [
+        { id: "surfline-alpha", linkedCamId: "cam-alpha" },
+        { id: "surfline-unlinked" },
+        { id: "", linkedCamId: "cam-invalid" }
+      ]
+    },
+    MEO_FAVORITE_ID_REPLACEMENTS
+  );
+
+  assert.equal(aliases.get("surfline-alpha"), "cam-alpha");
+  assert.equal(aliases.get("surfline-unlinked"), undefined);
+  assert.equal(aliases.get("espinho-silvade"), "espinho-silvalde");
+  assert.equal(aliases.get("surfline-castelo"), "costa-da-caparica-riviera");
+});
+
+test("favorite aliases tolerate malformed promotion rows and explicit replacements win", () => {
+  assert.doesNotThrow(() => buildFavoriteIdAliases({ promoted: {} }));
+  assert.deepEqual([...buildFavoriteIdAliases({ promoted: {} })], []);
+
+  const aliases = buildFavoriteIdAliases(
+    { promoted: [{ id: "surfline-castelo", linkedCamId: "wrong-camera" }] },
+    MEO_FAVORITE_ID_REPLACEMENTS
+  );
+
+  assert.equal(aliases.get("surfline-castelo"), "costa-da-caparica-riviera");
+});
+
+test("favorite canonicalization is exact, one-hop, and lets an available native ID win", () => {
+  const aliases = new Map([
+    ["old-id", "middle-id"],
+    ["middle-id", "new-id"]
+  ]);
+
+  assert.equal(canonicalFavoriteId("old-id", new Set(["middle-id", "new-id"]), aliases), "middle-id");
+  assert.equal(canonicalFavoriteId("old-id", new Set(["new-id"]), aliases), null);
+  assert.equal(canonicalFavoriteId("middle-id", new Set(["middle-id", "new-id"]), aliases), "middle-id");
+  assert.equal(canonicalFavoriteId("OLD-ID", new Set(["middle-id"]), aliases), null);
 });
 
 test("stored favorites are loaded and unavailable IDs are ignored", () => {
@@ -45,6 +111,90 @@ test("stored favorites are loaded and unavailable IDs are ignored", () => {
   const favorites = loadFavoriteIds(cameras, storage);
 
   assert.deepEqual([...favorites], ["praia-de-carcavelos"]);
+  assert.equal(storage.writes.length, 1);
+  assert.equal(storage.value(), JSON.stringify(["praia-de-carcavelos"]));
+});
+
+test("stored promoted and provider-renamed favorites migrate before availability filtering", () => {
+  const migratedCameras = [
+    { id: "cam-alpha" },
+    { id: "espinho-silvalde" }
+  ];
+  const storage = storageWith(JSON.stringify(["surfline-alpha", "espinho-silvade"]));
+  const aliases = buildFavoriteIdAliases(
+    { promoted: [{ id: "surfline-alpha", linkedCamId: "cam-alpha" }] },
+    MEO_FAVORITE_ID_REPLACEMENTS
+  );
+
+  const favorites = loadFavoriteIds(migratedCameras, storage, aliases);
+
+  assert.deepEqual([...favorites], ["cam-alpha", "espinho-silvalde"]);
+  assert.equal(storage.value(), JSON.stringify(["cam-alpha", "espinho-silvalde"]));
+});
+
+test("alias and native duplicates collapse in original order and persist once", () => {
+  const storage = storageWith(JSON.stringify(["surfline-alpha", "cam-alpha", "cam-beta"]));
+  const aliases = new Map([["surfline-alpha", "cam-alpha"]]);
+
+  const favorites = loadFavoriteIds([{ id: "cam-alpha" }, { id: "cam-beta" }], storage, aliases);
+
+  assert.deepEqual([...favorites], ["cam-alpha", "cam-beta"]);
+  assert.equal(storage.writes.length, 1);
+  assert.equal(storage.value(), JSON.stringify(["cam-alpha", "cam-beta"]));
+});
+
+test("an unavailable alias target is dropped without following another alias", () => {
+  const storage = storageWith(JSON.stringify(["old-id"]));
+  const aliases = new Map([
+    ["old-id", "middle-id"],
+    ["middle-id", "new-id"]
+  ]);
+
+  const favorites = loadFavoriteIds([{ id: "new-id" }], storage, aliases);
+
+  assert.deepEqual([...favorites], []);
+  assert.equal(storage.value(), JSON.stringify([]));
+});
+
+test("an available native ID is not displaced by an alias with the same source", () => {
+  const storage = storageWith(JSON.stringify(["native-id"]));
+  const aliases = new Map([["native-id", "replacement-id"]]);
+
+  const favorites = loadFavoriteIds(
+    [{ id: "native-id" }, { id: "replacement-id" }],
+    storage,
+    aliases
+  );
+
+  assert.deepEqual([...favorites], ["native-id"]);
+  assert.equal(storage.writes.length, 0);
+});
+
+test("unchanged stored favorites are not rewritten", () => {
+  const storage = storageWith(JSON.stringify(["praia-de-carcavelos"]));
+
+  const favorites = loadFavoriteIds(cameras, storage, new Map());
+
+  assert.deepEqual([...favorites], ["praia-de-carcavelos"]);
+  assert.equal(storage.writes.length, 0);
+});
+
+test("missing storage key returns defaults without writing", () => {
+  const storage = storageWith();
+
+  const favorites = loadFavoriteIds(cameras, storage, new Map());
+
+  assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
+  assert.equal(storage.writes.length, 0);
+});
+
+test("a stored empty favorites list remains intentionally empty without writing", () => {
+  const storage = storageWith(JSON.stringify([]));
+
+  const favorites = loadFavoriteIds(cameras, storage, new Map());
+
+  assert.deepEqual([...favorites], []);
+  assert.equal(storage.writes.length, 0);
 });
 
 test("invalid stored favorites fall back to defaults", () => {
@@ -52,20 +202,45 @@ test("invalid stored favorites fall back to defaults", () => {
   const favorites = loadFavoriteIds(cameras, storage);
 
   assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
+  assert.equal(storage.writes.length, 0);
 });
 
 test("unavailable storage falls back to default favorites", () => {
+  let writes = 0;
   const storage = {
     getItem() {
       const error = new Error("Access to storage is denied");
       error.name = "SecurityError";
       throw error;
+    },
+    setItem() {
+      writes += 1;
     }
   };
 
   const favorites = loadFavoriteIds(cameras, storage);
 
   assert.deepEqual([...favorites], DEFAULT_FAVORITE_IDS);
+  assert.equal(writes, 0);
+});
+
+test("favorite migration is best-effort when storage writes fail", () => {
+  const storage = {
+    getItem() {
+      return JSON.stringify(["surfline-alpha"]);
+    },
+    setItem() {
+      throw new Error("quota exceeded");
+    }
+  };
+
+  const favorites = loadFavoriteIds(
+    [{ id: "cam-alpha" }],
+    storage,
+    new Map([["surfline-alpha", "cam-alpha"]])
+  );
+
+  assert.deepEqual([...favorites], ["cam-alpha"]);
 });
 
 test("unavailable default localStorage falls back to default favorites", () => {

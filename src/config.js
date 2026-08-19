@@ -1,7 +1,6 @@
 export const DEFAULT_FAVORITE_IDS = [
   "sao-pedro-do-estoril",
   "costa-da-caparica-riviera",
-  "surfline-castelo",
   "lagide-e-baia",
   "praia-sesimbra",
   "sao-juliao",

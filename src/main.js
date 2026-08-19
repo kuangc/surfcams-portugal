@@ -30,10 +30,12 @@ import {
   searchFavoriteCatalog
 } from "./favorite-catalog.js";
 import {
+  buildFavoriteIdAliases,
   commitFavoriteMutation,
   createFavoriteUndo,
   loadFavoriteIds
 } from "./favorites.js";
+import { MEO_FAVORITE_ID_REPLACEMENTS } from "./meo-camera-identities.js";
 import { formatRegion } from "./format.js";
 import { formatConditionsAgeLabel, newestConditionsAgeHours, resolveConditions } from "./forecast-sources.js";
 import { fetchLiveForecast } from "./live-forecast.js";
@@ -378,10 +380,8 @@ function monitorFavoriteRoster() {
   );
 }
 
-// The Explore screen has no sort control, so it renders state.cameras in whatever
-// order it receives them in. Sorting once here (coast app: north-to-south is a
-// meaningful base order) keeps promoted Surfline-only spots interleaved next to
-// their geographic neighbors instead of stuck at the end of the raw crawl order.
+// The Explore screen has no sort control, so sort the provider-native MEO roster
+// once into a meaningful north-to-south coastal browsing order.
 // Stable sort: cameras with equal/missing latitude keep their relative order.
 function sortCamerasByLatitudeDescending(cameras) {
   return [...cameras].sort((a, b) => {
@@ -1684,7 +1684,7 @@ function createFavoriteCard(camera) {
 
   const poster = document.createElement("img");
   poster.className = "favorite-poster";
-  poster.src = camera.image || camera.poster || camera.stillUrl || "";
+  poster.src = camera.image || camera.poster || "";
   poster.alt = `Poster frame for ${camera.name}`;
   poster.loading = "lazy";
   poster.decoding = "async";
@@ -1735,7 +1735,6 @@ function createFavoriteCard(camera) {
 function favoriteSourceLabel(camera) {
   const source = camera.streamSource || camera.provider || camera.source || "";
   if (source === "meo" || source === "meo-beachcam") return "MEO Beachcam";
-  if (source === "surfline" || source === "surfline-raw") return "Surfline";
   return source ? formatRegion(source) : "Supported source";
 }
 
@@ -2041,17 +2040,6 @@ function updateExploreRowSelection(cameraId) {
   if (row) row.setAttribute("aria-current", "true");
 }
 
-function renderSlCamBadge(camera) {
-  els.detailName.parentElement?.querySelector(".sl-cam-badge")?.remove();
-  if (!camera?.surflineCams?.length) return;
-
-  const badge = document.createElement("span");
-  badge.className = "sl-cam-badge";
-  badge.textContent = "SL cam";
-  badge.title = camera.surflineCams.map((cam) => cam.title).filter(Boolean).join(", ");
-  els.detailName.insertAdjacentElement("afterend", badge);
-}
-
 function ratingTone(rating) {
   const normalized = String(rating || "").toUpperCase();
   if (["GOOD", "VERY_GOOD", "EPIC"].includes(normalized)) return "good";
@@ -2068,15 +2056,6 @@ function createStretchSpotTile(spot) {
   const tile = document.createElement("article");
   tile.className = "stretch-tile";
   tile.dataset.kind = "spot";
-
-  if (spot.stillUrl) {
-    const image = document.createElement("img");
-    image.className = "stretch-tile__image";
-    image.loading = "lazy";
-    image.src = spot.stillUrl;
-    image.alt = `${spot.name} Surfline still`;
-    tile.appendChild(image);
-  }
 
   const body = document.createElement("div");
   body.className = "stretch-tile__body";
@@ -2447,7 +2426,6 @@ function renderExploreSelectionMetadata(camera) {
   syncFavoriteToggle(els.detailFavorite, camera);
   els.exploreVideo.setAttribute("aria-label", `${camera.name} live camera`);
   els.exploreRetry.setAttribute("aria-label", `Play or retry ${camera.name} live camera`);
-  renderSlCamBadge(camera);
   renderExploreConditions(camera);
   renderStretchView(camera);
   renderSpotPlaybook(camera);
@@ -2464,7 +2442,6 @@ function renderExploreSelection(camera) {
     els.detailLocation.textContent = "Choose a marker for details.";
     els.detailFavorite.disabled = true;
     syncFavoriteToggle(els.detailFavorite, null);
-    renderSlCamBadge(null);
     renderExploreConditions(null);
     renderStretchView(null);
     renderSpotPlaybook(null);
@@ -2546,7 +2523,7 @@ function markerIcon(camera, active = false) {
 
   return L.divIcon({
     className: "cam-marker-hitbox",
-    html: `<span class="cam-marker" data-active="${active}" data-favorite="${isFavoriteCamera(camera)}" data-fit="${rating.key}" data-live="${camera.hasStream}" data-promoted="${camera.promoted ? "1" : "0"}"></span>`,
+    html: `<span class="cam-marker" data-active="${active}" data-favorite="${isFavoriteCamera(camera)}" data-fit="${rating.key}" data-live="${camera.hasStream}"></span>`,
     iconSize: [44, 44],
     iconAnchor: [22, 22],
     popupAnchor: [0, -12]
@@ -2907,7 +2884,14 @@ async function init() {
   );
   state.tideData = tideData;
   state.cameras = sortCamerasByLatitudeDescending(resolveMeoPlaybackCameras(nativeCameraDb));
-  state.favoriteIds = sanitizeFavoriteIds(state.cameras, loadFavoriteIds(state.cameras));
+  const favoriteIdAliases = buildFavoriteIdAliases(
+    spotData.promotedDb,
+    MEO_FAVORITE_ID_REPLACEMENTS
+  );
+  state.favoriteIds = sanitizeFavoriteIds(
+    state.cameras,
+    loadFavoriteIds(state.cameras, undefined, favoriteIdAliases)
+  );
   state.preferences = loadSurfPreferences();
   state.todayForecastStore = createTodayForecastStore({
     fetchForecast: (camera) => fetchLiveForecast(camera)

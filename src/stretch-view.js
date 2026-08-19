@@ -6,12 +6,11 @@ export function stretchMembers(camera, spotData, camerasById) {
     stretchName: stretch.name,
     cams: stretch.meoCamIds.map((id) => camerasById.get(id)).filter(Boolean),
     spots: stretch.surflineSpotIds.map((id) => {
-      const spot = camerasById.get(id);
+      const spot = spotData.surflineById?.get(id) ?? spotData.promotedById?.get(id);
       return spot ? {
         id,
         name: spot.name,
-        conditions: spotData.conditionsById?.get(id) ?? null,
-        stillUrl: (spot.surflineCams || [])[0]?.stillUrl ?? null
+        conditions: spotData.conditionsById?.get(id) ?? null
       } : null;
     }).filter(Boolean)
   };
