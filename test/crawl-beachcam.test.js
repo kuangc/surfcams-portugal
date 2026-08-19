@@ -64,6 +64,14 @@ test("parseDetail normalizes the authoritative detail data-name", () => {
   assert.equal(detail.streamUrl, "https://video-auth1.iol.pt/auth-beachcam/bcsilvade/playlist.m3u8");
 });
 
+test("provider identity normalization removes empty pipe segments", () => {
+  const detail = parseDetail(
+    detailPage({ name: "  Espinho  |  Silvalde | Estática |  " }),
+    "https://beachcam.meo.pt/livecams/espinhosilvaldeestatica/"
+  );
+  assert.equal(detail.name, "Espinho | Silvalde | Estática");
+});
+
 test("parseCliArgs requires an explicit path after --output", () => {
   assert.deepEqual(parseCliArgs(["--refresh", "--output", "/tmp/meo.json"]), {
     refresh: true,

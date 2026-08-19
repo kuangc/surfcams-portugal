@@ -43,7 +43,11 @@ function stripTags(value) {
 }
 
 function normalizeIdentityText(value) {
-  return stripTags(value).replace(/\s*\|\s*/g, " | ");
+  return stripTags(value)
+    .split("|")
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .join(" | ");
 }
 
 function attrsFromTag(tag) {
