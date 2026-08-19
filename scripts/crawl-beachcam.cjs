@@ -42,6 +42,10 @@ function stripTags(value) {
     .trim();
 }
 
+function normalizeIdentityText(value) {
+  return stripTags(value).replace(/\s*\|\s*/g, " | ");
+}
+
 function attrsFromTag(tag) {
   const attrs = {};
   const attrPattern = /([:\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
@@ -114,19 +118,19 @@ function parseListing(html) {
 
     if (!pageUrl) continue;
 
-    const name = stripTags(firstMatch(itemHtml, /<p\b[^>]*class="[^"]*liveCamsGrid__list-item-name[^"]*"[^>]*>([\s\S]*?)<\/p>/i));
+    const name = normalizeIdentityText(firstMatch(itemHtml, /<p\b[^>]*class="[^"]*liveCamsGrid__list-item-name[^"]*"[^>]*>([\s\S]*?)<\/p>/i));
     const location = stripTags(firstMatch(itemHtml, /<label\b[^>]*class="[^"]*liveCamsGrid__list-item-location[^"]*"[^>]*>([\s\S]*?)<\/label>/i));
 
     items.push({
       id: slugFromUrl(pageUrl),
-      name: name || attrs["data-name"] || slugFromUrl(pageUrl),
+      name: name || normalizeIdentityText(attrs["data-name"]) || slugFromUrl(pageUrl),
       location,
-      region: attrs["data-region"] || "",
+      region: stripTags(attrs["data-region"]),
       pageUrl,
       lat: Number.parseFloat(attrs["data-lat"]),
       lon: Number.parseFloat(attrs["data-lon"]),
       clicks: Number.parseInt(attrs["data-clicks"] || "0", 10),
-      isMulti: /liveCamsGrid__list-item-cam/i.test(itemHtml),
+      isMulti: /liveCamsGrid__(?:feature--multicam|list-item-cam)/i.test(itemHtml),
       forecast: parseListingForecast(itemHtml)
     });
   }
@@ -162,8 +166,8 @@ function parseDetail(html, pageUrl) {
   const ogImage = metaContent(html, "og:image");
 
   return {
-    name: headerAttrs["data-name"] || metaContent(html, "og:title") || "",
-    livecamId: headerAttrs["data-livecam-id"] || "",
+    name: normalizeIdentityText(headerAttrs["data-name"] || metaContent(html, "og:title")),
+    livecamId: stripTags(headerAttrs["data-livecam-id"]),
     streamUrl: absoluteUrl(livecamAttrs["data-video-url"] || "", pageUrl),
     videoId: livecamAttrs["data-video-id"] || "",
     image: absoluteUrl(ogImage, pageUrl),
@@ -252,13 +256,111 @@ async function mapWithConcurrency(items, limit, callback) {
   return results;
 }
 
-async function crawl(refresh) {
-  const listingHtml = await cachedFetch(LISTING_URL, "livecams-index.html", refresh);
+function parseCliArgs(args) {
+  const options = {
+    refresh: false,
+    outputPath: OUTPUT_PATH
+  };
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--refresh") {
+      options.refresh = true;
+      continue;
+    }
+    if (arg === "--output") {
+      const outputPath = args[index + 1];
+      if (!outputPath || outputPath.startsWith("--")) {
+        throw new Error("--output requires a path");
+      }
+      options.outputPath = outputPath;
+      index += 1;
+      continue;
+    }
+    throw new Error(`Unknown option: ${arg}`);
+  }
+
+  return options;
+}
+
+function isPlayableStreamUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:"
+      && url.hostname === "video-auth1.iol.pt"
+      && !url.port
+      && !url.username
+      && !url.password
+      && /^\/(?:auth-)?beachcam\/[a-z0-9_-]+\/playlist\.m3u8$/i.test(url.pathname)
+      && !url.hash;
+  } catch (_error) {
+    return false;
+  }
+}
+
+function assertUniqueCameras(cameras) {
+  const cameraIds = new Set();
+  const livecamIds = new Set();
+  const streamUrls = new Set();
+
+  for (const camera of cameras) {
+    const cameraId = String(camera?.id || "").trim();
+    if (camera?.error) {
+      throw new Error(`Detail failed for ${cameraId || "unknown camera"}: ${camera.error}`);
+    }
+    if (!cameraId) {
+      throw new Error("Camera is missing an id");
+    }
+    if (cameraIds.has(cameraId)) {
+      throw new Error(`Duplicate camera id: ${cameraId}`);
+    }
+    cameraIds.add(cameraId);
+
+    const streamUrl = String(camera.streamUrl || "").trim();
+    const isPlayable = camera.hasStream === true || Boolean(streamUrl);
+    if (!isPlayable) continue;
+
+    const livecamId = String(camera.livecamId || "").trim();
+    if (!livecamId) {
+      throw new Error(`Missing livecamId for camera ${cameraId}`);
+    }
+    if (livecamIds.has(livecamId)) {
+      throw new Error(`Duplicate playable livecamId: ${livecamId}`);
+    }
+    livecamIds.add(livecamId);
+
+    if (!isPlayableStreamUrl(streamUrl)) {
+      throw new Error(`Non-playable stream URL for camera ${cameraId}: ${streamUrl || "missing"}`);
+    }
+    if (streamUrls.has(streamUrl)) {
+      throw new Error(`Duplicate playable stream URL: ${streamUrl}`);
+    }
+    streamUrls.add(streamUrl);
+  }
+}
+
+function normalizeCrawlOptions(optionsOrRefresh) {
+  const options = typeof optionsOrRefresh === "boolean"
+    ? { refresh: optionsOrRefresh }
+    : (optionsOrRefresh || {});
+  const refresh = Boolean(options.refresh);
+
+  return {
+    refresh,
+    outputPath: path.resolve(options.outputPath || OUTPUT_PATH),
+    fetchPage: options.fetchPage || ((url, cacheName) => cachedFetch(url, cacheName, refresh)),
+    logger: options.logger || console.error
+  };
+}
+
+async function crawl(optionsOrRefresh = {}) {
+  const { refresh, outputPath, fetchPage, logger } = normalizeCrawlOptions(optionsOrRefresh);
+  const listingHtml = await fetchPage(LISTING_URL, "livecams-index.html", refresh);
   const listingItems = parseListing(listingHtml);
 
   const cameras = await mapWithConcurrency(listingItems, CONCURRENCY, async (camera, index) => {
     try {
-      const html = await cachedFetch(camera.pageUrl, cacheNameForUrl(camera.pageUrl), refresh);
+      const html = await fetchPage(camera.pageUrl, cacheNameForUrl(camera.pageUrl), refresh);
       const detail = parseDetail(html, camera.pageUrl);
       return {
         ...camera,
@@ -272,18 +374,15 @@ async function crawl(refresh) {
         detailMetrics: detail.detailMetrics
       };
     } catch (error) {
-      return {
-        ...camera,
-        hasStream: false,
-        error: error.message
-      };
+      throw new Error(`Detail failed for ${camera.id}: ${error.message}`, { cause: error });
     } finally {
       if ((index + 1) % 25 === 0 || index + 1 === listingItems.length) {
-        console.error(`Processed ${index + 1}/${listingItems.length}`);
+        logger(`Processed ${index + 1}/${listingItems.length}`);
       }
     }
   });
 
+  assertUniqueCameras(cameras);
   cameras.sort((a, b) => b.clicks - a.clicks || a.name.localeCompare(b.name));
 
   const db = {
@@ -299,14 +398,15 @@ async function crawl(refresh) {
     cameras
   };
 
-  await fs.writeFile(OUTPUT_PATH, `${JSON.stringify(db, null, 2)}\n`, "utf8");
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await fs.writeFile(outputPath, `${JSON.stringify(db, null, 2)}\n`, "utf8");
   return db;
 }
 
 async function main() {
-  const refresh = process.argv.includes("--refresh");
-  const db = await crawl(refresh);
-  console.log(`Wrote ${db.total} cameras (${db.withStreams} streams, ${db.withCoordinates} coordinates) to ${OUTPUT_PATH}`);
+  const options = parseCliArgs(process.argv.slice(2));
+  const db = await crawl(options);
+  console.log(`Wrote ${db.total} cameras (${db.withStreams} streams, ${db.withCoordinates} coordinates) to ${path.resolve(options.outputPath)}`);
 }
 
 if (require.main === module) {
@@ -317,7 +417,10 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertUniqueCameras,
+  crawl,
   decodeEntities,
+  parseCliArgs,
   parseListing,
   parseDetail,
   stripTags
