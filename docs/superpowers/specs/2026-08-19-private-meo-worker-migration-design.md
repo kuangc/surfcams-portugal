@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-19
 
-**Status:** Approved design; awaiting written-spec review
+**Status:** Approved for implementation
 
 **Repository:** `kuangc/surfcams-portugal`
 
@@ -377,9 +377,12 @@ runs.
 
 Connect the repository's `main` branch to Cloudflare Workers Builds. Every push
 to that branch, including the existing bot's metadata commit, starts a build.
-The build runs the full relevant test suite, data-integrity checks, freshness
-guard, runtime packaging, and deployment. A failing build must not promote a
-new Worker version.
+The build runs the full relevant test suite, deterministic data-integrity
+checks, runtime packaging, and deployment. A failing build must not promote a
+new Worker version. The strict six-hour wall-clock freshness check remains in
+the unchanged Surfline refresh workflow and the release/live-acceptance gate;
+it is not applied to every unrelated push because the accepted schedule has an
+overnight gap and the tide bot normally runs before the dawn Surfline refresh.
 
 This external Git integration avoids relying on a second GitHub workflow being
 triggered by a commit created with `GITHUB_TOKEN`.
@@ -439,18 +442,22 @@ OAuth secrets, or detailed viewing history.
 10. Synchronize the candidate with the latest `main`, rerun all checks, record
     the immutable accepted candidate commit and tree, and deploy that exact tree
     for the protected acceptance pass.
-11. Promote the accepted candidate through the reviewed pull request to
+11. Before changing `main`, point legacy GitHub Pages at an immutable hold
+    branch containing the prior working Pages tree and verify the public
+    fallback is unchanged. This prevents the Worker-only client from being
+    published on Pages without its same-origin API.
+12. Promote the accepted candidate through the reviewed pull request to
     `main` without source changes. Connect Workers Builds with `main` as the
     sole production branch, require the build for that recorded main SHA to
     succeed, verify its source tree matches the accepted candidate, and repeat
     the production smoke test.
-12. Only after that release is live, confirm a normal Surfline metadata bot
+13. Only after that release is live, confirm a normal Surfline metadata bot
     commit causes a successful Cloudflare build without modifying the refresh
     workflow.
-13. Confirm rollback restores the preceding Worker version.
-14. Disable GitHub Pages so the obsolete public application is no longer
+14. Confirm rollback restores the preceding Worker version.
+15. Disable GitHub Pages so the obsolete public application is no longer
     available.
-15. Document the production URL, user approval/revocation procedure, rollback,
+16. Document the production URL, user approval/revocation procedure, rollback,
     and token-provider troubleshooting.
 
 ## Verification Strategy
