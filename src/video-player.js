@@ -275,13 +275,21 @@ export function createFeedTilePlayer({
     onStateChange(nextState);
   }
 
-  function settleWaiters(token, nextState) {
-    for (const waiter of pendingWaiters) {
-      if (waiter.generation !== token) continue;
-      pendingWaiters.delete(waiter);
+  function waiterSnapshot(token) {
+    return [...pendingWaiters].filter((waiter) => waiter.generation === token);
+  }
+
+  function settleWaiterSnapshot(waiters, resumeAttempt, nextState) {
+    for (const waiter of waiters) {
+      if (!pendingWaiters.delete(waiter)) continue;
       waiter.resolve(nextState);
     }
-    if (pendingResume?.generation === token) pendingResume = null;
+    if (resumeAttempt && pendingResume === resumeAttempt) pendingResume = null;
+  }
+
+  function settleWaiters(token, nextState) {
+    const resumeAttempt = pendingResume?.generation === token ? pendingResume : null;
+    settleWaiterSnapshot(waiterSnapshot(token), resumeAttempt, nextState);
   }
 
   function createWaiter(token) {
@@ -343,9 +351,19 @@ export function createFeedTilePlayer({
 
   function finishGeneration(token, nextState, label) {
     if (token !== generation) return;
+    const expectedGeneration = generation;
+    const expectedSourceAttempt = sourceAttempt;
+    const expectedActiveAttempt = activeAttempt;
+    const expectedWaiters = waiterSnapshot(token);
+    const expectedResume = pendingResume?.generation === token ? pendingResume : null;
     setState(nextState, label);
-    if (token !== generation) return;
-    settleWaiters(token, nextState);
+    if (
+      generation !== expectedGeneration
+      || sourceAttempt !== expectedSourceAttempt
+      || activeAttempt !== expectedActiveAttempt
+      || currentState !== nextState
+    ) return;
+    settleWaiterSnapshot(expectedWaiters, expectedResume, nextState);
   }
 
   function failAttempt(attempt) {

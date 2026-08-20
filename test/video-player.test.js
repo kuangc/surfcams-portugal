@@ -525,6 +525,71 @@ test("a synchronous state callback replacement cannot settle the new generation"
   assert.equal(await secondResult, "playing");
 });
 
+test("a fatal event started by the playing callback owns the pending play settlement", async () => {
+  const pendingRefresh = deferred();
+  const playbackClient = playbackClientStub();
+  playbackClient.refresh = async (cameraId, failedRevision) => {
+    playbackClient.calls.push(["refresh", cameraId, failedRevision]);
+    return pendingRefresh.promise;
+  };
+  const video = videoStub();
+  const status = { textContent: "" };
+  let player;
+  let startedRecovery = false;
+  player = createFeedTilePlayer({
+    video,
+    status,
+    playbackClient,
+    onStateChange(state) {
+      if (state !== "playing" || startedRecovery) return;
+      startedRecovery = true;
+      video.dispatch("error");
+    }
+  });
+
+  const result = player.play(camera());
+  await waitFor(() => callCount(playbackClient, "refresh") === 1);
+
+  assert.equal(player.state(), "loading");
+  assert.equal(status.textContent, "Refreshing feed");
+  await assertPending(result);
+  pendingRefresh.resolve(playbackRecord("camera-a", { playlistUrl: REPLACEMENT_URL }));
+
+  assert.equal(await result, "playing");
+  assert.equal(player.state(), "playing");
+});
+
+test("a resume created by the blocked callback is not settled by the autoplay transition", async () => {
+  const pendingResume = deferred();
+  let playCount = 0;
+  const video = videoStub();
+  video.play = () => {
+    playCount += 1;
+    return playCount === 1
+      ? Promise.reject(new Error("autoplay blocked"))
+      : pendingResume.promise;
+  };
+  let player;
+  let resumeResult;
+  player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient: playbackClientStub(),
+    onStateChange(state) {
+      if (state === "blocked" && !resumeResult) resumeResult = player.resume();
+    }
+  });
+
+  const initialResult = player.play(camera());
+  assert.equal(await initialResult, "blocked");
+  assert.equal(playCount, 2);
+  await assertPending(resumeResult);
+  pendingResume.resolve();
+
+  assert.equal(await resumeResult, "playing");
+  assert.equal(player.state(), "playing");
+});
+
 test("broker resolve failure becomes unavailable without forcing a refresh", async () => {
   const playbackClient = playbackClientStub();
   playbackClient.resolve = async (cameraId) => {
