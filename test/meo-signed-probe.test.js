@@ -816,6 +816,36 @@ test("probeSignedStreams requires both deterministic representative chains", asy
   assert.equal(report.ok, false);
 });
 
+test("probeSignedStreams accepts video/m2ts for both representative ranged segments", async () => {
+  let m2tsSegmentRequests = 0;
+  let everySegmentWasRanged = true;
+  const fetcher = async (url, options) => {
+    if (new URL(url).pathname.endsWith("/segment.ts")) {
+      m2tsSegmentRequests += 1;
+      everySegmentWasRanged &&= requestHeader(options, "range") === "bytes=0-1023";
+      return segmentResponse(new Uint8Array(1024).fill(0x47), {
+        headers: { "content-type": "video/m2ts" }
+      });
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.ok, true);
+  assert.equal(m2tsSegmentRequests, 2);
+  assert.equal(everySegmentWasRanged, true);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 2);
+  assert.equal(report.results.filter(({ phase }) => phase === "segment").every(({ status }) => (
+    status === 206
+  )), true);
+});
+
 test("probeSignedStreams rejects a final signed 404 on a required representative", async () => {
   let representativeMasterCalls = 0;
   const fetcher = async (url) => {
@@ -1144,24 +1174,28 @@ test("probeSignedStreams rejects arbitrary octet-stream bytes as a segment", asy
   const fetcher = async (url) => {
     const parsed = new URL(url);
     if (parsed.pathname.endsWith("/segment.ts")) {
+      if (cameraIdFromProbeUrl(url) !== "auth-a") return segmentResponse();
       return segmentResponse(new Uint8Array([1, 2, 3]), {
         headers: { "content-type": "application/octet-stream" }
       });
     }
-    if (parsed.pathname.endsWith("/child.m3u8")) {
-      return hlsResponse("#EXTM3U\nsegment.ts?nimblesessionid=session");
-    }
-    return hlsResponse("#EXTM3U\nchild.m3u8?nimblesessionid=session");
+    return acceptedChainResponse(url);
   };
 
   const report = await probeSignedStreams({
-    cameraDb: cameraDb(camera("auth-generic-binary")),
+    cameraDb: cameraDb(...acceptanceRoster()),
     fetchToken: async () => FIXTURE_TOKEN,
     fetcher
   });
 
   assert.equal(report.ok, false);
-  const segment = report.results.find((result) => result.phase === "segment");
+  assert.equal(report.summary.masterSucceeded, 10);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 1);
+  const segment = report.results.find((result) => (
+    result.cameraId === "auth-a" && result.phase === "segment"
+  ));
   assert.equal(segment.status, 206);
   assert.equal(segment.authorizationOk, true);
   assert.equal(segment.corsOk, true);

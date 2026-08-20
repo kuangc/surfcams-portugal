@@ -24,6 +24,7 @@ const HLS_CONTENT_TYPES = new Set([
   "audio/x-mpegurl"
 ]);
 const SEGMENT_CONTENT_TYPES = new Set([
+  "video/m2ts",
   "video/mpeg",
   "video/mp2t"
 ]);
