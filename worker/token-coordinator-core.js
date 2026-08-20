@@ -50,6 +50,7 @@ export class TokenCoordinatorCore {
     this.now = now;
     this.createRevision = createRevision;
     this.inFlight = null;
+    this.generation = 0;
   }
 
   isFresh(record, timestamp) {
@@ -88,6 +89,7 @@ export class TokenCoordinatorCore {
           refreshAt
         };
         await this.storage.put(STORAGE_KEY, record);
+        this.generation += 1;
         return record;
       } catch {
         throw acquisitionUnavailable();
@@ -102,25 +104,33 @@ export class TokenCoordinatorCore {
   }
 
   async getToken() {
-    const record = await this.storage.get(STORAGE_KEY);
-    if (this.isFresh(record, this.now())) return record;
-    if (this.inFlight) return this.inFlight;
-    return this.acquire([record?.revision]);
+    while (true) {
+      const generation = this.generation;
+      const record = await this.storage.get(STORAGE_KEY);
+      if (generation !== this.generation) continue;
+      if (this.isFresh(record, this.now())) return record;
+      if (this.inFlight) return this.inFlight;
+      return this.acquire([record?.revision]);
+    }
   }
 
   async refreshToken(failedRevision) {
     if (!isNonblankRevision(failedRevision)) {
       throw refreshUnavailable();
     }
-    if (this.inFlight) return this.inFlight;
-    const record = await this.storage.get(STORAGE_KEY);
-    if (this.inFlight) return this.inFlight;
-    if (
-      this.isFresh(record, this.now())
-      && record.revision !== failedRevision
-    ) {
-      return record;
+    while (true) {
+      if (this.inFlight) return this.inFlight;
+      const generation = this.generation;
+      const record = await this.storage.get(STORAGE_KEY);
+      if (generation !== this.generation) continue;
+      if (this.inFlight) return this.inFlight;
+      if (
+        this.isFresh(record, this.now())
+        && record.revision !== failedRevision
+      ) {
+        return record;
+      }
+      return this.acquire([record?.revision, failedRevision]);
     }
-    return this.acquire([record?.revision, failedRevision]);
   }
 }

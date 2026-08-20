@@ -38,6 +38,20 @@ function createStorage(initialValue) {
   };
 }
 
+function delayFirstStorageRead(storage, delayedRead) {
+  const get = storage.get.bind(storage);
+  let getCalls = 0;
+  storage.get = async (key) => {
+    getCalls += 1;
+    if (getCalls === 1) {
+      storage.calls.get += 1;
+      return delayedRead.promise;
+    }
+    return get(key);
+  };
+  return storage;
+}
+
 function createCoordinator({
   storage = createStorage(),
   timestamp = 1_000,
@@ -369,14 +383,10 @@ test("a stale refresh with an earlier delayed read joins a replacement started l
     fetchedAt: 1_000,
     refreshAt: 1_000 + MEO_BROKER_TTL_MS
   };
-  let getCalls = 0;
-  const storage = createStorage(previous);
-  storage.get = async () => {
-    storage.calls.get += 1;
-    getCalls += 1;
-    if (getCalls === 1) return delayedFirstRead.promise;
-    return previous;
-  };
+  const storage = delayFirstStorageRead(
+    createStorage(previous),
+    delayedFirstRead
+  );
   let fetches = 0;
   const harness = createCoordinator({
     storage,
@@ -403,6 +413,139 @@ test("a stale refresh with an earlier delayed read joins a replacement started l
 
   assert.equal(staleResult === replacement, true);
   assert.equal(replacement.revision, "revision-2");
+  assert.equal(storage.calls.put, 1);
+  assert.equal(storage.calls.delete, 0);
+});
+
+test("a stale refresh rereads after a replacement fully settles", async () => {
+  const delayedFirstRead = deferred();
+  const previous = {
+    token: "fixture-prior-token",
+    revision: "revision-1",
+    fetchedAt: 1_000,
+    refreshAt: 1_000 + MEO_BROKER_TTL_MS
+  };
+  const storage = delayFirstStorageRead(
+    createStorage(previous),
+    delayedFirstRead
+  );
+  const harness = createCoordinator({
+    storage,
+    timestamp: 2_000,
+    revisions: ["revision-2", "revision-3"]
+  });
+
+  const staleRevisionRefresh = harness.coordinator.refreshToken("revision-0");
+  const replacement = await harness.coordinator.refreshToken("revision-1");
+  assert.equal(replacement.revision, "revision-2");
+
+  delayedFirstRead.resolve(previous);
+  const staleResult = await staleRevisionRefresh;
+
+  assert.equal(staleResult === replacement, true);
+  assert.equal(harness.fetchCount(), 1);
+  assert.equal(storage.calls.put, 1);
+  assert.equal(storage.calls.delete, 0);
+});
+
+test("a current-revision refresh rereads after a replacement fully settles", async () => {
+  const delayedFirstRead = deferred();
+  const previous = {
+    token: "fixture-prior-token",
+    revision: "revision-1",
+    fetchedAt: 1_000,
+    refreshAt: 1_000 + MEO_BROKER_TTL_MS
+  };
+  const storage = delayFirstStorageRead(
+    createStorage(previous),
+    delayedFirstRead
+  );
+  const harness = createCoordinator({
+    storage,
+    timestamp: 2_000,
+    revisions: ["revision-2", "revision-3"]
+  });
+
+  const delayedCurrentRefresh = harness.coordinator.refreshToken("revision-1");
+  const replacement = await harness.coordinator.refreshToken("revision-1");
+  assert.equal(replacement.revision, "revision-2");
+
+  delayedFirstRead.resolve(previous);
+  const delayedResult = await delayedCurrentRefresh;
+
+  assert.equal(delayedResult === replacement, true);
+  assert.equal(harness.fetchCount(), 1);
+  assert.equal(storage.calls.put, 1);
+  assert.equal(storage.calls.delete, 0);
+});
+
+test("an ordinary read rereads after a forced replacement fully settles", async () => {
+  const delayedFirstRead = deferred();
+  const previous = {
+    token: "fixture-prior-token",
+    revision: "revision-1",
+    fetchedAt: 1_000,
+    refreshAt: 1_000 + MEO_BROKER_TTL_MS
+  };
+  const storage = delayFirstStorageRead(
+    createStorage(previous),
+    delayedFirstRead
+  );
+  const harness = createCoordinator({
+    storage,
+    timestamp: 2_000,
+    revisions: ["revision-2", "revision-3"]
+  });
+
+  const ordinaryRead = harness.coordinator.getToken();
+  const replacement = await harness.coordinator.refreshToken("revision-1");
+  assert.equal(replacement.revision, "revision-2");
+
+  delayedFirstRead.resolve(previous);
+  const readResult = await ordinaryRead;
+
+  assert.equal(readResult === replacement, true);
+  assert.equal(harness.fetchCount(), 1);
+  assert.equal(storage.calls.put, 1);
+  assert.equal(storage.calls.delete, 0);
+});
+
+test("a failed acquisition does not advance generation before an explicit retry", async () => {
+  const delayedFirstRead = deferred();
+  const previous = {
+    token: "fixture-prior-token",
+    revision: "revision-1",
+    fetchedAt: 1_000,
+    refreshAt: 1_000 + MEO_BROKER_TTL_MS
+  };
+  const storage = delayFirstStorageRead(
+    createStorage(previous),
+    delayedFirstRead
+  );
+  let fetches = 0;
+  const harness = createCoordinator({
+    storage,
+    timestamp: 2_000,
+    revisions: ["revision-2"],
+    fetchToken: async () => {
+      fetches += 1;
+      if (fetches === 1) throw new Error("fixture-upstream-failure");
+      return "fixture-retry-token";
+    }
+  });
+
+  const delayedRefresh = harness.coordinator.refreshToken("revision-1");
+  await assert.rejects(
+    harness.coordinator.refreshToken("revision-1"),
+    { message: "Token acquisition unavailable" }
+  );
+
+  delayedFirstRead.resolve(previous);
+  const replacement = await delayedRefresh;
+
+  assert.equal(replacement.revision, "revision-2");
+  assert.equal(fetches, 2);
+  assert.equal(storage.calls.get, 2);
   assert.equal(storage.calls.put, 1);
   assert.equal(storage.calls.delete, 0);
 });
