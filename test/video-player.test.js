@@ -4,9 +4,83 @@ import test from "node:test";
 
 import {
   createFeedTilePlayer,
-  createVideoGestures,
-  createVideoPlayer
+  createVideoGestures
 } from "../src/video-player.js";
+
+const SIGNED_URL = "https://video-auth1.iol.pt/auth-beachcam/riviera/playlist.m3u8?wmsAuthSign=signed";
+const REPLACEMENT_URL = "https://video-auth1.iol.pt/auth-beachcam/riviera/playlist.m3u8?wmsAuthSign=replacement";
+
+function playbackClientStub({
+  resolvedUrl = SIGNED_URL,
+  revision = "revision-1"
+} = {}) {
+  const calls = [];
+  return {
+    calls,
+    async resolve(cameraId) {
+      calls.push(["resolve", cameraId]);
+      return {
+        cameraId,
+        playlistUrl: resolvedUrl,
+        revision,
+        refreshAt: "2099-01-01T00:00:00.000Z"
+      };
+    },
+    async refresh(cameraId, failedRevision) {
+      calls.push(["refresh", cameraId, failedRevision]);
+      return {
+        cameraId,
+        playlistUrl: resolvedUrl.replace("signed", "replacement"),
+        revision: "revision-2",
+        refreshAt: "2099-01-01T00:00:00.000Z"
+      };
+    }
+  };
+}
+
+function camera(id = "camera-a", image = "poster.jpg") {
+  return {
+    id,
+    name: `Camera ${id}`,
+    image,
+    streamUrl: `https://video-auth1.iol.pt/beachcam/${id}/playlist.m3u8`
+  };
+}
+
+function playbackRecord(cameraId, {
+  playlistUrl = SIGNED_URL,
+  revision = "revision-1"
+} = {}) {
+  return {
+    cameraId,
+    playlistUrl,
+    revision,
+    refreshAt: "2099-01-01T00:00:00.000Z"
+  };
+}
+
+async function waitFor(predicate, message = "condition was not reached") {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (predicate()) return;
+    await Promise.resolve();
+  }
+  assert.fail(message);
+}
+
+async function assertPending(promise) {
+  let settled = false;
+  promise.then(
+    () => { settled = true; },
+    () => { settled = true; }
+  );
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(settled, false);
+}
+
+function callCount(client, method) {
+  return client.calls.filter(([name]) => name === method).length;
+}
 
 function videoStub() {
   const listeners = new Map();
@@ -124,19 +198,29 @@ test("a failed shared HLS script load is removed and can be retried", async () =
     const video = videoStub();
     video.canPlayType = () => "";
     const status = { textContent: "" };
-    const player = createFeedTilePlayer({ video, status, hlsScriptUrl: "https://example.com/hls.js" });
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({
+      video,
+      status,
+      playbackClient,
+      hlsScriptUrl: "https://example.com/hls.js"
+    });
 
-    const first = player.play({ streamUrl: "https://example.com/live.m3u8" });
+    const first = player.play(camera());
+    await waitFor(() => scripts.length === 1);
     scripts[0].onerror();
     assert.equal(await first, "unavailable");
     assert.equal(scripts[0].removeCalled, true);
+    assert.equal(callCount(playbackClient, "refresh"), 0);
 
     const HlsStub = createHlsStub();
-    const second = player.play({ streamUrl: "https://example.com/live.m3u8" });
+    const second = player.play(camera());
+    await waitFor(() => scripts.length === 2);
     assert.equal(scripts.length, 2, "retry injects a fresh loader");
     globalThis.window.Hls = HlsStub;
     scripts[1].onload();
-    await Promise.resolve();
+    await waitFor(() => HlsStub.instances.length === 1);
+    assert.equal(HlsStub.instances[0].source === SIGNED_URL, true);
     HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
     assert.equal(await second, "playing");
   } finally {
@@ -306,102 +390,56 @@ test("monitor frames clip a zoomed video to its viewport", () => {
   assert.match(styles, /\.feed-frame\s*{[^}]*overflow:\s*hidden/s);
 });
 
-test("createFeedTilePlayer reports unavailable for missing streams", () => {
+test("createFeedTilePlayer requires a camera ID rather than a direct stream", async () => {
   const video = videoStub();
   const status = { textContent: "" };
-  const player = createFeedTilePlayer({ video, status });
+  const playbackClient = playbackClientStub();
+  const player = createFeedTilePlayer({ video, status, playbackClient });
 
-  player.play({ name: "No Stream" });
+  const result = player.play({
+    name: "No ID",
+    streamUrl: "https://video-auth1.iol.pt/beachcam/unsigned/playlist.m3u8"
+  });
 
+  assert.equal(await result, "unavailable");
   assert.equal(status.textContent, "Feed unavailable");
   assert.equal(player.state(), "unavailable");
+  assert.equal(callCount(playbackClient, "resolve"), 0);
+  assert.equal(video.src.length === 0, true);
 });
 
-test("createFeedTilePlayer uses native HLS when available", async () => {
+test("native HLS receives only the exact broker URL", async () => {
   const video = videoStub();
   const status = { textContent: "" };
-  const player = createFeedTilePlayer({ video, status });
+  const playbackClient = playbackClientStub();
+  const player = createFeedTilePlayer({ video, status, playbackClient });
 
-  await player.play({ name: "Cam", streamUrl: "https://example.com/live.m3u8", image: "poster.jpg" });
+  assert.equal(await player.play(camera()), "playing");
 
-  assert.equal(video.src, "https://example.com/live.m3u8");
+  assert.equal(video.src === SIGNED_URL, true);
+  assert.equal(video.src === camera().streamUrl, false);
   assert.equal(video.poster, "poster.jpg");
   assert.equal(status.textContent, "Playing");
   assert.equal(player.state(), "playing");
+  assert.equal(playbackClient.calls[0][0], "resolve");
+  assert.equal(playbackClient.calls[0][1], "camera-a");
 });
 
-test("a later native HLS media error transitions a playing tile to unavailable", async () => {
+test("a camera ID is sufficient for broker playback", async () => {
   const video = videoStub();
-  const status = { textContent: "" };
-  const stateChanges = [];
+  const playbackClient = playbackClientStub();
   const player = createFeedTilePlayer({
     video,
-    status,
-    onStateChange: (state) => stateChanges.push(state)
+    status: { textContent: "" },
+    playbackClient
   });
 
-  assert.equal(
-    await player.play({ streamUrl: "https://example.com/native.m3u8" }),
-    "playing"
-  );
-
-  video.dispatch("error");
-
-  assert.equal(player.state(), "unavailable");
-  assert.equal(status.textContent, "Feed unavailable");
-  assert.equal(stateChanges.at(-1), "unavailable");
+  assert.equal(await player.play({ id: "camera-a", image: "poster.jpg" }), "playing");
+  assert.equal(video.src === SIGNED_URL, true);
+  assert.equal(callCount(playbackClient, "resolve"), 1);
 });
 
-test("native HLS error listeners are generation-safe and removed during cleanup", async () => {
-  const video = videoStub();
-  const status = { textContent: "" };
-  const player = createFeedTilePlayer({ video, status });
-
-  await player.play({ streamUrl: "https://example.com/first.m3u8" });
-  assert.equal(video.listeners("error").length, 1);
-  const [staleErrorListener] = video.listeners("error");
-
-  await player.play({ streamUrl: "https://example.com/second.m3u8" });
-  assert.equal(video.listeners("error").length, 1);
-  staleErrorListener();
-  assert.equal(player.state(), "playing");
-
-  player.clear();
-  assert.equal(video.listeners("error").length, 0);
-  assert.equal(player.state(), "idle");
-});
-
-test("createFeedTilePlayer can expire and clear a tile", () => {
-  const video = videoStub();
-  const status = { textContent: "" };
-  const player = createFeedTilePlayer({ video, status });
-
-  player.expire();
-
-  assert.equal(status.textContent, "Tap to restart");
-  assert.equal(player.state(), "expired");
-});
-
-test("clear keeps late native play resolution and rejection from relabeling a tile", async () => {
-  for (const outcome of ["resolve", "reject"]) {
-    const pendingPlay = deferred();
-    const video = videoStub();
-    video.play = () => pendingPlay.promise;
-    const status = { textContent: "" };
-    const player = createFeedTilePlayer({ video, status });
-
-    const playResult = player.play({ streamUrl: "https://example.com/native.m3u8" });
-    player.clear();
-    pendingPlay[outcome](new Error("autoplay rejected after clear"));
-
-    assert.equal(await playResult, "idle");
-    assert.equal(player.state(), "idle");
-    assert.notEqual(status.textContent, "Playing");
-    assert.notEqual(status.textContent, "Press play to start");
-  }
-});
-
-test("clear before asynchronous Hls resolution prevents construction and attachment", async () => {
+test("hls.js receives only the exact broker URL", async () => {
   const previousWindow = globalThis.window;
   const HlsStub = createHlsStub();
   globalThis.window = { Hls: HlsStub };
@@ -409,94 +447,102 @@ test("clear before asynchronous Hls resolution prevents construction and attachm
   try {
     const video = videoStub();
     video.canPlayType = () => "";
-    const player = createFeedTilePlayer({ video, status: { textContent: "" } });
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({
+      video,
+      status: { textContent: "" },
+      playbackClient
+    });
 
-    const playResult = player.play({ streamUrl: "https://example.com/hls.m3u8" });
-    player.clear();
-
-    assert.equal(await playResult, "idle");
-    assert.equal(HlsStub.instances.length, 0);
-    assert.equal(player.state(), "idle");
-  } finally {
-    globalThis.window = previousWindow;
-  }
-});
-
-test("stale Hls events cannot relabel a newer or cleared player generation", async () => {
-  const previousWindow = globalThis.window;
-  const HlsStub = createHlsStub();
-  globalThis.window = { Hls: HlsStub };
-
-  try {
-    const video = videoStub();
-    video.canPlayType = () => "";
-    const status = { textContent: "" };
-    const player = createFeedTilePlayer({ video, status });
-
-    const firstPlay = player.play({ streamUrl: "https://example.com/first.m3u8" });
-    await Promise.resolve();
-    const firstHls = HlsStub.instances[0];
-
-    const secondPlay = player.play({ streamUrl: "https://example.com/second.m3u8" });
-    await Promise.resolve();
-    const secondHls = HlsStub.instances[1];
-    assert.equal(await firstPlay, "idle");
-
-    firstHls.emit(HlsStub.Events.MANIFEST_PARSED);
-    firstHls.emit(HlsStub.Events.ERROR, { fatal: true });
-    await Promise.resolve();
-    assert.equal(player.state(), "loading");
-    assert.equal(status.textContent, "Loading");
-
-    player.clear();
-    assert.equal(await secondPlay, "idle");
-    secondHls.emit(HlsStub.Events.MANIFEST_PARSED);
-    secondHls.emit(HlsStub.Events.ERROR, { fatal: true });
-    await Promise.resolve();
-    assert.equal(player.state(), "idle");
-    assert.notEqual(status.textContent, "Playing");
-    assert.notEqual(status.textContent, "Feed unavailable");
-  } finally {
-    globalThis.window = previousWindow;
-  }
-});
-
-test("native and hls.js autoplay rejection resolve as blocked with a manual-play label", async () => {
-  const nativeVideo = videoStub();
-  nativeVideo.play = () => Promise.reject(new Error("autoplay blocked"));
-  const nativeStatus = { textContent: "" };
-  const nativePlayer = createFeedTilePlayer({ video: nativeVideo, status: nativeStatus });
-
-  assert.equal(
-    await nativePlayer.play({ streamUrl: "https://example.com/native.m3u8" }),
-    "blocked"
-  );
-  assert.equal(nativePlayer.state(), "blocked");
-  assert.equal(nativeStatus.textContent, "Press play to start");
-
-  const previousWindow = globalThis.window;
-  const HlsStub = createHlsStub();
-  globalThis.window = { Hls: HlsStub };
-  try {
-    const hlsVideo = videoStub();
-    hlsVideo.canPlayType = () => "";
-    hlsVideo.play = () => Promise.reject(new Error("autoplay blocked"));
-    const hlsStatus = { textContent: "" };
-    const hlsPlayer = createFeedTilePlayer({ video: hlsVideo, status: hlsStatus });
-
-    const hlsResult = hlsPlayer.play({ streamUrl: "https://example.com/hls.m3u8" });
-    await Promise.resolve();
+    const result = player.play(camera());
+    await waitFor(() => HlsStub.instances.length === 1);
+    assert.equal(HlsStub.instances[0].source === SIGNED_URL, true);
+    assert.equal(HlsStub.instances[0].source === camera().streamUrl, false);
     HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
 
-    assert.equal(await hlsResult, "blocked");
-    assert.equal(hlsPlayer.state(), "blocked");
-    assert.equal(hlsStatus.textContent, "Press play to start");
+    assert.equal(await result, "playing");
   } finally {
     globalThis.window = previousWindow;
   }
 });
 
-test("resume retries blocked native and attached hls.js media inside the user action", async () => {
+test("camera replacement synchronously detaches old media before resolving the new source", async () => {
+  const pendingSecond = deferred();
+  const playbackClient = playbackClientStub();
+  playbackClient.resolve = async (cameraId) => {
+    playbackClient.calls.push(["resolve", cameraId]);
+    if (cameraId === "camera-b") return pendingSecond.promise;
+    return playbackRecord(cameraId);
+  };
+  const video = videoStub();
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({ video, status, playbackClient });
+  await player.play(camera("camera-a", "a.jpg"));
+
+  video.loadCalled = false;
+  const second = player.play(camera("camera-b", "b.jpg"));
+
+  assert.equal(video.paused, true);
+  assert.equal(video.src.length === 0, true);
+  assert.equal(video.poster, "b.jpg");
+  assert.equal(video.loadCalled, true);
+  assert.equal(status.textContent, "Loading");
+  assert.equal(player.state(), "loading");
+  pendingSecond.resolve(playbackRecord("camera-b", { playlistUrl: REPLACEMENT_URL }));
+  assert.equal(await second, "playing");
+  assert.equal(video.src === REPLACEMENT_URL, true);
+});
+
+test("a synchronous state callback replacement cannot settle the new generation", async () => {
+  const pendingSecond = deferred();
+  const playbackClient = playbackClientStub();
+  playbackClient.resolve = async (cameraId) => {
+    playbackClient.calls.push(["resolve", cameraId]);
+    if (cameraId === "camera-b") return pendingSecond.promise;
+    return playbackRecord(cameraId);
+  };
+  let player;
+  let secondResult;
+  let replaced = false;
+  player = createFeedTilePlayer({
+    video: videoStub(),
+    status: { textContent: "" },
+    playbackClient,
+    onStateChange(state) {
+      if (state !== "playing" || replaced) return;
+      replaced = true;
+      secondResult = player.play(camera("camera-b"));
+    }
+  });
+
+  const firstResult = player.play(camera());
+  await waitFor(() => Boolean(secondResult));
+
+  assert.equal(await firstResult, "idle");
+  await assertPending(secondResult);
+  assert.equal(player.state(), "loading");
+  pendingSecond.resolve(playbackRecord("camera-b", { playlistUrl: REPLACEMENT_URL }));
+  assert.equal(await secondResult, "playing");
+});
+
+test("broker resolve failure becomes unavailable without forcing a refresh", async () => {
+  const playbackClient = playbackClientStub();
+  playbackClient.resolve = async (cameraId) => {
+    playbackClient.calls.push(["resolve", cameraId]);
+    throw new Error("broker unavailable");
+  };
+  const video = videoStub();
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({ video, status, playbackClient });
+
+  assert.equal(await player.play(camera()), "unavailable");
+  assert.equal(player.state(), "unavailable");
+  assert.equal(status.textContent, "Feed unavailable");
+  assert.equal(callCount(playbackClient, "refresh"), 0);
+  assert.equal(video.src.length === 0, true);
+});
+
+test("native and hls.js autoplay rejection are blocked without a refresh", async () => {
   for (const mode of ["native", "hls"]) {
     const previousWindow = globalThis.window;
     const HlsStub = createHlsStub();
@@ -504,132 +550,448 @@ test("resume retries blocked native and attached hls.js media inside the user ac
     try {
       const video = videoStub();
       if (mode === "hls") video.canPlayType = () => "";
-      let allowPlay = false;
-      video.play = () => allowPlay
-        ? Promise.resolve()
-        : Promise.reject(new Error("autoplay blocked"));
-      const player = createFeedTilePlayer({ video, status: { textContent: "" } });
-      const initial = player.play({ streamUrl: `https://example.com/${mode}.m3u8` });
+      video.play = () => Promise.reject(new Error("autoplay blocked"));
+      const status = { textContent: "" };
+      const playbackClient = playbackClientStub();
+      const player = createFeedTilePlayer({ video, status, playbackClient });
+
+      const result = player.play(camera());
       if (mode === "hls") {
-        await Promise.resolve();
+        await waitFor(() => HlsStub.instances.length === 1);
         HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
       }
-      assert.equal(await initial, "blocked");
 
-      allowPlay = true;
-      const hlsInstanceCount = HlsStub.instances.length;
-      assert.equal(await player.resume(), "playing");
-      assert.equal(player.state(), "playing");
-      if (mode === "hls") {
-        assert.equal(HlsStub.instances.length, hlsInstanceCount, "resume keeps the attached HLS instance");
-      }
+      assert.equal(await result, "blocked");
+      assert.equal(player.state(), "blocked");
+      assert.equal(status.textContent, "Press play to start");
+      assert.equal(callCount(playbackClient, "refresh"), 0);
     } finally {
       globalThis.window = previousWindow;
     }
   }
 });
 
-test("a pending resume cannot relabel a player after it is cleared", async () => {
-  const pendingResume = deferred();
+test("a later native media error refreshes once and attaches the replacement", async () => {
   const video = videoStub();
-  let playCount = 0;
-  video.play = () => {
-    playCount += 1;
-    return playCount === 1
-      ? Promise.reject(new Error("autoplay blocked"))
-      : pendingResume.promise;
-  };
   const status = { textContent: "" };
-  const player = createFeedTilePlayer({ video, status });
+  const states = [];
+  const playbackClient = playbackClientStub();
+  const player = createFeedTilePlayer({
+    video,
+    status,
+    playbackClient,
+    onStateChange: (state) => states.push(state)
+  });
+  await player.play(camera());
 
-  assert.equal(
-    await player.play({ streamUrl: "https://example.com/native.m3u8" }),
-    "blocked"
-  );
+  video.dispatch("error");
+  await waitFor(() => callCount(playbackClient, "refresh") === 1);
+  await waitFor(() => player.state() === "playing");
 
-  const resumeResult = player.resume();
-  player.clear();
-  pendingResume.resolve();
+  assert.equal(playbackClient.calls[1][0], "refresh");
+  assert.equal(playbackClient.calls[1][1], "camera-a");
+  assert.equal(playbackClient.calls[1][2] === "revision-1", true);
+  assert.equal(video.src === REPLACEMENT_URL, true);
+  assert.equal(states.includes("loading"), true);
+  assert.equal(states.at(-1), "playing");
+});
 
-  assert.equal(await resumeResult, "idle");
+test("later caller mutation cannot redirect a fatal refresh to another camera", async () => {
+  const selectedCamera = camera("camera-a");
+  const playbackClient = playbackClientStub();
+  const video = videoStub();
+  const player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient
+  });
+  await player.play(selectedCamera);
+
+  selectedCamera.id = "camera-b";
+  video.dispatch("error");
+  await waitFor(() => callCount(playbackClient, "refresh") === 1);
+  await waitFor(() => player.state() === "playing");
+
+  assert.equal(playbackClient.calls[1][1], "camera-a");
+  assert.equal(video.src === REPLACEMENT_URL, true);
+});
+
+test("a synchronous lifecycle clear during the refreshing label cancels stale broker work", async () => {
+  const playbackClient = playbackClientStub();
+  const video = videoStub();
+  const status = { textContent: "" };
+  let player;
+  player = createFeedTilePlayer({
+    video,
+    status,
+    playbackClient,
+    onStateChange() {
+      if (status.textContent === "Refreshing feed") player.clear();
+    }
+  });
+  await player.play(camera());
+
+  video.dispatch("error");
+  await Promise.resolve();
+
   assert.equal(player.state(), "idle");
   assert.equal(status.textContent, "Preview paused");
+  assert.equal(callCount(playbackClient, "refresh"), 0);
 });
 
-test("a fatal HLS error wins over a pending manual resume", async () => {
+test("a later fatal hls.js error refreshes once and attaches the replacement", async () => {
   const previousWindow = globalThis.window;
   const HlsStub = createHlsStub();
   globalThis.window = { Hls: HlsStub };
 
   try {
-    const pendingResume = deferred();
     const video = videoStub();
     video.canPlayType = () => "";
-    let playCount = 0;
-    video.play = () => {
-      playCount += 1;
-      return playCount === 1
-        ? Promise.reject(new Error("autoplay blocked"))
-        : pendingResume.promise;
-    };
     const status = { textContent: "" };
-    const player = createFeedTilePlayer({ video, status });
-
-    const initialPlay = player.play({ streamUrl: "https://example.com/hls.m3u8" });
-    await Promise.resolve();
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({ video, status, playbackClient });
+    const initial = player.play(camera());
+    await waitFor(() => HlsStub.instances.length === 1);
     HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
-    assert.equal(await initialPlay, "blocked");
+    assert.equal(await initial, "playing");
 
-    const resumeResult = player.resume();
     HlsStub.instances[0].emit(HlsStub.Events.ERROR, { fatal: true });
-    pendingResume.resolve();
+    await waitFor(() => HlsStub.instances.length === 2);
 
-    assert.equal(await resumeResult, "unavailable");
-    assert.equal(player.state(), "unavailable");
-    assert.equal(status.textContent, "Feed unavailable");
+    assert.equal(HlsStub.instances[0].destroyed, true);
+    assert.equal(HlsStub.instances[1].source === REPLACEMENT_URL, true);
+    assert.equal(callCount(playbackClient, "refresh"), 1);
+    HlsStub.instances[1].emit(HlsStub.Events.MANIFEST_PARSED);
+    await waitFor(() => player.state() === "playing");
+    assert.equal(status.textContent, "Playing");
   } finally {
     globalThis.window = previousWindow;
   }
 });
 
-test("a fatal Hls error leaves a separate player untouched", async () => {
+test("native initial-load recovery ignores the old autoplay settlement and follows the replacement", async () => {
+  const scenarios = [
+    { old: "resolve", final: "playing" },
+    { old: "reject", final: "blocked" },
+    { old: "resolve", final: "unavailable" }
+  ];
+
+  for (const scenario of scenarios) {
+    const attempts = [deferred(), deferred()];
+    let playCount = 0;
+    const video = videoStub();
+    video.play = () => attempts[playCount++].promise;
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({
+      video,
+      status: { textContent: "" },
+      playbackClient
+    });
+
+    const result = player.play(camera());
+    await waitFor(() => playCount === 1);
+    video.dispatch("error");
+    await waitFor(() => playCount === 2);
+    attempts[0][scenario.old](new Error("stale autoplay"));
+    await assertPending(result);
+
+    if (scenario.final === "playing") attempts[1].resolve();
+    if (scenario.final === "blocked") attempts[1].reject(new Error("replacement blocked"));
+    if (scenario.final === "unavailable") video.dispatch("error");
+
+    assert.equal(await result, scenario.final);
+    if (scenario.final === "unavailable") attempts[1].resolve();
+    await Promise.resolve();
+    assert.equal(player.state(), scenario.final);
+    assert.equal(callCount(playbackClient, "refresh"), 1);
+  }
+});
+
+test("hls.js initial-load recovery ignores the old autoplay settlement and follows the replacement", async () => {
+  const previousWindow = globalThis.window;
+
+  try {
+    for (const scenario of [
+      { old: "reject", final: "playing" },
+      { old: "resolve", final: "blocked" },
+      { old: "reject", final: "unavailable" }
+    ]) {
+      const HlsStub = createHlsStub();
+      globalThis.window = { Hls: HlsStub };
+      const attempts = [deferred(), deferred()];
+      let playCount = 0;
+      const video = videoStub();
+      video.canPlayType = () => "";
+      video.play = () => attempts[playCount++].promise;
+      const playbackClient = playbackClientStub();
+      const player = createFeedTilePlayer({
+        video,
+        status: { textContent: "" },
+        playbackClient
+      });
+
+      const result = player.play(camera());
+      await waitFor(() => HlsStub.instances.length === 1);
+      const original = HlsStub.instances[0];
+      original.emit(HlsStub.Events.MANIFEST_PARSED);
+      await waitFor(() => playCount === 1);
+      original.emit(HlsStub.Events.ERROR, { fatal: true });
+      await waitFor(() => HlsStub.instances.length === 2);
+      const replacement = HlsStub.instances[1];
+      replacement.emit(HlsStub.Events.MANIFEST_PARSED);
+      await waitFor(() => playCount === 2);
+      attempts[0][scenario.old](new Error("stale autoplay"));
+      original.emit(HlsStub.Events.ERROR, { fatal: true });
+      await assertPending(result);
+
+      if (scenario.final === "playing") attempts[1].resolve();
+      if (scenario.final === "blocked") attempts[1].reject(new Error("replacement blocked"));
+      if (scenario.final === "unavailable") {
+        replacement.emit(HlsStub.Events.ERROR, { fatal: true });
+      }
+
+      assert.equal(await result, scenario.final);
+      if (scenario.final === "unavailable") attempts[1].resolve();
+      await Promise.resolve();
+      assert.equal(player.state(), scenario.final);
+      assert.equal(callCount(playbackClient, "refresh"), 1);
+    }
+  } finally {
+    globalThis.window = previousWindow;
+  }
+});
+
+test("a failed refresh is unavailable and explicit Retry gets a fresh refresh budget", async () => {
+  const playbackClient = playbackClientStub();
+  let refreshCount = 0;
+  playbackClient.refresh = async (cameraId, failedRevision) => {
+    playbackClient.calls.push(["refresh", cameraId, failedRevision]);
+    refreshCount += 1;
+    if (refreshCount === 1) throw new Error("refresh unavailable");
+    return playbackRecord(cameraId, {
+      playlistUrl: REPLACEMENT_URL,
+      revision: "revision-2"
+    });
+  };
+  const video = videoStub();
+  const player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient
+  });
+
+  await player.play(camera());
+  video.dispatch("error");
+  await waitFor(() => player.state() === "unavailable");
+  assert.equal(callCount(playbackClient, "refresh"), 1);
+
+  assert.equal(await player.play(camera()), "playing");
+  video.dispatch("error");
+  await waitFor(() => player.state() === "playing" && callCount(playbackClient, "refresh") === 2);
+
+  assert.equal(video.src === REPLACEMENT_URL, true);
+  assert.equal(callCount(playbackClient, "refresh"), 2);
+});
+
+test("clear and expire make late broker resolves inert", async () => {
+  for (const action of ["clear", "expire"]) {
+    const pendingResolve = deferred();
+    const playbackClient = playbackClientStub();
+    playbackClient.resolve = async (cameraId) => {
+      playbackClient.calls.push(["resolve", cameraId]);
+      return pendingResolve.promise;
+    };
+    const video = videoStub();
+    const status = { textContent: "" };
+    const player = createFeedTilePlayer({ video, status, playbackClient });
+
+    const result = player.play(camera());
+    player[action]();
+    pendingResolve.resolve(playbackRecord("camera-a"));
+
+    assert.equal(await result, action === "clear" ? "idle" : "expired");
+    await Promise.resolve();
+    assert.equal(player.state(), action === "clear" ? "idle" : "expired");
+    assert.equal(video.src.length === 0, true);
+    assert.equal(video.listeners("error").length, 0);
+  }
+});
+
+test("clear, expire, and replacement make late native autoplay settlement inert", async () => {
+  for (const outcome of ["resolve", "reject"]) {
+    for (const action of ["clear", "expire", "replace"]) {
+      const pendingAutoplay = deferred();
+      let playCount = 0;
+      const video = videoStub();
+      video.play = () => {
+        playCount += 1;
+        return playCount === 1 ? pendingAutoplay.promise : Promise.resolve();
+      };
+      const playbackClient = playbackClientStub();
+      const status = { textContent: "" };
+      const player = createFeedTilePlayer({ video, status, playbackClient });
+      const firstResult = player.play(camera());
+      await waitFor(() => playCount === 1);
+
+      let replacementResult;
+      if (action === "replace") replacementResult = player.play(camera("camera-b"));
+      else player[action]();
+      pendingAutoplay[outcome](new Error("stale autoplay"));
+
+      assert.equal(await firstResult, action === "expire" ? "expired" : "idle");
+      if (replacementResult) assert.equal(await replacementResult, "playing");
+      await Promise.resolve();
+      assert.equal(player.state(), action === "clear" ? "idle" : action === "expire" ? "expired" : "playing");
+      assert.equal(status.textContent, action === "clear"
+        ? "Preview paused"
+        : action === "expire"
+          ? "Tap to restart"
+          : "Playing");
+    }
+  }
+});
+
+test("clear, expire, and replacement make late refreshes and old native handlers inert", async () => {
+  for (const action of ["clear", "expire", "replace"]) {
+    const pendingRefresh = deferred();
+    const playbackClient = playbackClientStub();
+    playbackClient.resolve = async (cameraId) => {
+      playbackClient.calls.push(["resolve", cameraId]);
+      return playbackRecord(cameraId, {
+        playlistUrl: cameraId === "camera-b" ? REPLACEMENT_URL : SIGNED_URL
+      });
+    };
+    playbackClient.refresh = async (cameraId, failedRevision) => {
+      playbackClient.calls.push(["refresh", cameraId, failedRevision]);
+      return pendingRefresh.promise;
+    };
+    const video = videoStub();
+    const status = { textContent: "" };
+    const player = createFeedTilePlayer({ video, status, playbackClient });
+    await player.play(camera());
+    const [oldHandler] = video.listeners("error");
+    oldHandler();
+    await waitFor(() => callCount(playbackClient, "refresh") === 1);
+
+    if (action === "replace") {
+      assert.equal(await player.play(camera("camera-b", "b.jpg")), "playing");
+    } else {
+      player[action]();
+    }
+    oldHandler();
+    pendingRefresh.resolve(playbackRecord("camera-a", { playlistUrl: REPLACEMENT_URL }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    assert.equal(callCount(playbackClient, "refresh"), 1);
+    assert.equal(player.state(), action === "clear" ? "idle" : action === "expire" ? "expired" : "playing");
+    assert.equal(video.src === (action === "replace" ? REPLACEMENT_URL : ""), true);
+  }
+});
+
+test("stale hls.js events cannot refresh or relabel a replacement or cleared generation", async () => {
   const previousWindow = globalThis.window;
   const HlsStub = createHlsStub();
   globalThis.window = { Hls: HlsStub };
 
   try {
-    const firstVideo = videoStub();
-    firstVideo.canPlayType = () => "";
-    const firstStatus = { textContent: "" };
-    const firstPlayer = createFeedTilePlayer({ video: firstVideo, status: firstStatus });
-    const secondVideo = videoStub();
-    secondVideo.canPlayType = () => "";
-    const secondStatus = { textContent: "" };
-    const secondPlayer = createFeedTilePlayer({ video: secondVideo, status: secondStatus });
+    const video = videoStub();
+    video.canPlayType = () => "";
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({
+      video,
+      status: { textContent: "" },
+      playbackClient
+    });
+    const first = player.play(camera());
+    await waitFor(() => HlsStub.instances.length === 1);
+    const oldInstance = HlsStub.instances[0];
 
-    const firstResult = firstPlayer.play({ streamUrl: "https://example.com/first.m3u8" });
-    const secondResult = secondPlayer.play({ streamUrl: "https://example.com/second.m3u8" });
+    const second = player.play(camera("camera-b"));
+    await waitFor(() => HlsStub.instances.length === 2);
+    const currentInstance = HlsStub.instances[1];
+    assert.equal(await first, "idle");
+    oldInstance.emit(HlsStub.Events.MANIFEST_PARSED);
+    oldInstance.emit(HlsStub.Events.ERROR, { fatal: true });
+    assert.equal(callCount(playbackClient, "refresh"), 0);
+
+    player.clear();
+    assert.equal(await second, "idle");
+    currentInstance.emit(HlsStub.Events.MANIFEST_PARSED);
+    currentInstance.emit(HlsStub.Events.ERROR, { fatal: true });
     await Promise.resolve();
-    HlsStub.instances[1].emit(HlsStub.Events.MANIFEST_PARSED);
-    assert.equal(await secondResult, "playing");
-
-    HlsStub.instances[0].emit(HlsStub.Events.ERROR, { fatal: true });
-    assert.equal(await firstResult, "unavailable");
-    assert.equal(firstPlayer.state(), "unavailable");
-    assert.equal(firstStatus.textContent, "Feed unavailable");
-    assert.equal(secondPlayer.state(), "playing");
-    assert.equal(secondStatus.textContent, "Playing");
+    assert.equal(player.state(), "idle");
+    assert.equal(callCount(playbackClient, "refresh"), 0);
   } finally {
     globalThis.window = previousWindow;
   }
 });
 
-test("fatal HLS playback failures stay local and report the feed unavailable", async () => {
+test("hls.js setup failures destroy partial instances and never force a refresh", async () => {
   const previousWindow = globalThis.window;
 
-  class HlsStub {
+  try {
+    for (const failurePoint of ["constructor", "loadSource", "attachMedia"]) {
+      class FailingHls {
+        static Events = { ERROR: "error", MANIFEST_PARSED: "manifestParsed" };
+        static instances = [];
+
+        static isSupported() {
+          return true;
+        }
+
+        constructor() {
+          if (failurePoint === "constructor") throw new Error("setup failed");
+          this.handlers = new Map();
+          this.destroyed = false;
+          FailingHls.instances.push(this);
+        }
+
+        on(event, handler) {
+          this.handlers.set(event, handler);
+        }
+
+        loadSource() {
+          if (failurePoint === "loadSource") throw new Error("setup failed");
+        }
+
+        attachMedia() {
+          if (failurePoint === "attachMedia") throw new Error("setup failed");
+        }
+
+        destroy() {
+          this.destroyed = true;
+        }
+      }
+
+      globalThis.window = { Hls: FailingHls };
+      const video = videoStub();
+      video.canPlayType = () => "";
+      const playbackClient = playbackClientStub();
+      const player = createFeedTilePlayer({
+        video,
+        status: { textContent: "" },
+        playbackClient
+      });
+
+      assert.equal(await player.play(camera()), "unavailable");
+      assert.equal(callCount(playbackClient, "refresh"), 0);
+      assert.equal(player.state(), "unavailable");
+      if (FailingHls.instances[0]) {
+        assert.equal(FailingHls.instances[0].destroyed, true);
+      }
+    }
+  } finally {
+    globalThis.window = previousWindow;
+  }
+});
+
+test("a synchronous fatal hls.js load event starts recovery before a following setup throw", async () => {
+  const previousWindow = globalThis.window;
+
+  class SynchronousFatalHls {
     static Events = { ERROR: "error", MANIFEST_PARSED: "manifestParsed" };
-    static instance = null;
+    static instances = [];
 
     static isSupported() {
       return true;
@@ -637,34 +999,280 @@ test("fatal HLS playback failures stay local and report the feed unavailable", a
 
     constructor() {
       this.handlers = new Map();
-      HlsStub.instance = this;
+      this.destroyed = false;
+      SynchronousFatalHls.instances.push(this);
     }
-
-    loadSource() {}
-
-    attachMedia() {}
 
     on(event, handler) {
       this.handlers.set(event, handler);
     }
 
-    destroy() {}
+    loadSource() {
+      if (SynchronousFatalHls.instances.length === 1) {
+        this.handlers.get(SynchronousFatalHls.Events.ERROR)?.(null, { fatal: true });
+        throw new Error("old setup failed after fatal");
+      }
+    }
+
+    attachMedia() {}
+
+    destroy() {
+      this.destroyed = true;
+    }
+
+    emit(event, data = {}) {
+      this.handlers.get(event)?.(null, data);
+    }
   }
 
-  globalThis.window = { Hls: HlsStub };
-
+  globalThis.window = { Hls: SynchronousFatalHls };
   try {
     const video = videoStub();
     video.canPlayType = () => "";
-    const status = { textContent: "" };
-    const player = createVideoPlayer({ video, status });
+    const playbackClient = playbackClientStub();
+    const player = createFeedTilePlayer({
+      video,
+      status: { textContent: "" },
+      playbackClient
+    });
 
-    player.play({ streamUrl: "https://example.test/surfline.m3u8" });
-    await Promise.resolve();
-    HlsStub.instance.handlers.get(HlsStub.Events.ERROR)(null, { fatal: true });
+    const result = player.play(camera());
+    await waitFor(() => SynchronousFatalHls.instances.length === 2);
+    assert.equal(callCount(playbackClient, "refresh"), 1);
+    SynchronousFatalHls.instances[1].emit(SynchronousFatalHls.Events.MANIFEST_PARSED);
 
-    assert.equal(status.textContent, "Feed unavailable");
+    assert.equal(await result, "playing");
+    assert.equal(player.state(), "playing");
   } finally {
     globalThis.window = previousWindow;
   }
+});
+
+test("a synchronous native load error recovers without starting stale autoplay", async () => {
+  const video = videoStub();
+  let loadCount = 0;
+  let playCount = 0;
+  const originalLoad = video.load;
+  video.load = function load() {
+    originalLoad.call(this);
+    loadCount += 1;
+    if (loadCount === 2) this.dispatch("error");
+  };
+  video.play = () => {
+    playCount += 1;
+    return Promise.resolve();
+  };
+  const playbackClient = playbackClientStub();
+  const player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient
+  });
+
+  assert.equal(await player.play(camera()), "playing");
+  assert.equal(callCount(playbackClient, "refresh"), 1);
+  assert.equal(playCount, 1);
+  assert.equal(video.src === REPLACEMENT_URL, true);
+});
+
+test("duplicate hls.js manifest events start autoplay only once per source attempt", async () => {
+  const previousWindow = globalThis.window;
+  const HlsStub = createHlsStub();
+  globalThis.window = { Hls: HlsStub };
+
+  try {
+    let playCount = 0;
+    const video = videoStub();
+    video.canPlayType = () => "";
+    video.play = () => {
+      playCount += 1;
+      return Promise.resolve();
+    };
+    const player = createFeedTilePlayer({
+      video,
+      status: { textContent: "" },
+      playbackClient: playbackClientStub()
+    });
+
+    const result = player.play(camera());
+    await waitFor(() => HlsStub.instances.length === 1);
+    HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+    HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+
+    assert.equal(await result, "playing");
+    assert.equal(playCount, 1);
+  } finally {
+    globalThis.window = previousWindow;
+  }
+});
+
+test("resume stays in the click stack and follows native or hls.js recovery", async () => {
+  for (const mode of ["native", "hls"]) {
+    const previousWindow = globalThis.window;
+    const HlsStub = createHlsStub();
+    if (mode === "hls") globalThis.window = { Hls: HlsStub };
+    try {
+      const pendingResume = deferred();
+      const pendingReplacement = deferred();
+      let playCount = 0;
+      const video = videoStub();
+      if (mode === "hls") video.canPlayType = () => "";
+      video.play = () => {
+        playCount += 1;
+        if (playCount === 1) return Promise.reject(new Error("autoplay blocked"));
+        if (playCount === 2) return pendingResume.promise;
+        return pendingReplacement.promise;
+      };
+      const playbackClient = playbackClientStub();
+      const player = createFeedTilePlayer({
+        video,
+        status: { textContent: "" },
+        playbackClient
+      });
+      const initial = player.play(camera());
+      if (mode === "hls") {
+        await waitFor(() => HlsStub.instances.length === 1);
+        HlsStub.instances[0].emit(HlsStub.Events.MANIFEST_PARSED);
+      }
+      assert.equal(await initial, "blocked");
+
+      const resumeResult = player.resume();
+      assert.equal(playCount, 2, "resume invokes video.play synchronously");
+      if (mode === "hls") {
+        HlsStub.instances[0].emit(HlsStub.Events.ERROR, { fatal: true });
+        await waitFor(() => HlsStub.instances.length === 2);
+        HlsStub.instances[1].emit(HlsStub.Events.MANIFEST_PARSED);
+      } else {
+        video.dispatch("error");
+      }
+      await waitFor(() => playCount === 3);
+      pendingResume.resolve();
+      await assertPending(resumeResult);
+      pendingReplacement.resolve();
+
+      assert.equal(await resumeResult, "playing");
+      assert.equal(player.state(), "playing");
+      assert.equal(callCount(playbackClient, "refresh"), 1);
+    } finally {
+      globalThis.window = previousWindow;
+    }
+  }
+});
+
+test("a pending resume settles to clear instead of relabeling the player", async () => {
+  const pendingResume = deferred();
+  let playCount = 0;
+  const video = videoStub();
+  video.play = () => {
+    playCount += 1;
+    return playCount === 1
+      ? Promise.reject(new Error("autoplay blocked"))
+      : pendingResume.promise;
+  };
+  const playbackClient = playbackClientStub();
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({ video, status, playbackClient });
+  assert.equal(await player.play(camera()), "blocked");
+
+  const result = player.resume();
+  player.clear();
+  pendingResume.resolve();
+
+  assert.equal(await result, "idle");
+  assert.equal(player.state(), "idle");
+  assert.equal(status.textContent, "Preview paused");
+});
+
+test("repeated resume calls share one pending user-action attempt", async () => {
+  const pendingResume = deferred();
+  let playCount = 0;
+  const video = videoStub();
+  video.play = () => {
+    playCount += 1;
+    return playCount === 1
+      ? Promise.reject(new Error("autoplay blocked"))
+      : pendingResume.promise;
+  };
+  const player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient: playbackClientStub()
+  });
+  assert.equal(await player.play(camera()), "blocked");
+
+  const first = player.resume();
+  const second = player.resume();
+  assert.equal(first === second, true);
+  assert.equal(playCount, 2);
+  pendingResume.resolve();
+
+  assert.equal(await first, "playing");
+  assert.equal(await second, "playing");
+});
+
+test("provider URL, revision, and client error text never reach player diagnostics", async () => {
+  const hiddenUrl = "https://video-auth1.iol.pt/auth-beachcam/private/playlist.m3u8?wmsAuthSign=private-fixture";
+  const hiddenRevision = "private-revision";
+  const stateLabels = [];
+  const playbackClient = playbackClientStub({
+    resolvedUrl: hiddenUrl,
+    revision: hiddenRevision
+  });
+  playbackClient.refresh = async (cameraId, failedRevision) => {
+    playbackClient.calls.push(["refresh", cameraId, failedRevision]);
+    throw new Error(`private failure ${hiddenUrl} ${hiddenRevision}`);
+  };
+  const video = videoStub();
+  const status = { textContent: "" };
+  const player = createFeedTilePlayer({
+    video,
+    status,
+    playbackClient,
+    onStateChange: (state) => stateLabels.push(`${state}:${status.textContent}`)
+  });
+  await player.play(camera());
+  video.dispatch("error");
+  await waitFor(() => player.state() === "unavailable");
+
+  const publicText = `${status.textContent} ${stateLabels.join(" ")}`;
+  assert.equal(publicText.includes(hiddenUrl), false);
+  assert.equal(publicText.includes(hiddenRevision), false);
+  assert.equal(publicText.includes("private failure"), false);
+});
+
+test("a fatal error in one player leaves an independent pane untouched", async () => {
+  const failedRefresh = deferred();
+  const firstClient = playbackClientStub();
+  firstClient.refresh = async (cameraId, failedRevision) => {
+    firstClient.calls.push(["refresh", cameraId, failedRevision]);
+    return failedRefresh.promise;
+  };
+  const secondClient = playbackClientStub();
+  const firstVideo = videoStub();
+  const secondVideo = videoStub();
+  const firstPlayer = createFeedTilePlayer({
+    video: firstVideo,
+    status: { textContent: "" },
+    playbackClient: firstClient
+  });
+  const secondStatus = { textContent: "" };
+  const secondPlayer = createFeedTilePlayer({
+    video: secondVideo,
+    status: secondStatus,
+    playbackClient: secondClient
+  });
+  await Promise.all([
+    firstPlayer.play(camera("camera-a")),
+    secondPlayer.play(camera("camera-b"))
+  ]);
+
+  firstVideo.dispatch("error");
+  await waitFor(() => firstPlayer.state() === "loading");
+
+  assert.equal(secondPlayer.state(), "playing");
+  assert.equal(secondStatus.textContent, "Playing");
+  assert.equal(callCount(secondClient, "refresh"), 0);
+  failedRefresh.reject(new Error("pane-local failure"));
+  await waitFor(() => firstPlayer.state() === "unavailable");
+  assert.equal(secondPlayer.state(), "playing");
 });

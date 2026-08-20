@@ -79,6 +79,13 @@ test("CDN dependencies are pinned to explicit versions", () => {
   assert.match(indexSource, /rel="icon"/);
 });
 
+test("the shared player resolves and refreshes broker media without a direct camera source", () => {
+  assert.doesNotMatch(videoSource, /camera\.streamUrl/);
+  assert.doesNotMatch(videoSource, /export function createVideoPlayer/);
+  assert.match(videoSource, /playbackClient\.resolve\(camera\.id\)/);
+  assert.match(videoSource, /playbackClient\.refresh\(camera\.id,\s*failedRevision\)/);
+});
+
 test("home screen install metadata points to generated app icons", () => {
   assert.match(indexSource, /<link rel="manifest" href="\.\/manifest\.webmanifest">/);
   assert.match(indexSource, /<link rel="apple-touch-icon" href="\.\/apple-touch-icon\.png">/);

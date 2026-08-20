@@ -253,88 +253,20 @@ function ensureHls(hlsScriptUrl) {
   return sharedHlsLoader;
 }
 
-export function createVideoPlayer({ video, status, hlsScriptUrl = DEFAULT_HLS_SCRIPT_URL }) {
-  let hls = null;
-  const gestures = createVideoGestures({ video });
-
-  function destroyHls() {
-    if (hls) {
-      hls.destroy();
-      hls = null;
-    }
-  }
-
-  function clear() {
-    gestures.reset();
-    destroyHls();
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-  }
-
-  function play(camera) {
-    if (!camera || !camera.streamUrl) {
-      clear();
-      status.textContent = "Feed unavailable";
-      return;
-    }
-
-    gestures.reset();
-    destroyHls();
-    video.pause();
-    video.removeAttribute("src");
-    video.poster = camera.image || "";
-
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = camera.streamUrl;
-      video.load();
-      video.play().catch(() => {
-        status.textContent = "Feed loaded. Press play to start.";
-      });
-      status.textContent = "Feed loaded with native HLS.";
-      return;
-    }
-
-    ensureHls(hlsScriptUrl).then((HlsPlayer) => {
-      if (!HlsPlayer || !HlsPlayer.isSupported()) {
-        status.textContent = "Feed unavailable";
-        return;
-      }
-
-      hls = new HlsPlayer({
-        backBufferLength: 60,
-        maxBufferLength: 30
-      });
-      hls.loadSource(camera.streamUrl);
-      hls.attachMedia(video);
-      hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {
-          status.textContent = "Feed loaded. Press play to start.";
-        });
-        status.textContent = "Feed loaded with hls.js.";
-      });
-      hls.on(HlsPlayer.Events.ERROR, (_event, data) => {
-        if (data.fatal) status.textContent = "Feed unavailable";
-      });
-    }).catch(() => {
-      status.textContent = "Feed unavailable";
-    });
-  }
-
-  return { clear, play };
-}
-
 export function createFeedTilePlayer({
   video,
   status,
+  playbackClient,
   hlsScriptUrl = DEFAULT_HLS_SCRIPT_URL,
   onStateChange = () => {}
 }) {
-  let hls = null;
   let currentState = "idle";
   let generation = 0;
-  let pendingOperation = null;
-  let nativeErrorHandler = null;
+  let sourceAttempt = 0;
+  let forcedRefreshUsed = false;
+  let activeAttempt = null;
+  let pendingResume = null;
+  const pendingWaiters = new Set();
   const gestures = createVideoGestures({ video });
 
   function setState(nextState, label) {
@@ -343,147 +275,305 @@ export function createFeedTilePlayer({
     onStateChange(nextState);
   }
 
-  function destroyHls() {
-    if (hls) {
-      hls.destroy();
-      hls = null;
+  function settleWaiters(token, nextState) {
+    for (const waiter of pendingWaiters) {
+      if (waiter.generation !== token) continue;
+      pendingWaiters.delete(waiter);
+      waiter.resolve(nextState);
+    }
+    if (pendingResume?.generation === token) pendingResume = null;
+  }
+
+  function createWaiter(token) {
+    return new Promise((resolve) => {
+      pendingWaiters.add({ generation: token, resolve });
+    });
+  }
+
+  function isCurrentAttempt(attempt) {
+    return Boolean(
+      attempt
+      && attempt.active
+      && activeAttempt === attempt
+      && attempt.generation === generation
+      && attempt.sourceAttempt === sourceAttempt
+    );
+  }
+
+  function destroyAttemptHls(attempt) {
+    const instance = attempt?.hls;
+    if (!instance) return;
+    attempt.hls = null;
+    try {
+      instance.destroy();
+    } catch {
+      // Player teardown details must never escape into UI diagnostics.
     }
   }
 
-  function detachNativeErrorHandler() {
-    if (!nativeErrorHandler) return;
-    video.removeEventListener("error", nativeErrorHandler);
-    nativeErrorHandler = null;
+  function deactivateAttempt(attempt) {
+    if (!attempt) return false;
+    const wasCurrent = activeAttempt === attempt;
+    attempt.active = false;
+    if (wasCurrent) activeAttempt = null;
+    if (attempt.nativeErrorHandler) {
+      video.removeEventListener("error", attempt.nativeErrorHandler);
+      attempt.nativeErrorHandler = null;
+    }
+    destroyAttemptHls(attempt);
+    return wasCurrent;
   }
 
-  function resetMedia() {
+  function detachMedia(attempt = activeAttempt) {
+    deactivateAttempt(attempt);
     gestures.reset();
-    detachNativeErrorHandler();
-    destroyHls();
     video.pause();
     video.removeAttribute("src");
     video.load();
   }
 
   function advanceGeneration(finalState) {
+    settleWaiters(generation, finalState);
     generation += 1;
-    if (pendingOperation) {
-      pendingOperation.resolve(finalState);
-      pendingOperation = null;
-    }
+    sourceAttempt = 0;
+    forcedRefreshUsed = false;
+    pendingResume = null;
     return generation;
   }
 
-  function finishOperation(token, nextState, label) {
-    if (token !== generation) return false;
+  function finishGeneration(token, nextState, label) {
+    if (token !== generation) return;
     setState(nextState, label);
-    if (pendingOperation?.token === token) {
-      pendingOperation.resolve(nextState);
-      pendingOperation = null;
+    if (token !== generation) return;
+    settleWaiters(token, nextState);
+  }
+
+  function failAttempt(attempt) {
+    if (!isCurrentAttempt(attempt)) return;
+    const token = attempt.generation;
+    detachMedia(attempt);
+    finishGeneration(token, "unavailable", "Feed unavailable");
+  }
+
+  function startAutoplay(attempt) {
+    if (!isCurrentAttempt(attempt) || attempt.autoplayStarted) return;
+    attempt.autoplayStarted = true;
+    let autoplay;
+    try {
+      autoplay = video.play();
+    } catch (error) {
+      autoplay = Promise.reject(error);
     }
-    return true;
+    Promise.resolve(autoplay).then(
+      () => {
+        if (!isCurrentAttempt(attempt)) return;
+        finishGeneration(attempt.generation, "playing", "Playing");
+      },
+      () => {
+        if (!isCurrentAttempt(attempt)) return;
+        finishGeneration(attempt.generation, "blocked", "Press play to start");
+      }
+    );
+  }
+
+  function resolvePlayback(camera) {
+    return playbackClient.resolve(camera.id);
+  }
+
+  function refreshPlayback(camera, failedRevision) {
+    return playbackClient.refresh(camera.id, failedRevision);
+  }
+
+  function attachResolvedSource(token, camera, record) {
+    if (token !== generation) return;
+    sourceAttempt += 1;
+    const attempt = {
+      active: true,
+      autoplayStarted: false,
+      generation: token,
+      hls: null,
+      nativeErrorHandler: null,
+      revision: record.revision,
+      sourceAttempt
+    };
+    activeAttempt = attempt;
+
+    const handleFatal = () => {
+      if (!isCurrentAttempt(attempt)) return;
+      const failedRevision = attempt.revision;
+
+      if (forcedRefreshUsed) {
+        detachMedia(attempt);
+        finishGeneration(token, "unavailable", "Feed unavailable");
+        return;
+      }
+
+      forcedRefreshUsed = true;
+      detachMedia(attempt);
+      setState("loading", "Refreshing feed");
+      if (
+        token !== generation
+        || sourceAttempt !== attempt.sourceAttempt
+        || activeAttempt !== null
+      ) return;
+
+      let refreshResult;
+      try {
+        refreshResult = refreshPlayback(camera, failedRevision);
+      } catch (error) {
+        refreshResult = Promise.reject(error);
+      }
+      Promise.resolve(refreshResult).then(
+        (replacement) => {
+          if (
+            token !== generation
+            || sourceAttempt !== attempt.sourceAttempt
+            || activeAttempt !== null
+          ) return;
+          attachResolvedSource(token, camera, replacement);
+        },
+        () => {
+          if (
+            token !== generation
+            || sourceAttempt !== attempt.sourceAttempt
+            || activeAttempt !== null
+          ) return;
+          finishGeneration(token, "unavailable", "Feed unavailable");
+        }
+      );
+    };
+
+    let nativeHls = false;
+    try {
+      nativeHls = Boolean(video.canPlayType("application/vnd.apple.mpegurl"));
+    } catch {
+      failAttempt(attempt);
+      return;
+    }
+
+    if (nativeHls) {
+      const handleNativeError = () => handleFatal();
+      attempt.nativeErrorHandler = handleNativeError;
+      video.addEventListener("error", handleNativeError);
+      try {
+        video.src = record.playlistUrl;
+        if (!isCurrentAttempt(attempt)) return;
+        video.load();
+        if (!isCurrentAttempt(attempt)) return;
+        startAutoplay(attempt);
+      } catch {
+        failAttempt(attempt);
+      }
+      return;
+    }
+
+    ensureHls(hlsScriptUrl).then((HlsPlayer) => {
+      if (!isCurrentAttempt(attempt)) return;
+      let instance = null;
+      try {
+        if (!HlsPlayer || !HlsPlayer.isSupported()) {
+          failAttempt(attempt);
+          return;
+        }
+
+        instance = new HlsPlayer({ backBufferLength: 30, maxBufferLength: 20 });
+        attempt.hls = instance;
+        instance.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
+          if (!isCurrentAttempt(attempt) || attempt.hls !== instance) return;
+          startAutoplay(attempt);
+        });
+        instance.on(HlsPlayer.Events.ERROR, (_event, data) => {
+          if (!data?.fatal || !isCurrentAttempt(attempt) || attempt.hls !== instance) return;
+          handleFatal();
+        });
+        instance.loadSource(record.playlistUrl);
+        if (!isCurrentAttempt(attempt) || attempt.hls !== instance) return;
+        instance.attachMedia(video);
+        if (!isCurrentAttempt(attempt) || attempt.hls !== instance) return;
+      } catch {
+        if (isCurrentAttempt(attempt)) failAttempt(attempt);
+        else if (instance && attempt.hls === instance) destroyAttemptHls(attempt);
+      }
+    }, () => failAttempt(attempt));
   }
 
   function clear() {
     advanceGeneration("idle");
-    resetMedia();
+    detachMedia();
     setState("idle", "Preview paused");
   }
 
   function play(camera) {
     const token = advanceGeneration("idle");
+    detachMedia();
+    video.poster = camera?.image || "";
 
-    if (!camera?.streamUrl) {
-      resetMedia();
+    if (typeof camera?.id !== "string" || !camera.id.trim()) {
       setState("unavailable", "Feed unavailable");
       return Promise.resolve("unavailable");
     }
 
-    resetMedia();
-    video.poster = camera.image || "";
+    const requestedCamera = Object.freeze({ id: camera.id });
+    const operation = createWaiter(token);
     setState("loading", "Loading");
-
-    return new Promise((resolve) => {
-      pendingOperation = { resolve, token };
-
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        const handleNativeError = () => {
-          if (token !== generation || nativeErrorHandler !== handleNativeError) return;
-          detachNativeErrorHandler();
-          advanceGeneration("unavailable");
-          setState("unavailable", "Feed unavailable");
-        };
-        nativeErrorHandler = handleNativeError;
-        video.addEventListener("error", handleNativeError);
-        video.src = camera.streamUrl;
-        video.load();
-        let autoplay;
-        try {
-          autoplay = video.play();
-        } catch (error) {
-          autoplay = Promise.reject(error);
-        }
-        Promise.resolve(autoplay)
-          .then(() => finishOperation(token, "playing", "Playing"))
-          .catch(() => finishOperation(token, "blocked", "Press play to start"));
-        return;
-      }
-
-      ensureHls(hlsScriptUrl).then((HlsPlayer) => {
+    if (token !== generation) return operation;
+    let resolveResult;
+    try {
+      resolveResult = resolvePlayback(requestedCamera);
+    } catch (error) {
+      resolveResult = Promise.reject(error);
+    }
+    Promise.resolve(resolveResult).then(
+      (record) => {
         if (token !== generation) return;
-        if (!HlsPlayer || !HlsPlayer.isSupported()) {
-          finishOperation(token, "unavailable", "Feed unavailable");
-          return;
-        }
-
-        const instance = new HlsPlayer({ backBufferLength: 30, maxBufferLength: 20 });
-        hls = instance;
-        instance.loadSource(camera.streamUrl);
-        instance.attachMedia(video);
-        instance.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
-          if (token !== generation || hls !== instance || currentState !== "loading") return;
-          Promise.resolve()
-            .then(() => video.play())
-            .then(() => finishOperation(token, "playing", "Playing"))
-            .catch(() => finishOperation(token, "blocked", "Press play to start"));
-        });
-        instance.on(HlsPlayer.Events.ERROR, (_event, data) => {
-          if (!data.fatal || token !== generation || hls !== instance) return;
-          destroyHls();
-          finishOperation(token, "unavailable", "Feed unavailable");
-        });
-      }).catch(() => {
-        finishOperation(token, "unavailable", "Feed unavailable");
-      });
-    });
+        attachResolvedSource(token, requestedCamera, record);
+      },
+      () => {
+        if (token !== generation) return;
+        finishGeneration(token, "unavailable", "Feed unavailable");
+      }
+    );
+    return operation;
   }
 
   function resume() {
     if (currentState !== "blocked") return Promise.resolve(currentState);
-    const token = generation;
+    const attempt = activeAttempt;
+    if (!isCurrentAttempt(attempt)) return Promise.resolve(currentState);
+    if (
+      pendingResume
+      && pendingResume.generation === generation
+      && pendingResume.sourceAttempt === sourceAttempt
+    ) return pendingResume.promise;
+
+    const operation = createWaiter(generation);
+    pendingResume = {
+      generation,
+      promise: operation,
+      sourceAttempt
+    };
     let resumed;
     try {
       resumed = video.play();
     } catch (error) {
       resumed = Promise.reject(error);
     }
-    return Promise.resolve(resumed).then(
+    Promise.resolve(resumed).then(
       () => {
-        if (token !== generation || currentState !== "blocked") return currentState;
-        setState("playing", "Playing");
-        return "playing";
+        if (!isCurrentAttempt(attempt) || currentState !== "blocked") return;
+        finishGeneration(attempt.generation, "playing", "Playing");
       },
       () => {
-        if (token !== generation || currentState !== "blocked") return currentState;
-        setState("blocked", "Press play to start");
-        return "blocked";
+        if (!isCurrentAttempt(attempt) || currentState !== "blocked") return;
+        finishGeneration(attempt.generation, "blocked", "Press play to start");
       }
     );
+    return operation;
   }
 
   function expire() {
     advanceGeneration("expired");
-    resetMedia();
+    detachMedia();
     setState("expired", "Tap to restart");
   }
 
