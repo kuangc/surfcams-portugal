@@ -18,7 +18,7 @@ function plainTextResponse(body, init = {}) {
   return new Response(body, { ...init, headers });
 }
 
-function trackedByteResponse(chunks, init = {}) {
+function trackedNonByobResponse(chunks, init = {}) {
   const state = { bytesRead: 0, pulls: 0, canceled: false };
   let index = 0;
   const body = new ReadableStream({
@@ -105,6 +105,7 @@ test("validateMeoToken trims and accepts only bounded, control-free UTF-8 text",
     "token\u0000value",
     "token\nvalue",
     "token\u007fvalue",
+    "token\u0085value",
     123,
     null
   ]) {
@@ -164,6 +165,7 @@ test("fetchMeoToken falls back exactly once for primary endpoint failures", asyn
 
 test("fetchMeoToken treats endpoint timeout abort as a fallback condition", async () => {
   const calls = [];
+  let watchdogId;
   const fetcher = (url, { signal }) => {
     calls.push(url);
     if (calls.length === 2) return Promise.resolve(plainTextResponse("fallback-token"));
@@ -171,13 +173,26 @@ test("fetchMeoToken treats endpoint timeout abort as a fallback condition", asyn
       signal.addEventListener("abort", () => reject(signal.reason), { once: true });
     });
   };
+  const watchdog = new Promise((_, reject) => {
+    watchdogId = setTimeout(
+      () => reject(new Error("AbortSignal.timeout did not settle the token fetch")),
+      250
+    );
+  });
 
-  assert.equal(await fetchMeoToken({ fetcher, timeoutMs: 5 }), "fallback-token");
-  assert.deepEqual(calls, MEO_TOKEN_ENDPOINTS);
+  try {
+    assert.equal(
+      await Promise.race([fetchMeoToken({ fetcher, timeoutMs: 5 }), watchdog]),
+      "fallback-token"
+    );
+    assert.deepEqual(calls, MEO_TOKEN_ENDPOINTS);
+  } finally {
+    clearTimeout(watchdogId);
+  }
 });
 
 test("declared oversized bodies are canceled without being read", async () => {
-  const tracked = trackedByteResponse(["must-not-be-read"], {
+  const tracked = trackedNonByobResponse(["must-not-be-read"], {
     headers: { "content-length": "4097" }
   });
   const calls = [];
@@ -193,8 +208,8 @@ test("declared oversized bodies are canceled without being read", async () => {
   assert.equal(tracked.state.canceled, true);
 });
 
-test("streamed overflow stops at the 4097-byte decision boundary and cancels", async () => {
-  const tracked = trackedByteResponse(Array.from({ length: 5000 }, () => "a"));
+test("non-BYOB streams fail closed without delivering a single large chunk", async () => {
+  const tracked = trackedNonByobResponse([new Uint8Array(100_000).fill(97)]);
   const calls = [];
   const fetcher = async (url) => {
     calls.push(url);
@@ -203,12 +218,12 @@ test("streamed overflow stops at the 4097-byte decision boundary and cancels", a
 
   assert.equal(await fetchMeoToken({ fetcher }), "fallback-token");
   assert.deepEqual(calls, MEO_TOKEN_ENDPOINTS);
-  assert.equal(tracked.state.bytesRead, 4097);
-  assert.equal(tracked.state.pulls, 4097);
+  assert.equal(tracked.state.bytesRead, 0);
+  assert.equal(tracked.state.pulls, 0);
   assert.equal(tracked.state.canceled, true);
 });
 
-test("streamed overflow bounds a single large upstream byte chunk", async () => {
+test("BYOB streamed overflow stops at the 4097-byte decision boundary", async () => {
   const tracked = trackedLargeByteResponse(100_000);
   let calls = 0;
   const fetcher = async () => {

@@ -29,7 +29,7 @@ export function validateMeoToken(body) {
   if (
     byteLength < 1
     || byteLength > MAX_TOKEN_BYTES
-    || /[\u0000-\u001f\u007f]/.test(token)
+    || /\p{Cc}/u.test(token)
   ) {
     throw unavailable();
   }
@@ -49,20 +49,19 @@ async function readBoundedBody(response) {
   if (!response.body) return "";
 
   let reader;
-  let usesByobReader = false;
   try {
     reader = response.body.getReader({ mode: "byob" });
-    usesByobReader = true;
   } catch {
-    reader = response.body.getReader();
+    await cancelBody(response.body);
+    throw unavailable();
   }
   const chunks = [];
   let byteLength = 0;
   try {
     while (true) {
-      const result = usesByobReader
-        ? await reader.read(new Uint8Array(MAX_TOKEN_BYTES + 1 - byteLength))
-        : await reader.read();
+      const result = await reader.read(
+        new Uint8Array(MAX_TOKEN_BYTES + 1 - byteLength)
+      );
       const { done, value } = result;
       if (done) break;
       if (!(value instanceof Uint8Array)) throw unavailable();
