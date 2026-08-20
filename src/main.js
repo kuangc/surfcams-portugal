@@ -71,6 +71,7 @@ import {
   groupMobileMapMarkers,
   shouldShowFavoriteResults
 } from "./mobile-ux.js";
+import { createPlaybackBrokerClient } from "./playback-client.js";
 import { addSessionFeedback, exportSessionFeedback, importSessionFeedback } from "./session-feedback.js";
 import {
   applySpotMetadataToCameraDb,
@@ -105,6 +106,15 @@ import {
   shortlistBestBets
 } from "./today-recommendations-ui.js";
 import { createFeedTilePlayer } from "./video-player.js";
+
+const playbackClient = createPlaybackBrokerClient();
+
+function createAppFeedPlayer(options) {
+  return createFeedTilePlayer({
+    ...options,
+    playbackClient
+  });
+}
 
 const PROVIDER_ICON_URLS = {
   meo: "https://beachcam.meo.pt/favicon.ico",
@@ -224,7 +234,7 @@ const els = {
 
 const mobileMapMediaQuery = window.matchMedia("(max-width: 900px)");
 
-state.explorePlayer = createFeedTilePlayer({
+state.explorePlayer = createAppFeedPlayer({
   video: els.exploreVideo,
   status: els.exploreFeedStatus,
   hlsScriptUrl: HLS_SCRIPT_URL,
@@ -258,6 +268,7 @@ state.fullscreenController = createFullscreenController({
 let favoriteAddRecords = [];
 let favoriteAddActiveIndex = -1;
 let pendingComparisonCameraId = null;
+let playbackSuspended = false;
 
 const favoriteUndo = createFavoriteUndo({
   durationMs: 10_000,
@@ -499,6 +510,26 @@ function clearMonitorPlayers() {
 function clearFocusedPlayers() {
   state.focusedPlayers.forEach((player) => player.clear());
   state.focusedPlayers.clear();
+}
+
+function suspendPlayback() {
+  if (playbackSuspended) return false;
+  playbackSuspended = true;
+  clearMonitorPlayers();
+  clearFocusedPlayers();
+  state.explorePlayer.clear();
+  return true;
+}
+
+function restorePlayback() {
+  if (!playbackSuspended || document.hidden) return false;
+  playbackSuspended = false;
+  if (state.activeRoute === "monitor") {
+    renderMonitor();
+  } else if (state.activeRoute === "explore" && state.selectedExploreCamera) {
+    playExploreCamera(state.selectedExploreCamera);
+  }
+  return true;
 }
 
 function renderMonitorIfActive() {
@@ -753,7 +784,7 @@ function createFocusedPane(camera, paneIndex) {
   renderLocalLens(conditionStrip, camera);
   details.append(header, conditionStrip);
 
-  const player = createFeedTilePlayer({
+  const player = createAppFeedPlayer({
     video,
     status,
     hlsScriptUrl: HLS_SCRIPT_URL,
@@ -901,7 +932,7 @@ function createMonitorTile(slot, index) {
   tile.append(frame, conditionStrip, openLarge);
 
   let session = null;
-  const player = createFeedTilePlayer({
+  const player = createAppFeedPlayer({
     video,
     status,
     hlsScriptUrl: HLS_SCRIPT_URL,
@@ -2842,28 +2873,18 @@ function bindEvents() {
   });
   window.addEventListener("pagehide", (event) => {
     cancelFavoriteUndoOffer();
-    clearMonitorPlayers();
-    clearFocusedPlayers();
-    state.explorePlayer.clear();
+    suspendPlayback();
     if (!event.persisted) state.fullscreenController.destroy();
   });
   window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
-    if (state.activeRoute === "monitor") {
-      renderMonitor();
-    } else if (state.activeRoute === "explore" && state.selectedExploreCamera) {
-      playExploreCamera(state.selectedExploreCamera);
-    }
+    restorePlayback();
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      clearMonitorPlayers();
-      clearFocusedPlayers();
-      state.explorePlayer.clear();
-    } else if (state.activeRoute === "monitor") {
-      renderMonitor();
-    } else if (state.activeRoute === "explore" && state.selectedExploreCamera) {
-      playExploreCamera(state.selectedExploreCamera);
+      suspendPlayback();
+    } else {
+      restorePlayback();
     }
   });
 

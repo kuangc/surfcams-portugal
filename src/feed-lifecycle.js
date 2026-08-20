@@ -8,18 +8,38 @@ export function createGalleryPreviewSession({
 }) {
   let visible = false;
   let currentState = "idle";
-  let timerId = null;
+  let startTimerId = null;
+  let expiryTimerId = null;
+  let previewWindowStarted = false;
   let generation = 0;
 
-  function cancelTimer() {
-    if (timerId === null) return;
-    clearTimer(timerId);
-    timerId = null;
+  function cancelStartTimer() {
+    if (startTimerId === null) return;
+    clearTimer(startTimerId);
+    startTimerId = null;
+  }
+
+  function cancelExpiryTimer() {
+    if (expiryTimerId === null) return;
+    clearTimer(expiryTimerId);
+    expiryTimerId = null;
+  }
+
+  function cancelTimers() {
+    cancelStartTimer();
+    cancelExpiryTimer();
+  }
+
+  function startPreviewWindow(token) {
+    if (previewWindowStarted || expiryTimerId !== null) return;
+    previewWindowStarted = true;
+    expiryTimerId = setTimer(() => expire(token), durationMs);
   }
 
   function expire(token) {
-    timerId = null;
-    if (token !== generation || !visible || currentState !== "playing") return;
+    expiryTimerId = null;
+    if (token !== generation || !visible || !previewWindowStarted) return;
+    previewWindowStarted = false;
     generation += 1;
     player.expire();
     currentState = "expired";
@@ -30,16 +50,16 @@ export function createGalleryPreviewSession({
     const finalState = typeof result === "string" ? result : player.state?.();
     if (finalState === "playing") {
       currentState = "playing";
+      startPreviewWindow(token);
       return;
     }
-    cancelTimer();
     currentState = finalState === "blocked" || finalState === "unavailable"
       ? finalState
       : "unavailable";
   }
 
   function start(scheduleToken) {
-    timerId = null;
+    startTimerId = null;
     if (
       scheduleToken !== generation
       || !visible
@@ -48,8 +68,8 @@ export function createGalleryPreviewSession({
     ) return;
     const token = generation + 1;
     generation = token;
-    currentState = "playing";
-    timerId = setTimer(() => expire(token), durationMs);
+    previewWindowStarted = false;
+    currentState = "loading";
     let operation;
     try {
       operation = player.play(camera);
@@ -63,15 +83,16 @@ export function createGalleryPreviewSession({
   }
 
   function scheduleStart() {
-    if (timerId !== null || currentState !== "idle" || !isDocumentVisible()) return;
+    if (startTimerId !== null || currentState !== "idle" || !isDocumentVisible()) return;
     const scheduleToken = generation;
-    timerId = setTimer(() => start(scheduleToken), 0);
+    startTimerId = setTimer(() => start(scheduleToken), 0);
   }
 
   function clear() {
     visible = false;
     generation += 1;
-    cancelTimer();
+    previewWindowStarted = false;
+    cancelTimers();
     player.clear();
     currentState = "idle";
   }
@@ -80,14 +101,16 @@ export function createGalleryPreviewSession({
     visible = Boolean(nextVisible);
     if (!visible) {
       generation += 1;
-      cancelTimer();
+      previewWindowStarted = false;
+      cancelTimers();
       player.clear();
       currentState = "idle";
       return;
     }
     if (!isDocumentVisible()) {
       generation += 1;
-      cancelTimer();
+      previewWindowStarted = false;
+      cancelTimers();
       if (currentState !== "idle") player.clear();
       currentState = "idle";
       return;
@@ -97,12 +120,14 @@ export function createGalleryPreviewSession({
 
   function retry() {
     if (
-      !["blocked", "expired", "unavailable"].includes(currentState)
+      previewWindowStarted
+      || !["blocked", "expired", "unavailable"].includes(currentState)
       || !visible
       || !isDocumentVisible()
     ) return false;
     generation += 1;
-    cancelTimer();
+    previewWindowStarted = false;
+    cancelTimers();
     currentState = "idle";
     scheduleStart();
     return true;
@@ -113,10 +138,17 @@ export function createGalleryPreviewSession({
     const finalState = typeof result === "string" ? result : player.state?.();
     if (finalState === "playing") {
       currentState = "playing";
-      timerId = setTimer(() => expire(token), durationMs);
+      startPreviewWindow(token);
       return;
     }
-    currentState = finalState === "unavailable" ? "unavailable" : "blocked";
+    if (finalState === "unavailable") {
+      previewWindowStarted = false;
+      cancelExpiryTimer();
+      generation += 1;
+      currentState = "unavailable";
+      return;
+    }
+    currentState = "blocked";
   }
 
   function resume() {
@@ -126,9 +158,11 @@ export function createGalleryPreviewSession({
       || !isDocumentVisible()
       || typeof player.resume !== "function"
     ) return false;
-    const token = generation + 1;
-    generation = token;
-    cancelTimer();
+    const token = previewWindowStarted ? generation : generation + 1;
+    if (!previewWindowStarted) {
+      generation = token;
+      cancelTimers();
+    }
     currentState = "resuming";
     let operation;
     try {
@@ -144,12 +178,17 @@ export function createGalleryPreviewSession({
   }
 
   function reconcilePlayerState(nextState) {
+    if (!previewWindowStarted) return false;
     if (
-      !["playing", "resuming"].includes(currentState)
-      || !["blocked", "unavailable"].includes(nextState)
+      !["playing", "loading", "blocked", "resuming"].includes(currentState)
+      || !["playing", "loading", "blocked", "unavailable"].includes(nextState)
     ) return false;
-    generation += 1;
-    cancelTimer();
+
+    if (nextState === "unavailable") {
+      previewWindowStarted = false;
+      cancelExpiryTimer();
+      generation += 1;
+    }
     currentState = nextState;
     return true;
   }

@@ -141,3 +141,28 @@ test("Explore exposes its dense search controls through a native mobile disclosu
   assert.match(disclosure, /id="favoriteOnly"/);
   assert.match(disclosure, /id="mightBeGoodOnly"/);
 });
+
+test("Settings exposes the protected-origin logout action without adding navigation", () => {
+  const configureScreen = html.match(
+    /<section class="screen configure-screen"[\s\S]*?<\/section>\s*<\/main>/
+  )?.[0] || "";
+  const accessTools = configureScreen.match(
+    /<section class="access-tools"[^>]*aria-labelledby="accessToolsTitle"[\s\S]*?<\/section>/
+  )?.[0] || "";
+
+  assert.match(accessTools, /<h2 id="accessToolsTitle">Access<\/h2>/);
+  assert.match(accessTools, /Sign out of this private Surfcams session on this device\./);
+  assert.match(
+    accessTools,
+    /<a class="secondary-button access-logout" href="\/cdn-cgi\/access\/logout">Sign out<\/a>/
+  );
+  assert.ok(
+    configureScreen.indexOf('class="feedback-tools"') < configureScreen.indexOf('class="access-tools"'),
+    "Access follows the feedback tools"
+  );
+  assert.ok(
+    configureScreen.indexOf('class="access-tools"') < configureScreen.lastIndexOf('class="status-line"'),
+    "Access precedes the final status line"
+  );
+  assert.equal((html.match(/class="nav-button"/g) || []).length, 4);
+});

@@ -16,6 +16,7 @@ test("Explore labels and plays only a resolved MEO camera for informational subj
   assert.match(source, /function exploreCameraForSubject\(subject\)[\s\S]*?explorePlaybackCamera\(subject,\s*state\.explorePlaybackIndex\)/);
   assert.match(source, /function playExploreCamera\(camera\)[\s\S]*?const playbackCamera = exploreCameraForSubject\(camera\)/);
   assert.match(source, /state\.explorePlayer\.play\(playbackCamera\)/);
+  assert.match(source, /state\.explorePlayer\s*=\s*createAppFeedPlayer\(\{/);
   assert.match(source, /Wave information only/);
   assert.match(source, /Watching MEO camera/);
   assert.match(source, /els\.exploreRetry[\s\S]*?exploreCameraForSubject\(state\.selectedExploreCamera\)/);

@@ -4,6 +4,7 @@ import test from "node:test";
 
 const html = fs.readFileSync("index.html", "utf8");
 const mainSource = fs.readFileSync("src/main.js", "utf8");
+const styles = fs.readFileSync("src/styles/app.css", "utf8");
 
 function functionSource(name, nextName) {
   const expression = new RegExp(
@@ -46,12 +47,23 @@ test("Explore exposes a visible Retry wired to the existing persistent player", 
   assert.match(html, /<button[^>]*id="exploreRetry"[^>]*hidden[^>]*>Retry<\/button>/);
   assert.match(
     mainSource,
-    /createFeedTilePlayer\(\{[\s\S]*video:\s*els\.exploreVideo[\s\S]*onStateChange:[\s\S]*els\.exploreRetry\.hidden/
+    /createAppFeedPlayer\(\{[\s\S]*video:\s*els\.exploreVideo[\s\S]*onStateChange:[\s\S]*els\.exploreRetry\.hidden/
   );
   assert.match(
     mainSource,
     /els\.exploreRetry\.addEventListener\("click",[\s\S]*const playbackCamera = exploreCameraForSubject\(state\.selectedExploreCamera\)[\s\S]*state\.explorePlayer\.play\(playbackCamera\)/
   );
+});
+
+test("Settings sign-out remains a normal protected-origin link with a mobile hit target", () => {
+  const mobileCss = styles.match(
+    /@media \(max-width: 900px\)[\s\S]*?\n}\n\n@media \(min-width: 980px\)/
+  )?.[0] || "";
+
+  assert.match(html, /href="\/cdn-cgi\/access\/logout"/);
+  assert.match(styles, /\.access-tools\s*\{[\s\S]*\.access-logout/);
+  assert.match(mobileCss, /\.access-logout[\s\S]*min-height:\s*44px/);
+  assert.doesNotMatch(mainSource, /accessLogout|access-logout|cdn-cgi\/access\/logout/);
 });
 
 test("single-camera Focus offers Add camera to compare while multi-camera Focus offers Compare", () => {

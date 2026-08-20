@@ -86,6 +86,18 @@ test("the shared player resolves and refreshes broker media without a direct cam
   assert.match(videoSource, /playbackClient\.refresh\(camera\.id,\s*failedRevision\)/);
 });
 
+test("every app player shares one module-level playback broker client", () => {
+  const wrapperSource = mainSource.match(
+    /const playbackClient\s*=\s*createPlaybackBrokerClient\(\);[\s\S]*?function createAppFeedPlayer\(options\)\s*\{[\s\S]*?\n\}/
+  )?.[0] || "";
+
+  assert.match(mainSource, /import \{ createPlaybackBrokerClient \} from "\.\/playback-client\.js";/);
+  assert.equal((mainSource.match(/createPlaybackBrokerClient\(/g) || []).length, 1);
+  assert.equal((mainSource.match(/createFeedTilePlayer\(/g) || []).length, 1);
+  assert.equal((mainSource.match(/createAppFeedPlayer\(\{/g) || []).length, 3);
+  assert.match(wrapperSource, /createFeedTilePlayer\(\{\s*\.\.\.options,\s*playbackClient\s*}\)/s);
+});
+
 test("home screen install metadata points to generated app icons", () => {
   assert.match(indexSource, /<link rel="manifest" href="\.\/manifest\.webmanifest">/);
   assert.match(indexSource, /<link rel="apple-touch-icon" href="\.\/apple-touch-icon\.png">/);
@@ -196,7 +208,7 @@ test("Monitor gallery scopes preview streams to one viewport observer lifecycle"
   assert.match(mainSource, /function clearMonitorPlayers\(\)[\s\S]*monitorObserver\?\.disconnect\(\)[\s\S]*session\.clear\(\)[\s\S]*monitorSessions\.clear\(\)/);
   assert.match(mainSource, /function renderMonitor\(\)\s*{\s*clearMonitorPlayers\(\)/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearMonitorPlayers\(\)/);
-  assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*clearMonitorPlayers\(\)/);
+  assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*suspendPlayback\(\)/);
 
   assert.match(mainSource, /function createMonitorTile[\s\S]*video\.poster\s*=\s*camera\.image/);
   assert.match(mainSource, /frame\.addEventListener\("click"[\s\S]*session\.restart\(\)/);
@@ -232,7 +244,7 @@ test("Monitor and Favorites share one validated entry point for large Focus play
 
 test("Focus and Compare use direct untimed pane-local players with replacement controls", () => {
   assert.match(mainSource, /function createFocusedPane\(camera,\s*paneIndex/);
-  assert.match(mainSource, /function createFocusedPane[\s\S]*createFeedTilePlayer\([\s\S]*focusedPlayers\.set\(frame,\s*player\)[\s\S]*player\.play\(camera\)/);
+  assert.match(mainSource, /function createFocusedPane[\s\S]*createAppFeedPlayer\([\s\S]*focusedPlayers\.set\(frame,\s*player\)[\s\S]*player\.play\(camera\)/);
   assert.match(mainSource, /data-focus-action[\s\S]*"replace"/);
   assert.match(mainSource, /data-focus-action[\s\S]*"remove"/);
   assert.match(mainSource, /data-focus-action[\s\S]*"retry"/);
@@ -248,6 +260,21 @@ test("Focus and Compare use direct untimed pane-local players with replacement c
   assert.match(mainSource, /monitorComparePicker[\s\S]*addComparisonCamera\(state\.monitorView/);
 });
 
+test("Favorites rendering enters Focus without resolving playback", () => {
+  const favoriteCardSource = mainSource.match(
+    /function createFavoriteCard\(camera\)[\s\S]*?\n}\n\nfunction favoriteSourceLabel/
+  )?.[0] || "";
+  const favoritesRenderSource = mainSource.match(
+    /function renderFavorites\(\)[\s\S]*?\n}\n\nfunction favoriteProviderValue/
+  )?.[0] || "";
+
+  assert.match(favoriteCardSource, /enterMonitorFocus\(camera\.id,\s*card\)/);
+  assert.doesNotMatch(
+    `${favoriteCardSource}\n${favoritesRenderSource}`,
+    /createAppFeedPlayer|playbackClient|\.play\(/
+  );
+});
+
 test("gallery Play delegates synchronous resume and retry to the session lifecycle", () => {
   const tileSource = mainSource.match(/function createMonitorTile[\s\S]*?\n}\n\nfunction recommendationInputs/)?.[0] || "";
   assert.match(
@@ -261,7 +288,8 @@ test("Focus playback cleanup, visibility restoration, and gallery origin restora
   assert.match(mainSource, /function clearFocusedPlayers\(\)[\s\S]*player\.clear\(\)[\s\S]*focusedPlayers\.clear\(\)/);
   assert.match(mainSource, /route !== "monitor"[\s\S]*clearFocusedPlayers\(\)/);
   assert.match(mainSource, /mode === "might-be-good"[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*clearFocusedPlayers\(\)/);
-  assert.match(mainSource, /visibilitychange[\s\S]*document\.hidden[\s\S]*clearFocusedPlayers\(\)[\s\S]*renderMonitor\(\)/);
+  assert.match(mainSource, /function suspendPlayback\(\)[\s\S]*clearFocusedPlayers\(\)/);
+  assert.match(mainSource, /function restorePlayback\(\)[\s\S]*renderMonitor\(\)/);
   assert.match(mainSource, /function exitMonitorFocusView[\s\S]*exitMonitorFocus\(state\.monitorView\)[\s\S]*afterNextPaint\([\s\S]*window\.scrollTo/);
   assert.match(mainSource, /function exitMonitorFocusView[\s\S]*runAfterFullscreenExit\(state\.fullscreenController,[\s\S]*clearFocusedPlayers\(\)[\s\S]*exitMonitorFocus\(state\.monitorView\)/);
   assert.doesNotMatch(mainSource, /fullscreenController\.isFullscreen\(\)\) void state\.fullscreenController\.exit\(\)/);
@@ -269,7 +297,7 @@ test("Focus playback cleanup, visibility restoration, and gallery origin restora
   assert.doesNotMatch(mainSource, /querySelector\(`\[data-camera-id=/);
 });
 
-test("Explore playback clears when the document is hidden or the page is left", () => {
+test("Explore playback clears through the shared page suspension path", () => {
   const pagehideSource = mainSource.match(
     /window\.addEventListener\("pagehide", \([^)]*\) => \{[\s\S]*?\n  \}\);/
   )?.[0] || "";
@@ -277,11 +305,16 @@ test("Explore playback clears when the document is hidden or the page is left", 
     /document\.addEventListener\("visibilitychange", \(\) => \{[\s\S]*?\n  \}\);/
   )?.[0] || "";
 
-  assert.match(pagehideSource, /state\.explorePlayer\.clear\(\)/);
-  assert.match(visibilitySource, /document\.hidden[\s\S]*state\.explorePlayer\.clear\(\)/);
+  const suspensionSource = mainSource.match(
+    /function suspendPlayback\(\)[\s\S]*?\n}\n\nfunction restorePlayback/
+  )?.[0] || "";
+
+  assert.match(pagehideSource, /suspendPlayback\(\)/);
+  assert.match(visibilitySource, /document\.hidden[\s\S]*suspendPlayback\(\)/);
+  assert.match(suspensionSource, /state\.explorePlayer\.clear\(\)/);
   assert.match(
     visibilitySource,
-    /state\.activeRoute\s*===\s*"explore"[\s\S]*state\.selectedExploreCamera[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/
+    /document\.hidden[\s\S]*suspendPlayback\(\)[\s\S]*restorePlayback\(\)/
   );
 });
 
@@ -315,14 +348,37 @@ test("BFCache pageshow reactivates the persisted current route", () => {
   )?.[0] || "";
 
   assert.match(pageshowSource, /if\s*\(!event\.persisted\)\s*return;/);
-  assert.match(
-    pageshowSource,
-    /state\.activeRoute\s*===\s*"monitor"[\s\S]*renderMonitor\(\)/
-  );
-  assert.match(
-    pageshowSource,
-    /state\.activeRoute\s*===\s*"explore"[\s\S]*state\.selectedExploreCamera[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/
-  );
+  assert.match(pageshowSource, /restorePlayback\(\)/);
+  assert.doesNotMatch(pageshowSource, /renderMonitor|playExploreCamera/);
+});
+
+test("page lifecycle cleanup invalidates players before restoring fresh playback", () => {
+  const clearPlayerSource = videoSource.match(
+    /function clear\(\)\s*\{[\s\S]*?\n  }\n\n  function play/
+  )?.[0] || "";
+  const pagehideSource = mainSource.match(
+    /window\.addEventListener\("pagehide",[\s\S]*?\n\s*}\);/
+  )?.[0] || "";
+  const pageshowSource = mainSource.match(
+    /window\.addEventListener\("pageshow",[\s\S]*?\n\s*}\);/
+  )?.[0] || "";
+  const suspendSource = mainSource.match(
+    /function suspendPlayback\(\)[\s\S]*?\n}\n\nfunction restorePlayback/
+  )?.[0] || "";
+  const restoreSource = mainSource.match(
+    /function restorePlayback\(\)[\s\S]*?\n}\n\nfunction renderMonitorIfActive/
+  )?.[0] || "";
+
+  assert.match(clearPlayerSource, /advanceGeneration\("idle"\)/);
+  assert.match(mainSource, /let playbackSuspended\s*=\s*false/);
+  assert.match(suspendSource, /if \(playbackSuspended\) return false/);
+  assert.match(suspendSource, /playbackSuspended\s*=\s*true[\s\S]*clearMonitorPlayers\(\)[\s\S]*clearFocusedPlayers\(\)[\s\S]*state\.explorePlayer\.clear\(\)/);
+  assert.match(restoreSource, /if \(!playbackSuspended \|\| document\.hidden\) return false/);
+  assert.match(restoreSource, /playbackSuspended\s*=\s*false/);
+  assert.match(restoreSource, /state\.activeRoute\s*===\s*"monitor"[\s\S]*renderMonitor\(\)/);
+  assert.match(restoreSource, /state\.activeRoute\s*===\s*"explore"[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/);
+  assert.match(pagehideSource, /suspendPlayback\(\)/);
+  assert.match(pageshowSource, /restorePlayback\(\)/);
 });
 
 test("Focus and Compare styling keeps one useful feed or two equal responsive panes", () => {
