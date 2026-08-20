@@ -1,6 +1,5 @@
 import {createHash} from 'node:crypto';
 import {
-  copyFile,
   lstat,
   mkdir,
   readFile,
@@ -158,6 +157,12 @@ export async function buildRuntimeAssets({rootDir = process.cwd(), outputDir} = 
   ];
   const inputFiles = [...allowlistedFiles, ...treeFiles]
     .sort((left, right) => comparePaths(runtimeRelativePath(root, left), runtimeRelativePath(root, right)));
+  const inputSnapshots = [];
+  for (const sourcePath of inputFiles) {
+    const path = runtimeRelativePath(root, sourcePath);
+    const bytes = await readFile(sourcePath);
+    inputSnapshots.push({path, bytes});
+  }
 
   if (output === canonicalDist) {
     await rm(output, {recursive: true, force: true});
@@ -165,12 +170,10 @@ export async function buildRuntimeAssets({rootDir = process.cwd(), outputDir} = 
   }
 
   const files = [];
-  for (const sourcePath of inputFiles) {
-    const path = runtimeRelativePath(root, sourcePath);
+  for (const {path, bytes} of inputSnapshots) {
     const destinationPath = join(output, ...path.split('/'));
     await mkdir(dirname(destinationPath), {recursive: true});
-    await copyFile(sourcePath, destinationPath);
-    const bytes = await readFile(sourcePath);
+    await writeFile(destinationPath, bytes);
     files.push({
       path,
       bytes: bytes.byteLength,

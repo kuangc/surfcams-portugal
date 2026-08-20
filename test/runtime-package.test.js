@@ -249,6 +249,21 @@ test('canonical dist is preserved when deep input validation fails', async () =>
   assert.equal(await readFile(sentinelPath, 'utf8'), 'preserve me\n');
 });
 
+test('builder snapshots each validated input once before removal and writes snapshot bytes', async () => {
+  const builderSource = await readFile(builderPath, 'utf8');
+  const sourceReads = builderSource.match(/readFile\(sourcePath\)/g) ?? [];
+  const snapshotReadIndex = builderSource.indexOf('await readFile(sourcePath)');
+  const canonicalRemovalIndex = builderSource.indexOf('await rm(output');
+  const snapshotWriteIndex = builderSource.indexOf('await writeFile(destinationPath, bytes)');
+
+  assert.doesNotMatch(builderSource, /\bcopyFile\b/);
+  assert.equal(sourceReads.length, 1);
+  assert.notEqual(snapshotReadIndex, -1);
+  assert.notEqual(canonicalRemovalIndex, -1);
+  assert.ok(snapshotReadIndex < canonicalRemovalIndex);
+  assert.ok(snapshotWriteIndex > canonicalRemovalIndex);
+});
+
 test('CLI prints exactly the deterministic manifest digest', async () => {
   const rootDir = await makeFixture();
   const {stdout, stderr} = await execFileAsync(process.execPath, [builderPath], {cwd: rootDir});
