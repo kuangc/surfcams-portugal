@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {execFile} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import fs from 'node:fs';
 import {mkdtemp, mkdir, readFile, readdir, rename, symlink, writeFile} from 'node:fs/promises';
 import {realpathSync} from 'node:fs';
 import {promisify} from 'node:util';
@@ -273,4 +274,63 @@ test('CLI prints exactly the deterministic manifest digest', async () => {
   assert.equal(stderr, '');
   assert.equal(stdout, `runtime-assets manifest-sha256=${expectedDigest}\n`);
   assert.match(expectedDigest, /^[0-9a-f]{64}$/);
+});
+
+test('the public Worker test command builds ignored assets first', () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+  );
+  assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
+});
+
+test('the Worker dry-run uses only the committed non-production secrets fixture', () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+  );
+  assert.equal(
+    packageJson.scripts['check:worker'],
+    'wrangler deploy --dry-run --config wrangler.jsonc --secrets-file test/fixtures/wrangler-dry-run-secrets.env --outdir .wrangler/dry-run'
+  );
+  const fixture = fs.readFileSync(
+    new URL('./fixtures/wrangler-dry-run-secrets.env', import.meta.url),
+    'utf8'
+  );
+  assert.equal(
+    fixture,
+    'ACCESS_TEAM_DOMAIN=https://family.cloudflareaccess.com\nACCESS_AUD=surfcams-local-dry-run-only\n'
+  );
+});
+
+test('the Worker declares one global SQLite Durable Object without previews or migrations', () => {
+  const config = JSON.parse(
+    fs.readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8')
+  );
+  assert.equal(config.name, 'surfcams-portugal');
+  assert.equal(config.main, 'worker/index.js');
+  assert.equal(config.compatibility_date, '2026-08-19');
+  assert.equal(config.workers_dev, true);
+  assert.equal(config.preview_urls, false);
+  assert.deepEqual(config.assets, {
+    directory: './dist',
+    binding: 'ASSETS',
+    run_worker_first: ['/api', '/api/*'],
+  });
+  assert.deepEqual(config.durable_objects, {
+    bindings: [{
+      name: 'MEO_TOKEN_COORDINATOR',
+      class_name: 'MeoTokenCoordinator',
+    }],
+  });
+  assert.deepEqual(config.exports, {
+    MeoTokenCoordinator: {
+      type: 'durable-object',
+      storage: 'sqlite',
+    },
+  });
+  assert.deepEqual(config.secrets, {
+    required: ['ACCESS_TEAM_DOMAIN', 'ACCESS_AUD'],
+  });
+  assert.equal('migrations' in config, false);
+  assert.equal('env' in config, false);
+  assert.equal('vars' in config, false);
 });

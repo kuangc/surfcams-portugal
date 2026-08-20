@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "surfcams-portugal",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-08-19",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api", "/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MEO_TOKEN_COORDINATOR",
+        "class_name": "MeoTokenCoordinator"
+      }
+    ]
+  },
+  "exports": {
+    "MeoTokenCoordinator": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
+  "secrets": {
+    "required": [
+      "ACCESS_TEAM_DOMAIN",
+      "ACCESS_AUD"
+    ]
+  }
+}
