@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "Ad-free personal Portugal surfcam viewer with map, favorites, and indexed Beachcam/MEO stream URLs.",
   "type": "module",
-  "private": false,
+  "private": true,
   "scripts": {
     "dev": "node scripts/dev-server.js",
-    "test": "node --test \"test/*.test.js\"",
+    "build": "node scripts/build-runtime-assets.js",
+    "test:app": "node --test \"test/*.test.js\"",
+    "test": "npm run test:app",
     "probe-surfline": "node scripts/probe-surfline-fetch.js",
     "embed-data": "node scripts/embed-camera-db.js",
     "build-pwa-icons": "node scripts/generate-pwa-icons.js",
@@ -40,9 +42,16 @@
     "hls"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22.0.0"
   },
-  "homepage": "https://kuangc.github.io/surfcams-portugal/",
+  "dependencies": {
+    "jose": "6.2.9"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.22.0",
+    "vitest": "4.1.11",
+    "wrangler": "4.124.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kuangc/surfcams-portugal.git"

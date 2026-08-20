@@ -4,6 +4,11 @@
 .playwright-mcp/
 .superpowers/
 .worktrees/
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
 node_modules/
 npm-debug.log*
 coverage/
