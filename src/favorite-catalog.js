@@ -46,16 +46,15 @@ function compareRecordNames(a, b) {
   });
 }
 
-export function createFavoriteCatalogIndex(cameras, favoriteIds = new Set()) {
-  const catalogCameras = Array.isArray(cameras) ? cameras : [];
+export function playableFavoriteCatalog(cameras, favoriteIds = new Set()) {
   const aliasIdsByFeed = new Map();
-  catalogCameras.filter(isPlayableFavoriteCamera).forEach((camera) => {
+  cameras.filter(isPlayableFavoriteCamera).forEach((camera) => {
     const feedKey = playableFeedKey(camera);
     const aliasIds = aliasIdsByFeed.get(feedKey) || [];
     aliasIds.push(camera.id);
     aliasIdsByFeed.set(feedKey, aliasIds);
   });
-  const records = uniquePlayableCameras(catalogCameras, favoriteIds)
+  return uniquePlayableCameras(cameras, favoriteIds)
     .map((camera) => {
       const aliasIds = aliasIdsByFeed.get(playableFeedKey(camera)) || [camera.id];
       return {
@@ -64,26 +63,11 @@ export function createFavoriteCatalogIndex(cameras, favoriteIds = new Set()) {
         saved: aliasIds.some((id) => favoriteIds.has(id))
       };
     });
-  const recordByCameraId = new Map();
-  records.forEach((record) => {
-    (record.aliasIds || [record.camera.id]).forEach((id) => {
-      recordByCameraId.set(id, record);
-    });
-  });
-  return { records, recordByCameraId };
 }
 
-export function playableFavoriteCatalog(cameras, favoriteIds = new Set()) {
-  return createFavoriteCatalogIndex(cameras, favoriteIds).records;
-}
-
-export function favoriteFeedRecord(catalogOrIndex, camera) {
+export function favoriteFeedRecord(catalog, camera) {
   const feedKey = playableFeedKey(camera);
   if (!feedKey) return null;
-  if (catalogOrIndex?.recordByCameraId instanceof Map && camera?.id) {
-    return catalogOrIndex.recordByCameraId.get(camera.id) || null;
-  }
-  const catalog = Array.isArray(catalogOrIndex) ? catalogOrIndex : catalogOrIndex?.records || [];
   return catalog.find(({ camera: candidate }) => playableFeedKey(candidate) === feedKey) || null;
 }
 

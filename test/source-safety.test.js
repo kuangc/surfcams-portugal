@@ -131,7 +131,7 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreList/);
   assert.match(mainSource, /playExploreCamera/);
   assert.match(mainSource, /createGalleryPreviewSession/);
-  assert.match(mainSource, /createFavoriteCatalogIndex/);
+  assert.match(mainSource, /playableFavoriteCatalog/);
   assert.match(mainSource, /createExplorePlaybackIndex/);
   assert.match(mainSource, /favoriteExploreIds/);
   assert.match(mainSource, /searchFavoriteCatalog/);
@@ -512,7 +512,7 @@ test("Favorites mutations persist before state assignment and expose one ten-sec
   assert.match(mainSource, /setFavoriteIds\(nextFavoriteIds\)/);
   assert.match(mainSource, /try\s*{[\s\S]*commitFavoriteMutation[\s\S]*}\s*catch \(error\)\s*{[\s\S]*announceFavoriteStatus/s);
   assert.match(mainSource, /renderMonitorIfActive\(\)[\s\S]*renderFavorites\(\)[\s\S]*renderExploreList\(\)[\s\S]*renderMarkers\(\)/);
-  assert.match(mainSource, /state\.favoriteCatalogIndex\.records/);
+  assert.match(mainSource, /state\.favoriteCatalog\b/);
   assert.match(mainSource, /function favoriteRecordForCamera[\s\S]*favoriteFeedRecord\(/);
   assert.match(mainSource, /function syncFavoriteToggle[\s\S]*favoriteRecordForCamera\(camera\)[\s\S]*record\?\.saved/);
   assert.match(mainSource, /function createFavoriteToggle[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
@@ -555,9 +555,8 @@ test("Favorites cancel an old undo offer only after a new mutation commits", () 
 });
 
 test("Explore and Favorites refresh indexed lookup state from controller seams instead of rebuilding per row", () => {
-  assert.doesNotMatch(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
   assert.doesNotMatch(mainSource, /explorePlaybackCamera\(subject,\s*state\.cameras\)/);
-  assert.match(mainSource, /function refreshFavoriteIndexes\(\)\s*{[\s\S]*state\.favoriteCatalogIndex\s*=\s*createFavoriteCatalogIndex\(state\.cameras,\s*state\.favoriteIds\);[\s\S]*state\.exploreFavoriteIds\s*=\s*favoriteExploreIds\([\s\S]*state\.exploreSubjects,[\s\S]*state\.explorePlaybackIndex,[\s\S]*state\.favoriteCatalogIndex[\s\S]*\);[\s\S]*}/);
+  assert.match(mainSource, /function refreshFavoriteIndexes\(\)\s*{[\s\S]*state\.favoriteCatalog\s*=\s*playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\);[\s\S]*state\.exploreFavoriteIds\s*=\s*favoriteExploreIds\([\s\S]*state\.exploreSubjects,[\s\S]*state\.explorePlaybackIndex,[\s\S]*state\.favoriteCatalog[\s\S]*\);[\s\S]*}/);
   assert.match(mainSource, /function setFavoriteIds\(nextFavoriteIds\)\s*{[\s\S]*state\.favoriteIds\s*=\s*nextFavoriteIds;[\s\S]*refreshFavoriteIndexes\(\);[\s\S]*}/);
   assert.match(mainSource, /state\.explorePlaybackIndex\s*=\s*createExplorePlaybackIndex\(state\.cameras\)/);
   assert.match(mainSource, /setFavoriteIds\(sanitizeFavoriteIds\(/);
@@ -572,7 +571,7 @@ test("Explore and Favorites refresh indexed lookup state from controller seams i
     /function undoFavoriteRemoval\(\)\s*{([\s\S]*?)\n}\n\nfunction toggleFavorite/
   )?.[1] || "";
 
-  assert.match(addSource, /const catalog = state\.favoriteCatalogIndex\.records;/);
+  assert.match(addSource, /const catalog = state\.favoriteCatalog;/);
   assert.match(addSource, /setFavoriteIds\(nextFavoriteIds\);/);
   assert.match(removeSource, /setFavoriteIds\(nextFavoriteIds\);/);
   assert.match(undoSource, /setFavoriteIds\(nextFavoriteIds\);/);

@@ -68,10 +68,19 @@ export function explorePlaybackCamera(subject, playbackCamerasOrIndex) {
 export function favoriteExploreIds(subjects, playbackCamerasOrIndex, favoriteCatalogIndex) {
   const ids = new Set();
   const allSubjects = Array.isArray(subjects) ? subjects : [];
+  const favoriteCatalog = Array.isArray(favoriteCatalogIndex)
+    ? favoriteCatalogIndex
+    : favoriteCatalogIndex?.records || [];
+  const recordByCameraId = new Map();
+  favoriteCatalog.forEach((record) => {
+    (record?.aliasIds || [record?.camera?.id]).forEach((id) => {
+      if (id) recordByCameraId.set(id, record);
+    });
+  });
   for (const subject of allSubjects) {
     const playbackCamera = explorePlaybackCamera(subject, playbackCamerasOrIndex);
     const record = playbackCamera?.id
-      ? favoriteCatalogIndex?.recordByCameraId?.get?.(playbackCamera.id) || null
+      ? recordByCameraId.get(playbackCamera.id) || null
       : null;
     if (record?.saved) ids.add(subject.id);
   }

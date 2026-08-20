@@ -25,8 +25,8 @@ import {
 } from "./config.js";
 import {
   addFavorite,
-  createFavoriteCatalogIndex,
   favoriteFeedRecord,
+  playableFavoriteCatalog,
   searchFavoriteCatalog
 } from "./favorite-catalog.js";
 import {
@@ -120,7 +120,7 @@ const state = {
   cameras: [],
   exploreSubjects: [],
   explorePlaybackIndex: createExplorePlaybackIndex([]),
-  favoriteCatalogIndex: createFavoriteCatalogIndex([], new Set()),
+  favoriteCatalog: [],
   exploreFavoriteIds: new Set(),
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
@@ -375,11 +375,11 @@ function byId() {
 }
 
 function refreshFavoriteIndexes() {
-  state.favoriteCatalogIndex = createFavoriteCatalogIndex(state.cameras, state.favoriteIds);
+  state.favoriteCatalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
   state.exploreFavoriteIds = favoriteExploreIds(
     state.exploreSubjects,
     state.explorePlaybackIndex,
-    state.favoriteCatalogIndex
+    state.favoriteCatalog
   );
 }
 
@@ -1568,7 +1568,7 @@ function renderFavoriteMutationSurfaces(cameraId = null) {
 }
 
 function addFavoriteCamera(cameraId) {
-  const catalog = state.favoriteCatalogIndex.records;
+  const catalog = state.favoriteCatalog;
   const camera = state.cameras.find((candidate) => candidate.id === cameraId);
   const record = favoriteFeedRecord(catalog, camera);
 
@@ -1607,7 +1607,7 @@ function addFavoriteCamera(cameraId) {
 
 function favoriteRecordForCamera(camera) {
   const favoriteCamera = exploreCameraForSubject(camera) || camera;
-  return favoriteFeedRecord(state.favoriteCatalogIndex, favoriteCamera);
+  return favoriteFeedRecord(state.favoriteCatalog, favoriteCamera);
 }
 
 function isFavoriteCamera(camera) {
@@ -1797,7 +1797,7 @@ function favoriteProviderValue(camera) {
 }
 
 function renderFavoriteAddFilterOptions() {
-  const catalogCameras = state.favoriteCatalogIndex.records.map(({ camera }) => camera);
+  const catalogCameras = state.favoriteCatalog.map(({ camera }) => camera);
   renderRegionOptions(els.favoriteAddRegion, catalogCameras);
 
   els.favoriteAddProvider.textContent = "";
@@ -1872,7 +1872,7 @@ function renderFavoriteAddResults() {
     region: els.favoriteAddRegion.value,
     provider: els.favoriteAddProvider.value
   };
-  const catalog = state.favoriteCatalogIndex.records;
+  const catalog = state.favoriteCatalog;
   favoriteAddRecords = shouldShowFavoriteResults(resultIntent)
     ? searchFavoriteCatalog(catalog, resultIntent)
     : [];

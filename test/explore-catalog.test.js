@@ -4,14 +4,10 @@ import test from "node:test";
 import {
   buildExploreCatalog,
   createExplorePlaybackIndex,
+  favoriteExploreIds,
   explorePlaybackCamera
 } from "../src/explore-catalog.js";
-import {
-  createFavoriteCatalogIndex
-} from "../src/favorite-catalog.js";
-import {
-  favoriteExploreIds
-} from "../src/explore-catalog.js";
+import { playableFavoriteCatalog } from "../src/favorite-catalog.js";
 
 const playback = [
   {
@@ -83,7 +79,7 @@ test("Explore resolves playback only to the named native MEO camera or stretch f
 
 test("Explore playback and favorite lookups reuse prebuilt indexes", () => {
   const playbackIndex = createExplorePlaybackIndex(playback);
-  const favoriteIndex = createFavoriteCatalogIndex(playback, new Set(["riviera"]));
+  const favoriteCatalog = playableFavoriteCatalog(playback, new Set(["riviera"]));
   const subjects = [
     ...playback,
     { id: "surfline-castelo", linkedCamId: "riviera", exploreInformationOnly: true },
@@ -93,7 +89,7 @@ test("Explore playback and favorite lookups reuse prebuilt indexes", () => {
   assert.equal(explorePlaybackCamera({ linkedCamId: "riviera" }, playbackIndex), playback[0]);
   assert.equal(explorePlaybackCamera({ linkedCamId: "missing", stretchCamIds: ["fonte"] }, playbackIndex), playback[1]);
   assert.deepEqual(
-    [...favoriteExploreIds(subjects, playbackIndex, favoriteIndex)],
+    [...favoriteExploreIds(subjects, playbackIndex, favoriteCatalog)],
     ["riviera", "surfline-castelo"]
   );
 });
