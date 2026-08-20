@@ -17,10 +17,10 @@ const issuer = "https://family.cloudflareaccess.com";
 const audience = "surfcams-access-audience";
 const email = "approved@example.com";
 
-const { privateKey, publicKey } = await generateKeyPair("ES256");
+const { privateKey, publicKey } = await generateKeyPair("RS256");
 const publicJwk = await exportJWK(publicKey);
 const keySet = createLocalJWKSet({
-  keys: [{ ...publicJwk, alg: "ES256", kid: "test-key", use: "sig" }]
+  keys: [{ ...publicJwk, alg: "RS256", kid: "test-key", use: "sig" }]
 });
 
 const env = {
@@ -41,10 +41,12 @@ async function signAssertion({
   tokenIssuer = issuer,
   tokenAudience = audience,
   expiration = "5m",
-  includeExpiration = true
+  includeExpiration = true,
+  algorithm = "RS256",
+  keyId = "test-key"
 } = {}) {
   let assertion = new SignJWT({ email })
-    .setProtectedHeader({ alg: "ES256", kid: "test-key" })
+    .setProtectedHeader({ alg: algorithm, kid: keyId })
     .setIssuer(tokenIssuer)
     .setAudience(tokenAudience)
     .setSubject("family-member")
@@ -158,11 +160,42 @@ test("rejects malformed or untrusted Access team domains", async (t) => {
 });
 
 test("rejects an assertion signed by an untrusted key", async () => {
-  const { privateKey: untrustedKey } = await generateKeyPair("ES256");
+  const { privateKey: untrustedKey } = await generateKeyPair("RS256");
   const assertion = await signAssertion({ signingKey: untrustedKey });
 
   await expectDenied(
     requireAccessJwt(requestWithAssertion(assertion), env, { keySet }),
+    [assertion, email, issuer, audience]
+  );
+});
+
+test("rejects a validly signed non-RS256 assertion", async () => {
+  const {
+    privateKey: ellipticPrivateKey,
+    publicKey: ellipticPublicKey
+  } = await generateKeyPair("ES256");
+  const ellipticPublicJwk = await exportJWK(ellipticPublicKey);
+  const mixedAlgorithmKeySet = createLocalJWKSet({
+    keys: [
+      { ...publicJwk, alg: "RS256", kid: "test-key", use: "sig" },
+      {
+        ...ellipticPublicJwk,
+        alg: "ES256",
+        kid: "elliptic-test-key",
+        use: "sig"
+      }
+    ]
+  });
+  const assertion = await signAssertion({
+    signingKey: ellipticPrivateKey,
+    algorithm: "ES256",
+    keyId: "elliptic-test-key"
+  });
+
+  await expectDenied(
+    requireAccessJwt(requestWithAssertion(assertion), env, {
+      keySet: mixedAlgorithmKeySet
+    }),
     [assertion, email, issuer, audience]
   );
 });

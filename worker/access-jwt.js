@@ -55,7 +55,7 @@ export async function requireAccessJwt(request, env, { keySet } = {}) {
     const verified = await jwtVerify(
       assertion,
       keySet || remoteKeySet(issuer),
-      { issuer, audience }
+      { issuer, audience, algorithms: ["RS256"] }
     );
     if (
       !Number.isFinite(verified.payload.exp)
