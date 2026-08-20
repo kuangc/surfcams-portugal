@@ -45,10 +45,22 @@ function comparePaths(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
 }
 
+function validateRealDirectory(directoryPath, label) {
+  const directory = normalizedPath(directoryPath);
+  const stats = lstatSync(directory);
+  if (stats.isSymbolicLink() || !stats.isDirectory()) {
+    throw new Error(`${label} must be a real non-symlink directory: ${directory}`);
+  }
+  if (realpathSync(directory) !== directory) {
+    throw new Error(`${label} must use a canonical path without symlink ancestry: ${directory}`);
+  }
+  return directory;
+}
+
 export function assertSafeOutputDirectory({rootDir, outputDir}) {
   if (!rootDir || !outputDir) throw new Error('rootDir and outputDir are required');
 
-  const root = normalizedPath(rootDir);
+  const root = validateRealDirectory(rootDir, 'Repository root');
   const output = normalizedPath(outputDir);
   const canonicalDist = join(root, 'dist');
   const outputIsInsideRepository = isWithin(root, output);
@@ -61,19 +73,17 @@ export function assertSafeOutputDirectory({rootDir, outputDir}) {
     throw new Error(`Unsafe output directory at or above repository: ${output}`);
   }
 
-  let stats;
   try {
-    stats = lstatSync(output);
+    lstatSync(output);
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
     if (output === canonicalDist) return output;
     throw new Error(`External output directory must already exist and be empty: ${output}`);
   }
 
-  if (stats.isSymbolicLink()) throw new Error(`Output directory must not be a symlink: ${output}`);
-  if (!stats.isDirectory()) throw new Error(`Output path must be a directory: ${output}`);
+  validateRealDirectory(output, 'Output directory');
 
-  const realRoot = realpathSync(root);
+  const realRoot = root;
   const realOutput = realpathSync(output);
   if (isWithin(realRoot, realOutput) && output !== canonicalDist) {
     throw new Error(`Unsafe output directory resolves inside repository: ${output}`);
@@ -98,10 +108,7 @@ export function validateRuntimeInput(filePath) {
 
 async function collectTreeFiles(rootDir, treeName) {
   const treeRoot = join(rootDir, treeName);
-  const treeStats = await lstat(treeRoot);
-  if (treeStats.isSymbolicLink() || !treeStats.isDirectory()) {
-    throw new Error(`Runtime tree must be a real directory: ${treeRoot}`);
-  }
+  validateRealDirectory(treeRoot, `Runtime ${treeName} directory`);
 
   const collected = [];
   async function walk(directory) {
@@ -136,6 +143,8 @@ export async function buildRuntimeAssets({rootDir = process.cwd(), outputDir} = 
     outputDir: outputDir === undefined ? join(root, 'dist') : outputDir,
   });
   const canonicalDist = join(root, 'dist');
+
+  validateRealDirectory(join(root, 'data'), 'Runtime data directory');
 
   const allowlistedFiles = [
     ...RUNTIME_ROOT_FILES.map((path) => join(root, path)),

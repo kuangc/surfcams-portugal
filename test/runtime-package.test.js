@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {execFile} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {mkdtemp, mkdir, readFile, readdir, symlink, writeFile} from 'node:fs/promises';
+import {mkdtemp, mkdir, readFile, readdir, rename, symlink, writeFile} from 'node:fs/promises';
+import {realpathSync} from 'node:fs';
 import {promisify} from 'node:util';
 import {join, relative, resolve} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -18,6 +19,7 @@ import {
 
 const execFileAsync = promisify(execFile);
 const builderPath = fileURLToPath(new URL('../scripts/build-runtime-assets.js', import.meta.url));
+const canonicalTempDir = realpathSync(tmpdir());
 
 const EXPECTED_ROOT_FILES = [
   'apple-touch-icon.png',
@@ -41,7 +43,7 @@ const EXPECTED_DATA_FILES = [
 ];
 
 async function makeFixture() {
-  const rootDir = await mkdtemp(join(tmpdir(), 'runtime-package-fixture-'));
+  const rootDir = await mkdtemp(join(canonicalTempDir, 'runtime-package-fixture-'));
   await Promise.all([
     mkdir(join(rootDir, 'data')),
     mkdir(join(rootDir, 'icons')),
@@ -91,8 +93,8 @@ test('exports the exact runtime root and data allowlists', () => {
 
 test('two fresh builds return identical metadata-only manifests', async () => {
   const rootDir = await makeFixture();
-  const outputDirA = await mkdtemp(join(tmpdir(), 'runtime-package-output-a-'));
-  const outputDirB = await mkdtemp(join(tmpdir(), 'runtime-package-output-b-'));
+  const outputDirA = await mkdtemp(join(canonicalTempDir, 'runtime-package-output-a-'));
+  const outputDirB = await mkdtemp(join(canonicalTempDir, 'runtime-package-output-b-'));
 
   const manifestA = await buildRuntimeAssets({rootDir, outputDir: outputDirA});
   const manifestB = await buildRuntimeAssets({rootDir, outputDir: outputDirB});
@@ -106,7 +108,7 @@ test('two fresh builds return identical metadata-only manifests', async () => {
 
 test('runtime package contains only approved files and no Surfline camera media text', async () => {
   const rootDir = await makeFixture();
-  const outputDir = await mkdtemp(join(tmpdir(), 'runtime-package-output-'));
+  const outputDir = await mkdtemp(join(canonicalTempDir, 'runtime-package-output-'));
 
   const manifest = await buildRuntimeAssets({rootDir, outputDir});
   const files = await outputFiles(outputDir);
@@ -161,14 +163,14 @@ test('output guard rejects destructive targets and allows only canonical repo di
 
   assert.doesNotThrow(() => assertSafeOutputDirectory({rootDir, outputDir: join(rootDir, 'dist')}));
 
-  const externalTarget = await mkdtemp(join(tmpdir(), 'runtime-package-symlink-target-'));
+  const externalTarget = await mkdtemp(join(canonicalTempDir, 'runtime-package-symlink-target-'));
   const linkedOutput = join(rootDir, 'dist');
   await symlink(externalTarget, linkedOutput, 'dir');
   assert.throws(() => assertSafeOutputDirectory({rootDir, outputDir: linkedOutput}), /symlink/i);
 
   const emptyInternalDirectory = join(rootDir, 'src', 'nested-output');
   await mkdir(emptyInternalDirectory);
-  const externalAliasParent = await mkdtemp(join(tmpdir(), 'runtime-package-alias-parent-'));
+  const externalAliasParent = await mkdtemp(join(canonicalTempDir, 'runtime-package-alias-parent-'));
   const externalAlias = join(externalAliasParent, 'repo-src-alias');
   await symlink(join(rootDir, 'src'), externalAlias, 'dir');
   assert.throws(
@@ -177,8 +179,53 @@ test('output guard rejects destructive targets and allows only canonical repo di
   );
 });
 
+test('output guard rejects an external directory beneath a symlinked parent', async () => {
+  const rootDir = await makeFixture();
+  const realOutputParent = await mkdtemp(join(canonicalTempDir, 'runtime-real-output-parent-'));
+  const realOutput = join(realOutputParent, 'empty-output');
+  await mkdir(realOutput);
+  const aliasContainer = await mkdtemp(join(canonicalTempDir, 'runtime-output-alias-container-'));
+  const aliasParent = join(aliasContainer, 'output-parent-alias');
+  await symlink(realOutputParent, aliasParent, 'dir');
+
+  assert.throws(
+    () => assertSafeOutputDirectory({rootDir, outputDir: join(aliasParent, 'empty-output')}),
+    /symlink|canonical|real/i,
+  );
+});
+
+test('symlinked root default dist is rejected without removing its sentinel', async () => {
+  const realRoot = await makeFixture();
+  const realDist = join(realRoot, 'dist');
+  const sentinelPath = join(realDist, 'sentinel.txt');
+  await mkdir(realDist);
+  await writeFile(sentinelPath, 'preserve symlinked-root sentinel\n');
+  const aliasContainer = await mkdtemp(join(canonicalTempDir, 'runtime-root-alias-container-'));
+  const aliasRoot = join(aliasContainer, 'root-alias');
+  await symlink(realRoot, aliasRoot, 'dir');
+
+  await assert.rejects(buildRuntimeAssets({rootDir: aliasRoot}), /root|symlink|canonical|real/i);
+  assert.equal(await readFile(sentinelPath, 'utf8'), 'preserve symlinked-root sentinel\n');
+});
+
+test('symlinked data directory cannot package external allowlisted bytes', async () => {
+  const rootDir = await makeFixture();
+  const externalParent = await mkdtemp(join(canonicalTempDir, 'runtime-external-data-parent-'));
+  const externalData = join(externalParent, 'data');
+  await rename(join(rootDir, 'data'), externalData);
+  await writeFile(
+    join(externalData, EXPECTED_DATA_FILES[0]),
+    '{"external":"must not be packaged"}\n',
+  );
+  await symlink(externalData, join(rootDir, 'data'), 'dir');
+  const outputDir = await mkdtemp(join(canonicalTempDir, 'runtime-data-symlink-output-'));
+
+  await assert.rejects(buildRuntimeAssets({rootDir, outputDir}), /data|symlink|canonical|real/i);
+  assert.deepEqual(await readdir(outputDir), []);
+});
+
 test('input validator accepts a regular file and rejects a symlink', async () => {
-  const fixtureDir = await mkdtemp(join(tmpdir(), 'runtime-input-'));
+  const fixtureDir = await mkdtemp(join(canonicalTempDir, 'runtime-input-'));
   const regularFile = join(fixtureDir, 'regular.txt');
   const linkedFile = join(fixtureDir, 'linked.txt');
   await writeFile(regularFile, 'safe\n');
