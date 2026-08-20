@@ -14,9 +14,11 @@ signed playlist URLs in a public issue.
 ## Authentication and Authorization
 
 Cloudflare Access protects the complete production hostname, including static
-assets and `/api/*`. Its one `Allow` policy is the authorization control and
-contains the exact approved email addresses. `Everyone`, domain wildcards,
-country-only rules, and bypass policies are not acceptable substitutes.
+assets and `/api/*`. Its primary Google `Allow` policy and any separately
+scoped, named one-time-PIN fallback policies are the authorization control.
+Every `Allow` policy contains only exact approved email addresses and requires
+its intended login method. `Everyone`, domain wildcards, country-only rules,
+and bypass policies are not acceptable substitutes.
 
 The playback API applies a separate defense-in-depth check to the
 `Cf-Access-Jwt-Assertion` header. Worker code validates the JWT signature
@@ -26,8 +28,9 @@ email authorization remains Cloudflare Access's responsibility. Both layers
 must remain enabled.
 
 Normal Access application and policy sessions last seven days. Permanent
-removal requires both deleting the exact email from the allow policy and
-revoking that user's current Access session. The visible app logout action uses
+removal requires both deleting the exact email from every allow policy that
+contains it, including any named one-time-PIN fallback policy, and revoking
+that user's current Access session. The visible app logout action uses
 `/cdn-cgi/access/logout` to clear the Access session. Removing or logging out a
 user prevents further app and broker access, but it cannot recall media already
 issued by MEO.

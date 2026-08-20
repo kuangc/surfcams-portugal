@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -78,6 +79,25 @@ function trackedResponse(chunks, init = {}) {
   };
 }
 
+function stalledCancelResponse({ headers: headerOverrides = {}, status = 200 } = {}) {
+  const state = { canceled: false };
+  const body = new ReadableStream({
+    cancel() {
+      state.canceled = true;
+      return new Promise(() => {});
+    }
+  }, { highWaterMark: 0 });
+  const headers = new Headers(HLS_HEADERS);
+  for (const [key, value] of Object.entries(headerOverrides)) {
+    if (value === null) headers.delete(key);
+    else headers.set(key, value);
+  }
+  return {
+    response: new Response(body, { headers, status }),
+    state
+  };
+}
+
 function requestHeader(options, name) {
   return new Headers(options.headers).get(name);
 }
@@ -85,6 +105,64 @@ function requestHeader(options, name) {
 function safeResultKeys(result) {
   return Object.keys(result).sort();
 }
+
+test("Access docs scope optional OTP to a separate exact-email policy", () => {
+  const runbook = readFileSync(
+    new URL("../docs/runbooks/cloudflare-access.md", import.meta.url),
+    "utf8"
+  );
+  const securityPolicy = readFileSync(
+    new URL("../SECURITY.md", import.meta.url),
+    "utf8"
+  );
+  const normalizedRunbook = runbook.replace(/\s+/gu, " ");
+  const normalizedSecurityPolicy = securityPolicy.replace(/\s+/gu, " ");
+  const contracts = [
+    [
+      "runbook should keep a primary Google allow policy",
+      normalizedRunbook.includes("primary Google `Allow` policy")
+    ],
+    [
+      "OTP fallback should use a separate allow policy",
+      normalizedRunbook.includes("Create a separate `Allow` policy named `OTP fallback — <person>`")
+    ],
+    [
+      "OTP fallback Include should contain only one exact email",
+      normalizedRunbook.includes("Under **Include**, add only that one person's exact email address.")
+    ],
+    [
+      "OTP fallback Require should select One-time PIN",
+      normalizedRunbook.includes("Under **Require**, set **Login Methods** to **One-time PIN**.")
+    ],
+    [
+      "Google policy should precede the narrowly scoped OTP fallback",
+      normalizedRunbook.includes(
+        "Place the primary Google policy first and the OTP fallback policy immediately after it."
+      )
+    ],
+    [
+      "runbook should forbid using One-time PIN as an Include selector",
+      normalizedRunbook.includes("Never put **One-time PIN** under **Include**")
+    ],
+    [
+      "revocation should remove the email from every allow policy",
+      normalizedRunbook.includes("every `Allow` policy")
+    ],
+    [
+      "security policy should describe every allow policy as exact-email-only",
+      normalizedSecurityPolicy.includes("Every `Allow` policy")
+    ]
+  ];
+
+  for (const [description, satisfied] of contracts) {
+    assert.equal(satisfied, true, description);
+  }
+  assert.equal(
+    normalizedRunbook.includes("Keep the same exact email in the existing allow policy."),
+    false,
+    "OTP fallback should not inherit the Google-only login-method requirement"
+  );
+});
 
 test("parseHlsUris returns only trimmed non-comment HLS URI lines", () => {
   const manifest = [
@@ -490,6 +568,35 @@ test("probeSignedStreams times out and cancels a stalled manifest body", async (
   assert.equal(report.results[0].durationMs < 250, true);
 });
 
+test("probeSignedStreams never waits indefinitely for rejected-response cancellation", async () => {
+  const cases = [
+    stalledCancelResponse({ status: 503 }),
+    stalledCancelResponse({ headers: { "content-type": "text/plain" } }),
+    stalledCancelResponse({ headers: { "access-control-allow-origin": null } }),
+    stalledCancelResponse({ headers: { "content-length": String(256 * 1024 + 1) } })
+  ];
+  let watchdogId;
+  const watchdog = new Promise((_, reject) => {
+    watchdogId = setTimeout(
+      () => reject(new Error("probe waited for rejected-response cancellation")),
+      150
+    );
+  });
+
+  const reports = await Promise.race([
+    Promise.all(cases.map(({ response }, index) => probeSignedStreams({
+      cameraDb: cameraDb(camera(`auth-stalled-cancel-${index}`)),
+      fetchToken: async () => FIXTURE_TOKEN,
+      fetcher: async () => response,
+      timeoutMs: 10
+    }))),
+    watchdog
+  ]).finally(() => clearTimeout(watchdogId));
+
+  assert.equal(reports.every((report) => !report.ok), true);
+  assert.equal(cases.every(({ state }) => state.canceled), true);
+});
+
 test("probeSignedStreams bounds the ranged segment body and cancels excess bytes", async () => {
   const segment = trackedResponse([
     new Uint8Array(1024).fill(0x47),
@@ -522,6 +629,33 @@ test("probeSignedStreams bounds the ranged segment body and cancels excess bytes
     report.results.map(({ phase, status }) => [phase, status]),
     [["master", 200], ["child", 200], ["segment", 206]]
   );
+});
+
+test("probeSignedStreams rejects arbitrary octet-stream bytes as a segment", async () => {
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    if (parsed.pathname.endsWith("/segment.ts")) {
+      return segmentResponse(new Uint8Array([1, 2, 3]), {
+        headers: { "content-type": "application/octet-stream" }
+      });
+    }
+    if (parsed.pathname.endsWith("/child.m3u8")) {
+      return hlsResponse("#EXTM3U\nsegment.ts?nimblesessionid=session");
+    }
+    return hlsResponse("#EXTM3U\nchild.m3u8?nimblesessionid=session");
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(camera("auth-generic-binary")),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.ok, false);
+  const segment = report.results.find((result) => result.phase === "segment");
+  assert.equal(segment.status, 206);
+  assert.equal(segment.authorizationOk, true);
+  assert.equal(segment.corsOk, true);
 });
 
 test("probeSignedStreams treats missing CORS and invalid playlist content as camera-local failures", async () => {

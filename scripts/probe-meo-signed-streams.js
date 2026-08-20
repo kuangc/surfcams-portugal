@@ -23,7 +23,6 @@ const HLS_CONTENT_TYPES = new Set([
   "audio/x-mpegurl"
 ]);
 const SEGMENT_CONTENT_TYPES = new Set([
-  "application/octet-stream",
   "video/mpeg",
   "video/mp2t"
 ]);
@@ -102,29 +101,33 @@ export function publicProbeResult(result) {
   };
 }
 
-async function cancelResponseBody(response) {
-  if (!response?.body) return;
+function cancelWithoutWaiting(cancel) {
   try {
-    await response.body.cancel();
+    Promise.resolve(cancel()).catch(() => {});
   } catch {
     // Probe failures are deliberately reduced to redacted status fields.
   }
 }
 
+function cancelResponseBody(response) {
+  if (!response?.body) return;
+  cancelWithoutWaiting(() => response.body.cancel());
+}
+
 async function readBoundedBody(response, maximumBytes, signal) {
   const declaredLength = response.headers?.get("content-length");
   if (/^\d+$/u.test(declaredLength || "") && Number(declaredLength) > maximumBytes) {
-    await cancelResponseBody(response);
+    cancelResponseBody(response);
     throw new Error("Probe response rejected");
   }
   if (!response.body) return new Uint8Array();
 
   const reader = response.body.getReader();
   const cancelOnAbort = () => {
-    reader.cancel().catch(() => {});
+    cancelWithoutWaiting(() => reader.cancel());
   };
   if (signal?.aborted) {
-    await reader.cancel();
+    cancelWithoutWaiting(() => reader.cancel());
     throw new Error("Probe response rejected");
   }
   signal?.addEventListener("abort", cancelOnAbort, { once: true });
@@ -135,18 +138,14 @@ async function readBoundedBody(response, maximumBytes, signal) {
       const { done, value } = await reader.read();
       if (done) break;
       if (!(value instanceof Uint8Array) || byteLength + value.byteLength > maximumBytes) {
-        await reader.cancel();
+        cancelWithoutWaiting(() => reader.cancel());
         throw new Error("Probe response rejected");
       }
       chunks.push(value);
       byteLength += value.byteLength;
     }
   } catch {
-    try {
-      await reader.cancel();
-    } catch {
-      // The public result never includes the body-reader error.
-    }
+    cancelWithoutWaiting(() => reader.cancel());
     throw new Error("Probe response rejected");
   } finally {
     signal?.removeEventListener("abort", cancelOnAbort);
@@ -247,7 +246,7 @@ async function probeResource({ cameraId, fetcher, phase, timeoutMs, url }) {
       || !corsOk
       || !expectedMime.has(contentType(response))
     ) {
-      await cancelResponseBody(response);
+      cancelResponseBody(response);
       return {
         ok: false,
         result: publicProbeResult({

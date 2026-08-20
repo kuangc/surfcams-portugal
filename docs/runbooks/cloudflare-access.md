@@ -8,8 +8,11 @@ This runbook configures and operates identity for the private
 ## Security Model
 
 Cloudflare Access protects the complete production `workers.dev` hostname and
-authorizes one exact-email allowlist. Google's identity provider proves who is
-signing in; merely having a Google account is not authorization.
+authorizes only exact-email allowlists. The primary policy requires Google's
+identity provider; an optional, separately scoped policy can require email
+one-time PIN for one named person. A successful login method proves who is
+signing in; merely having a Google account or reachable mailbox is not
+authorization.
 
 The Worker adds defense in depth for `/api/*`: it independently validates the
 Access JWT signature, issuer, audience, and expiry. It does **not** authorize
@@ -24,7 +27,7 @@ Keep these values in their one approved location:
 | Google OAuth client ID and client secret | Cloudflare Access Google identity-provider configuration only |
 | `ACCESS_TEAM_DOMAIN` | Cloudflare Worker secret |
 | `ACCESS_AUD` | Cloudflare Worker secret |
-| Approved email addresses | Cloudflare Access exact-email policy only |
+| Approved email addresses | Cloudflare Access exact-email `Allow` policy Include rules only |
 
 In particular, the Google OAuth client secret exists only in Cloudflare
 Access. Do not place it in Git, GitHub, a Worker binding, a build variable, a
@@ -77,13 +80,15 @@ Do this while the Worker still serves only the deny-only bootstrap.
    complete production Worker hostname. Protect the root and every path,
    including `/api/*`; do not scope the application to the API alone.
 2. Set the application session duration to **seven days**.
-3. Create one `Allow` policy and set its policy session duration to
-   **seven days**.
+3. Create the primary Google `Allow` policy and set its policy session
+   duration to **seven days**.
 4. Add an Include rule for each approved person's exact email address.
-5. Require the configured Google identity provider.
-6. Do not add `Everyone`, all Google users, an email-domain wildcard,
+5. Under Require, set **Login Methods** to the configured Google identity
+   provider.
+6. Keep the primary Google policy first in the policy evaluation order.
+7. Do not add `Everyone`, all Google users, an email-domain wildcard,
    country-only access, or any Bypass policy.
-7. Keep email one-time PIN disabled unless one named approved person cannot
+8. Keep email one-time PIN disabled unless one named approved person cannot
    use Google. The fallback procedure is below.
 
 From the Access application, copy its audience tag. From the Access account,
@@ -101,7 +106,9 @@ policy.
 
 ## 3. Approve an Account
 
-1. Add the person's complete, exact email to the Access `Allow` policy.
+1. Add the person's complete, exact email to the primary Google `Allow`
+   policy. If the person cannot use Google, follow the separate fallback
+   procedure in section 6 instead.
 2. Save the policy and ask the person to open the protected hostname in a fresh
    private browser session.
 3. Confirm they choose the matching Google account and reach the app.
@@ -114,15 +121,18 @@ each person.
 
 Permanent removal has two required actions, in this order:
 
-1. Remove the exact email from the Access `Allow` policy and save it. This
-   prevents a new application session.
+1. Remove the exact email from every `Allow` policy that contains it, including
+   the primary Google policy and any named OTP fallback policy, then save the
+   changes. Delete an empty OTP fallback policy. This prevents a new
+   application session through either login method.
 2. In Cloudflare Zero Trust → Team & Resources → Users, select that user and
    choose Action → Revoke. This revokes the user's Access session across the
    account's applications. Removing the policy entry alone does not immediately
    erase an already-issued application token.
-3. In a fresh private browser, verify that the removed account cannot start a
-   new session. Verify that the previously active browser loses app and API
-   access after revocation propagates.
+3. In fresh private-browser sessions, verify that the removed account cannot
+   start a new session through Google or one-time PIN. Verify that the
+   previously active browser loses app and API access after revocation
+   propagates.
 
 Access revocation stops future application and broker requests; it cannot
 recall an MEO URL already returned to an authorized browser. An already-issued
@@ -150,15 +160,27 @@ Use email one-time PIN only when one named, already-approved person cannot use
 Google.
 
 1. Enable Cloudflare Access one-time PIN as an additional login method.
-2. Keep the same exact email in the existing allow policy. Do not add an open
-   policy for PIN users.
-3. In a private browser, verify the code is delivered only to that intended
+2. Create a separate `Allow` policy named `OTP fallback — <person>` for that
+   person. Create one separate fallback policy per person; do not turn the
+   primary Google policy into a mixed-login policy.
+3. Under **Include**, add only that one person's exact email address.
+4. Under **Require**, set **Login Methods** to **One-time PIN**.
+5. Place the primary Google policy first and the OTP fallback policy
+   immediately after it. A Google-authenticated user should match the primary
+   policy; the named OTP user may match only the following fallback policy.
+6. Never put **One-time PIN** under **Include**. Do not add `Everyone`, an email
+   domain, or another broad selector to make OTP easier to reach: the exact
+   email Include and One-time PIN Require rules must both match.
+7. In a private browser, verify the code is delivered only to that intended
    mailbox and that the exact address is the one admitted in Access logs.
-4. Verify an unlisted address cannot use PIN to enter.
-5. Leave the application and policy session durations at seven days.
+8. Verify an unlisted address cannot use PIN to enter, and verify the named
+   fallback user cannot enter through an unintended identity provider.
+9. Leave the application and each policy session duration at seven days.
 
-Disable PIN again when the fallback is no longer required. Changing login
-method does not change the exact-email authorization requirement.
+When fallback is no longer required, delete that person's OTP fallback policy.
+Disable the one-time PIN login method after the last fallback policy is gone.
+Changing login method does not change the exact-email authorization
+requirement.
 
 ## 7. Acceptance Checklist
 
@@ -198,5 +220,7 @@ tokens in the release record or screenshots intended for publication.
 ## References
 
 - [Cloudflare: Google identity provider](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/google/)
+- [Cloudflare: One-time PIN login](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/one-time-pin/)
+- [Cloudflare: Access policies and common misconfigurations](https://developers.cloudflare.com/cloudflare-one/access-controls/policies/)
 - [Cloudflare: Access session management, revocation, and logout](https://developers.cloudflare.com/cloudflare-one/access-controls/access-settings/session-management/)
 - [Google: External audience and Testing/In production behavior](https://support.google.com/cloud/answer/15549945)
