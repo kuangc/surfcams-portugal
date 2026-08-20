@@ -114,13 +114,13 @@ export class TokenCoordinatorCore {
     }
     if (this.inFlight) return this.inFlight;
     const record = await this.storage.get(STORAGE_KEY);
+    if (this.inFlight) return this.inFlight;
     if (
       this.isFresh(record, this.now())
       && record.revision !== failedRevision
     ) {
       return record;
     }
-    if (this.inFlight) return this.inFlight;
     return this.acquire([record?.revision, failedRevision]);
   }
 }

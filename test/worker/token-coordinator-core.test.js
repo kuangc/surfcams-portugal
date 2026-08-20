@@ -359,6 +359,54 @@ test("every refresh caller joins a forced replacement already in flight", async 
   assert.equal(storage.calls.delete, 0);
 });
 
+test("a stale refresh with an earlier delayed read joins a replacement started later", async () => {
+  const delayedFirstRead = deferred();
+  const fetchStarted = deferred();
+  const tokenResult = deferred();
+  const previous = {
+    token: "fixture-prior-token",
+    revision: "revision-1",
+    fetchedAt: 1_000,
+    refreshAt: 1_000 + MEO_BROKER_TTL_MS
+  };
+  let getCalls = 0;
+  const storage = createStorage(previous);
+  storage.get = async () => {
+    storage.calls.get += 1;
+    getCalls += 1;
+    if (getCalls === 1) return delayedFirstRead.promise;
+    return previous;
+  };
+  let fetches = 0;
+  const harness = createCoordinator({
+    storage,
+    timestamp: 2_000,
+    revisions: ["revision-2"],
+    fetchToken: async () => {
+      fetches += 1;
+      fetchStarted.resolve();
+      return tokenResult.promise;
+    }
+  });
+
+  const staleRevisionRefresh = harness.coordinator.refreshToken("revision-0");
+  const currentRevisionRefresh = harness.coordinator.refreshToken("revision-1");
+  await fetchStarted.promise;
+  assert.equal(fetches, 1);
+
+  delayedFirstRead.resolve(previous);
+  tokenResult.resolve("fixture-new-token");
+  const [staleResult, replacement] = await Promise.all([
+    staleRevisionRefresh,
+    currentRevisionRefresh
+  ]);
+
+  assert.equal(staleResult === replacement, true);
+  assert.equal(replacement.revision, "revision-2");
+  assert.equal(storage.calls.put, 1);
+  assert.equal(storage.calls.delete, 0);
+});
+
 test("invalid persisted records are never reused as fresh", async (t) => {
   const base = {
     token: "fixture-prior-token",
