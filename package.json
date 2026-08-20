@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "build": "node scripts/build-runtime-assets.js",
-    "test:app": "node --test \"test/*.test.js\"",
+    "test:app": "node --test \"test/*.test.js\" \"test/worker/*.test.js\"",
     "test": "npm run test:app",
     "probe-surfline": "node scripts/probe-surfline-fetch.js",
     "embed-data": "node scripts/embed-camera-db.js",
