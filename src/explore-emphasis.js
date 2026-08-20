@@ -30,3 +30,27 @@ export function expandExploreMap(state) {
   if (state.emphasis === "map") return state;
   return { ...state, emphasis: "map" };
 }
+
+export function createExploreRefreshScheduler({
+  defer,
+  isSuspended = () => false
+}) {
+  let generation = 0;
+
+  function cancel() {
+    generation += 1;
+  }
+
+  function schedule(callback) {
+    if (isSuspended()) return false;
+    const token = generation + 1;
+    generation = token;
+    defer(() => {
+      if (token !== generation || isSuspended()) return;
+      callback();
+    });
+    return true;
+  }
+
+  return { cancel, schedule };
+}

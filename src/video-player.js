@@ -328,6 +328,10 @@ export function createFeedTilePlayer({
       video.removeEventListener("error", attempt.nativeErrorHandler);
       attempt.nativeErrorHandler = null;
     }
+    if (attempt.nativePlayingHandler) {
+      video.removeEventListener("playing", attempt.nativePlayingHandler);
+      attempt.nativePlayingHandler = null;
+    }
     destroyAttemptHls(attempt);
     return wasCurrent;
   }
@@ -373,9 +377,17 @@ export function createFeedTilePlayer({
     finishGeneration(token, "unavailable", "Feed unavailable");
   }
 
+  function finishAttemptPlaying(attempt) {
+    if (!isCurrentAttempt(attempt) || currentState === "playing") return;
+    finishGeneration(attempt.generation, "playing", "Playing");
+  }
+
   function startAutoplay(attempt) {
     if (!isCurrentAttempt(attempt) || attempt.autoplayStarted) return;
     attempt.autoplayStarted = true;
+    const handlePlaying = () => finishAttemptPlaying(attempt);
+    attempt.nativePlayingHandler = handlePlaying;
+    video.addEventListener("playing", handlePlaying);
     let autoplay;
     try {
       autoplay = video.play();
@@ -384,8 +396,7 @@ export function createFeedTilePlayer({
     }
     Promise.resolve(autoplay).then(
       () => {
-        if (!isCurrentAttempt(attempt)) return;
-        finishGeneration(attempt.generation, "playing", "Playing");
+        finishAttemptPlaying(attempt);
       },
       () => {
         if (!isCurrentAttempt(attempt)) return;
@@ -411,6 +422,7 @@ export function createFeedTilePlayer({
       generation: token,
       hls: null,
       nativeErrorHandler: null,
+      nativePlayingHandler: null,
       revision: record.revision,
       sourceAttempt
     };
@@ -578,8 +590,7 @@ export function createFeedTilePlayer({
     }
     Promise.resolve(resumed).then(
       () => {
-        if (!isCurrentAttempt(attempt) || currentState !== "blocked") return;
-        finishGeneration(attempt.generation, "playing", "Playing");
+        finishAttemptPlaying(attempt);
       },
       () => {
         if (!isCurrentAttempt(attempt) || currentState !== "blocked") return;

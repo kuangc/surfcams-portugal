@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import * as exploreEmphasis from "../src/explore-emphasis.js";
 import {
   createExploreViewState,
   expandExploreMap,
@@ -98,4 +99,35 @@ test("blank IDs and missing selections leave state unchanged", () => {
   assert.strictEqual(selectExploreSpot(initialized, null, { explicit: true }), initialized);
   assert.strictEqual(openSelectedExploreSpot(empty), empty);
   assert.strictEqual(expandExploreMap(empty), empty);
+});
+
+test("deferred Explore refreshes stay cancelled while suspended and after restore", () => {
+  assert.equal(typeof exploreEmphasis.createExploreRefreshScheduler, "function");
+
+  const deferred = [];
+  const refreshes = [];
+  let suspended = false;
+  const scheduler = exploreEmphasis.createExploreRefreshScheduler({
+    defer: (callback) => deferred.push(callback),
+    isSuspended: () => suspended
+  });
+
+  assert.equal(scheduler.schedule(() => refreshes.push("while-suspended")), true);
+  suspended = true;
+  scheduler.cancel();
+  deferred.shift()();
+  assert.deepEqual(refreshes, []);
+
+  suspended = false;
+  assert.equal(scheduler.schedule(() => refreshes.push("stale-after-restore")), true);
+  suspended = true;
+  scheduler.cancel();
+  suspended = false;
+  refreshes.push("restored");
+  deferred.shift()();
+  assert.deepEqual(refreshes, ["restored"]);
+
+  suspended = true;
+  assert.equal(scheduler.schedule(() => refreshes.push("queued-while-suspended")), false);
+  assert.equal(deferred.length, 0);
 });

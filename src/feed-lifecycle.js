@@ -178,11 +178,17 @@ export function createGalleryPreviewSession({
   }
 
   function reconcilePlayerState(nextState) {
-    if (!previewWindowStarted) return false;
     if (
       !["playing", "loading", "blocked", "resuming"].includes(currentState)
       || !["playing", "loading", "blocked", "unavailable"].includes(nextState)
     ) return false;
+
+    if (!previewWindowStarted) {
+      if (nextState !== "playing" || !visible || !isDocumentVisible()) return false;
+      currentState = "playing";
+      startPreviewWindow(generation);
+      return true;
+    }
 
     if (nextState === "unavailable") {
       previewWindowStarted = false;

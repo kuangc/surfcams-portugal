@@ -45,6 +45,7 @@ import {
   runAfterFullscreenExit
 } from "./fullscreen-controller.js";
 import {
+  createExploreRefreshScheduler,
   createExploreViewState,
   expandExploreMap,
   initializeExploreSelection,
@@ -269,6 +270,10 @@ let favoriteAddRecords = [];
 let favoriteAddActiveIndex = -1;
 let pendingComparisonCameraId = null;
 let playbackSuspended = false;
+const exploreRefreshScheduler = createExploreRefreshScheduler({
+  defer: afterNextPaint,
+  isSuspended: () => playbackSuspended
+});
 
 const favoriteUndo = createFavoriteUndo({
   durationMs: 10_000,
@@ -356,7 +361,7 @@ function setRoute(route) {
   }
 
   if (route === "explore") {
-    afterNextPaint(() => {
+    exploreRefreshScheduler.schedule(() => {
       refreshExploreMap({ fit: !state.mapHasInitialFit });
     });
   }
@@ -515,6 +520,7 @@ function clearFocusedPlayers() {
 function suspendPlayback() {
   if (playbackSuspended) return false;
   playbackSuspended = true;
+  exploreRefreshScheduler.cancel();
   clearMonitorPlayers();
   clearFocusedPlayers();
   state.explorePlayer.clear();
@@ -523,6 +529,7 @@ function suspendPlayback() {
 
 function restorePlayback() {
   if (!playbackSuspended || document.hidden) return false;
+  exploreRefreshScheduler.cancel();
   playbackSuspended = false;
   if (state.activeRoute === "monitor") {
     renderMonitor();

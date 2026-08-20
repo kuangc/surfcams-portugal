@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
+import { createGalleryPreviewSession } from "../src/feed-lifecycle.js";
 import {
   createFeedTilePlayer,
   createVideoGestures
@@ -132,6 +133,48 @@ function deferred() {
     reject = rejectPromise;
   });
   return { promise, reject, resolve };
+}
+
+function previewTimerHarness() {
+  let now = 0;
+  let nextId = 1;
+  const timers = new Map();
+  const scheduledDelays = [];
+
+  function setTimer(callback, delay) {
+    const id = nextId;
+    nextId += 1;
+    scheduledDelays.push(delay);
+    timers.set(id, { callback, dueAt: now + delay });
+    return id;
+  }
+
+  function clearTimer(id) {
+    timers.delete(id);
+  }
+
+  function advance(ms) {
+    const target = now + ms;
+    while (true) {
+      const due = [...timers.entries()]
+        .filter(([, timer]) => timer.dueAt <= target)
+        .sort((a, b) => a[1].dueAt - b[1].dueAt || a[0] - b[0])[0];
+      if (!due) break;
+      const [id, timer] = due;
+      timers.delete(id);
+      now = timer.dueAt;
+      timer.callback();
+    }
+    now = target;
+  }
+
+  return {
+    advance,
+    clearTimer,
+    pendingCount: () => timers.size,
+    scheduledDelays,
+    setTimer
+  };
 }
 
 function createHlsStub() {
@@ -634,6 +677,86 @@ test("native and hls.js autoplay rejection are blocked without a refresh", async
       globalThis.window = previousWindow;
     }
   }
+});
+
+test("native playing after autoplay blocking starts exactly one gallery preview minute", async () => {
+  const video = videoStub();
+  video.play = () => Promise.reject(new Error("autoplay blocked"));
+  const status = { textContent: "" };
+  const timers = previewTimerHarness();
+  const states = [];
+  let session = null;
+  const player = createFeedTilePlayer({
+    video,
+    status,
+    playbackClient: playbackClientStub(),
+    onStateChange(nextState) {
+      states.push(nextState);
+      session?.reconcilePlayerState(nextState);
+    }
+  });
+  session = createGalleryPreviewSession({
+    camera: camera(),
+    player,
+    durationMs: 60_000,
+    setTimer: timers.setTimer,
+    clearTimer: timers.clearTimer
+  });
+
+  session.setVisible(true);
+  timers.advance(0);
+  await waitFor(() => session.state() === "blocked");
+  assert.equal(player.state(), "blocked");
+  assert.equal(status.textContent, "Press play to start");
+  assert.deepEqual(timers.scheduledDelays, [0]);
+
+  video.dispatch("playing");
+  assert.equal(player.state(), "playing");
+  assert.equal(session.state(), "playing");
+  assert.equal(status.textContent, "Playing");
+  assert.deepEqual(timers.scheduledDelays, [0, 60_000]);
+  assert.equal(timers.pendingCount(), 1);
+
+  video.dispatch("playing");
+  assert.deepEqual(timers.scheduledDelays, [0, 60_000]);
+  assert.equal(timers.pendingCount(), 1);
+  assert.equal(states.filter((state) => state === "playing").length, 1);
+
+  timers.advance(59_999);
+  assert.equal(session.state(), "playing");
+  timers.advance(1);
+  assert.equal(session.state(), "expired");
+  assert.equal(player.state(), "expired");
+});
+
+test("native playing callbacks from replaced and cleared attempts are inert", async () => {
+  const video = videoStub();
+  video.play = () => Promise.reject(new Error("autoplay blocked"));
+  const states = [];
+  const player = createFeedTilePlayer({
+    video,
+    status: { textContent: "" },
+    playbackClient: playbackClientStub(),
+    onStateChange: (state) => states.push(state)
+  });
+
+  assert.equal(await player.play(camera("camera-a")), "blocked");
+  const firstPlaying = video.listeners("playing")[0];
+  assert.equal(typeof firstPlaying, "function");
+
+  assert.equal(await player.play(camera("camera-b")), "blocked");
+  const secondPlaying = video.listeners("playing")[0];
+  assert.equal(typeof secondPlaying, "function");
+  assert.notEqual(secondPlaying, firstPlaying);
+
+  firstPlaying();
+  assert.equal(player.state(), "blocked");
+  assert.equal(states.filter((state) => state === "playing").length, 0);
+
+  player.clear();
+  secondPlaying();
+  assert.equal(player.state(), "idle");
+  assert.equal(states.filter((state) => state === "playing").length, 0);
 });
 
 test("a later native media error refreshes once and attaches the replacement", async () => {

@@ -264,6 +264,33 @@ test("a blocked play result cancels preview expiry and becomes retryable", async
   assert.equal(player.calls.some(([operation]) => operation === "expire"), false);
 });
 
+test("native playing after an initial autoplay block starts one fresh exact preview window", async () => {
+  const player = createControllablePlayer();
+  const { session, timers } = createSession({ player });
+
+  session.setVisible(true);
+  timers.advance(0);
+  player.resolveNext("blocked");
+  await Promise.resolve();
+
+  assert.equal(session.state(), "blocked");
+  assert.equal(timers.pendingCount(), 0);
+  assert.equal(session.reconcilePlayerState("playing"), true);
+  assert.equal(session.state(), "playing");
+  assert.deepEqual(timers.scheduledDelays, [0, 60_000]);
+  assert.equal(timers.pendingCount(), 1);
+
+  assert.equal(session.reconcilePlayerState("playing"), true);
+  assert.deepEqual(timers.scheduledDelays, [0, 60_000]);
+  assert.equal(timers.pendingCount(), 1);
+
+  timers.advance(59_999);
+  assert.equal(session.state(), "playing");
+  timers.advance(1);
+  assert.equal(session.state(), "expired");
+  assert.deepEqual(player.calls.at(-1), ["expire"]);
+});
+
 test("an unavailable play result cancels preview expiry", async () => {
   const player = createControllablePlayer();
   const { session, timers } = createSession({ player });
@@ -520,13 +547,13 @@ test("retry cannot mint a fresh minute for an active blocked window", async () =
   assert.equal(session.state(), "expired");
 });
 
-test("synchronous player notifications cannot schedule a second preview timer", async () => {
+test("synchronous player notifications start one preview timer without scheduling a second", async () => {
   const player = createControllablePlayer();
   const { session, timers } = createSession({ player });
 
   session.setVisible(true);
   timers.advance(0);
-  assert.equal(session.reconcilePlayerState("playing"), false);
+  assert.equal(session.reconcilePlayerState("playing"), true);
   player.resolveNext("playing");
   await Promise.resolve();
 

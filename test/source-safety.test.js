@@ -381,6 +381,23 @@ test("page lifecycle cleanup invalidates players before restoring fresh playback
   assert.match(pageshowSource, /restorePlayback\(\)/);
 });
 
+test("deferred Explore map refreshes are token-cancelled across suspension and restore", () => {
+  const setRouteSource = mainSource.match(
+    /function setRoute\(route\)[\s\S]*?\n}\n\nfunction favoriteOrder/
+  )?.[0] || "";
+  const suspendSource = mainSource.match(
+    /function suspendPlayback\(\)[\s\S]*?\n}\n\nfunction restorePlayback/
+  )?.[0] || "";
+  const restoreSource = mainSource.match(
+    /function restorePlayback\(\)[\s\S]*?\n}\n\nfunction renderMonitorIfActive/
+  )?.[0] || "";
+
+  assert.match(mainSource, /createExploreRefreshScheduler\(\{[\s\S]*defer:\s*afterNextPaint[\s\S]*isSuspended:\s*\(\)\s*=>\s*playbackSuspended/);
+  assert.match(setRouteSource, /exploreRefreshScheduler\.schedule\(\(\)\s*=>\s*{[\s\S]*refreshExploreMap\(\{ fit:\s*!state\.mapHasInitialFit }\)/);
+  assert.match(suspendSource, /playbackSuspended\s*=\s*true[\s\S]*exploreRefreshScheduler\.cancel\(\)[\s\S]*state\.explorePlayer\.clear\(\)/);
+  assert.match(restoreSource, /exploreRefreshScheduler\.cancel\(\)[\s\S]*playbackSuspended\s*=\s*false[\s\S]*playExploreCamera\(state\.selectedExploreCamera\)/);
+});
+
 test("Focus and Compare styling keeps one useful feed or two equal responsive panes", () => {
   assert.match(styleSource, /\.monitor-grid\[hidden\]\s*\{[\s\S]*display:\s*none/);
   assert.match(styleSource, /\.monitor-focus\s*{[\s\S]*container-type:\s*inline-size/);
