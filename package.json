@@ -7,6 +7,10 @@
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "build": "node scripts/build-runtime-assets.js",
+    "check:conditions": "node scripts/check-conditions-freshness.js",
+    "probe:meo-signed": "node scripts/probe-meo-signed-streams.js",
+    "verify": "npm run build && npm test && npm run check-spot-advice && npm run check:worker",
+    "verify:fresh": "npm run verify && npm run check:conditions",
     "test:app": "node --test \"test/*.test.js\" \"test/worker/*.test.js\"",
     "test:worker": "npm run build && vitest run --config vitest.worker.config.js",
     "test": "npm run test:app && npm run test:worker",

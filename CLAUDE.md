@@ -1,5 +1,90 @@
 # CLAUDE.md
 
+## Worker Development
+
+Use Node 22. The exact local version is recorded in `.node-version`, and
+`package-lock.json` is the reviewed dependency graph. Start a clean checkout
+with the locked install and the same deterministic gate used by GitHub
+validation and Cloudflare Workers Builds:
+
+```sh
+npm ci
+npm run verify
+```
+
+The relevant commands are:
+
+- `npm run build` creates the allowlisted, deterministic `dist/` package.
+- `npm test` runs the Node and Workerd suites.
+- `npm run check:worker` performs the Wrangler dry run with test-only fixture
+  values.
+- `npm run verify` combines the deterministic build, test, spot-advice, and
+  Worker checks. It is the clean-checkout CI gate.
+- `npm run verify:fresh` adds the six-hour Surfline conditions freshness guard.
+  Use it for candidate and live-release acceptance, not every arbitrary push.
+- `npm run dev` starts the repository-root static server on loopback. It does
+  not emulate Cloudflare Access, the Worker playback API, or Durable Object
+  storage, so it cannot prove authenticated playback.
+- `npm run probe:meo-signed` performs the redacted, network-dependent MEO live
+  probe. It is an owner-run release check only and must never run in CI.
+
+### Worker layout
+
+- `worker/index.js` exports the functional Worker and
+  `MeoTokenCoordinator` class.
+- `worker/router.js` routes `/api/*` through the independent Access JWT check
+  and sends other requests to the `ASSETS` binding.
+- `worker/access-jwt.js` verifies the Access JWT signature, issuer, audience,
+  and expiry.
+- `worker/playback-catalog.js`, `worker/meo-token.js`, and
+  `worker/playback-api.js` enforce the immutable MEO catalog and bounded API
+  contract.
+- `worker/meo-token-coordinator.js` and `worker/token-coordinator-core.js` own
+  the fixed-name, SQLite-backed Durable Object token record and conditional
+  refresh behavior.
+- `src/playback-client.js` keeps signed playback responses in browser memory;
+  `src/video-player.js` owns the one-refresh, generation-safe player lifecycle.
+- `scripts/build-runtime-assets.js` copies only reviewed runtime assets into
+  ignored `dist/` and writes `dist/asset-manifest.json`.
+- `wrangler.bootstrap.jsonc` deploys the bounded deny-only bootstrap.
+  `wrangler.jsonc` deploys the functional Worker with `ASSETS` and
+  `MEO_TOKEN_COORDINATOR`.
+
+### Authentication and secret boundaries
+
+Cloudflare Access is the authorization layer. Its policy—not Worker code—must
+allow only exact approved email addresses. The Worker independently verifies
+the Access assertion's signature, issuer, audience, and expiry as defense in
+depth; it does **not** authorize an email address itself. Never add an email
+allowlist to the repository or infer that a cryptographically valid assertion
+is sufficient without the outer Access policy.
+
+The Google OAuth client secret belongs only in the Cloudflare Access identity
+provider. `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD` are Worker secrets and must be
+set interactively with `wrangler secret put`; do not put real values in source,
+`.dev.vars`, shell history, fixtures, GitHub, build output, or release notes.
+The committed dry-run fixture contains non-production values only.
+
+Never log, persist to disk, or commit an Access assertion, MEO token, complete
+signed playlist URL or query, `wmsAuthSign`, `nimblesessionid`, request header,
+upstream response body, or a detailed viewing history. The provider token is
+stored only by the named Durable Object. A signed URL may exist only in the
+authenticated response and browser memory required for playback; the opaque
+revision also belongs to the Durable Object record used for conditional
+refresh. No API may accept a caller-provided upstream URL.
+
+Keep live provider probes out of the Validate workflow and Cloudflare Workers
+Builds. In particular, `npm run probe:meo-signed`,
+`npm run check-spot-advice-links`, browser Surfline probes, and ad hoc
+production probes are manual operator actions. The separate, unchanged
+`update-surfline-conditions.yml` scheduled workflow is the deliberate
+exception: it performs the accepted live headed-Chrome/CDP refresh, validates
+the result, and commits only accepted conditions data for a later deterministic
+Workers Build.
+
+The approved migration behavior and security decisions are documented in
+`docs/superpowers/specs/2026-08-19-private-meo-worker-migration-design.md`.
+
 ## Spot Advice Research and Review
 
 `data/spot-advice.json` is the hand-reviewed canonical research file. Its schema v1 is display-only: advice may describe thresholds and fit, but it never changes provider estimates, local estimates, or surf ratings. `data/spot-advice-resolved.json` is generated and must not be hand-edited.
