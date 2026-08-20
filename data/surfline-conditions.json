@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "generatedAt": "2026-08-19T17:37:49.475Z",
+ "generatedAt": "2026-08-20T11:41:48.815Z",
  "unitsNormalized": {
   "surfHeight": "m",
   "windSpeed": "kmh"
@@ -15,7 +15,7 @@
    "name": "Almagreira",
    "remoteSpotId": "5dea8356fe21a44513cecc3f",
    "sourceKind": "primary",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -27,47 +27,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 270,
+   "windDirDeg": 329,
    "swells": [
     {
-     "hM": 0.7,
-     "periodS": 7,
-     "dirDeg": 335.1
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 302.3
+    },
+    {
+     "hM": 0.3,
+     "periodS": 6,
+     "dirDeg": 315.4
     },
     {
      "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 276.3
+     "periodS": 13,
+     "dirDeg": 340.5
     },
     {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 313.7
+     "hM": 0.2,
+     "periodS": 12,
+     "dirDeg": 334.3
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 267
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 352.5
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-almagreira"
   },
   "surfline-nazare": {
    "name": "Nazaré",
    "remoteSpotId": "58bdfa7882d034001252e3d8",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": null,
    "ratingValue": null,
    "ratingObserved": false,
@@ -78,48 +78,48 @@
    "surfMinM": 0.6,
    "surfMaxM": 0.9,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 284,
+   "windKmh": 16.7,
+   "windDirDeg": 319,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 310.2
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 286.4
     },
     {
-     "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 349.5
+     "hM": 0.4,
+     "periodS": 6,
+     "dirDeg": 296.7
     },
     {
-     "hM": 0.1,
-     "periodS": 10,
-     "dirDeg": 297.3
+     "hM": 0.2,
+     "periodS": 11,
+     "dirDeg": 328.3
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 260.3
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 321.5
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 309.4
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 342.6
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 341.7
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-nazare"
   },
   "surfline-sao-martinho-do-porto": {
    "name": "São Martinho do Porto",
    "remoteSpotId": "6019e348f121bc152c418dcc",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -131,47 +131,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 270,
+   "windDirDeg": 329,
    "swells": [
     {
-     "hM": 0.8,
-     "periodS": 7,
-     "dirDeg": 328.8
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 296.9
+    },
+    {
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 331.7
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 305.2
+     "periodS": 13,
+     "dirDeg": 329.5
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 279.5
+     "hM": 0.2,
+     "periodS": 11,
+     "dirDeg": 324.7
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 320.7
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 308.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 343.5
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-sao-martinho-do-porto"
   },
   "surfline-foz-do-arelho": {
    "name": "Foz do Arelho",
    "remoteSpotId": "60185298bf006fc3a6a23cec",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -183,47 +183,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 270,
+   "windDirDeg": 329,
    "swells": [
     {
-     "hM": 0.7,
-     "periodS": 7,
-     "dirDeg": 335.3
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 302.2
+    },
+    {
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 329.1
+    },
+    {
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 312.1
+    },
+    {
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 345.8
     },
     {
      "hM": 0.2,
-     "periodS": 7,
-     "dirDeg": 303.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 280.4
+     "periodS": 6,
+     "dirDeg": 343.3
     },
     {
      "hM": 0.1,
-     "periodS": 10,
-     "dirDeg": 307.9
-    },
-    {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 326.4
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "periodS": 6,
+     "dirDeg": 281.5
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-foz-do-arelho"
   },
   "surfline-belgas": {
    "name": "Belgas",
    "remoteSpotId": "5dea852e909631442a25348a",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -235,47 +235,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 270,
+   "windDirDeg": 329,
    "swells": [
     {
-     "hM": 0.7,
-     "periodS": 7,
-     "dirDeg": 335.3
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 302.2
     },
     {
-     "hM": 0.2,
-     "periodS": 7,
-     "dirDeg": 303.7
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 329.1
     },
     {
-     "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 280.4
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 312.1
+    },
+    {
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 345.8
     },
     {
      "hM": 0.1,
-     "periodS": 10,
-     "dirDeg": 307.9
+     "periodS": 6,
+     "dirDeg": 281.5
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 326.4
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 343.3
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-belgas"
   },
   "surfline-lagide": {
    "name": "Lagide",
    "remoteSpotId": "58bdf3a70cec4200133464f2",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -286,28 +286,28 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 269,
+   "windKmh": 11.1,
+   "windDirDeg": 346,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 351
-    },
-    {
-     "hM": 0.5,
-     "periodS": 6,
-     "dirDeg": 313.3
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 331.4
     },
     {
      "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 298.9
+     "periodS": 5,
+     "dirDeg": 330.7
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 320.9
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 288.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 8,
+     "dirDeg": 338.2
     },
     {
      "hM": 0,
@@ -316,20 +316,20 @@
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 241.1
+     "periodS": 4,
+     "dirDeg": 209.1
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-lagide"
   },
   "surfline-baleal": {
    "name": "Baleal",
    "remoteSpotId": "5842041f4e65fad6a7708bc6",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     0,
@@ -339,27 +339,27 @@
    "surfMaxM": 0.3,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 351
-    },
-    {
-     "hM": 0.5,
-     "periodS": 6,
-     "dirDeg": 313.3
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 331.4
     },
     {
      "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 298.9
+     "periodS": 5,
+     "dirDeg": 330.7
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 320.9
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 288.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 8,
+     "dirDeg": 338.2
     },
     {
      "hM": 0,
@@ -368,55 +368,55 @@
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 241.1
+     "periodS": 4,
+     "dirDeg": 209.1
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-baleal"
   },
   "surfline-cantinho-da-baia": {
    "name": "Cantinho da Baía",
    "remoteSpotId": "5a1c9e91cbecc0001bb480c8",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
-    1,
-    2
+    0,
+    1
    ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
+   "surfMinM": 0,
+   "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 269,
+   "windKmh": 11.1,
+   "windDirDeg": 346,
    "swells": [
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
     },
     {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
     },
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 204.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
      "hM": 0,
@@ -424,16 +424,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-cantinho-da-baia"
   },
   "surfline-baia": {
    "name": "Meio da Baía",
    "remoteSpotId": "63a4374bb5c53b335b3eada7",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -442,48 +442,48 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 269,
+   "windKmh": 11.1,
+   "windDirDeg": 346,
    "swells": [
     {
-     "hM": 0.7,
-     "periodS": 7,
-     "dirDeg": 308.8
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 285.6
     },
     {
-     "hM": 0.6,
-     "periodS": 6,
-     "dirDeg": 352.2
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 333.8
+    },
+    {
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 327.5
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 288.7
+     "periodS": 11,
+     "dirDeg": 326.4
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 321.4
+     "hM": 0.2,
+     "periodS": 8,
+     "dirDeg": 339.4
     },
     {
      "hM": 0,
      "periodS": 0,
      "dirDeg": 0
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 218
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-baia"
   },
   "surfline-cerro": {
    "name": "Cerro",
    "remoteSpotId": "603419021b17499cb1135506",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -494,48 +494,48 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 269,
+   "windKmh": 11.1,
+   "windDirDeg": 346,
    "swells": [
     {
-     "hM": 0.7,
-     "periodS": 7,
-     "dirDeg": 335.1
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 340.5
     },
     {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 313.7
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 302.3
     },
     {
      "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 276.3
+     "periodS": 5,
+     "dirDeg": 352.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 12,
+     "dirDeg": 334.3
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 6,
+     "dirDeg": 315.4
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 267
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-cerro"
   },
   "surfline-molhe-leste": {
    "name": "Molhe Leste",
    "remoteSpotId": "640b9cb14878ebb2521e21fe",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -547,47 +547,47 @@
    "surfMaxM": 0.3,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 283.3
+    },
+    {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 232.2
+     "periodS": 13,
+     "dirDeg": 230.9
     },
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.9
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 216.3
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 289
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 305.6
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 308.2
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 330.5
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-molhe-leste"
   },
   "surfline-supertubos": {
    "name": "Supertubos",
    "remoteSpotId": "5842041f4e65fad6a7708bc3",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -599,47 +599,47 @@
    "surfMaxM": 0.3,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 283.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 232.2
+     "periodS": 13,
+     "dirDeg": 305.6
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 289
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 230.9
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 308.2
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 330.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 216.3
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-supertubos"
   },
   "surfline-consolacao": {
    "name": "Consolação",
    "remoteSpotId": "5a53f6e5a8b6a9001b017369",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -651,47 +651,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 283.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 232.2
+     "periodS": 13,
+     "dirDeg": 305.6
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 289
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 230.9
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 308.2
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 330.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 216.3
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-consolacao"
   },
   "surfline-praia-dos-frades": {
    "name": "Praia dos Frades",
    "remoteSpotId": "640b9ccfde81d5e37c0e19a7",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -703,47 +703,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 283.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 232.2
+     "periodS": 13,
+     "dirDeg": 305.6
     },
     {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 289
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 230.9
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 308.2
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 330.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 216.3
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-dos-frades"
   },
   "surfline-praia-da-areia-branca": {
    "name": "Praia Da Areia Branca",
    "remoteSpotId": "640b9cab8284fefad6b169e4",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -755,32 +755,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 282,
+   "windDirDeg": 322,
    "swells": [
     {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 297.3
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 288
+    },
+    {
+     "hM": 0.3,
+     "periodS": 6,
+     "dirDeg": 321.7
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 282.3
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 340.2
+     "periodS": 13,
+     "dirDeg": 309.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 235.9
+     "periodS": 13,
+     "dirDeg": 234.4
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 220.3
     },
     {
      "hM": 0,
@@ -788,16 +788,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-areia-branca"
   },
   "surfline-praia-do-porto-novo": {
    "name": "Praia do Porto Novo",
    "remoteSpotId": "640b9cc3b6d7696d2c94f4a4",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -807,49 +807,49 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 287,
+   "windDirDeg": 334,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 305.5
+     "periodS": 9,
+     "dirDeg": 290.1
     },
     {
      "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 347.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 278.4
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 244.9
+     "periodS": 6,
+     "dirDeg": 314.5
     },
     {
      "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 299.6
+     "periodS": 13,
+     "dirDeg": 316.4
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 243
+    },
+    {
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 351.8
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 219.4
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-do-porto-novo"
   },
   "surfline-praia-de-santa-rita": {
    "name": "Praia de Santa Rita",
    "remoteSpotId": "640b9cbdde81d582c90e15b1",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -859,47 +859,47 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 287,
+   "windDirDeg": 334,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 305.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 244.9
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 278.4
+     "periodS": 9,
+     "dirDeg": 290.1
     },
     {
      "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 347.7
+     "periodS": 6,
+     "dirDeg": 314.5
     },
     {
      "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 299.6
+     "periodS": 13,
+     "dirDeg": 316.4
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 243
+    },
+    {
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 351.8
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 219.4
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-de-santa-rita"
   },
   "surfline-santa-cruz": {
    "name": "Santa Cruz",
    "remoteSpotId": "584204204e65fad6a77099d9",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -911,32 +911,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 287,
+   "windDirDeg": 334,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 311.5
+     "periodS": 9,
+     "dirDeg": 292.4
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 354.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 296.7
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 324.5
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 235
+     "periodS": 13,
+     "dirDeg": 326.2
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 272.2
+     "periodS": 13,
+     "dirDeg": 233.4
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 212.9
     },
     {
      "hM": 0,
@@ -944,51 +944,51 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-santa-cruz"
   },
   "surfline-praia-formosa": {
    "name": "Praia Formosa",
    "remoteSpotId": "640b9cb745190568fce06ecf",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
-    0,
-    1
+    1,
+    2
    ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 287,
+   "windDirDeg": 334,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 311.5
+     "periodS": 9,
+     "dirDeg": 292.4
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 235
+     "periodS": 13,
+     "dirDeg": 233.4
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 296.7
+     "periodS": 4,
+     "dirDeg": 212.9
+    },
+    {
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 324.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 272.2
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 354.5
+     "periodS": 13,
+     "dirDeg": 326.2
     },
     {
      "hM": 0,
@@ -996,16 +996,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-formosa"
   },
   "surfline-praia-das-amoeiras": {
    "name": "Praia das Amoeiras",
    "remoteSpotId": "640b9cd4606c45f75af464c9",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -1015,32 +1015,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 287,
+   "windDirDeg": 334,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 311.5
+     "periodS": 9,
+     "dirDeg": 292.4
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 354.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 296.7
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 324.5
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 235
+     "periodS": 13,
+     "dirDeg": 326.2
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 272.2
+     "periodS": 13,
+     "dirDeg": 233.4
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 212.9
     },
     {
      "hM": 0,
@@ -1048,16 +1048,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-das-amoeiras"
   },
   "surfline-praia-azul": {
    "name": "Praia Azul",
    "remoteSpotId": "584204204e65fad6a77096b9",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -1067,32 +1067,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 311.5
+     "periodS": 9,
+     "dirDeg": 292.4
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 354.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 296.7
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 324.5
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 235
+     "periodS": 13,
+     "dirDeg": 326.2
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 272.2
+     "periodS": 13,
+     "dirDeg": 233.4
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 212.9
     },
     {
      "hM": 0,
@@ -1100,16 +1100,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-azul"
   },
   "surfline-praia-porto-chao": {
    "name": "Praia Porto Chão",
    "remoteSpotId": "640b9cc9b6d769875694f5de",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -1119,32 +1119,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 303.7
+     "periodS": 9,
+     "dirDeg": 292
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 319.1
     },
     {
      "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 345.6
+     "periodS": 5,
+     "dirDeg": 326.3
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.9
+     "periodS": 13,
+     "dirDeg": 241
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 243.4
-    },
-    {
-     "hM": 0.1,
-     "periodS": 8,
-     "dirDeg": 270.7
+     "periodS": 4,
+     "dirDeg": 213.9
     },
     {
      "hM": 0,
@@ -1152,14 +1152,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-porto-chao"
   },
   "surfline-sao-lourenco": {
    "name": "São Lourenço",
    "remoteSpotId": "5842041f4e65fad6a7708bcb",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -1171,32 +1171,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.6
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 292.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 224.3
+     "periodS": 13,
+     "dirDeg": 318
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 329.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.3
+     "periodS": 13,
+     "dirDeg": 223.4
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 271.2
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 352.5
+     "periodS": 4,
+     "dirDeg": 208.5
     },
     {
      "hM": 0,
@@ -1204,14 +1204,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-sao-lourenco"
   },
   "surfline-coxos": {
    "name": "Coxos",
    "remoteSpotId": "5842041f4e65fad6a7708bc4",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1223,32 +1223,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.6
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 352.5
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 292.3
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.3
+     "periodS": 13,
+     "dirDeg": 318
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 329.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 224.3
+     "periodS": 13,
+     "dirDeg": 223.4
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 271.2
+     "periodS": 4,
+     "dirDeg": 208.5
     },
     {
      "hM": 0,
@@ -1256,51 +1256,51 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-coxos"
   },
   "surfline-cave": {
    "name": "Cave",
    "remoteSpotId": "5d702a08b8be350001890108",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
-    1,
-    2
+    2,
+    3
    ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
+   "surfMinM": 0.6,
+   "surfMaxM": 0.9,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
     },
     {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
     },
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 204.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
      "hM": 0,
@@ -1308,14 +1308,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-cave"
   },
   "surfline-ribeira-d-ilhas": {
    "name": "Ribeira D’Ilhas",
    "remoteSpotId": "5842041f4e65fad6a7708bc2",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1327,32 +1327,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.6
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 352.5
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 292.3
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.3
+     "periodS": 13,
+     "dirDeg": 318
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 329.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 224.3
+     "periodS": 13,
+     "dirDeg": 223.4
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 271.2
+     "periodS": 4,
+     "dirDeg": 208.5
     },
     {
      "hM": 0,
@@ -1360,274 +1360,66 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-ribeira-d-ilhas"
   },
   "surfline-reef": {
    "name": "Reef",
    "remoteSpotId": "5842041f4e65fad6a7708bc1",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
-    1,
-    2
+    2,
+    3
    ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
+   "surfMinM": 0.6,
+   "surfMaxM": 0.9,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
     },
     {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
     },
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "hM": 0.3,
+     "periodS": 13,
+     "dirDeg": 204.9
     },
     {
      "hM": 0,
      "periodS": 0,
      "dirDeg": 0
+    },
+    {
+     "hM": 0.2,
+     "periodS": 5,
+     "dirDeg": 183.8
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-reef"
   },
   "surfline-pedra-branca": {
    "name": "Pedra Branca",
    "remoteSpotId": "584204204e65fad6a77096ae",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
-   "ratingObserved": false,
-   "surfRawFt": [
-    1,
-    2
-   ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
-   "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 308,
-   "swells": [
-    {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 311.6
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 224.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 271.2
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 352.5
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20,
-   "id": "surfline-pedra-branca"
-  },
-  "surfline-matadouro": {
-   "name": "Matadouro",
-   "remoteSpotId": "64bbfc3868c6112c8d112deb",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
-   "ratingObserved": false,
-   "surfRawFt": [
-    1,
-    2
-   ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
-   "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 308,
-   "swells": [
-    {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.1
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 227.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.8
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.3
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20,
-   "id": "surfline-matadouro"
-  },
-  "surfline-praia-do-sul": {
-   "name": "Praia do Sul",
-   "remoteSpotId": "5fb2c2da7057d993d9d2caa3",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
-   "ratingObserved": false,
-   "surfRawFt": [
-    1,
-    2
-   ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
-   "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 308,
-   "swells": [
-    {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.1
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 227.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.8
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.3
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20,
-   "id": "surfline-praia-do-sul"
-  },
-  "surfline-praia-da-baleia": {
-   "name": "Praia da Baleia",
-   "remoteSpotId": "640b9ce1606c453dd8f4675f",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
-   "ratingObserved": false,
-   "surfRawFt": [
-    1,
-    2
-   ],
-   "surfMinM": 0.3,
-   "surfMaxM": 0.6,
-   "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 308,
-   "swells": [
-    {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.1
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.8
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.3
-    },
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 227.5
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20,
-   "id": "surfline-praia-da-baleia"
-  },
-  "surfline-foz-do-lizandro": {
-   "name": "Foz do Lizandro",
-   "remoteSpotId": "5842041f4e65fad6a7708bbd",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -1639,32 +1431,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.1
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 292.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 227.5
+     "periodS": 13,
+     "dirDeg": 318
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 329.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.8
+     "periodS": 13,
+     "dirDeg": 223.4
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.3
-    },
-    {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
+     "periodS": 4,
+     "dirDeg": 208.5
     },
     {
      "hM": 0,
@@ -1672,14 +1464,222 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
+   "id": "surfline-pedra-branca"
+  },
+  "surfline-matadouro": {
+   "name": "Matadouro",
+   "remoteSpotId": "64bbfc3868c6112c8d112deb",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
+   "ratingObserved": false,
+   "surfRawFt": [
+    1,
+    2
+   ],
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
+   "surfObserved": false,
+   "windKmh": 13,
+   "windDirDeg": 324,
+   "swells": [
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 290.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 320.8
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 226
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208.3
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
+   "id": "surfline-matadouro"
+  },
+  "surfline-praia-do-sul": {
+   "name": "Praia do Sul",
+   "remoteSpotId": "5fb2c2da7057d993d9d2caa3",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
+   "ratingObserved": false,
+   "surfRawFt": [
+    1,
+    2
+   ],
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
+   "surfObserved": false,
+   "windKmh": 13,
+   "windDirDeg": 324,
+   "swells": [
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 290.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 320.8
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 226
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208.3
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
+   "id": "surfline-praia-do-sul"
+  },
+  "surfline-praia-da-baleia": {
+   "name": "Praia da Baleia",
+   "remoteSpotId": "640b9ce1606c453dd8f4675f",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
+   "ratingObserved": false,
+   "surfRawFt": [
+    1,
+    2
+   ],
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
+   "surfObserved": false,
+   "windKmh": 13,
+   "windDirDeg": 324,
+   "swells": [
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 290.9
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 320.8
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 226
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208.3
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
+   "id": "surfline-praia-da-baleia"
+  },
+  "surfline-foz-do-lizandro": {
+   "name": "Foz do Lizandro",
+   "remoteSpotId": "5842041f4e65fad6a7708bbd",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
+   "ratingObserved": false,
+   "surfRawFt": [
+    1,
+    2
+   ],
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
+   "surfObserved": false,
+   "windKmh": 13,
+   "windDirDeg": 324,
+   "swells": [
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 290.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 320.8
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 226
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208.3
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
    "id": "surfline-foz-do-lizandro"
   },
   "surfline-sao-juliao": {
    "name": "São Julião",
    "remoteSpotId": "640b9cda4878ebfad81e2b72",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1691,32 +1691,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.1
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 290.9
     },
     {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.8
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 330.3
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 227.5
+     "periodS": 13,
+     "dirDeg": 320.8
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.3
+     "periodS": 13,
+     "dirDeg": 226
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208.3
     },
     {
      "hM": 0,
@@ -1724,14 +1724,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-sao-juliao"
   },
   "surfline-praia-da-vigia": {
    "name": "Praia da Vigia",
    "remoteSpotId": "640b9ce6b6d769df0b94fc57",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1743,32 +1743,32 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.2
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 287.5
     },
     {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.1
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 331
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 233.7
+     "periodS": 13,
+     "dirDeg": 321.8
     },
     {
-     "hM": 0.1,
-     "periodS": 8,
-     "dirDeg": 268.5
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 231.7
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208
     },
     {
      "hM": 0,
@@ -1776,16 +1776,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-vigia"
   },
   "surfline-praia-da-samarra": {
    "name": "Praia da Samarra",
    "remoteSpotId": "640b9cec8284fee602b179ab",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -1795,27 +1795,22 @@
    "surfMaxM": 0.6,
    "surfObserved": false,
    "windKmh": 13,
-   "windDirDeg": 308,
+   "windDirDeg": 324,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.2
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 331
     },
     {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 353.1
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 287.5
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.1
-    },
-    {
-     "hM": 0.1,
-     "periodS": 8,
-     "dirDeg": 268.5
+     "periodS": 13,
+     "dirDeg": 321.8
     },
     {
      "hM": 0,
@@ -1824,18 +1819,23 @@
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 233.7
+     "periodS": 13,
+     "dirDeg": 231.7
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 208
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-samarra"
   },
   "surfline-praia-do-magoito": {
    "name": "Praia do Magoito",
    "remoteSpotId": "640b9d23e920304216e1ad8e",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1846,33 +1846,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 306.4
+     "periodS": 9,
+     "dirDeg": 292.6
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 344.7
+     "periodS": 5,
+     "dirDeg": 330.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 237.9
+     "periodS": 13,
+     "dirDeg": 315.6
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.2
+     "periodS": 13,
+     "dirDeg": 237.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.7
+     "periodS": 4,
+     "dirDeg": 206.9
     },
     {
      "hM": 0,
@@ -1880,16 +1880,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-do-magoito"
   },
   "surfline-praia-da-aguda": {
    "name": "Praia da Aguda",
    "remoteSpotId": "640b9d2f606c45858af4797d",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -1898,48 +1898,48 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 309.2
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 285.4
+    },
+    {
+     "hM": 0.4,
+     "periodS": 5,
+     "dirDeg": 328.2
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 249.5
+     "periodS": 13,
+     "dirDeg": 303.1
+    },
+    {
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 288.7
     },
     {
      "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 283.8
+     "periodS": 13,
+     "dirDeg": 244.3
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 216.4
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-aguda"
   },
   "surfline-praia-dos-moleiros": {
    "name": "Praia dos Moleiros",
    "remoteSpotId": "640b9d364519057849e08ba2",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -1950,33 +1950,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 306.4
+     "periodS": 9,
+     "dirDeg": 292.6
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 344.7
+     "periodS": 5,
+     "dirDeg": 330.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.2
+     "periodS": 13,
+     "dirDeg": 315.6
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 237.9
+     "periodS": 13,
+     "dirDeg": 237.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.7
+     "periodS": 4,
+     "dirDeg": 206.9
     },
     {
      "hM": 0,
@@ -1984,16 +1984,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-dos-moleiros"
   },
   "surfline-praia-das-macas": {
    "name": "Praia das Maçãs",
    "remoteSpotId": "601853a64071addd994eeb43",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -2002,33 +2002,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 306.4
+     "periodS": 9,
+     "dirDeg": 292.6
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 344.7
+     "periodS": 5,
+     "dirDeg": 330.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 237.9
+     "periodS": 13,
+     "dirDeg": 315.6
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.2
+     "periodS": 13,
+     "dirDeg": 237.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.7
+     "periodS": 4,
+     "dirDeg": 206.9
     },
     {
      "hM": 0,
@@ -2043,9 +2043,9 @@
    "name": "Praia Pequena",
    "remoteSpotId": "584204214e65fad6a7709d28",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -2054,33 +2054,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 306.4
+     "periodS": 9,
+     "dirDeg": 292.6
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 344.7
+     "periodS": 5,
+     "dirDeg": 330.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 237.9
+     "periodS": 13,
+     "dirDeg": 315.6
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.2
+     "periodS": 13,
+     "dirDeg": 237.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.7
+     "periodS": 4,
+     "dirDeg": 206.9
     },
     {
      "hM": 0,
@@ -2095,9 +2095,9 @@
    "name": "Praia Grande",
    "remoteSpotId": "5842041f4e65fad6a7708e62",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -2106,33 +2106,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 300.3
+     "periodS": 9,
+     "dirDeg": 288.6
     },
     {
      "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 332.2
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 310.2
+    },
+    {
+     "hM": 0.2,
      "periodS": 6,
-     "dirDeg": 341.7
+     "dirDeg": 286.3
     },
     {
      "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 238.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 288.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 278.7
+     "periodS": 4,
+     "dirDeg": 206.3
     },
     {
      "hM": 0,
@@ -2147,7 +2147,7 @@
    "name": "Praia da Adraga",
    "remoteSpotId": "640b9d054878eb35041e35bb",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -2158,33 +2158,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 306.4
+     "periodS": 9,
+     "dirDeg": 292.6
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 344.7
+     "periodS": 5,
+     "dirDeg": 330.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 237.9
+     "periodS": 13,
+     "dirDeg": 315.6
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 293.2
+     "periodS": 13,
+     "dirDeg": 237.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.7
+     "periodS": 4,
+     "dirDeg": 206.9
     },
     {
      "hM": 0,
@@ -2199,7 +2199,7 @@
    "name": "Praia da Ursa",
    "remoteSpotId": "640b9d174519050958e08490",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -2210,33 +2210,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 300.3
+     "periodS": 9,
+     "dirDeg": 288.6
     },
     {
      "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 332.2
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 310.2
+    },
+    {
+     "hM": 0.2,
      "periodS": 6,
-     "dirDeg": 341.7
+     "dirDeg": 286.3
     },
     {
      "hM": 0.2,
-     "periodS": 15,
-     "dirDeg": 238.5
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 288.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 278.7
+     "periodS": 4,
+     "dirDeg": 206.3
     },
     {
      "hM": 0,
@@ -2244,16 +2244,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20.6,
+   "waterTempC": 21.1,
    "id": "surfline-praia-da-ursa"
   },
   "surfline-praia-do-abano": {
    "name": "Praia do Abano",
    "remoteSpotId": "640b9d3cde81d5160a0e323b",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -2262,33 +2262,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 312.7
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 216.7
+     "periodS": 13,
+     "dirDeg": 214.3
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 307.9
+    },
+    {
+     "hM": 0.5,
+     "periodS": 5,
+     "dirDeg": 331.1
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 216.3
-    },
-    {
-     "hM": 0.1,
-     "periodS": 7,
-     "dirDeg": 350
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "dirDeg": 204.7
     },
     {
      "hM": 0,
@@ -2296,14 +2296,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20.6,
+   "waterTempC": 21.1,
    "id": "surfline-praia-do-abano"
   },
   "surfline-praia-do-guincho": {
    "name": "Praia Do Guincho",
    "remoteSpotId": "5842041f4e65fad6a7708e64",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -2314,33 +2314,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 307
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 287.8
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 353.4
+     "periodS": 5,
+     "dirDeg": 331.7
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 292.3
+     "periodS": 13,
+     "dirDeg": 325.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 331.4
+     "periodS": 13,
+     "dirDeg": 215.1
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 217.6
+     "periodS": 4,
+     "dirDeg": 204
     },
     {
      "hM": 0,
@@ -2348,14 +2348,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20.6,
+   "waterTempC": 21.1,
    "id": "surfline-praia-do-guincho"
   },
   "surfline-praia-da-crismina": {
    "name": "Praia da Crismina",
    "remoteSpotId": "640b9d42b6d769019f951114",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:48.042Z",
+   "fetchedAt": "2026-08-20T11:41:48.282Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -2366,33 +2366,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
-     "hM": 0.6,
-     "periodS": 7,
-     "dirDeg": 307
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 287.8
     },
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 353.4
+     "periodS": 5,
+     "dirDeg": 331.7
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 217.6
+     "periodS": 13,
+     "dirDeg": 325.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 292.3
+     "periodS": 13,
+     "dirDeg": 215.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 331.4
+     "periodS": 4,
+     "dirDeg": 204
     },
     {
      "hM": 0,
@@ -2400,16 +2400,16 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20.6,
+   "waterTempC": 21.1,
    "id": "surfline-praia-da-crismina"
   },
   "surfline-bicas": {
    "name": "Bicas",
    "remoteSpotId": "640b9cf8606c45e808f46d79",
    "sourceKind": "primary",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -2418,33 +2418,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 11.1,
-   "windDirDeg": 285,
+   "windKmh": 20.4,
+   "windDirDeg": 280,
    "swells": [
     {
-     "hM": 0.4,
-     "periodS": 7,
-     "dirDeg": 303
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.4
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 276.9
+     "periodS": 13,
+     "dirDeg": 224.4
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 223.2
+     "periodS": 5,
+     "dirDeg": 307.6
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 305.1
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 226.1
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "dirDeg": 206.7
     },
     {
      "hM": 0,
@@ -2459,7 +2459,7 @@
    "name": "Praia das Moitas",
    "remoteSpotId": "640b9d5a4519050a6ce093ca",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
@@ -2470,28 +2470,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 11.1,
-   "windDirDeg": 225,
+   "windKmh": 3.7,
+   "windDirDeg": 291,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 213.7
+     "periodS": 13,
+     "dirDeg": 213
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 281.6
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 279.7
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 270.6
+     "periodS": 4,
+     "dirDeg": 209.9
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 285.7
     },
     {
      "hM": 0,
@@ -2511,7 +2511,7 @@
    "name": "Estoril",
    "remoteSpotId": "5842041f4e65fad6a7708e66",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -2522,18 +2522,23 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 13,
+     "dirDeg": 204.9
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "periodS": 5,
+     "dirDeg": 183.8
+    },
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
     },
     {
      "hM": 0,
@@ -2541,83 +2546,26 @@
      "dirDeg": 0
     },
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
     },
     {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "hM": 0.3,
+     "periodS": 11,
+     "dirDeg": 331.1
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-estoril"
   },
   "surfline-sao-pedro-do-estoril": {
    "name": "São Pedro do Estoril",
    "remoteSpotId": "640b9d679b6fab7dac307b39",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
-   "ratingObserved": false,
-   "surfRawFt": [
-    0,
-    1
-   ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
-   "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
-   "swells": [
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 213.7
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 281.6
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 270.6
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20,
-   "id": "surfline-sao-pedro-do-estoril"
-  },
-  "surfline-parede": {
-   "name": "Parede",
-   "remoteSpotId": "640b9d6db6d769d0c8951b5b",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     0,
@@ -2627,27 +2575,27 @@
    "surfMaxM": 0.3,
    "surfObserved": false,
    "windKmh": 14.8,
-   "windDirDeg": 317,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 213.7
+     "periodS": 13,
+     "dirDeg": 213
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 281.6
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 279.7
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 270.6
+     "periodS": 4,
+     "dirDeg": 209.9
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 285.7
     },
     {
      "hM": 0,
@@ -2660,14 +2608,66 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
+   "id": "surfline-sao-pedro-do-estoril"
+  },
+  "surfline-parede": {
+   "name": "Parede",
+   "remoteSpotId": "640b9d6db6d769d0c8951b5b",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
+   "rating": "POOR",
+   "ratingValue": 1,
+   "ratingObserved": false,
+   "surfRawFt": [
+    0,
+    1
+   ],
+   "surfMinM": 0,
+   "surfMaxM": 0.3,
+   "surfObserved": false,
+   "windKmh": 16.7,
+   "windDirDeg": 311,
+   "swells": [
+    {
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 279.7
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 213
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 209.9
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 285.7
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
    "id": "surfline-parede"
   },
   "surfline-carcavelos": {
    "name": "Carcavelos",
    "remoteSpotId": "5842041f4e65fad6a7708bc0",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -2678,28 +2678,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 212.1
+     "periodS": 13,
+     "dirDeg": 211.1
     },
     {
      "hM": 0.3,
-     "periodS": 8,
-     "dirDeg": 255.4
+     "periodS": 9,
+     "dirDeg": 255.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 212.6
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 266.5
     },
     {
      "hM": 0,
@@ -2712,14 +2712,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-carcavelos"
   },
   "surfline-praia-de-torre": {
    "name": "Praia de Torre",
    "remoteSpotId": "602d64e1d663ff28d7a951c2",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "VERY_POOR",
    "ratingValue": 0,
    "ratingObserved": false,
@@ -2730,18 +2730,18 @@
    "surfMinM": 0,
    "surfMaxM": 0,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
+    },
+    {
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
     },
     {
      "hM": 0,
@@ -2750,13 +2750,13 @@
     },
     {
      "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -2764,14 +2764,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-de-torre"
   },
   "surfline-praia-da-laje": {
    "name": "Praia da Laje",
    "remoteSpotId": "640b9d10de81d566960e2892",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "VERY_POOR",
    "ratingValue": 0,
    "ratingObserved": false,
@@ -2782,33 +2782,33 @@
    "surfMinM": 0,
    "surfMaxM": 0,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
-    },
-    {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
+    },
+    {
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
     },
     {
      "hM": 0,
      "periodS": 0,
      "dirDeg": 0
+    },
+    {
+     "hM": 0.3,
+     "periodS": 9,
+     "dirDeg": 265.5
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -2816,14 +2816,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-laje"
   },
   "surfline-santo-amaro": {
    "name": "Santo Amaro",
    "remoteSpotId": "584204214e65fad6a7709d13",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -2834,28 +2834,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 212.1
+     "periodS": 13,
+     "dirDeg": 211.1
     },
     {
      "hM": 0.3,
-     "periodS": 8,
-     "dirDeg": 255.4
+     "periodS": 9,
+     "dirDeg": 255.5
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 212.6
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 266.5
     },
     {
      "hM": 0,
@@ -2868,14 +2868,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-santo-amaro"
   },
   "surfline-paco-de-arcos": {
    "name": "Paco de Arcos",
    "remoteSpotId": "584204214e65fad6a7709d0c",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -2886,28 +2886,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
-    },
-    {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 9,
+     "dirDeg": 265.5
+    },
+    {
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -2920,41 +2920,41 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-paco-de-arcos"
   },
   "surfline-cova-do-vapor": {
    "name": "Cova Do Vapor",
    "remoteSpotId": "584204204e65fad6a77096ad",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
-    0,
-    1
+    1,
+    2
    ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 13,
+     "dirDeg": 204.9
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
     },
     {
      "hM": 0,
@@ -2962,24 +2962,24 @@
      "dirDeg": 0
     },
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
     },
     {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "hM": 0.3,
+     "periodS": 11,
+     "dirDeg": 331.1
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-cova-do-vapor"
   },
   "surfline-praia-de-caxias": {
    "name": "Praia de Caxias",
    "remoteSpotId": "640b9d60606c45bbe5f4841b",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -2990,28 +2990,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
      "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 4,
+     "dirDeg": 213.1
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 9,
+     "dirDeg": 265.5
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3024,14 +3024,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-de-caxias"
   },
   "surfline-praia-da-cruz-quebrada": {
    "name": "Praia da Cruz Quebrada",
    "remoteSpotId": "640b9d294878ebc4c91e3d61",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3042,28 +3042,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
-    },
-    {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 9,
+     "dirDeg": 265.5
+    },
+    {
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3076,14 +3076,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-cruz-quebrada"
   },
   "surfline-sao-joao-da-caparica": {
    "name": "São João da Caparica",
    "remoteSpotId": "5dbb587ff387900001fee288",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3094,28 +3094,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3128,51 +3128,51 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-sao-joao-da-caparica"
   },
   "surfline-marcelino": {
    "name": "Marcelino",
    "remoteSpotId": "584204214e65fad6a7709d15",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
-    0,
-    1
+    1,
+    2
    ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
+    },
+    {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 13,
+     "dirDeg": 204.9
+    },
+    {
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.3,
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
-    },
-    {
-     "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
-    },
-    {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
      "hM": 0,
@@ -3180,14 +3180,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-marcelino"
   },
   "surfline-praia-do-barbas": {
    "name": "Praia do Barbas",
    "remoteSpotId": "584204214e65fad6a7709d16",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3198,28 +3198,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3232,14 +3232,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-do-barbas"
   },
   "surfline-costa-da-caparica": {
    "name": "Costa da Caparica",
    "remoteSpotId": "5842041f4e65fad6a7708e65",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3250,28 +3250,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3284,14 +3284,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-costa-da-caparica"
   },
   "surfline-praia-da-saude": {
    "name": "Praia da Saude",
    "remoteSpotId": "640b9d48b6d7692692951263",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3302,28 +3302,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3336,14 +3336,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-saude"
   },
   "surfline-praia-da-cornelia": {
    "name": "Praia da Cornelia",
    "remoteSpotId": "5dbf6037eb8ddf00015a883f",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3354,33 +3354,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
+    },
+    {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 13,
+     "dirDeg": 204.9
     },
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "hM": 0.3,
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
      "hM": 0,
@@ -3388,14 +3388,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-cornelia"
   },
   "surfline-praia-da-rainha": {
    "name": "Praia da Rainha",
    "remoteSpotId": "602d65b2c30216a5fdf26598",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3406,28 +3406,28 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 200.8
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 271.6
+     "periodS": 9,
+     "dirDeg": 265.5
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 255.6
+     "periodS": 13,
+     "dirDeg": 199.8
     },
     {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "hM": 0.3,
+     "periodS": 4,
+     "dirDeg": 213.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 265.7
     },
     {
      "hM": 0,
@@ -3447,7 +3447,7 @@
    "name": "Castelo",
    "remoteSpotId": "584204204e65fad6a77099d8",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3458,33 +3458,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
+     "hM": 1.2,
+     "periodS": 7,
+     "dirDeg": 330.3
+    },
+    {
+     "hM": 0.5,
+     "periodS": 9,
+     "dirDeg": 284.8
+    },
+    {
      "hM": 0.3,
-     "periodS": 14,
-     "dirDeg": 205.2
+     "periodS": 13,
+     "dirDeg": 204.9
     },
     {
-     "hM": 0.9,
-     "periodS": 6,
-     "dirDeg": 340.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 281.6
+     "hM": 0.3,
+     "periodS": 11,
+     "dirDeg": 331.1
     },
     {
      "hM": 0.2,
-     "periodS": 10,
-     "dirDeg": 294.3
-    },
-    {
-     "hM": 0.1,
-     "periodS": 14,
-     "dirDeg": 336.7
+     "periodS": 5,
+     "dirDeg": 183.8
     },
     {
      "hM": 0,
@@ -3492,14 +3492,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-castelo"
   },
   "surfline-praia-do-pescador": {
    "name": "Praia do Pescador",
    "remoteSpotId": "640b9d4ede81d58fdf0e363b",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3510,33 +3510,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 215.1
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 291.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 284.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.5
-    },
-    {
-     "hM": 0.1,
-     "periodS": 12,
-     "dirDeg": 282.2
+     "periodS": 13,
+     "dirDeg": 214.7
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 221.9
+     "dirDeg": 207.2
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 289.7
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     },
     {
      "hM": 0,
@@ -3551,7 +3551,7 @@
    "name": "Praia do Rei",
    "remoteSpotId": "640b9d54de81d5217b0e37a6",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3562,33 +3562,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 215.1
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 291.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 284.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.5
+     "periodS": 13,
+     "dirDeg": 214.7
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 221.9
+     "dirDeg": 207.2
     },
     {
      "hM": 0.1,
-     "periodS": 12,
-     "dirDeg": 282.2
+     "periodS": 13,
+     "dirDeg": 289.7
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     },
     {
      "hM": 0,
@@ -3603,7 +3603,7 @@
    "name": "Fonte da Telha",
    "remoteSpotId": "584204204e65fad6a77099d5",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3614,33 +3614,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 13,
-   "windDirDeg": 278,
+   "windKmh": 14.8,
+   "windDirDeg": 305,
    "swells": [
     {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 215.1
-    },
-    {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 291.9
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 284.1
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.5
+     "periodS": 13,
+     "dirDeg": 214.7
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 221.9
+     "dirDeg": 207.2
     },
     {
      "hM": 0.1,
-     "periodS": 12,
-     "dirDeg": 282.2
+     "periodS": 13,
+     "dirDeg": 289.7
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     },
     {
      "hM": 0,
@@ -3655,9 +3655,9 @@
    "name": "Lagoa de Albufeira",
    "remoteSpotId": "640b9cfe4878eb47751e344d",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     0,
@@ -3666,33 +3666,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 238,
+   "windKmh": 3.7,
+   "windDirDeg": 311,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 6,
-     "dirDeg": 284.7
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 275.8
-    },
-    {
-     "hM": 0.1,
-     "periodS": 15,
-     "dirDeg": 235.4
-    },
-    {
-     "hM": 0.2,
-     "periodS": 7,
-     "dirDeg": 283.3
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 280.1
     },
     {
      "hM": 0.1,
      "periodS": 13,
-     "dirDeg": 269.9
+     "dirDeg": 233.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 14,
+     "dirDeg": 266.9
+    },
+    {
+     "hM": 0.1,
+     "periodS": 13,
+     "dirDeg": 298.1
+    },
+    {
+     "hM": 0.1,
+     "periodS": 4,
+     "dirDeg": 213.6
     },
     {
      "hM": 0,
@@ -3707,9 +3707,9 @@
    "name": "Praia dos Lagosteiros",
    "remoteSpotId": "640b9d0be920306c20e1a88f",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:46.192Z",
-   "rating": "POOR_TO_FAIR",
-   "ratingValue": 2,
+   "fetchedAt": "2026-08-20T11:41:44.843Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -3718,33 +3718,33 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 11.1,
-   "windDirDeg": 285,
+   "windKmh": 20.4,
+   "windDirDeg": 280,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 302.6
+     "periodS": 9,
+     "dirDeg": 289.9
+    },
+    {
+     "hM": 0.3,
+     "periodS": 5,
+     "dirDeg": 314.4
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 212.1
+     "periodS": 13,
+     "dirDeg": 212.2
     },
     {
      "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 291.5
+     "periodS": 13,
+     "dirDeg": 313.5
     },
     {
-     "hM": 0.2,
+     "hM": 0.3,
      "periodS": 4,
-     "dirDeg": 225.4
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
+     "dirDeg": 206.3
     },
     {
      "hM": 0,
@@ -3759,7 +3759,7 @@
    "name": "Portinho da Arrabida",
    "remoteSpotId": "5fd7b854ec6be70e1690dfa5",
    "sourceKind": "primary",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
    "rating": "VERY_POOR",
    "ratingValue": 0,
    "ratingObserved": false,
@@ -3770,23 +3770,75 @@
    "surfMinM": 0,
    "surfMaxM": 0,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 238,
+   "windKmh": 3.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 206.7
+     "periodS": 13,
+     "dirDeg": 206.5
     },
     {
-     "hM": 0.1,
+     "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 219.5
+     "dirDeg": 201.4
     },
     {
      "hM": 0,
      "periodS": 0,
      "dirDeg": 0
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    }
+   ],
+   "waterTempC": 20.6,
+   "id": "surfline-portinho-da-arrabida"
+  },
+  "surfline-praia-do-pego": {
+   "name": "Praia do Pego",
+   "remoteSpotId": "591b423c1907e50013cd93cc",
+   "sourceKind": "nearby",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
+   "rating": "POOR",
+   "ratingValue": 1,
+   "ratingObserved": false,
+   "surfRawFt": [
+    0,
+    1
+   ],
+   "surfMinM": 0,
+   "surfMaxM": 0.3,
+   "surfObserved": false,
+   "windKmh": 13,
+   "windDirDeg": 239,
+   "swells": [
+    {
+     "hM": 0.4,
+     "periodS": 10,
+     "dirDeg": 279
+    },
+    {
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 239
+    },
+    {
+     "hM": 0.2,
+     "periodS": 4,
+     "dirDeg": 214.4
     },
     {
      "hM": 0,
@@ -3805,65 +3857,13 @@
     }
    ],
    "waterTempC": 20,
-   "id": "surfline-portinho-da-arrabida"
-  },
-  "surfline-praia-do-pego": {
-   "name": "Praia do Pego",
-   "remoteSpotId": "591b423c1907e50013cd93cc",
-   "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
-   "rating": "POOR",
-   "ratingValue": 1,
-   "ratingObserved": false,
-   "surfRawFt": [
-    0,
-    1
-   ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
-   "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 241,
-   "swells": [
-    {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 240.2
-    },
-    {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.9
-    },
-    {
-     "hM": 0.2,
-     "periodS": 5,
-     "dirDeg": 285
-    },
-    {
-     "hM": 0.2,
-     "periodS": 4,
-     "dirDeg": 228.8
-    },
-    {
-     "hM": 0.1,
-     "periodS": 7,
-     "dirDeg": 290
-    },
-    {
-     "hM": 0,
-     "periodS": 0,
-     "dirDeg": 0
-    }
-   ],
-   "waterTempC": 20.6,
    "id": "surfline-praia-do-pego"
   },
   "surfline-sesimbra": {
    "name": "Sesimbra",
    "remoteSpotId": "640b9cf38284fe0e10b17b6d",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -3874,28 +3874,23 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 238,
+   "windKmh": 3.7,
+   "windDirDeg": 311,
    "swells": [
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 209.5
+     "periodS": 13,
+     "dirDeg": 209.8
     },
     {
-     "hM": 0.2,
+     "hM": 0.3,
      "periodS": 4,
-     "dirDeg": 216.5
+     "dirDeg": 209.4
     },
     {
-     "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 272.4
-    },
-    {
-     "hM": 0.1,
-     "periodS": 4,
-     "dirDeg": 249.1
+     "hM": 0.3,
+     "periodS": 10,
+     "dirDeg": 279.1
     },
     {
      "hM": 0,
@@ -3903,9 +3898,14 @@
      "dirDeg": 0
     },
     {
-     "hM": 0.2,
-     "periodS": 7,
-     "dirDeg": 287.2
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     }
    ],
    "waterTempC": 20.6,
@@ -3915,39 +3915,39 @@
    "name": "Praia do Areão",
    "remoteSpotId": "640b9d86de81d5afbd0e42ee",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
    "rating": "POOR_TO_FAIR",
    "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
-    0,
-    1
+    1,
+    2
    ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 11.1,
-   "windDirDeg": 225,
+   "windKmh": 3.7,
+   "windDirDeg": 291,
    "swells": [
     {
-     "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 298.3
+     "hM": 0.4,
+     "periodS": 9,
+     "dirDeg": 288.9
+    },
+    {
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 307.2
     },
     {
      "hM": 0.1,
      "periodS": 14,
-     "dirDeg": 244.9
-    },
-    {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 296.2
+     "dirDeg": 243.3
     },
     {
      "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 230.7
+     "dirDeg": 214.9
     },
     {
      "hM": 0,
@@ -3967,9 +3967,9 @@
    "name": "Sines",
    "remoteSpotId": "5842041f4e65fad6a7708e77",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
-   "rating": "POOR",
-   "ratingValue": 1,
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
+   "rating": "POOR_TO_FAIR",
+   "ratingValue": 2,
    "ratingObserved": false,
    "surfRawFt": [
     1,
@@ -3978,28 +3978,28 @@
    "surfMinM": 0.3,
    "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 11.1,
-   "windDirDeg": 225,
+   "windKmh": 3.7,
+   "windDirDeg": 291,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 302.4
+     "periodS": 9,
+     "dirDeg": 288.2
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 226.1
+     "periodS": 13,
+     "dirDeg": 225.3
+    },
+    {
+     "hM": 0.3,
+     "periodS": 6,
+     "dirDeg": 313.9
     },
     {
      "hM": 0.3,
      "periodS": 4,
-     "dirDeg": 221.6
-    },
-    {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 295.5
+     "dirDeg": 209.9
     },
     {
      "hM": 0,
@@ -4019,9 +4019,9 @@
    "name": "Sao Torpes",
    "remoteSpotId": "5a1c9ccecbecc0001bb480c7",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
-   "rating": "VERY_POOR",
-   "ratingValue": 0,
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
+   "rating": "POOR",
+   "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
     0,
@@ -4030,33 +4030,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 247,
+   "windKmh": 13,
+   "windDirDeg": 274,
    "swells": [
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 305.5
+     "hM": 0.4,
+     "periodS": 10,
+     "dirDeg": 283.6
     },
     {
      "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 225.3
+     "periodS": 13,
+     "dirDeg": 224.9
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.6
-    },
-    {
-     "hM": 0.3,
      "periodS": 4,
-     "dirDeg": 223.1
+     "dirDeg": 210.7
     },
     {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 289.9
+     "hM": 0.2,
+     "periodS": 6,
+     "dirDeg": 311
+    },
+    {
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     },
     {
      "hM": 0,
@@ -4064,46 +4064,46 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-sao-torpes"
   },
   "surfline-praia-da-vieirinha": {
    "name": "Praia da Vieirinha",
    "remoteSpotId": "631e33650a3907c24527bdf6",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
    "surfRawFt": [
-    0,
-    1
+    1,
+    2
    ],
-   "surfMinM": 0,
-   "surfMaxM": 0.3,
+   "surfMinM": 0.3,
+   "surfMaxM": 0.6,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 247,
+   "windKmh": 13,
+   "windDirDeg": 274,
    "swells": [
     {
      "hM": 0.5,
-     "periodS": 7,
-     "dirDeg": 304.2
+     "periodS": 9,
+     "dirDeg": 289.9
+    },
+    {
+     "hM": 0.3,
+     "periodS": 6,
+     "dirDeg": 316
     },
     {
      "hM": 0.2,
-     "periodS": 14,
+     "periodS": 13,
      "dirDeg": 218.3
     },
     {
      "hM": 0.3,
      "periodS": 4,
-     "dirDeg": 219.8
-    },
-    {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 298.4
+     "dirDeg": 209.8
     },
     {
      "hM": 0,
@@ -4116,14 +4116,14 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-da-vieirinha"
   },
   "surfline-praia-do-burrinho": {
    "name": "Praia do Burrinho",
    "remoteSpotId": "640b9d9d45190561b6e0a415",
    "sourceKind": "nearby",
-   "fetchedAt": "2026-08-19T17:37:47.024Z",
+   "fetchedAt": "2026-08-20T11:41:45.472Z",
    "rating": "POOR",
    "ratingValue": 1,
    "ratingObserved": false,
@@ -4134,33 +4134,33 @@
    "surfMinM": 0,
    "surfMaxM": 0.3,
    "surfObserved": false,
-   "windKmh": 16.7,
-   "windDirDeg": 243,
+   "windKmh": 14.8,
+   "windDirDeg": 281,
    "swells": [
     {
-     "hM": 0.2,
-     "periodS": 14,
-     "dirDeg": 225.3
+     "hM": 0.4,
+     "periodS": 10,
+     "dirDeg": 283.6
     },
     {
-     "hM": 0.3,
+     "hM": 0.2,
+     "periodS": 13,
+     "dirDeg": 224.9
+    },
+    {
+     "hM": 0.2,
      "periodS": 4,
-     "dirDeg": 223.1
+     "dirDeg": 210.7
     },
     {
      "hM": 0.2,
-     "periodS": 8,
-     "dirDeg": 277.6
+     "periodS": 6,
+     "dirDeg": 311
     },
     {
-     "hM": 0.3,
-     "periodS": 7,
-     "dirDeg": 305.5
-    },
-    {
-     "hM": 0.1,
-     "periodS": 11,
-     "dirDeg": 289.9
+     "hM": 0,
+     "periodS": 0,
+     "dirDeg": 0
     },
     {
      "hM": 0,
@@ -4168,7 +4168,7 @@
      "dirDeg": 0
     }
    ],
-   "waterTempC": 20,
+   "waterTempC": 20.6,
    "id": "surfline-praia-do-burrinho"
   }
  }
