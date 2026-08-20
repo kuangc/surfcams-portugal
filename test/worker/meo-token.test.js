@@ -123,6 +123,7 @@ test("fetchMeoToken returns a valid primary token without calling fallback", asy
   assert.equal(await fetchMeoToken({ fetcher }), "primary-token");
   assert.deepEqual(calls.map(({ url }) => url), [MEO_TOKEN_ENDPOINTS[0]]);
   assert.equal(calls[0].options.signal instanceof AbortSignal, true);
+  assert.equal(calls[0].options.cache, "no-store");
 });
 
 test("fetchMeoToken uses the default timeout when timeoutMs is null", async () => {
@@ -159,6 +160,7 @@ test("fetchMeoToken falls back exactly once for primary endpoint failures", asyn
 
       assert.equal(await fetchMeoToken({ fetcher }), "fallback-token");
       assert.deepEqual(calls.map(({ url }) => url), MEO_TOKEN_ENDPOINTS);
+      assert.deepEqual(calls.map(({ options }) => options.cache), ["no-store", "no-store"]);
     });
   }
 });

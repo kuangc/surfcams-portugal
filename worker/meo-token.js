@@ -96,6 +96,7 @@ async function readBoundedBody(response) {
 
 async function tokenFromEndpoint(fetcher, endpoint, timeoutMs) {
   const response = await fetcher(endpoint, {
+    cache: "no-store",
     signal: AbortSignal.timeout(timeoutMs ?? DEFAULT_TIMEOUT_MS)
   });
   if (!response?.ok) {
