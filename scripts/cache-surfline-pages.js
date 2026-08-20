@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -245,7 +245,7 @@ function compareMappedMatches(a, b) {
   return aDistance - bDistance || a.matchRank - b.matchRank;
 }
 
-function buildMappingReview({ mappingDb, meoById, pageById }) {
+export function buildMappingReview({ mappingDb, meoById, pageById }) {
   return mappingDb.matches.map((mapping) => {
     const meoSpot = meoById.get(mapping.meoSpotId);
     const surflineMatches = mapping.surflineSpotIds
@@ -278,6 +278,22 @@ function buildMappingReview({ mappingDb, meoById, pageById }) {
       sortedByDistanceForReview: [...surflineMatches].sort(compareMappedMatches)
     };
   });
+}
+
+export function reuseReviewPage(spot, previousPage) {
+  if (!previousPage) return null;
+  return {
+    ...previousPage,
+    id: spot.id,
+    provider: spot.provider,
+    name: spot.name,
+    url: spot.url,
+    lat: spot.lat,
+    lon: spot.lon,
+    region: spot.region,
+    country: spot.country,
+    cacheStatus: "reused-review"
+  };
 }
 
 function markdownLink(label, url) {
@@ -337,16 +353,23 @@ function buildMarkdown(review) {
 }
 
 async function main() {
-  const [surflineDb, meoDb, mappingDb] = await Promise.all([
+  const [surflineDb, meoDb, mappingDb, previousReview] = await Promise.all([
     readJson(surflineDbPath),
     readJson(meoDbPath),
-    readJson(mappingDbPath)
+    readJson(mappingDbPath),
+    options.offline ? readJson(reviewJsonPath).catch(() => ({ pages: [] })) : Promise.resolve({ pages: [] })
   ]);
   await fs.mkdir(cacheDir, { recursive: true });
   await fs.mkdir(docsDir, { recursive: true });
 
   const pages = [];
+  const previousPageById = new Map((previousReview.pages || []).map((page) => [page.id, page]));
   for (const spot of surflineDb.spots) {
+    const reusedPage = options.offline ? reuseReviewPage(spot, previousPageById.get(spot.id)) : null;
+    if (reusedPage) {
+      pages.push(reusedPage);
+      continue;
+    }
     const page = await loadPage(spot);
     const title = extractPageTitle(page.html);
     pages.push({
@@ -390,7 +413,9 @@ async function main() {
   console.log(`Cached ${pages.length} Surfline pages and wrote ${relativePath(reviewJsonPath)} + ${relativePath(reviewMarkdownPath)}`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

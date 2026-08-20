@@ -16,7 +16,7 @@ test("camera database contains the expected indexed live feeds", () => {
 
   assert.equal(db.total, 190);
   assert.equal(db.withCoordinates, 190);
-  assert.equal(db.withStreams, 147);
+  assert.equal(db.withStreams, 154);
   assert.equal(liveCameras.length, db.withStreams);
   assert.equal(liveCameras.every((camera) => camera.hasStream), true);
 });
@@ -46,8 +46,7 @@ test("loadCameraDb returns immutable provider data without consulting stream ove
   const castelo = loadedDb.cameras.find((camera) => camera.id === "surfline-castelo");
 
   assert.equal(fetchCalls, 0);
-  assert.equal(castelo.streamUrl, "");
-  assert.equal(castelo.hasStream, false);
+  assert.equal(castelo, undefined);
   assert.equal(Object.hasOwn(loadedDb, "localStreamOverrides"), false);
   assert.deepEqual(loadedDb, db);
 });

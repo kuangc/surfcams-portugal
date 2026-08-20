@@ -195,8 +195,8 @@
     <circle class="spot-dot" data-id="surfline-santo-amaro" cx="108.01" cy="550.71" r="5" fill="#2a7"><title>Santo Amaro (surfline-santo-amaro) — spot</title></circle>
     <circle class="spot-dot" data-id="surfline-carcavelos" cx="96.79" cy="553.29" r="5" fill="#2a7"><title>Carcavelos (surfline-carcavelos) — spot</title></circle>
     <circle class="spot-dot" data-id="surfline-praia-de-torre" cx="102.89" cy="554.96" r="5" fill="#2a7"><title>Praia de Torre (surfline-praia-de-torre) — spot</title></circle>
-    <circle class="spot-dot" data-id="surfline-cova-do-vapor" cx="129.30" cy="563.14" r="5" fill="#2a7"><title>Cova Do Vapor (surfline-cova-do-vapor) — spot</title></circle>
-    <circle class="spot-dot" data-id="surfline-sao-joao-da-caparica" cx="133.34" cy="566.01" r="5" fill="#2a7"><title>São João da Caparica (surfline-sao-joao-da-caparica) — spot</title></circle>
+    <circle class="spot-dot" data-id="surfline-cova-do-vapor" cx="129.30" cy="563.14" r="5" fill="#e90"><title>Cova Do Vapor (surfline-cova-do-vapor) — stretch</title></circle>
+    <circle class="spot-dot" data-id="surfline-sao-joao-da-caparica" cx="133.34" cy="566.01" r="5" fill="#e90"><title>São João da Caparica (surfline-sao-joao-da-caparica) — stretch</title></circle>
     <circle class="spot-dot" data-id="surfline-marcelino" cx="136.31" cy="571.47" r="5" fill="#e90"><title>Marcelino (surfline-marcelino) — stretch</title></circle>
     <circle class="spot-dot" data-id="surfline-praia-do-barbas" cx="137.73" cy="572.23" r="5" fill="#2a7"><title>Praia do Barbas (surfline-praia-do-barbas) — spot</title></circle>
     <circle class="spot-dot" data-id="surfline-costa-da-caparica" cx="137.61" cy="574.68" r="5" fill="#2a7"><title>Costa da Caparica (surfline-costa-da-caparica) — spot</title></circle>
@@ -518,7 +518,7 @@
           </span>
           <small class="spot-id">surfline-cave</small>
           
-          <small class="deferred-reason">no trusted cam, no surfline cam, not on a stretch</small>
+          <small class="deferred-reason">no trusted MEO cam and not on a stretch</small>
         </label>
 
         <label class="spot-row" data-id="surfline-ribeira-d-ilhas">
@@ -724,7 +724,7 @@
           </span>
           <small class="spot-id">surfline-praia-da-ursa</small>
           
-          <small class="deferred-reason">no trusted cam, no surfline cam, not on a stretch</small>
+          <small class="deferred-reason">no trusted MEO cam and not on a stretch</small>
         </label>
 
         <label class="spot-row" data-id="surfline-praia-do-abano">
@@ -889,7 +889,7 @@
           <input type="checkbox" class="spot-checkbox" data-id="surfline-cova-do-vapor" checked>
           <span class="spot-row-main">
             <strong>Cova Do Vapor</strong>
-            <span class="badge badge-spot">spot</span>
+            <span class="badge badge-stretch">stretch</span>
           </span>
           <small class="spot-id">surfline-cova-do-vapor</small>
           
@@ -900,7 +900,7 @@
           <input type="checkbox" class="spot-checkbox" data-id="surfline-sao-joao-da-caparica" checked>
           <span class="spot-row-main">
             <strong>São João da Caparica</strong>
-            <span class="badge badge-spot">spot</span>
+            <span class="badge badge-stretch">stretch</span>
           </span>
           <small class="spot-id">surfline-sao-joao-da-caparica</small>
           
@@ -1116,6 +1116,23 @@
         </label>
       </article>
 
+      <article class="review-card" data-surfline-id="surfline-sao-joao-da-caparica" data-review-id="surfline-sao-joao-da-caparica">
+        <header>
+          <h3>São João da Caparica</h3>
+          <p>surfline-sao-joao-da-caparica</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-de-caparica-sao-joao-cova-do-vapor</strong> · 0.3km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-sao-joao-da-caparica" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-sao-joao-da-caparica" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
       <article class="review-card" data-surfline-id="surfline-marcelino" data-review-id="surfline-marcelino">
         <header>
           <h3>Marcelino</h3>
@@ -1194,6 +1211,23 @@
         <fieldset>
           <label><input type="radio" name="review-surfline-praia-do-pescador" data-field="decision" value="accept"> Accept</label>
           <label><input type="radio" name="review-surfline-praia-do-pescador" data-field="decision" value="reject"> Reject</label>
+        </fieldset>
+        <label>
+          Notes
+          <input type="text" data-field="notes" placeholder="Optional notes">
+        </label>
+      </article>
+
+      <article class="review-card" data-surfline-id="surfline-cova-do-vapor" data-review-id="surfline-cova-do-vapor">
+        <header>
+          <h3>Cova Do Vapor</h3>
+          <p>surfline-cova-do-vapor</p>
+        </header>
+        <p><span class="badge badge-stretch">stretch cam nearby — confirm exact cam</span></p>
+        <p>Nearest cam: <strong>costa-de-caparica-sao-joao-cova-do-vapor</strong> · 1.2km · status: needs-review</p>
+        <fieldset>
+          <label><input type="radio" name="review-surfline-cova-do-vapor" data-field="decision" value="accept"> Accept</label>
+          <label><input type="radio" name="review-surfline-cova-do-vapor" data-field="decision" value="reject"> Reject</label>
         </fieldset>
         <label>
           Notes
@@ -1471,7 +1505,7 @@
       "lat": 38.99663,
       "lon": -9.42693,
       "camCoverage": null,
-      "deferredReason": "no trusted cam, no surfline cam, not on a stretch",
+      "deferredReason": "no trusted MEO cam and not on a stretch",
       "wanted": true,
       "linkedCamId": null
     },
@@ -1651,7 +1685,7 @@
       "lat": 38.79081,
       "lon": -9.49342,
       "camCoverage": null,
-      "deferredReason": "no trusted cam, no surfline cam, not on a stretch",
+      "deferredReason": "no trusted MEO cam and not on a stretch",
       "wanted": true,
       "linkedCamId": null
     },
@@ -1800,7 +1834,7 @@
       "name": "Cova Do Vapor",
       "lat": 38.66104,
       "lon": -9.26191,
-      "camCoverage": "spot",
+      "camCoverage": "stretch",
       "deferredReason": null,
       "wanted": true,
       "linkedCamId": null
@@ -1810,7 +1844,7 @@
       "name": "São João da Caparica",
       "lat": 38.65589,
       "lon": -9.2526,
-      "camCoverage": "spot",
+      "camCoverage": "stretch",
       "deferredReason": null,
       "wanted": true,
       "linkedCamId": null
@@ -1974,6 +2008,14 @@
       "camCoverage": null
     },
     {
+      "surflineSpotId": "surfline-sao-joao-da-caparica",
+      "spotName": "São João da Caparica",
+      "nearestCamId": "costa-de-caparica-sao-joao-cova-do-vapor",
+      "distanceKm": 0.3,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
       "surflineSpotId": "surfline-marcelino",
       "spotName": "Marcelino",
       "nearestCamId": "costa-de-caparica-praia-do-norte",
@@ -2014,6 +2056,14 @@
       "camCoverage": "stretch"
     },
     {
+      "surflineSpotId": "surfline-cova-do-vapor",
+      "spotName": "Cova Do Vapor",
+      "nearestCamId": "costa-de-caparica-sao-joao-cova-do-vapor",
+      "distanceKm": 1.2,
+      "reviewStatus": "needs-review",
+      "camCoverage": "stretch"
+    },
+    {
       "surflineSpotId": "surfline-praia-de-caxias",
       "spotName": "Praia de Caxias",
       "nearestCamId": "paco-de-arcos",
@@ -2026,7 +2076,7 @@
     "surfline-castelo": "existing hand-promoted prototype; Riviera/Irmao cam, curated"
   },
   "promoteOnlyWithTrustedCam": true,
-  "generatedAt": "2026-07-07T05:42:52.993Z",
+  "generatedAt": "2026-08-19T08:35:02.579Z",
   "fence": {
     "north": 39.65,
     "south": 38.4,

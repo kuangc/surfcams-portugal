@@ -51,6 +51,7 @@ import {
   openSelectedExploreSpot,
   selectExploreSpot
 } from "./explore-emphasis.js";
+import { buildExploreCatalog, explorePlaybackCamera } from "./explore-catalog.js";
 import { inSuggestionFence, monitorFavoriteCameras } from "./monitor-cameras.js";
 import {
   addComparisonCamera,
@@ -112,6 +113,7 @@ const state = {
   spotData: emptySpotData(),
   tideData: emptyTideData(),
   cameras: [],
+  exploreSubjects: [],
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
   liveForecastCache: new Map(),
@@ -197,6 +199,7 @@ const els = {
   exploreList: document.querySelector("#exploreList"),
   exploreVideo: document.querySelector("#exploreVideo"),
   exploreFeedStatus: document.querySelector("#exploreFeedStatus"),
+  exploreFeedContext: document.querySelector("#exploreFeedContext"),
   exploreRetry: document.querySelector("#exploreRetry"),
   detailName: document.querySelector("#detailName"),
   detailLocation: document.querySelector("#detailLocation"),
@@ -1581,9 +1584,10 @@ function addFavoriteCamera(cameraId) {
 }
 
 function favoriteRecordForCamera(camera) {
+  const favoriteCamera = exploreCameraForSubject(camera) || camera;
   return favoriteFeedRecord(
     playableFavoriteCatalog(state.cameras, state.favoriteIds),
-    camera
+    favoriteCamera
   );
 }
 
@@ -1645,23 +1649,27 @@ function undoFavoriteRemoval() {
 }
 
 function toggleFavorite(camera, checked) {
-  if (!camera || camera.adviceGuideOnly) return;
+  const favoriteCamera = exploreCameraForSubject(camera);
+  if (!favoriteCamera) return;
   if (checked) {
-    addFavoriteCamera(camera.id);
+    addFavoriteCamera(favoriteCamera.id);
   } else {
-    removeFavoriteCamera(camera);
+    removeFavoriteCamera(favoriteCamera);
   }
 }
 
 function syncFavoriteToggle(button, camera) {
   const record = favoriteRecordForCamera(camera);
+  const favoriteCamera = exploreCameraForSubject(camera);
   const isFavorite = Boolean(record?.saved);
   button.hidden = Boolean(camera?.adviceGuideOnly);
-  button.disabled = !camera || Boolean(camera.adviceGuideOnly);
+  button.disabled = !camera || !favoriteCamera;
   button.textContent = isFavorite ? "♥" : "♡";
   button.title = isFavorite ? "Remove from favorites" : "Add to favorites";
   button.setAttribute("aria-pressed", String(isFavorite));
-  button.setAttribute("aria-label", camera ? `Toggle favorite: ${camera.name}` : "Toggle favorite");
+  button.setAttribute("aria-label", favoriteCamera
+    ? `Toggle favorite: ${favoriteCamera.name}`
+    : "No linked MEO camera to favorite");
 }
 
 function createFavoriteToggle(camera) {
@@ -1952,9 +1960,22 @@ function handleFavoriteAddKeydown(event) {
   }
 }
 
+function exploreCameraForSubject(subject) {
+  return explorePlaybackCamera(subject, state.cameras);
+}
+
 function playExploreCamera(camera) {
   if (state.activeRoute !== "explore") return;
-  state.explorePlayer.play(camera);
+  const playbackCamera = exploreCameraForSubject(camera);
+  if (!playbackCamera) {
+    state.explorePlayer.clear();
+    els.exploreVideo.hidden = true;
+    els.exploreRetry.hidden = true;
+    els.exploreFeedStatus.textContent = "Wave information only";
+    return;
+  }
+  els.exploreVideo.hidden = false;
+  state.explorePlayer.play(playbackCamera);
 }
 
 function selectExploreCamera(camera, { explicit = false, pan = false, route = false } = {}) {
@@ -2020,7 +2041,8 @@ function renderExploreList() {
 
     const meta = document.createElement("span");
     meta.className = "explore-row__meta";
-    meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
+    const subjectType = camera.exploreInformationOnly ? "Wave information" : "MEO camera";
+    meta.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)} · ${subjectType}`;
 
     row.append(title, meta, createConditionStrip(camera, { compact: true }));
     row.addEventListener("click", () => {
@@ -2369,7 +2391,10 @@ function updateAdviceExpiryLabel(element, now = new Date()) {
 }
 
 function refreshAdviceUiInPlace(now = new Date()) {
-  const cameras = new Map(state.cameras.map((camera) => [camera.id, camera]));
+  const exploreSubjects = Array.isArray(state.exploreSubjects)
+    ? state.exploreSubjects
+    : state.cameras;
+  const cameras = new Map(exploreSubjects.map((camera) => [camera.id, camera]));
   document.querySelectorAll('[data-role="local-lens"][data-camera-id]').forEach((slot) => {
     const camera = cameras.get(slot.dataset.cameraId);
     if (camera) updateLocalLensSlot(slot, camera, now);
@@ -2420,12 +2445,24 @@ function renderExploreConditions(camera) {
 }
 
 function renderExploreSelectionMetadata(camera) {
+  const playbackCamera = exploreCameraForSubject(camera);
   els.detailName.textContent = camera.name;
   els.detailLocation.textContent = `${camera.location || "Unknown"} / ${formatRegion(camera.region)}`;
-  els.detailFavorite.disabled = false;
   syncFavoriteToggle(els.detailFavorite, camera);
-  els.exploreVideo.setAttribute("aria-label", `${camera.name} live camera`);
-  els.exploreRetry.setAttribute("aria-label", `Play or retry ${camera.name} live camera`);
+  els.exploreVideo.hidden = !playbackCamera;
+  if (playbackCamera) {
+    const linked = playbackCamera.id !== camera.id;
+    els.exploreFeedContext.textContent = linked
+      ? `Watching MEO camera: ${playbackCamera.name}. Surfline supplies wave information for ${camera.name}.`
+      : `Live MEO camera: ${playbackCamera.name}.`;
+    els.exploreVideo.setAttribute("aria-label", `${playbackCamera.name} MEO live camera`);
+    els.exploreRetry.setAttribute("aria-label", `Play or retry ${playbackCamera.name} MEO live camera`);
+  } else {
+    els.exploreFeedContext.textContent = "Wave information only — no linked MEO camera.";
+    els.exploreVideo.removeAttribute("aria-label");
+    els.exploreRetry.removeAttribute("aria-label");
+    els.exploreRetry.hidden = true;
+  }
   renderExploreConditions(camera);
   renderStretchView(camera);
   renderSpotPlaybook(camera);
@@ -2449,6 +2486,8 @@ function renderExploreSelection(camera) {
     els.exploreVideo.removeAttribute("aria-label");
     els.exploreRetry.removeAttribute("aria-label");
     els.exploreRetry.hidden = true;
+    els.exploreVideo.hidden = true;
+    els.exploreFeedContext.textContent = "";
     state.explorePlayer.clear();
     return;
   }
@@ -2523,7 +2562,7 @@ function markerIcon(camera, active = false) {
 
   return L.divIcon({
     className: "cam-marker-hitbox",
-    html: `<span class="cam-marker" data-active="${active}" data-favorite="${isFavoriteCamera(camera)}" data-fit="${rating.key}" data-live="${camera.hasStream}"></span>`,
+    html: `<span class="cam-marker" data-active="${active}" data-favorite="${isFavoriteCamera(camera)}" data-fit="${rating.key}" data-live="${camera.hasStream}" data-kind="${camera.exploreInformationOnly ? "info" : "camera"}"></span>`,
     iconSize: [44, 44],
     iconAnchor: [22, 22],
     popupAnchor: [0, -12]
@@ -2539,11 +2578,11 @@ function isMightBeGood(camera) {
 }
 
 function exploreCameras() {
-  return filterCameras(state.cameras, {
+  return filterCameras(state.exploreSubjects, {
     query: els.searchInput.value,
     region: els.regionSelect.value,
     favoriteOnly: els.favoriteOnly.checked,
-    favoriteIds: feedAwareFavoriteIds(state.cameras),
+    favoriteIds: feedAwareFavoriteIds(state.exploreSubjects),
     mightBeGoodOnly: els.mightBeGoodOnly.checked,
     isMightBeGood
   });
@@ -2626,7 +2665,7 @@ function createAggregateMarker({ key, center, cameras }) {
     })
   });
   marker.on("click", () => {
-    els.exploreStatus.textContent = `Refining ${count} cameras in a closer map view.`;
+    els.exploreStatus.textContent = `Refining ${count} surf spots in a closer map view.`;
     els.map.focus({ preventScroll: true });
     fitCameraBounds(cameras, [52, 52]);
   });
@@ -2664,7 +2703,7 @@ function renderRegionOptions(select, cameras = state.cameras) {
 }
 
 function renderRegions() {
-  renderRegionOptions(els.regionSelect, state.cameras);
+  renderRegionOptions(els.regionSelect, state.exploreSubjects);
   renderFavoriteAddFilterOptions();
 }
 
@@ -2771,11 +2810,13 @@ function bindEvents() {
   els.favoriteUndoButton.addEventListener("click", undoFavoriteRemoval);
   els.exploreRetry.addEventListener("click", () => {
     if (!state.selectedExploreCamera || state.activeRoute !== "explore") return;
+    const playbackCamera = exploreCameraForSubject(state.selectedExploreCamera);
+    if (!playbackCamera) return;
     if (state.explorePlayer.state() === "blocked") {
       void state.explorePlayer.resume();
       return;
     }
-    void state.explorePlayer.play(state.selectedExploreCamera);
+    void state.explorePlayer.play(playbackCamera);
   });
   window.addEventListener("pagehide", (event) => {
     cancelFavoriteUndoOffer();
@@ -2884,6 +2925,9 @@ async function init() {
   );
   state.tideData = tideData;
   state.cameras = sortCamerasByLatitudeDescending(resolveMeoPlaybackCameras(nativeCameraDb));
+  state.exploreSubjects = sortCamerasByLatitudeDescending(
+    buildExploreCatalog(state.cameras, state.db)
+  );
   const favoriteIdAliases = buildFavoriteIdAliases(
     spotData.promotedDb,
     MEO_FAVORITE_ID_REPLACEMENTS

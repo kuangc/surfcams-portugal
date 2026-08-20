@@ -25,12 +25,6 @@ export function parseNextDataState(html) {
   }
 }
 
-export function extractSurflineCams(spotRecord) {
-  return (spotRecord?.cameras || [])
-    .map((cam) => ({ title: cam.title || cam.alias || null, stillUrl: cam.stillUrl || null }))
-    .filter((cam) => cam.title || cam.stillUrl);
-}
-
 function ratingValue(rating) {
   const order = ["VERY_POOR", "POOR", "POOR_TO_FAIR", "FAIR", "FAIR_TO_GOOD", "GOOD", "VERY_GOOD", "EPIC"];
   const idx = order.indexOf(String(rating || "").toUpperCase());

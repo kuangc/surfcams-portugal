@@ -29,7 +29,6 @@
     "breakType",
     "abilityLevels",
     "boardTypes",
-    "surflineCams",
     "coastExposure"
   ],
   "refreshConcepts": {
@@ -104,7 +103,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -295,12 +293,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Sao Joao Caparica",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-saojoaocaparica/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 240,
           "source": "surfline-offshoreDirection",
@@ -499,12 +491,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Barbas",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-barbas/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -699,7 +685,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -894,7 +879,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -1198,12 +1182,6 @@
             "BODYSURFING"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Cova Do Vapor",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-covadovapor/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -1526,20 +1504,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Costa da Caparica Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costadacaparicaoverview/latest_small.jpg"
-          },
-          {
-            "title": "PT - CDS Costa Caparica",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-cdscaparica/latest_small.jpg"
-          },
-          {
-            "title": "PT - Costa da Caparica",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costacaparica/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 260,
           "source": "surfline-offshoreDirection",
@@ -1734,7 +1698,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 260,
           "source": "surfline-offshoreDirection",
@@ -1929,7 +1892,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -2125,7 +2087,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -2439,12 +2400,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Castelo",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-castelo/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 260,
           "source": "surfline-offshoreDirection",
@@ -2646,12 +2601,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Paco de Arcos",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pacodearcos/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -2846,7 +2795,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -3037,7 +2985,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -3235,12 +3182,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Santo Amaro",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-santoamaro/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -3436,7 +3377,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -3627,7 +3567,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -3935,16 +3874,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Fonta da Telha Front",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelhafront/latest_small.jpg"
-          },
-          {
-            "title": "PT - Fonte da Telha",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelha/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 260,
           "source": "surfline-offshoreDirection",
@@ -4254,20 +4183,6 @@
             "LONGBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Carcavelos Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"
-          },
-          {
-            "title": "PT - Carcavelos Reef",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosreef/latest_small.jpg"
-          },
-          {
-            "title": "PT - Carcavelos FPS",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelos/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 188,
           "source": "surfline-offshoreDirection",
@@ -4467,7 +4382,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -4663,7 +4577,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -4864,7 +4777,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 185,
           "source": "surfline-offshoreDirection",
@@ -5058,7 +4970,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -5249,7 +5160,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -5440,7 +5350,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -5651,7 +5560,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -5979,12 +5887,6 @@
             "KITEBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Praia Guincho Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-guincho/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 280,
           "source": "surfline-offshoreDirection",
@@ -6199,7 +6101,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -6410,7 +6311,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -6621,7 +6521,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -6832,7 +6731,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -7054,12 +6952,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Praia Pequena",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiapequena/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 280,
           "source": "surfline-offshoreDirection",
@@ -7235,7 +7127,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -7446,7 +7337,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -7657,7 +7547,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -7984,12 +7873,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Praia Grande",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiagrande/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 280,
           "source": "surfline-offshoreDirection",
@@ -8170,7 +8053,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -8381,7 +8263,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -8592,7 +8473,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -8803,7 +8683,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -8994,7 +8873,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -9311,7 +9189,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -9636,16 +9513,6 @@
             "SUP"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Foz do Lizandro",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandro/latest_small.jpg"
-          },
-          {
-            "title": "PT - Foz do Lizandro Front",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandrofront/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 289,
           "source": "surfline-offshoreDirection",
@@ -9859,7 +9726,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -10196,12 +10062,6 @@
             "GUN"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Praia do Sul",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiadosulericeira/latest_small.jpg"
-          }
-        ],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -10527,7 +10387,6 @@
             "BODYSURFING"
           ]
         },
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -10844,12 +10703,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Pedra Branca",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pedrabranca/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 289,
           "source": "surfline-offshoreDirection",
@@ -11162,12 +11015,6 @@
             "SHORTBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Reef",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-reef/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 293,
           "source": "surfline-offshoreDirection",
@@ -11499,16 +11346,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Ribeira d'Ilhas",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhas/latest_small.jpg"
-          },
-          {
-            "title": "PT - Ribeira d'Ilhas Close-Up",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhascloseup/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 330,
           "source": "surfline-offshoreDirection",
@@ -11727,7 +11564,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 280,
           "source": "surfline-offshoreDirection",
@@ -12043,7 +11879,6 @@
             "GUN"
           ]
         },
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 294,
           "source": "surfline-offshoreDirection",
@@ -12267,7 +12102,6 @@
         ],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 282,
           "source": "surfline-offshoreDirection",
@@ -12482,7 +12316,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -12809,12 +12642,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Praia Azul",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiaazul/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 270,
           "source": "surfline-offshoreDirection",
@@ -13029,7 +12856,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -13240,7 +13066,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -13568,7 +13393,6 @@
             "SUP"
           ]
         },
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 270,
           "source": "surfline-offshoreDirection",
@@ -13783,7 +13607,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -13994,7 +13817,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -14166,7 +13988,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 260,
           "source": "surfline-offshoreDirection",
@@ -14381,7 +14202,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -14592,7 +14412,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -14904,7 +14723,6 @@
             "GUN"
           ]
         },
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 245,
           "source": "surfline-offshoreDirection",
@@ -15227,16 +15045,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Supertubos Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubosoverview/latest_small.jpg"
-          },
-          {
-            "title": "PT - Supertubos",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubos/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 270,
           "source": "surfline-offshoreDirection",
@@ -15451,12 +15259,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Molhe Leste",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-molheleste/latest_small.jpg"
-          }
-        ],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -15795,7 +15597,6 @@
             "BODYSURFING"
           ]
         },
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -16125,7 +15926,6 @@
             "BODYSURFING"
           ]
         },
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -16453,16 +16253,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Cantinho da Baia Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiaoverview/latest_small.jpg"
-          },
-          {
-            "title": "PT - Cantinho da Baia",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiacantinho/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 15,
           "source": "surfline-offshoreDirection",
@@ -16792,12 +16582,6 @@
             "FISH"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Baleal",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baleal/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 345,
           "source": "surfline-offshoreDirection",
@@ -17127,12 +16911,6 @@
             "BODYSURFING"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Lagide",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-lagide/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 345,
           "source": "surfline-offshoreDirection",
@@ -17461,12 +17239,6 @@
             "BODYBOARD"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Almagreira",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-almagreira/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 345,
           "source": "surfline-offshoreDirection",
@@ -17681,12 +17453,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Praia del Rey",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiadelrey/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 345,
           "source": "surfline-offshoreDirection",
@@ -17901,7 +17667,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -18074,7 +17839,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -18247,7 +18011,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": {
           "bearing": 280,
           "source": "surfline-offshoreDirection",
@@ -18462,7 +18225,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -18634,12 +18396,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [
-          {
-            "title": "PT - Sao Torpes Pier",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-storpespier/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 250,
           "source": "surfline-offshoreDirection",
@@ -18816,7 +18572,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {
@@ -19139,20 +18894,6 @@
             "TOW"
           ]
         },
-        "surflineCams": [
-          {
-            "title": "PT - Nazare Overview",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazareov/latest_small.jpg"
-          },
-          {
-            "title": "PT - Nazare Close Up",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazarecloseup/latest_small.jpg"
-          },
-          {
-            "title": "PT - Nazare",
-            "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazare/latest_small.jpg"
-          }
-        ],
         "coastExposure": {
           "bearing": 270,
           "source": "surfline-offshoreDirection",
@@ -19325,7 +19066,6 @@
         "boardTypes": [],
         "breakType": [],
         "travelDetails": null,
-        "surflineCams": [],
         "coastExposure": null
       },
       "currentSnapshot": {

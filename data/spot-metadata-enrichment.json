@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "provider": "surfcams-portugal",
-  "generatedAt": "2026-07-07T09:52:07.540Z",
+  "generatedAt": "2026-08-19T08:34:15.116Z",
   "method": "MEO-keyed enrichment from generated MEO-to-Surfline mappings, normalized Surfline metadata, and the hand-curatable coast exposure layer.",
   "source": {
     "meoSpots": "data/meo-spots.json",
@@ -9,7 +9,7 @@
     "meoSurflineMatches": "data/meo-surfline-matches.json",
     "coastExposures": "data/coast-exposures.json"
   },
-  "total": 65,
+  "total": 64,
   "entries": [
     {
       "id": "praia-de-carcavelos",
@@ -219,201 +219,6 @@
       }
     },
     {
-      "id": "praia-do-norte",
-      "name": "Nazaré | Praia do Norte Panorâmica",
-      "region": "nazare",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-nazare",
-        "conditionsSourceSpotId": "surfline-nazare",
-        "sourceSpotName": "Nazaré",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
-        "breadcrumb": [
-          "Portugal",
-          "Leiria",
-          "Nazaré Municipality",
-          "Nazaré"
-        ],
-        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "BODYBOARD",
-          "GUN",
-          "TOW"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Winter"
-          ],
-          "size": [
-            "4-12"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE",
-            "SSE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW",
-            "NW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-nazare",
-          "sourceDistanceKm": 0.1,
-          "evidence": [
-            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-do-norte to surfline-nazare at 0.1km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-do-norte mapped to surfline-nazare",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.1km",
-          "Surfline coast exposure 270"
-        ]
-      }
-    },
-    {
-      "id": "praia-do-guincho",
-      "name": "Praia do Guincho | Sul",
-      "region": "cascais",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-do-guincho",
-        "conditionsSourceSpotId": "surfline-praia-do-guincho",
-        "sourceSpotName": "Praia Do Guincho",
-        "sourceDistanceKm": 0.5,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Cascais Municipality",
-          "Alcabideche"
-        ],
-        "guideSummary": "A favoured spot for Lisbon surfers when swell doesn't wrap into the city breaks, Guincho is a long, open beach that is rarely flat, but it's also exposed to wind - hence its popularity as a summertime windsurfing haunt. It does produce quality waves though, working best on lower tides.",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD",
-          "KITEBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Spring"
-          ],
-          "size": [
-            "2-8"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW",
-            "NW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 280,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-praia-do-guincho",
-          "sourceDistanceKm": 0.5,
-          "evidence": [
-            "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-do-guincho to surfline-praia-do-guincho at 0.5km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-do-guincho mapped to surfline-praia-do-guincho",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.5km",
-          "Surfline coast exposure 280"
-        ]
-      }
-    },
-    {
       "id": "praia-grande",
       "name": "Praia Grande | Norte",
       "region": "sintra",
@@ -508,99 +313,6 @@
           "Mapping source generated-nearest with confidence name",
           "Source spot distance 0.4km",
           "Surfline coast exposure 280"
-        ]
-      }
-    },
-    {
-      "id": "peniche-supertubos",
-      "name": "Peniche | SuperTubos | Molhe Leste",
-      "region": "peniche",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-supertubos",
-        "conditionsSourceSpotId": "surfline-supertubos",
-        "sourceSpotName": "Supertubos",
-        "sourceDistanceKm": 0.4,
-        "sourceUrl": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3",
-        "breadcrumb": [
-          "Portugal",
-          "Leiria",
-          "Peniche Municipality",
-          "Peniche"
-        ],
-        "guideSummary": "Supertubos is one of the best waves in Europe. There's one main peak with a super-fast (though makeable) left, and a somewhat shorter right, and one other peak down the beach that's not quite as perfect but still way better than your average day at most beachbreaks.\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FISH",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Winter"
-          ],
-          "size": [
-            "5-12"
-          ],
-          "tide": [
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "NE",
-            "ENE",
-            "E",
-            "ESE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-supertubos",
-          "sourceDistanceKm": 0.4,
-          "evidence": [
-            "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from peniche-supertubos to surfline-supertubos at 0.4km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO peniche-supertubos mapped to surfline-supertubos",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.4km",
-          "Surfline coast exposure 270"
         ]
       }
     },
@@ -800,8 +512,296 @@
       }
     },
     {
+      "id": "praia-do-guincho",
+      "name": "Praia do Guincho | Sul",
+      "region": "cascais",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-do-guincho",
+        "conditionsSourceSpotId": "surfline-praia-do-guincho",
+        "sourceSpotName": "Praia Do Guincho",
+        "sourceDistanceKm": 0.5,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Cascais Municipality",
+          "Alcabideche"
+        ],
+        "guideSummary": "A favoured spot for Lisbon surfers when swell doesn't wrap into the city breaks, Guincho is a long, open beach that is rarely flat, but it's also exposed to wind - hence its popularity as a summertime windsurfing haunt. It does produce quality waves though, working best on lower tides.",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD",
+          "KITEBOARD"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Spring"
+          ],
+          "size": [
+            "2-8"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 280,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-praia-do-guincho",
+          "sourceDistanceKm": 0.5,
+          "evidence": [
+            "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-do-guincho to surfline-praia-do-guincho at 0.5km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-do-guincho mapped to surfline-praia-do-guincho",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.5km",
+          "Surfline coast exposure 280"
+        ]
+      }
+    },
+    {
+      "id": "peniche-supertubos",
+      "name": "Peniche | SuperTubos | Molhe Leste",
+      "region": "peniche",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-supertubos",
+        "conditionsSourceSpotId": "surfline-supertubos",
+        "sourceSpotName": "Supertubos",
+        "sourceDistanceKm": 0.4,
+        "sourceUrl": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3",
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche"
+        ],
+        "guideSummary": "Supertubos is one of the best waves in Europe. There's one main peak with a super-fast (though makeable) left, and a somewhat shorter right, and one other peak down the beach that's not quite as perfect but still way better than your average day at most beachbreaks.\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "5-12"
+          ],
+          "tide": [
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "NE",
+            "ENE",
+            "E",
+            "ESE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 270,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-supertubos",
+          "sourceDistanceKm": 0.4,
+          "evidence": [
+            "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from peniche-supertubos to surfline-supertubos at 0.4km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO peniche-supertubos mapped to surfline-supertubos",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.4km",
+          "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
+      "id": "praia-do-norte",
+      "name": "Nazaré | Praia do Norte Panorâmica",
+      "region": "nazare",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-nazare",
+        "conditionsSourceSpotId": "surfline-nazare",
+        "sourceSpotName": "Nazaré",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Nazaré Municipality",
+          "Nazaré"
+        ],
+        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "BODYBOARD",
+          "GUN",
+          "TOW"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "4-12"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE",
+            "SSE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 270,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-nazare",
+          "sourceDistanceKm": 0.1,
+          "evidence": [
+            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-do-norte to surfline-nazare at 0.1km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-do-norte mapped to surfline-nazare",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.1km",
+          "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
       "id": "lagide-e-baia",
-      "name": "Peniche | Lagide | Cantinho da baía ",
+      "name": "Peniche | Lagide | Cantinho da baía",
       "region": "peniche",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -894,6 +894,105 @@
           "MEO lagide-e-baia mapped to surfline-lagide",
           "Mapping source curated with confidence curated",
           "Source spot distance 0.3km",
+          "Surfline coast exposure 345"
+        ]
+      }
+    },
+    {
+      "id": "peniche-baleal-panoramica",
+      "name": "Peniche | Baleal | Panorâmica",
+      "region": "peniche",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "proximity",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-baleal",
+        "conditionsSourceSpotId": "surfline-cantinho-da-baia",
+        "sourceSpotName": "Baleal",
+        "sourceDistanceKm": 0.7,
+        "sourceUrl": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Peniche Municipality",
+          "Peniche"
+        ],
+        "guideSummary": "Peniche/Baleal surf hub with Lagide and open beachbreak nearby.",
+        "nearbySpotNames": [
+          "Lagide",
+          "Cantinho da Baía",
+          "Meio da Baía"
+        ],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break",
+          "Reef"
+        ],
+        "abilityLevels": [
+          "BEGINNER"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH"
+        ],
+        "bottom": [
+          "Sand",
+          "Rock"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Spring"
+          ],
+          "size": [
+            "2-7"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium"
+          ],
+          "windDirection": [
+            "ESE",
+            "SE",
+            "SSE",
+            "S",
+            "SSW"
+          ],
+          "swellDirection": [
+            "NW",
+            "NNW",
+            "N"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 15,
+          "compass": "N",
+          "label": "N-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-cantinho-da-baia",
+          "sourceDistanceKm": 0.2,
+          "evidence": [
+            "Surfline metadata surfline-cantinho-da-baia Cantinho da Baía coastExposure.bearing=15",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from peniche-baleal-panoramica to surfline-cantinho-da-baia at 0.2km",
+            "Mapping confidence: proximity",
+            "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 0.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO peniche-baleal-panoramica mapped to surfline-baleal",
+          "Mapping source generated-nearest with confidence proximity",
+          "Source spot distance 0.7km",
           "Surfline coast exposure 345"
         ]
       }
@@ -1000,107 +1099,8 @@
       }
     },
     {
-      "id": "peniche-baleal-panoramica",
-      "name": "Peniche | Baleal | Panorâmica",
-      "region": "peniche",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "proximity",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-baleal",
-        "conditionsSourceSpotId": "surfline-cantinho-da-baia",
-        "sourceSpotName": "Baleal",
-        "sourceDistanceKm": 0.7,
-        "sourceUrl": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6",
-        "breadcrumb": [
-          "Portugal",
-          "Leiria",
-          "Peniche Municipality",
-          "Peniche"
-        ],
-        "guideSummary": "Peniche/Baleal surf hub with Lagide and open beachbreak nearby.",
-        "nearbySpotNames": [
-          "Lagide",
-          "Cantinho da Baía",
-          "Meio da Baía"
-        ],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break",
-          "Reef"
-        ],
-        "abilityLevels": [
-          "BEGINNER"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH"
-        ],
-        "bottom": [
-          "Sand",
-          "Rock"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Spring"
-          ],
-          "size": [
-            "2-7"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium"
-          ],
-          "windDirection": [
-            "ESE",
-            "SE",
-            "SSE",
-            "S",
-            "SSW"
-          ],
-          "swellDirection": [
-            "NW",
-            "NNW",
-            "N"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 15,
-          "compass": "N",
-          "label": "N-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-cantinho-da-baia",
-          "sourceDistanceKm": 0.2,
-          "evidence": [
-            "Surfline metadata surfline-cantinho-da-baia Cantinho da Baía coastExposure.bearing=15",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from peniche-baleal-panoramica to surfline-cantinho-da-baia at 0.2km",
-            "Mapping confidence: proximity",
-            "Auto-remapped from cached Surfline coordinates; primary Cantinho da Baía is 0.2km away with name score 0.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO peniche-baleal-panoramica mapped to surfline-baleal",
-          "Mapping source generated-nearest with confidence proximity",
-          "Source spot distance 0.7km",
-          "Surfline coast exposure 345"
-        ]
-      }
-    },
-    {
       "id": "foz-do-arelho",
-      "name": "Foz do Arelho ",
+      "name": "Foz do Arelho",
       "region": "costa-oeste",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -1257,71 +1257,6 @@
       }
     },
     {
-      "id": "sao-pedro-do-estoril",
-      "name": "São Pedro do Estoril",
-      "region": "cascais",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "curated",
-        "reviewStatus": "curated",
-        "sourceSpotId": "surfline-sao-pedro-do-estoril",
-        "conditionsSourceSpotId": "surfline-sao-pedro-do-estoril",
-        "sourceSpotName": "São Pedro do Estoril",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Cascais Municipality",
-          "São Pedro do Estoril"
-        ],
-        "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
-        "nearbySpotNames": [
-          "Carcavelos",
-          "Parede",
-          "Praia do Guincho",
-          "Fonte da Telha"
-        ],
-        "breakType": [],
-        "abilityLevels": [],
-        "boardTypes": [],
-        "bottom": [],
-        "best": {
-          "season": null,
-          "size": null,
-          "tide": null,
-          "windDirection": null,
-          "swellDirection": null
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 188,
-          "compass": "S",
-          "label": "S-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-carcavelos",
-          "sourceDistanceKm": 3.2,
-          "evidence": [
-            "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from sao-pedro-do-estoril to surfline-carcavelos at 3.2km",
-            "Mapping confidence: curated",
-            "Exact Surfline page plus nearby Cascais-line references."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO sao-pedro-do-estoril mapped to surfline-sao-pedro-do-estoril",
-          "Mapping source curated with confidence curated",
-          "Source spot distance 0.1km"
-        ]
-      }
-    },
-    {
       "id": "costa-da-caparica-riviera",
       "name": "Costa de Caparica | Riviera",
       "region": "almada",
@@ -1387,112 +1322,73 @@
       }
     },
     {
-      "id": "surfline-castelo",
-      "name": "Costa da Caparica | Costelo (Irmao)",
-      "region": "almada",
+      "id": "sao-pedro-do-estoril",
+      "name": "São Pedro do Estoril",
+      "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
         "confidence": "curated",
         "reviewStatus": "curated",
-        "sourceSpotId": "surfline-castelo",
-        "conditionsSourceSpotId": "surfline-castelo",
-        "sourceSpotName": "Costa da Caparica | Costelo (Irmao)",
+        "sourceSpotId": "surfline-sao-pedro-do-estoril",
+        "conditionsSourceSpotId": "surfline-sao-pedro-do-estoril",
+        "sourceSpotName": "São Pedro do Estoril",
         "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8",
+        "sourceUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
         "breadcrumb": [
           "Portugal",
-          "Setúbal",
-          "Almada Municipality",
-          "Costa de Caparica"
-        ],
-        "guideSummary": "Sandy Caparica bay with shifting banks, strongest around dune walkways where offshore winds help sand collect; better on small to medium days and prone to closing out when bigger.",
-        "nearbySpotNames": [
-          "Praia da Rainha",
-          "Praia do Barbas",
-          "Costa da Caparica",
-          "Fonte da Telha",
+          "Lisbon",
+          "Cascais Municipality",
           "São Pedro do Estoril"
         ],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
+        "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
+        "nearbySpotNames": [
+          "Carcavelos",
+          "Parede",
+          "Praia do Guincho",
+          "Fonte da Telha"
         ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "SUP",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
+        "breakType": [],
+        "abilityLevels": [],
+        "boardTypes": [],
+        "bottom": [],
         "best": {
-          "season": [
-            "Autumn",
-            "Winter",
-            "Spring"
-          ],
-          "size": [
-            "3-8"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "NNE",
-            "NE",
-            "ENE",
-            "E"
-          ],
-          "swellDirection": [
-            "WSW",
-            "W"
-          ]
+          "season": null,
+          "size": null,
+          "tide": null,
+          "windDirection": null,
+          "swellDirection": null
         },
         "crowdFactor": null,
         "localVibe": null,
         "shoulderBurn": null,
         "hazards": null,
         "coastExposure": {
-          "bearing": 260,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
+          "bearing": 188,
+          "compass": "S",
+          "label": "S-facing Surfline-derived exposure",
           "confidence": "spot",
           "source": "surfline-metadata",
-          "sourceSpotId": "surfline-castelo",
-          "sourceDistanceKm": 0.1,
+          "sourceSpotId": "surfline-carcavelos",
+          "sourceDistanceKm": 3.2,
           "evidence": [
-            "Surfline metadata surfline-castelo Costa da Caparica | Costelo (Irmao) coastExposure.bearing=260",
+            "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
             "Provider source: surfline-offshoreDirection",
-            "Matched from surfline-castelo to surfline-castelo at 0.1km",
+            "Matched from sao-pedro-do-estoril to surfline-carcavelos at 3.2km",
             "Mapping confidence: curated",
-            "First-class Surfline-only Castelo spot plus the practical Caparica corridor references."
+            "Exact Surfline page plus nearby Cascais-line references."
           ],
           "reviewStatus": "generated"
         },
         "evidence": [
-          "MEO surfline-castelo mapped to surfline-castelo",
+          "MEO sao-pedro-do-estoril mapped to surfline-sao-pedro-do-estoril",
           "Mapping source curated with confidence curated",
-          "Source spot distance 0.1km",
-          "Surfline coast exposure 260"
+          "Source spot distance 0.1km"
         ]
       }
     },
     {
       "id": "sao-martinho-do-porto",
-      "name": "São Martinho do Porto ",
+      "name": "São Martinho do Porto",
       "region": "costa-oeste",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -1546,7 +1442,7 @@
     },
     {
       "id": "areia-branca",
-      "name": "Areia Branca ",
+      "name": "Areia Branca",
       "region": "costa-oeste",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -1690,25 +1586,25 @@
       }
     },
     {
-      "id": "praia-do-norte-canhao-nazare",
-      "name": "Nazaré | Praia do Norte ",
-      "region": "nazare",
+      "id": "praia-de-santa-rita",
+      "name": "Praia de Santa Rita",
+      "region": "costa-oeste",
       "surfMetadata": {
         "source": "surfline-metadata",
         "confidence": "name",
         "reviewStatus": "generated",
-        "sourceSpotId": "surfline-nazare",
-        "conditionsSourceSpotId": "surfline-nazare",
-        "sourceSpotName": "Nazaré",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
+        "sourceSpotId": "surfline-santa-cruz",
+        "conditionsSourceSpotId": "surfline-praia-de-santa-rita",
+        "sourceSpotName": "Santa Cruz",
+        "sourceDistanceKm": 4.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9",
         "breadcrumb": [
           "Portugal",
-          "Leiria",
-          "Nazaré Municipality",
-          "Nazaré"
+          "Lisbon",
+          "Torres Vedras Municipality",
+          "Silveira"
         ],
-        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+        "guideSummary": "A long stretch of sand that produces some thumping barrels and reeling peaks. Home to a series of sandbanks and sand covered reefs - it even has a sand covered shipwreck from a boat that sank just after WW2. A good place to escape the crowds. Susceptible to wind so best on an offshore day.",
         "nearbySpotNames": [],
         "breakType": [
           "Rights",
@@ -1716,45 +1612,46 @@
           "Beach_Break"
         ],
         "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
           "ADVANCED"
         ],
         "boardTypes": [
           "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
           "BODYBOARD",
-          "GUN",
-          "TOW"
+          "SUP"
         ],
         "bottom": [
-          "Sand"
+          "Sand",
+          "Rock"
         ],
         "best": {
           "season": [
-            "Autumn",
-            "Winter"
+            "Autumn"
           ],
           "size": [
-            "4-12"
+            "5-12"
           ],
           "tide": [
             "Low",
             "Medium_Low",
             "Medium",
-            "Medium_High",
-            "High"
+            "Medium_High"
           ],
           "windDirection": [
+            "NE",
             "ENE",
             "E",
-            "ESE",
-            "SE",
-            "SSE"
+            "ESE"
           ],
           "swellDirection": [
             "SW",
             "WSW",
             "W",
-            "WNW",
-            "NW"
+            "WNW"
           ]
         },
         "crowdFactor": null,
@@ -1767,22 +1664,120 @@
           "label": "W-facing Surfline-derived exposure",
           "confidence": "spot",
           "source": "surfline-metadata",
-          "sourceSpotId": "surfline-nazare",
-          "sourceDistanceKm": 0.1,
+          "sourceSpotId": "surfline-santa-cruz",
+          "sourceDistanceKm": 4.1,
           "evidence": [
-            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+            "Surfline metadata surfline-santa-cruz Santa Cruz coastExposure.bearing=270",
             "Provider source: surfline-offshoreDirection",
-            "Matched from praia-do-norte-canhao-nazare to surfline-nazare at 0.1km",
+            "Matched from praia-de-santa-rita to surfline-santa-cruz at 4.1km",
             "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+            "Auto-remapped from cached Surfline coordinates; primary Praia de Santa Rita is 0.5km away with name score 1.00."
           ],
           "reviewStatus": "generated"
         },
         "evidence": [
-          "MEO praia-do-norte-canhao-nazare mapped to surfline-nazare",
+          "MEO praia-de-santa-rita mapped to surfline-santa-cruz",
           "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.1km",
+          "Source spot distance 4.1km",
           "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
+      "id": "praia-grande-sul",
+      "name": "Praia Grande | Sul",
+      "region": "sintra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-grande",
+        "conditionsSourceSpotId": "surfline-praia-grande",
+        "sourceSpotName": "Praia Grande",
+        "sourceDistanceKm": 0.5,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Sintra Municipality",
+          "Colares"
+        ],
+        "guideSummary": "Low to mid tide is best, with peaks along the beach, high tide can be heavy with sections of shore dump. Line-ups will be busy when good, but there's room to spread out and Praia Pequena - an extension of the beach to the north - often holds quieter waves. Best in an easterly wind as it is exposed and still afternoons can often see localised onshores.",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Spring"
+          ],
+          "size": [
+            "2-8"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE"
+          ],
+          "swellDirection": [
+            "W",
+            "WNW",
+            "NW",
+            "NNW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 280,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-praia-grande",
+          "sourceDistanceKm": 0.5,
+          "evidence": [
+            "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-grande-sul to surfline-praia-grande at 0.5km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.5km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-grande-sul mapped to surfline-praia-grande",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.5km",
+          "Surfline coast exposure 280"
         ]
       }
     },
@@ -1886,6 +1881,200 @@
       }
     },
     {
+      "id": "praia-do-norte-canhao-nazare",
+      "name": "Nazaré | Praia do Norte",
+      "region": "nazare",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-nazare",
+        "conditionsSourceSpotId": "surfline-nazare",
+        "sourceSpotName": "Nazaré",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Nazaré Municipality",
+          "Nazaré"
+        ],
+        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "BODYBOARD",
+          "GUN",
+          "TOW"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "4-12"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE",
+            "SSE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 270,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-nazare",
+          "sourceDistanceKm": 0.1,
+          "evidence": [
+            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-do-norte-canhao-nazare to surfline-nazare at 0.1km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-do-norte-canhao-nazare mapped to surfline-nazare",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.1km",
+          "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
+      "id": "santa-cruz-praia-azul",
+      "name": "Santa Cruz | Praia Azul",
+      "region": "costa-oeste",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-azul",
+        "conditionsSourceSpotId": "surfline-praia-azul",
+        "sourceSpotName": "Praia Azul",
+        "sourceDistanceKm": 0.6,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-azul/584204204e65fad6a77096b9",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Torres Vedras Municipality",
+          "Silveira"
+        ],
+        "guideSummary": "One of the most consistent beaches in the area, this long stretch of sand is home to a number of sandbars and a couple of sand covered reefs. At the northen end of the bay is a righthand reef. Best in small to medium swells.",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break",
+          "Reef"
+        ],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [
+          "Sand",
+          "Rock"
+        ],
+        "best": {
+          "season": [
+            "Summer",
+            "Autumn"
+          ],
+          "size": [
+            "2-8"
+          ],
+          "tide": [
+            "Medium_Low",
+            "Medium",
+            "Medium_High"
+          ],
+          "windDirection": [
+            "E",
+            "ESE",
+            "SE"
+          ],
+          "swellDirection": [
+            "W",
+            "WNW",
+            "NW",
+            "NNW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 270,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-praia-azul",
+          "sourceDistanceKm": 0.6,
+          "evidence": [
+            "Surfline metadata surfline-praia-azul Praia Azul coastExposure.bearing=270",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from santa-cruz-praia-azul to surfline-praia-azul at 0.6km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO santa-cruz-praia-azul mapped to surfline-praia-azul",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.6km",
+          "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
       "id": "praia-da-torre",
       "name": "Praia da Torre",
       "region": "oeiras",
@@ -1985,104 +2174,6 @@
       }
     },
     {
-      "id": "praia-de-santa-rita",
-      "name": "Praia de Santa Rita",
-      "region": "costa-oeste",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-santa-cruz",
-        "conditionsSourceSpotId": "surfline-praia-de-santa-rita",
-        "sourceSpotName": "Santa Cruz",
-        "sourceDistanceKm": 4.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Torres Vedras Municipality",
-          "Silveira"
-        ],
-        "guideSummary": "A long stretch of sand that produces some thumping barrels and reeling peaks. Home to a series of sandbanks and sand covered reefs - it even has a sand covered shipwreck from a boat that sank just after WW2. A good place to escape the crowds. Susceptible to wind so best on an offshore day.",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD",
-          "SUP"
-        ],
-        "bottom": [
-          "Sand",
-          "Rock"
-        ],
-        "best": {
-          "season": [
-            "Autumn"
-          ],
-          "size": [
-            "5-12"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High"
-          ],
-          "windDirection": [
-            "NE",
-            "ENE",
-            "E",
-            "ESE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-santa-cruz",
-          "sourceDistanceKm": 4.1,
-          "evidence": [
-            "Surfline metadata surfline-santa-cruz Santa Cruz coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-de-santa-rita to surfline-santa-cruz at 4.1km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia de Santa Rita is 0.5km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-de-santa-rita mapped to surfline-santa-cruz",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 4.1km",
-          "Surfline coast exposure 270"
-        ]
-      }
-    },
-    {
       "id": "praia-de-sao-torpes",
       "name": "São Torpes",
       "region": "alentejo",
@@ -2139,201 +2230,6 @@
           "Mapping source generated-nearest with confidence name",
           "Source spot distance 0.2km",
           "Surfline coast exposure 250"
-        ]
-      }
-    },
-    {
-      "id": "santa-cruz-praia-azul",
-      "name": " Santa Cruz | Praia Azul",
-      "region": "costa-oeste",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-azul",
-        "conditionsSourceSpotId": "surfline-praia-azul",
-        "sourceSpotName": "Praia Azul",
-        "sourceDistanceKm": 0.6,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-azul/584204204e65fad6a77096b9",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Torres Vedras Municipality",
-          "Silveira"
-        ],
-        "guideSummary": "One of the most consistent beaches in the area, this long stretch of sand is home to a number of sandbars and a couple of sand covered reefs. At the northen end of the bay is a righthand reef. Best in small to medium swells.",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break",
-          "Reef"
-        ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand",
-          "Rock"
-        ],
-        "best": {
-          "season": [
-            "Summer",
-            "Autumn"
-          ],
-          "size": [
-            "2-8"
-          ],
-          "tide": [
-            "Medium_Low",
-            "Medium",
-            "Medium_High"
-          ],
-          "windDirection": [
-            "E",
-            "ESE",
-            "SE"
-          ],
-          "swellDirection": [
-            "W",
-            "WNW",
-            "NW",
-            "NNW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-praia-azul",
-          "sourceDistanceKm": 0.6,
-          "evidence": [
-            "Surfline metadata surfline-praia-azul Praia Azul coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from santa-cruz-praia-azul to surfline-praia-azul at 0.6km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO santa-cruz-praia-azul mapped to surfline-praia-azul",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.6km",
-          "Surfline coast exposure 270"
-        ]
-      }
-    },
-    {
-      "id": "praia-grande-sul",
-      "name": "Praia Grande | Sul",
-      "region": "sintra",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-grande",
-        "conditionsSourceSpotId": "surfline-praia-grande",
-        "sourceSpotName": "Praia Grande",
-        "sourceDistanceKm": 0.5,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Sintra Municipality",
-          "Colares"
-        ],
-        "guideSummary": "Low to mid tide is best, with peaks along the beach, high tide can be heavy with sections of shore dump. Line-ups will be busy when good, but there's room to spread out and Praia Pequena - an extension of the beach to the north - often holds quieter waves. Best in an easterly wind as it is exposed and still afternoons can often see localised onshores.",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Spring"
-          ],
-          "size": [
-            "2-8"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE"
-          ],
-          "swellDirection": [
-            "W",
-            "WNW",
-            "NW",
-            "NNW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 280,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-praia-grande",
-          "sourceDistanceKm": 0.5,
-          "evidence": [
-            "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-grande-sul to surfline-praia-grande at 0.5km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia Grande is 0.5km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-grande-sul mapped to surfline-praia-grande",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.5km",
-          "Surfline coast exposure 280"
         ]
       }
     },
@@ -2534,7 +2430,7 @@
     },
     {
       "id": "parede",
-      "name": "Parede ",
+      "name": "Parede",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -2594,6 +2490,78 @@
           "MEO parede mapped to surfline-parede",
           "Mapping source curated with confidence curated",
           "Source spot distance 0.1km"
+        ]
+      }
+    },
+    {
+      "id": "praia-das-macas",
+      "name": "Praia das Maçãs",
+      "region": "sintra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-pequena",
+        "conditionsSourceSpotId": "surfline-praia-das-macas",
+        "sourceSpotName": "Praia Pequena",
+        "sourceDistanceKm": 0.8,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Sintra Municipality",
+          "Colares"
+        ],
+        "guideSummary": "",
+        "nearbySpotNames": [],
+        "breakType": [],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED",
+          "PRO"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [],
+        "best": {
+          "season": null,
+          "size": null,
+          "tide": null,
+          "windDirection": null,
+          "swellDirection": null
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 280,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-praia-pequena",
+          "sourceDistanceKm": 0.8,
+          "evidence": [
+            "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-das-macas to surfline-praia-pequena at 0.8km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-das-macas mapped to surfline-praia-pequena",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.8km",
+          "Surfline coast exposure 280"
         ]
       }
     },
@@ -2691,7 +2659,7 @@
     },
     {
       "id": "santo-amaro",
-      "name": "Santo Amaro ",
+      "name": "Santo Amaro",
       "region": "oeiras",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -2758,80 +2726,8 @@
       }
     },
     {
-      "id": "praia-das-macas",
-      "name": "Praia das Maçãs",
-      "region": "sintra",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-pequena",
-        "conditionsSourceSpotId": "surfline-praia-das-macas",
-        "sourceSpotName": "Praia Pequena",
-        "sourceDistanceKm": 0.8,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Sintra Municipality",
-          "Colares"
-        ],
-        "guideSummary": "",
-        "nearbySpotNames": [],
-        "breakType": [],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED",
-          "PRO"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD"
-        ],
-        "bottom": [],
-        "best": {
-          "season": null,
-          "size": null,
-          "tide": null,
-          "windDirection": null,
-          "swellDirection": null
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 280,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-praia-pequena",
-          "sourceDistanceKm": 0.8,
-          "evidence": [
-            "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-das-macas to surfline-praia-pequena at 0.8km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-das-macas mapped to surfline-praia-pequena",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.8km",
-          "Surfline coast exposure 280"
-        ]
-      }
-    },
-    {
       "id": "lagoa-de-albufeira",
-      "name": "Lagoa de Albufeira ",
+      "name": "Lagoa de Albufeira",
       "region": "sesimbra",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -2924,6 +2820,99 @@
           "Mapping source generated-nearest with confidence name",
           "Source spot distance 7.6km",
           "Surfline coast exposure 260"
+        ]
+      }
+    },
+    {
+      "id": "sao-juliao",
+      "name": "São Julião",
+      "region": "mafra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "curated",
+        "reviewStatus": "curated",
+        "sourceSpotId": "surfline-sao-juliao",
+        "conditionsSourceSpotId": "surfline-sao-juliao",
+        "sourceSpotName": "São Julião",
+        "sourceDistanceKm": 0.2,
+        "sourceUrl": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "São Julião"
+        ],
+        "guideSummary": "Big open beach that catches more swell than many nearby Ericeira spots.",
+        "nearbySpotNames": [
+          "Foz do Lizandro",
+          "Praia do Sul",
+          "Ribeira D’Ilhas"
+        ],
+        "breakType": [
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "BODYBOARD"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "3-8"
+          ],
+          "tide": [
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE"
+          ],
+          "swellDirection": [
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 289,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-foz-do-lizandro",
+          "sourceDistanceKm": 1.3,
+          "evidence": [
+            "Surfline metadata surfline-foz-do-lizandro Foz do Lizandro coastExposure.bearing=289",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from sao-juliao to surfline-foz-do-lizandro at 1.3km",
+            "Mapping confidence: curated",
+            "Exact São Julião page plus Ericeira-area options in the same outing corridor."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO sao-juliao mapped to surfline-sao-juliao",
+          "Mapping source curated with confidence curated",
+          "Source spot distance 0.2km"
         ]
       }
     },
@@ -3036,99 +3025,6 @@
       }
     },
     {
-      "id": "sao-juliao",
-      "name": "São Julião ",
-      "region": "mafra",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "curated",
-        "reviewStatus": "curated",
-        "sourceSpotId": "surfline-sao-juliao",
-        "conditionsSourceSpotId": "surfline-sao-juliao",
-        "sourceSpotName": "São Julião",
-        "sourceDistanceKm": 0.2,
-        "sourceUrl": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Mafra Municipality",
-          "São Julião"
-        ],
-        "guideSummary": "Big open beach that catches more swell than many nearby Ericeira spots.",
-        "nearbySpotNames": [
-          "Foz do Lizandro",
-          "Praia do Sul",
-          "Ribeira D’Ilhas"
-        ],
-        "breakType": [
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Winter"
-          ],
-          "size": [
-            "3-8"
-          ],
-          "tide": [
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE"
-          ],
-          "swellDirection": [
-            "WSW",
-            "W",
-            "WNW",
-            "NW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 289,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-foz-do-lizandro",
-          "sourceDistanceKm": 1.3,
-          "evidence": [
-            "Surfline metadata surfline-foz-do-lizandro Foz do Lizandro coastExposure.bearing=289",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from sao-juliao to surfline-foz-do-lizandro at 1.3km",
-            "Mapping confidence: curated",
-            "Exact São Julião page plus Ericeira-area options in the same outing corridor."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO sao-juliao mapped to surfline-sao-juliao",
-          "Mapping source curated with confidence curated",
-          "Source spot distance 0.2km"
-        ]
-      }
-    },
-    {
       "id": "paco-de-arcos",
       "name": "Paço de Arcos",
       "region": "oeiras",
@@ -3198,7 +3094,7 @@
     },
     {
       "id": "praia-das-bicas",
-      "name": "Praia das Bicas ",
+      "name": "Praia das Bicas",
       "region": "sesimbra",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -3304,103 +3200,6 @@
       }
     },
     {
-      "id": "nazare-forte-sao-miguel-arcanjo",
-      "name": "Nazaré | Forte S. Miguel Arcanjo ",
-      "region": "nazare",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-nazare",
-        "conditionsSourceSpotId": "surfline-nazare",
-        "sourceSpotName": "Nazaré",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
-        "breadcrumb": [
-          "Portugal",
-          "Leiria",
-          "Nazaré Municipality",
-          "Nazaré"
-        ],
-        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "BODYBOARD",
-          "GUN",
-          "TOW"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Winter"
-          ],
-          "size": [
-            "4-12"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE",
-            "SSE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW",
-            "NW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-nazare",
-          "sourceDistanceKm": 0.1,
-          "evidence": [
-            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from nazare-forte-sao-miguel-arcanjo to surfline-nazare at 0.1km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO nazare-forte-sao-miguel-arcanjo mapped to surfline-nazare",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.1km",
-          "Surfline coast exposure 270"
-        ]
-      }
-    },
-    {
       "id": "matadouro",
       "name": "Matadouro",
       "region": "mafra",
@@ -3497,78 +3296,105 @@
       }
     },
     {
-      "id": "ericeira-sao-lourenco",
-      "name": "São Lourenço ",
-      "region": "mafra",
+      "id": "nazare-forte-sao-miguel-arcanjo",
+      "name": "Nazaré | Forte S. Miguel Arcanjo",
+      "region": "nazare",
       "surfMetadata": {
         "source": "surfline-metadata",
         "confidence": "name",
         "reviewStatus": "generated",
-        "sourceSpotId": "surfline-sao-lourenco",
-        "conditionsSourceSpotId": "surfline-sao-lourenco",
-        "sourceSpotName": "São Lourenço",
-        "sourceDistanceKm": 0.4,
-        "sourceUrl": "https://www.surfline.com/surf-report/sao-lourenco/5842041f4e65fad6a7708bcb",
+        "sourceSpotId": "surfline-nazare",
+        "conditionsSourceSpotId": "surfline-nazare",
+        "sourceSpotName": "Nazaré",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
         "breadcrumb": [
           "Portugal",
-          "Lisbon",
-          "Mafra Municipality",
-          "Ericeira"
+          "Leiria",
+          "Nazaré Municipality",
+          "Nazaré"
         ],
-        "guideSummary": "",
+        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
         "nearbySpotNames": [],
-        "breakType": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
         "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE"
+          "ADVANCED"
         ],
         "boardTypes": [
           "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD"
+          "BODYBOARD",
+          "GUN",
+          "TOW"
         ],
-        "bottom": [],
+        "bottom": [
+          "Sand"
+        ],
         "best": {
-          "season": null,
-          "size": null,
-          "tide": null,
-          "windDirection": null,
-          "swellDirection": null
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "4-12"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE",
+            "SSE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
         },
         "crowdFactor": null,
         "localVibe": null,
         "shoulderBurn": null,
         "hazards": null,
         "coastExposure": {
-          "bearing": 282,
+          "bearing": 270,
           "compass": "W",
           "label": "W-facing Surfline-derived exposure",
           "confidence": "spot",
           "source": "surfline-metadata",
-          "sourceSpotId": "surfline-sao-lourenco",
-          "sourceDistanceKm": 0.4,
+          "sourceSpotId": "surfline-nazare",
+          "sourceDistanceKm": 0.1,
           "evidence": [
-            "Surfline metadata surfline-sao-lourenco São Lourenço coastExposure.bearing=282",
+            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
             "Provider source: surfline-offshoreDirection",
-            "Matched from ericeira-sao-lourenco to surfline-sao-lourenco at 0.4km",
+            "Matched from nazare-forte-sao-miguel-arcanjo to surfline-nazare at 0.1km",
             "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
+            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
           ],
           "reviewStatus": "generated"
         },
         "evidence": [
-          "MEO ericeira-sao-lourenco mapped to surfline-sao-lourenco",
+          "MEO nazare-forte-sao-miguel-arcanjo mapped to surfline-nazare",
           "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.4km",
-          "Surfline coast exposure 282"
+          "Source spot distance 0.1km",
+          "Surfline coast exposure 270"
         ]
       }
     },
     {
       "id": "praia-pequena",
-      "name": "Praia Pequena ",
+      "name": "Praia Pequena",
       "region": "sintra",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -3639,8 +3465,132 @@
       }
     },
     {
+      "id": "ericeira-sao-lourenco",
+      "name": "São Lourenço",
+      "region": "mafra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-sao-lourenco",
+        "conditionsSourceSpotId": "surfline-sao-lourenco",
+        "sourceSpotName": "São Lourenço",
+        "sourceDistanceKm": 0.4,
+        "sourceUrl": "https://www.surfline.com/surf-report/sao-lourenco/5842041f4e65fad6a7708bcb",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Mafra Municipality",
+          "Ericeira"
+        ],
+        "guideSummary": "",
+        "nearbySpotNames": [],
+        "breakType": [],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [],
+        "best": {
+          "season": null,
+          "size": null,
+          "tide": null,
+          "windDirection": null,
+          "swellDirection": null
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 282,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-sao-lourenco",
+          "sourceDistanceKm": 0.4,
+          "evidence": [
+            "Surfline metadata surfline-sao-lourenco São Lourenço coastExposure.bearing=282",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from ericeira-sao-lourenco to surfline-sao-lourenco at 0.4km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO ericeira-sao-lourenco mapped to surfline-sao-lourenco",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.4km",
+          "Surfline coast exposure 282"
+        ]
+      }
+    },
+    {
+      "id": "praia-do-magoito",
+      "name": "Praia do Magoito",
+      "region": "sintra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-do-magoito",
+        "conditionsSourceSpotId": "surfline-praia-do-magoito",
+        "sourceSpotName": "Praia do Magoito",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-do-magoito/640b9d23e920304216e1ad8e",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Sintra Municipality",
+          "Magoito"
+        ],
+        "guideSummary": "",
+        "nearbySpotNames": [],
+        "breakType": [],
+        "abilityLevels": [],
+        "boardTypes": [],
+        "bottom": [],
+        "best": {
+          "season": null,
+          "size": null,
+          "tide": null,
+          "windDirection": null,
+          "swellDirection": null
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 285,
+          "compass": "W",
+          "label": "West/Northwest-facing Sintra regional estimate",
+          "confidence": "heuristic",
+          "source": "region-heuristic",
+          "evidence": [
+            "Aggressive regional heuristic for sintra"
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-do-magoito mapped to surfline-praia-do-magoito",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.1km"
+        ]
+      }
+    },
+    {
       "id": "sao-joao-do-estoril",
-      "name": "São João do Estoril ",
+      "name": "São João do Estoril",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -3710,8 +3660,73 @@
       }
     },
     {
+      "id": "bafureira",
+      "name": "Bafureira | Estática",
+      "region": "cascais",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "proximity",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-sao-pedro-do-estoril",
+        "conditionsSourceSpotId": "surfline-sao-pedro-do-estoril",
+        "sourceSpotName": "São Pedro do Estoril",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Cascais Municipality",
+          "São Pedro do Estoril"
+        ],
+        "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
+        "nearbySpotNames": [
+          "Carcavelos",
+          "Parede",
+          "Praia do Guincho",
+          "Fonte da Telha"
+        ],
+        "breakType": [],
+        "abilityLevels": [],
+        "boardTypes": [],
+        "bottom": [],
+        "best": {
+          "season": null,
+          "size": null,
+          "tide": null,
+          "windDirection": null,
+          "swellDirection": null
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 185,
+          "compass": "S",
+          "label": "S-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-estoril",
+          "sourceDistanceKm": 2.3,
+          "evidence": [
+            "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from bafureira to surfline-estoril at 2.3km",
+            "Mapping confidence: proximity",
+            "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO bafureira mapped to surfline-sao-pedro-do-estoril",
+          "Mapping source generated-nearest with confidence proximity",
+          "Source spot distance 0.1km"
+        ]
+      }
+    },
+    {
       "id": "penichesupertubosestatica",
-      "name": "Peniche | Supertubos | Estática ",
+      "name": "Peniche | Supertubos | Estática",
       "region": "peniche",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -3803,73 +3818,8 @@
       }
     },
     {
-      "id": "bafureira",
-      "name": "Bafureira | Estática ",
-      "region": "cascais",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "proximity",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-sao-pedro-do-estoril",
-        "conditionsSourceSpotId": "surfline-sao-pedro-do-estoril",
-        "sourceSpotName": "São Pedro do Estoril",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Cascais Municipality",
-          "São Pedro do Estoril"
-        ],
-        "guideSummary": "Right-hand reef pointbreak on the Cascais line.",
-        "nearbySpotNames": [
-          "Carcavelos",
-          "Parede",
-          "Praia do Guincho",
-          "Fonte da Telha"
-        ],
-        "breakType": [],
-        "abilityLevels": [],
-        "boardTypes": [],
-        "bottom": [],
-        "best": {
-          "season": null,
-          "size": null,
-          "tide": null,
-          "windDirection": null,
-          "swellDirection": null
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 185,
-          "compass": "S",
-          "label": "S-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-estoril",
-          "sourceDistanceKm": 2.3,
-          "evidence": [
-            "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from bafureira to surfline-estoril at 2.3km",
-            "Mapping confidence: proximity",
-            "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO bafureira mapped to surfline-sao-pedro-do-estoril",
-          "Mapping source generated-nearest with confidence proximity",
-          "Source spot distance 0.1km"
-        ]
-      }
-    },
-    {
       "id": "vila-nova-de-milfontes-franquia",
-      "name": "V.N.Milfontes | Franquia ",
+      "name": "V.N.Milfontes | Franquia",
       "region": "alentejo",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -3929,7 +3879,7 @@
     },
     {
       "id": "nazare-porto-de-abrigo",
-      "name": "Nazaré | Porto de Abrigo ",
+      "name": "Nazaré | Porto de Abrigo",
       "region": "nazare",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4026,7 +3976,7 @@
     },
     {
       "id": "peniche-lagide-estatica",
-      "name": "Peniche | Lagide | Estática ",
+      "name": "Peniche | Lagide | Estática",
       "region": "peniche",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4222,7 +4172,7 @@
     },
     {
       "id": "ribeira-dilhas-estatica",
-      "name": "Ribeira D´Ilhas | Estática ",
+      "name": "Ribeira D´Ilhas | Estática",
       "region": "mafra",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4422,7 +4372,7 @@
     },
     {
       "id": "nazare-forte-sao-miguel-arcanjo-panoramica",
-      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica ",
+      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica",
       "region": "nazare",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4519,7 +4469,7 @@
     },
     {
       "id": "praia-do-guincho-estatica",
-      "name": "Praia do Guincho | Estática ",
+      "name": "Praia do Guincho | Estática",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4617,7 +4567,7 @@
     },
     {
       "id": "sao-pedro-do-estoril-bico-estatica",
-      "name": "São Pedro do Estoril | Bico Estática ",
+      "name": "São Pedro do Estoril | Bico Estática",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4682,7 +4632,7 @@
     },
     {
       "id": "paco-de-arcos-estatica",
-      "name": "Paço de Arcos | Estática ",
+      "name": "Paço de Arcos | Estática",
       "region": "oeiras",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4749,8 +4699,106 @@
       }
     },
     {
+      "id": "praia-da-adraga",
+      "name": "Praia da Adraga",
+      "region": "sintra",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-praia-grande",
+        "conditionsSourceSpotId": "surfline-praia-da-adraga",
+        "sourceSpotName": "Praia Grande",
+        "sourceDistanceKm": 1.5,
+        "sourceUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62",
+        "breadcrumb": [
+          "Portugal",
+          "Lisbon",
+          "Sintra Municipality",
+          "Colares"
+        ],
+        "guideSummary": "Low to mid tide is best, with peaks along the beach, high tide can be heavy with sections of shore dump. Line-ups will be busy when good, but there's room to spread out and Praia Pequena - an extension of the beach to the north - often holds quieter waves. Best in an easterly wind as it is exposed and still afternoons can often see localised onshores.",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "FUNBOARD",
+          "LONGBOARD",
+          "FISH",
+          "BODYBOARD"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Spring"
+          ],
+          "size": [
+            "2-8"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE"
+          ],
+          "swellDirection": [
+            "W",
+            "WNW",
+            "NW",
+            "NNW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 280,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-praia-grande",
+          "sourceDistanceKm": 1.5,
+          "evidence": [
+            "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from praia-da-adraga to surfline-praia-grande at 1.5km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO praia-da-adraga mapped to surfline-praia-grande",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 1.5km",
+          "Surfline coast exposure 280"
+        ]
+      }
+    },
+    {
       "id": "santo-amaro-estatica",
-      "name": "Santo Amaro | Estática ",
+      "name": "Santo Amaro | Estática",
       "region": "oeiras",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -4917,7 +4965,7 @@
     },
     {
       "id": "carcavelos-calhau-estatica",
-      "name": "Carcavelos | Calhau | Estática ",
+      "name": "Carcavelos | Calhau | Estática",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -5015,62 +5063,8 @@
       }
     },
     {
-      "id": "praia-do-magoito",
-      "name": "Praia do Magoito",
-      "region": "sintra",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-do-magoito",
-        "conditionsSourceSpotId": "surfline-praia-do-magoito",
-        "sourceSpotName": "Praia do Magoito",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-do-magoito/640b9d23e920304216e1ad8e",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Sintra Municipality",
-          "Magoito"
-        ],
-        "guideSummary": "",
-        "nearbySpotNames": [],
-        "breakType": [],
-        "abilityLevels": [],
-        "boardTypes": [],
-        "bottom": [],
-        "best": {
-          "season": null,
-          "size": null,
-          "tide": null,
-          "windDirection": null,
-          "swellDirection": null
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 285,
-          "compass": "W",
-          "label": "West/Northwest-facing Sintra regional estimate",
-          "confidence": "heuristic",
-          "source": "region-heuristic",
-          "evidence": [
-            "Aggressive regional heuristic for sintra"
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-do-magoito mapped to surfline-praia-do-magoito",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.1km"
-        ]
-      }
-    },
-    {
       "id": "praia-de-sao-torpes-estatica",
-      "name": "São Torpes | Estática ",
+      "name": "São Torpes | Estática",
       "region": "alentejo",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -5130,7 +5124,7 @@
     },
     {
       "id": "parede-estatica",
-      "name": "Parede | Estática ",
+      "name": "Parede | Estática",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -5194,8 +5188,105 @@
       }
     },
     {
+      "id": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
+      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica Norte",
+      "region": "nazare",
+      "surfMetadata": {
+        "source": "surfline-metadata",
+        "confidence": "name",
+        "reviewStatus": "generated",
+        "sourceSpotId": "surfline-nazare",
+        "conditionsSourceSpotId": "surfline-nazare",
+        "sourceSpotName": "Nazaré",
+        "sourceDistanceKm": 0.1,
+        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
+        "breadcrumb": [
+          "Portugal",
+          "Leiria",
+          "Nazaré Municipality",
+          "Nazaré"
+        ],
+        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
+        "nearbySpotNames": [],
+        "breakType": [
+          "Rights",
+          "Lefts",
+          "Beach_Break"
+        ],
+        "abilityLevels": [
+          "ADVANCED"
+        ],
+        "boardTypes": [
+          "SHORTBOARD",
+          "BODYBOARD",
+          "GUN",
+          "TOW"
+        ],
+        "bottom": [
+          "Sand"
+        ],
+        "best": {
+          "season": [
+            "Autumn",
+            "Winter"
+          ],
+          "size": [
+            "4-12"
+          ],
+          "tide": [
+            "Low",
+            "Medium_Low",
+            "Medium",
+            "Medium_High",
+            "High"
+          ],
+          "windDirection": [
+            "ENE",
+            "E",
+            "ESE",
+            "SE",
+            "SSE"
+          ],
+          "swellDirection": [
+            "SW",
+            "WSW",
+            "W",
+            "WNW",
+            "NW"
+          ]
+        },
+        "crowdFactor": null,
+        "localVibe": null,
+        "shoulderBurn": null,
+        "hazards": null,
+        "coastExposure": {
+          "bearing": 270,
+          "compass": "W",
+          "label": "W-facing Surfline-derived exposure",
+          "confidence": "spot",
+          "source": "surfline-metadata",
+          "sourceSpotId": "surfline-nazare",
+          "sourceDistanceKm": 0.1,
+          "evidence": [
+            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+            "Provider source: surfline-offshoreDirection",
+            "Matched from nazare-forte-sao-miguel-arcanjo-panoramica-1 to surfline-nazare at 0.1km",
+            "Mapping confidence: name",
+            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+          ],
+          "reviewStatus": "generated"
+        },
+        "evidence": [
+          "MEO nazare-forte-sao-miguel-arcanjo-panoramica-1 mapped to surfline-nazare",
+          "Mapping source generated-nearest with confidence name",
+          "Source spot distance 0.1km",
+          "Surfline coast exposure 270"
+        ]
+      }
+    },
+    {
       "id": "praia-das-moitas-estatica",
-      "name": "Praia das Moitas | Estática ",
+      "name": "Praia das Moitas | Estática",
       "region": "cascais",
       "surfMetadata": {
         "source": "surfline-metadata",
@@ -5369,201 +5460,6 @@
           "Mapping source generated-nearest with confidence proximity",
           "Source spot distance 0.6km",
           "Surfline coast exposure 260"
-        ]
-      }
-    },
-    {
-      "id": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
-      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica Norte",
-      "region": "nazare",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-nazare",
-        "conditionsSourceSpotId": "surfline-nazare",
-        "sourceSpotName": "Nazaré",
-        "sourceDistanceKm": 0.1,
-        "sourceUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8",
-        "breadcrumb": [
-          "Portugal",
-          "Leiria",
-          "Nazaré Municipality",
-          "Nazaré"
-        ],
-        "guideSummary": "While surfed sporadically earlier, the world's biggest, baddest, most oversized wedge, Nazaré took center stage in the big wave world after Garrett MacNamara was invited there to \"surf the world's biggest wave\" in 2011. Since then, Nazaré has become a household name, one of Portugal's main coastal tourist attractions, a (former) stop on the Big Wave World Tour, and ground zero for big wave tow surfing. On the days when the offshore canyon isn't focusing huge swells into 80-foot peaks, Nazaré's inside sand bar produces heavy, hollow tubes in sizes that mortals can appreciate (as long as those mortals are barrel-riding experts).\n<br><br>\n<strong>LINEUP TIPS:</strong>\n<a href=\"https://www.surfline.com/lp/surf-etiquette/\" rel=\"noopener\" target=\"_blank\">Etiquette</a> | <a href=\"https://www.surfline.com/surf-news/surf-safety-basics/222989/\" rel=\"noopener\" target=\"_blank\">Surf Safety Basics</a>",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "BODYBOARD",
-          "GUN",
-          "TOW"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Winter"
-          ],
-          "size": [
-            "4-12"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE",
-            "SSE"
-          ],
-          "swellDirection": [
-            "SW",
-            "WSW",
-            "W",
-            "WNW",
-            "NW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 270,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-nazare",
-          "sourceDistanceKm": 0.1,
-          "evidence": [
-            "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from nazare-forte-sao-miguel-arcanjo-panoramica-1 to surfline-nazare at 0.1km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO nazare-forte-sao-miguel-arcanjo-panoramica-1 mapped to surfline-nazare",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 0.1km",
-          "Surfline coast exposure 270"
-        ]
-      }
-    },
-    {
-      "id": "praia-da-adraga",
-      "name": "Praia da Adraga",
-      "region": "sintra",
-      "surfMetadata": {
-        "source": "surfline-metadata",
-        "confidence": "name",
-        "reviewStatus": "generated",
-        "sourceSpotId": "surfline-praia-grande",
-        "conditionsSourceSpotId": "surfline-praia-da-adraga",
-        "sourceSpotName": "Praia Grande",
-        "sourceDistanceKm": 1.5,
-        "sourceUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62",
-        "breadcrumb": [
-          "Portugal",
-          "Lisbon",
-          "Sintra Municipality",
-          "Colares"
-        ],
-        "guideSummary": "Low to mid tide is best, with peaks along the beach, high tide can be heavy with sections of shore dump. Line-ups will be busy when good, but there's room to spread out and Praia Pequena - an extension of the beach to the north - often holds quieter waves. Best in an easterly wind as it is exposed and still afternoons can often see localised onshores.",
-        "nearbySpotNames": [],
-        "breakType": [
-          "Rights",
-          "Lefts",
-          "Beach_Break"
-        ],
-        "abilityLevels": [
-          "BEGINNER",
-          "INTERMEDIATE",
-          "ADVANCED"
-        ],
-        "boardTypes": [
-          "SHORTBOARD",
-          "FUNBOARD",
-          "LONGBOARD",
-          "FISH",
-          "BODYBOARD"
-        ],
-        "bottom": [
-          "Sand"
-        ],
-        "best": {
-          "season": [
-            "Autumn",
-            "Spring"
-          ],
-          "size": [
-            "2-8"
-          ],
-          "tide": [
-            "Low",
-            "Medium_Low",
-            "Medium",
-            "Medium_High",
-            "High"
-          ],
-          "windDirection": [
-            "ENE",
-            "E",
-            "ESE",
-            "SE"
-          ],
-          "swellDirection": [
-            "W",
-            "WNW",
-            "NW",
-            "NNW"
-          ]
-        },
-        "crowdFactor": null,
-        "localVibe": null,
-        "shoulderBurn": null,
-        "hazards": null,
-        "coastExposure": {
-          "bearing": 280,
-          "compass": "W",
-          "label": "W-facing Surfline-derived exposure",
-          "confidence": "spot",
-          "source": "surfline-metadata",
-          "sourceSpotId": "surfline-praia-grande",
-          "sourceDistanceKm": 1.5,
-          "evidence": [
-            "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
-            "Provider source: surfline-offshoreDirection",
-            "Matched from praia-da-adraga to surfline-praia-grande at 1.5km",
-            "Mapping confidence: name",
-            "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
-          ],
-          "reviewStatus": "generated"
-        },
-        "evidence": [
-          "MEO praia-da-adraga mapped to surfline-praia-grande",
-          "Mapping source generated-nearest with confidence name",
-          "Source spot distance 1.5km",
-          "Surfline coast exposure 280"
         ]
       }
     }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-19T04:54:24.738Z",
+  "generatedAt": "2026-08-19T08:34:48.963Z",
   "provider": "instituto-hidrografico-geomar",
   "source": {
     "name": "Instituto Hidrografico Geomar",
@@ -14,6 +14,18 @@
     "endDate": "2026-08-23T00:00:00.000Z"
   },
   "cameraStations": {
+    "acores-ribeira-grande-praia-do-monte-verde": {
+      "cameraId": "acores-ribeira-grande-praia-do-monte-verde",
+      "cameraName": "Praia do Monte Verde",
+      "cameraRegion": "acores",
+      "cameraLat": 37.82283518670187,
+      "cameraLon": -25.525591721374866,
+      "portId": "211",
+      "portName": "Ponta Delgada (Ilha de S. Miguel)",
+      "gaugeLat": 37.741,
+      "gaugeLon": -25.668,
+      "source": "manual-geomar-port-fallback"
+    },
     "albarquel": {
       "cameraId": "albarquel",
       "cameraName": "Albarquel",
@@ -28,7 +40,7 @@
     },
     "almograve": {
       "cameraId": "almograve",
-      "cameraName": "Almograve ",
+      "cameraName": "Almograve",
       "cameraRegion": "alentejo",
       "cameraLat": 37.925362,
       "cameraLon": -8.806546,
@@ -40,7 +52,7 @@
     },
     "alvor": {
       "cameraId": "alvor",
-      "cameraName": "Alvor ",
+      "cameraName": "Alvor",
       "cameraRegion": "algarve",
       "cameraLat": 37.12348,
       "cameraLon": -8.597978,
@@ -66,7 +78,7 @@
     },
     "apulia": {
       "cameraId": "apulia",
-      "cameraName": "Apúlia ",
+      "cameraName": "Apúlia",
       "cameraRegion": "norte",
       "cameraLat": 41.48347517513001,
       "cameraLon": -8.77799218916014,
@@ -79,7 +91,7 @@
     },
     "areia-branca": {
       "cameraId": "areia-branca",
-      "cameraName": "Areia Branca ",
+      "cameraName": "Areia Branca",
       "cameraRegion": "costa-oeste",
       "cameraLat": 39.266173751847916,
       "cameraLon": -9.336013263085958,
@@ -118,7 +130,7 @@
     },
     "bafureira": {
       "cameraId": "bafureira",
-      "cameraName": "Bafureira | Estática ",
+      "cameraName": "Bafureira | Estática",
       "cameraRegion": "cascais",
       "cameraLat": 38.693546,
       "cameraLon": -9.368644,
@@ -130,7 +142,7 @@
     },
     "boardriders-skatepark": {
       "cameraId": "boardriders-skatepark",
-      "cameraName": "Boardriders | Skatepark ",
+      "cameraName": "Boardriders | Skatepark",
       "cameraRegion": "mafra",
       "cameraLat": 38.975700661984206,
       "cameraLon": -9.419992380928624,
@@ -181,7 +193,7 @@
     },
     "caxinas-macaco-17": {
       "cameraId": "caxinas-macaco-17",
-      "cameraName": "Vila do Conde | Caxinas ",
+      "cameraName": "Vila do Conde | Caxinas",
       "cameraRegion": "norte",
       "cameraLat": 41.361131046226554,
       "cameraLon": -8.758007730063435,
@@ -244,7 +256,7 @@
     },
     "costa-da-caparica-nova-praia": {
       "cameraId": "costa-da-caparica-nova-praia",
-      "cameraName": "Costa de Caparica | Nova Praia ",
+      "cameraName": "Costa de Caparica | Nova Praia",
       "cameraRegion": "almada",
       "cameraLat": 38.63388911412906,
       "cameraLon": -9.231059752066729,
@@ -304,7 +316,7 @@
     },
     "costa-de-caparica-praia-do-norte": {
       "cameraId": "costa-de-caparica-praia-do-norte",
-      "cameraName": "Costa de Caparica | Praia do Norte ",
+      "cameraName": "Costa de Caparica | Praia do Norte",
       "cameraRegion": "almada",
       "cameraLat": 38.65085270363752,
       "cameraLon": -9.245797444916905,
@@ -316,7 +328,7 @@
     },
     "costa-de-caparica-sao-joao-cova-do-vapor": {
       "cameraId": "costa-de-caparica-sao-joao-cova-do-vapor",
-      "cameraName": "Costa de Caparica | São João | Cova do Vapor ",
+      "cameraName": "Costa de Caparica | São João | Cova do Vapor",
       "cameraRegion": "almada",
       "cameraLat": 38.656224,
       "cameraLon": -9.249357,
@@ -328,7 +340,7 @@
     },
     "costa-nova": {
       "cameraId": "costa-nova",
-      "cameraName": "Costa Nova ",
+      "cameraName": "Costa Nova",
       "cameraRegion": "centro",
       "cameraLat": 40.61959,
       "cameraLon": -8.752463,
@@ -389,9 +401,9 @@
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 25.6
     },
-    "espinho-silvade": {
-      "cameraId": "espinho-silvade",
-      "cameraName": "Espinho | Silvade ",
+    "espinho-silvalde": {
+      "cameraId": "espinho-silvalde",
+      "cameraName": "Espinho | Silvalde",
       "cameraRegion": "norte",
       "cameraLat": 40.99806714090027,
       "cameraLon": -8.647296248547374,
@@ -428,9 +440,21 @@
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 16.3
     },
+    "faja-da-areia": {
+      "cameraId": "faja-da-areia",
+      "cameraName": "Madeira | Fajã da Areia",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.811236679995034,
+      "cameraLon": -17.038668632218577,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
     "faro": {
       "cameraId": "faro",
-      "cameraName": "Faro | Praia de Faro Este ",
+      "cameraName": "Faro | Praia de Faro Este",
       "cameraRegion": "algarve",
       "cameraLat": 37.004321883933855,
       "cameraLon": -7.989531032510936,
@@ -502,7 +526,7 @@
     },
     "figueira-da-foz-cabedelo-buarcos": {
       "cameraId": "figueira-da-foz-cabedelo-buarcos",
-      "cameraName": "Figueira da Foz  | Panorâmica ",
+      "cameraName": "Figueira da Foz | Panorâmica",
       "cameraRegion": "centro",
       "cameraLat": 40.150655,
       "cameraLon": -8.866424,
@@ -550,7 +574,7 @@
     },
     "foz-do-arelho": {
       "cameraId": "foz-do-arelho",
-      "cameraName": "Foz do Arelho ",
+      "cameraName": "Foz do Arelho",
       "cameraRegion": "costa-oeste",
       "cameraLat": 39.43279118481286,
       "cameraLon": -9.230141957402639,
@@ -576,7 +600,7 @@
     },
     "furadouro": {
       "cameraId": "furadouro",
-      "cameraName": "Furadouro ",
+      "cameraName": "Furadouro",
       "cameraRegion": "centro",
       "cameraLat": 40.873808,
       "cameraLon": -8.676849,
@@ -601,7 +625,7 @@
     },
     "lagide-e-baia": {
       "cameraId": "lagide-e-baia",
-      "cameraName": "Peniche | Lagide | Cantinho da baía ",
+      "cameraName": "Peniche | Lagide | Cantinho da baía",
       "cameraRegion": "peniche",
       "cameraLat": 39.372226,
       "cameraLon": -9.337493,
@@ -613,7 +637,7 @@
     },
     "lagoa-de-albufeira": {
       "cameraId": "lagoa-de-albufeira",
-      "cameraName": "Lagoa de Albufeira ",
+      "cameraName": "Lagoa de Albufeira",
       "cameraRegion": "sesimbra",
       "cameraLat": 38.506884,
       "cameraLon": -9.180031,
@@ -625,7 +649,7 @@
     },
     "lagoa-de-santo-andre": {
       "cameraId": "lagoa-de-santo-andre",
-      "cameraName": "Lagoa de Santo André ",
+      "cameraName": "Lagoa de Santo André",
       "cameraRegion": "alentejo",
       "cameraLat": 38.111817945479885,
       "cameraLon": -8.799849194414085,
@@ -660,6 +684,42 @@
       "gaugeLon": -8.703056,
       "source": "geomar-getTidesByLocation"
     },
+    "madeira-jardim-do-mar": {
+      "cameraId": "madeira-jardim-do-mar",
+      "cameraName": "Madeira | Jardim do Mar",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.738595,
+      "cameraLon": -17.212211,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
+    "madeira-maiata": {
+      "cameraId": "madeira-maiata",
+      "cameraName": "Madeira | Praia da Maiata",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.7677076239895,
+      "cameraLon": -16.820868595749243,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
+    "madeira-paul-do-mar": {
+      "cameraId": "madeira-paul-do-mar",
+      "cameraName": "Madeira | Paul do Mar",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.738595,
+      "cameraLon": -17.212211,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
     "matadouro": {
       "cameraId": "matadouro",
       "cameraName": "Matadouro",
@@ -672,6 +732,18 @@
       "gaugeLon": -9.4166667,
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 31.6
+    },
+    "meia-praia": {
+      "cameraId": "meia-praia",
+      "cameraName": "Meia Praia",
+      "cameraRegion": "algarve",
+      "cameraLat": 37.111224,
+      "cameraLon": -8.660683,
+      "portId": "18",
+      "portName": "Lagos",
+      "gaugeLat": 37.0966667,
+      "gaugeLon": -8.665000000000001,
+      "source": "geomar-getTidesByLocation"
     },
     "monte-clerigo": {
       "cameraId": "monte-clerigo",
@@ -688,7 +760,7 @@
     },
     "murtinheira": {
       "cameraId": "murtinheira",
-      "cameraName": "Murtinheira ",
+      "cameraName": "Murtinheira",
       "cameraRegion": "centro",
       "cameraLat": 40.20844424252885,
       "cameraLon": -8.89708400741345,
@@ -701,7 +773,7 @@
     },
     "nazare-forte-sao-miguel-arcanjo": {
       "cameraId": "nazare-forte-sao-miguel-arcanjo",
-      "cameraName": "Nazaré | Forte S. Miguel Arcanjo ",
+      "cameraName": "Nazaré | Forte S. Miguel Arcanjo",
       "cameraRegion": "nazare",
       "cameraLat": 39.604673202715006,
       "cameraLon": -9.084876617739758,
@@ -725,9 +797,35 @@
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 37.6
     },
+    "nazare-forte-sao-miguel-arcanjo-panoramica": {
+      "cameraId": "nazare-forte-sao-miguel-arcanjo-panoramica",
+      "cameraName": "Nazaré | Forte S. Miguel Arcanjo Panorâmica",
+      "cameraRegion": "nazare",
+      "cameraLat": 39.604673202715006,
+      "cameraLon": -9.084876617739758,
+      "portId": "29",
+      "portName": "Peniche",
+      "gaugeLat": 39.355,
+      "gaugeLon": -9.38,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 37.6
+    },
+    "nazare-forte-sao-miguel-arcanjo-panoramica-1": {
+      "cameraId": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
+      "cameraName": "Nazaré | Forte S. Miguel Arcanjo Panorâmica Norte",
+      "cameraRegion": "nazare",
+      "cameraLat": 39.604673202715006,
+      "cameraLon": -9.084876617739758,
+      "portId": "29",
+      "portName": "Peniche",
+      "gaugeLat": 39.355,
+      "gaugeLon": -9.38,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 37.6
+    },
     "nazare-porto-de-abrigo": {
       "cameraId": "nazare-porto-de-abrigo",
-      "cameraName": "Nazaré | Porto de Abrigo ",
+      "cameraName": "Nazaré | Porto de Abrigo",
       "cameraRegion": "nazare",
       "cameraLat": 39.580914,
       "cameraLon": -9.073564,
@@ -753,7 +851,7 @@
     },
     "ofir": {
       "cameraId": "ofir",
-      "cameraName": "Ofir ",
+      "cameraName": "Ofir",
       "cameraRegion": "norte",
       "cameraLat": 41.517102,
       "cameraLon": -8.787754,
@@ -778,7 +876,7 @@
     },
     "parede": {
       "cameraId": "parede",
-      "cameraName": "Parede ",
+      "cameraName": "Parede",
       "cameraRegion": "cascais",
       "cameraLat": 38.68578,
       "cameraLon": -9.353703,
@@ -800,6 +898,19 @@
       "gaugeLon": -9.38,
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 47.8
+    },
+    "pedra-do-ouro": {
+      "cameraId": "pedra-do-ouro",
+      "cameraName": "Pedra do Ouro",
+      "cameraRegion": "costa-oeste",
+      "cameraLat": 39.72610832405013,
+      "cameraLon": -9.046540076009885,
+      "portId": "73",
+      "portName": "Figueira da Foz - Cais dos Serviços",
+      "gaugeLat": 40.14703,
+      "gaugeLon": -8.853249,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 49.6
     },
     "peniche-baleal-panoramica": {
       "cameraId": "peniche-baleal-panoramica",
@@ -825,6 +936,18 @@
       "gaugeLon": -9.38,
       "source": "manual-geomar-port-fallback"
     },
+    "ponta-pequena": {
+      "cameraId": "ponta-pequena",
+      "cameraName": "Madeira | Ponta Pequena",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.738595,
+      "cameraLon": -17.212211,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
     "portinho-da-arrabida": {
       "cameraId": "portinho-da-arrabida",
       "cameraName": "Portinho da Arrábida",
@@ -837,21 +960,9 @@
       "gaugeLon": -8.902,
       "source": "manual-geomar-port-fallback"
     },
-    "porto-carneiro": {
-      "cameraId": "porto-carneiro",
-      "cameraName": "Porto | Carneiro ",
-      "cameraRegion": "norte",
-      "cameraLat": 41.14836390439139,
-      "cameraLon": -8.675760752041615,
-      "portId": "12",
-      "portName": "Leixões",
-      "gaugeLat": 41.18605,
-      "gaugeLon": -8.703056,
-      "source": "geomar-getTidesByLocation"
-    },
     "porto-homem-do-leme": {
       "cameraId": "porto-homem-do-leme",
-      "cameraName": "Porto | Homem do Leme ",
+      "cameraName": "Porto | Homem do Leme",
       "cameraRegion": "norte",
       "cameraLat": 41.160763372075,
       "cameraLon": -8.685514002164362,
@@ -860,6 +971,18 @@
       "gaugeLat": 41.18605,
       "gaugeLon": -8.703056,
       "source": "geomar-getTidesByLocation"
+    },
+    "porto-santo": {
+      "cameraId": "porto-santo",
+      "cameraName": "Porto Santo",
+      "cameraRegion": "madeira",
+      "cameraLat": 33.055902,
+      "cameraLon": -16.337417,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
     },
     "praia-canide-norte-sul": {
       "cameraId": "praia-canide-norte-sul",
@@ -888,7 +1011,7 @@
     },
     "praia-da-alagoa": {
       "cameraId": "praia-da-alagoa",
-      "cameraName": "Alagoa | Altura ",
+      "cameraName": "Alagoa | Altura",
       "cameraRegion": "algarve",
       "cameraLat": 37.169909,
       "cameraLon": -7.496506,
@@ -901,7 +1024,7 @@
     },
     "praia-da-amoreira": {
       "cameraId": "praia-da-amoreira",
-      "cameraName": "Praia da Amoreira ",
+      "cameraName": "Praia da Amoreira",
       "cameraRegion": "costa-vicentina",
       "cameraLat": 37.351113,
       "cameraLon": -8.8448,
@@ -926,7 +1049,7 @@
     },
     "praia-da-conceicao-e-duquesa": {
       "cameraId": "praia-da-conceicao-e-duquesa",
-      "cameraName": "Praia da Conceição e Duquesa ",
+      "cameraName": "Praia da Conceição e Duquesa",
       "cameraRegion": "cascais",
       "cameraLat": 38.700644,
       "cameraLon": -9.415732,
@@ -950,7 +1073,7 @@
     },
     "praia-da-falesia": {
       "cameraId": "praia-da-falesia",
-      "cameraName": "Praia da Falésia ",
+      "cameraName": "Praia da Falésia",
       "cameraRegion": "algarve",
       "cameraLat": 37.074253,
       "cameraLon": -8.121095,
@@ -1038,7 +1161,7 @@
     },
     "praia-da-tocha": {
       "cameraId": "praia-da-tocha",
-      "cameraName": "Praia da Tocha ",
+      "cameraName": "Praia da Tocha",
       "cameraRegion": "centro",
       "cameraLat": 40.33032,
       "cameraLon": -8.843663,
@@ -1077,7 +1200,7 @@
     },
     "praia-das-avencas": {
       "cameraId": "praia-das-avencas",
-      "cameraName": "Praia das Avencas  ",
+      "cameraName": "Praia das Avencas",
       "cameraRegion": "cascais",
       "cameraLat": 38.688471,
       "cameraLon": -9.36045,
@@ -1089,7 +1212,7 @@
     },
     "praia-das-bicas": {
       "cameraId": "praia-das-bicas",
-      "cameraName": "Praia das Bicas ",
+      "cameraName": "Praia das Bicas",
       "cameraRegion": "sesimbra",
       "cameraLat": 38.463298,
       "cameraLon": -9.19168,
@@ -1113,7 +1236,7 @@
     },
     "praia-das-rocas": {
       "cameraId": "praia-das-rocas",
-      "cameraName": "Praia das Rocas ",
+      "cameraName": "Praia das Rocas",
       "cameraRegion": "fluviaispiscinas",
       "cameraLat": 40.004561,
       "cameraLon": -8.207936,
@@ -1189,7 +1312,7 @@
     },
     "praia-de-sao-jacinto-barra": {
       "cameraId": "praia-de-sao-jacinto-barra",
-      "cameraName": "Praia de São Jacinto | Barra ",
+      "cameraName": "Praia de São Jacinto | Barra",
       "cameraRegion": "centro",
       "cameraLat": 40.642973412826805,
       "cameraLon": -8.74787408167091,
@@ -1275,7 +1398,7 @@
     },
     "praia-do-meco": {
       "cameraId": "praia-do-meco",
-      "cameraName": "Praia do Meco ",
+      "cameraName": "Praia do Meco",
       "cameraRegion": "sesimbra",
       "cameraLat": 38.489278,
       "cameraLon": -9.182096,
@@ -1300,7 +1423,7 @@
     },
     "praia-do-norte-canhao-nazare": {
       "cameraId": "praia-do-norte-canhao-nazare",
-      "cameraName": "Nazaré | Praia do Norte ",
+      "cameraName": "Nazaré | Praia do Norte",
       "cameraRegion": "nazare",
       "cameraLat": 39.604673202715006,
       "cameraLon": -9.084876617739758,
@@ -1326,7 +1449,7 @@
     },
     "praia-do-peixe-baia-de-cascais": {
       "cameraId": "praia-do-peixe-baia-de-cascais",
-      "cameraName": "Baía de Cascais ",
+      "cameraName": "Baía de Cascais",
       "cameraRegion": "cascais",
       "cameraLat": 38.697201,
       "cameraLon": -9.419718,
@@ -1400,7 +1523,7 @@
     },
     "praia-pequena": {
       "cameraId": "praia-pequena",
-      "cameraName": "Praia Pequena ",
+      "cameraName": "Praia Pequena",
       "cameraRegion": "sintra",
       "cameraLat": 38.820187490043715,
       "cameraLon": -9.474039205989435,
@@ -1450,7 +1573,7 @@
     },
     "praia-verde": {
       "cameraId": "praia-verde",
-      "cameraName": "Praia Verde | Castro Marim ",
+      "cameraName": "Praia Verde | Castro Marim",
       "cameraRegion": "algarve",
       "cameraLat": 37.173728,
       "cameraLon": -7.480874,
@@ -1502,7 +1625,7 @@
     },
     "santa-cruz-praia-azul": {
       "cameraId": "santa-cruz-praia-azul",
-      "cameraName": " Santa Cruz | Praia Azul",
+      "cameraName": "Santa Cruz | Praia Azul",
       "cameraRegion": "costa-oeste",
       "cameraLat": 39.112567,
       "cameraLon": -9.393881,
@@ -1515,7 +1638,7 @@
     },
     "santo-amaro": {
       "cameraId": "santo-amaro",
-      "cameraName": "Santo Amaro ",
+      "cameraName": "Santo Amaro",
       "cameraRegion": "oeiras",
       "cameraLat": 38.684956,
       "cameraLon": -9.311402,
@@ -1527,7 +1650,7 @@
     },
     "sao-juliao": {
       "cameraId": "sao-juliao",
-      "cameraName": "São Julião ",
+      "cameraName": "São Julião",
       "cameraRegion": "mafra",
       "cameraLat": 38.932163453498475,
       "cameraLon": -9.42009175212114,
@@ -1539,7 +1662,7 @@
     },
     "sao-martinho-do-porto": {
       "cameraId": "sao-martinho-do-porto",
-      "cameraName": "São Martinho do Porto ",
+      "cameraName": "São Martinho do Porto",
       "cameraRegion": "costa-oeste",
       "cameraLat": 39.50406784086068,
       "cameraLon": -9.137642776351035,
@@ -1552,7 +1675,7 @@
     },
     "sao-pedro-de-moel": {
       "cameraId": "sao-pedro-de-moel",
-      "cameraName": "São Pedro de Moel ",
+      "cameraName": "São Pedro de Moel",
       "cameraRegion": "costa-oeste",
       "cameraLat": 39.75539274606013,
       "cameraLon": -9.03231195842556,
@@ -1575,6 +1698,18 @@
       "gaugeLon": -9.4166667,
       "source": "geomar-getTidesByLocation"
     },
+    "seixal": {
+      "cameraId": "seixal",
+      "cameraName": "Madeira | Seixal",
+      "cameraRegion": "madeira",
+      "cameraLat": 32.82217196806101,
+      "cameraLon": -17.103100860069002,
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "source": "manual-geomar-port-fallback"
+    },
     "senhora-da-rocha-praia-nova": {
       "cameraId": "senhora-da-rocha-praia-nova",
       "cameraName": "Senhora da Rocha e Praia Nova",
@@ -1588,21 +1723,22 @@
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 24.7
     },
-    "surfline-castelo": {
-      "cameraId": "surfline-castelo",
-      "cameraName": "Costa da Caparica | Costelo (Irmao)",
-      "cameraRegion": "almada",
-      "cameraLat": 38.6131034,
-      "cameraLon": -9.2161894,
-      "portId": "15",
-      "portName": "Cascais",
-      "gaugeLat": 38.6916667,
-      "gaugeLon": -9.4166667,
-      "source": "manual-geomar-port-fallback"
+    "ski-clube-quinta-grande": {
+      "cameraId": "ski-clube-quinta-grande",
+      "cameraName": "Ski Clube Quinta Grande",
+      "cameraRegion": "lagos-e-rios",
+      "cameraLat": 38.939126250946245,
+      "cameraLon": -8.523819815231425,
+      "portId": "20",
+      "portName": "Setúbal-Tróia",
+      "gaugeLat": 38.493,
+      "gaugeLon": -8.902,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 59.5
     },
     "tamariz": {
       "cameraId": "tamariz",
-      "cameraName": "Praia do Tamariz ",
+      "cameraName": "Praia do Tamariz",
       "cameraRegion": "cascais",
       "cameraLat": 38.702777,
       "cameraLon": -9.399036,
@@ -1624,6 +1760,32 @@
       "gaugeLon": -8.902,
       "source": "manual-geomar-port-fallback"
     },
+    "vagueira": {
+      "cameraId": "vagueira",
+      "cameraName": "Vagueira | Labrego",
+      "cameraRegion": "centro",
+      "cameraLat": 40.549322,
+      "cameraLon": -8.773478,
+      "portId": "13",
+      "portName": "Aveiro - Molhe Central da Barra de Aveiro",
+      "gaugeLat": 40.643888888888895,
+      "gaugeLon": -8.74944444444444,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 10.7
+    },
+    "vagueira-areao": {
+      "cameraId": "vagueira-areao",
+      "cameraName": "Vagueira | Areão",
+      "cameraRegion": "centro",
+      "cameraLat": 40.52109024938583,
+      "cameraLon": -8.78228195188481,
+      "portId": "13",
+      "portName": "Aveiro - Molhe Central da Barra de Aveiro",
+      "gaugeLat": 40.643888888888895,
+      "gaugeLon": -8.74944444444444,
+      "source": "nearest-geomar-gauge-fallback",
+      "fallbackDistanceKm": 13.9
+    },
     "vagueiracasablanca": {
       "cameraId": "vagueiracasablanca",
       "cameraName": "Vagueira | Casablanca",
@@ -1639,7 +1801,7 @@
     },
     "viana-do-castelo-cabedelo": {
       "cameraId": "viana-do-castelo-cabedelo",
-      "cameraName": "Viana do Castelo | Cabedelo ",
+      "cameraName": "Viana do Castelo | Cabedelo",
       "cameraRegion": "norte",
       "cameraLat": 41.67880826311497,
       "cameraLon": -8.832010044816927,
@@ -1651,7 +1813,7 @@
     },
     "viana-do-castelo-wakepark": {
       "cameraId": "viana-do-castelo-wakepark",
-      "cameraName": "Viana do Castelo | Wake Park ",
+      "cameraName": "Viana do Castelo | Wake Park",
       "cameraRegion": "lagos-e-rios",
       "cameraLat": 41.68315225283949,
       "cameraLon": -8.829248367549393,
@@ -1663,7 +1825,7 @@
     },
     "vila-nova-de-milfontes-farol": {
       "cameraId": "vila-nova-de-milfontes-farol",
-      "cameraName": "V.N.Milfontes | Farol ",
+      "cameraName": "V.N.Milfontes | Farol",
       "cameraRegion": "alentejo",
       "cameraLat": 37.71884498736173,
       "cameraLon": -8.790566068566706,
@@ -1676,7 +1838,7 @@
     },
     "vila-nova-de-milfontes-franquia": {
       "cameraId": "vila-nova-de-milfontes-franquia",
-      "cameraName": "V.N.Milfontes | Franquia ",
+      "cameraName": "V.N.Milfontes | Franquia",
       "cameraRegion": "alentejo",
       "cameraLat": 37.925362,
       "cameraLon": -8.806546,
@@ -1701,7 +1863,7 @@
     },
     "vila-praia-de-ancora": {
       "cameraId": "vila-praia-de-ancora",
-      "cameraName": "Vila Praia de Âncora ",
+      "cameraName": "Vila Praia de Âncora",
       "cameraRegion": "norte",
       "cameraLat": 41.811625,
       "cameraLon": -8.864792,
@@ -1748,10 +1910,9 @@
       "cameraIds": [
         "caxinas-macaco-17",
         "esmoriz",
-        "espinho-silvade",
+        "espinho-silvalde",
         "leca-da-palmeira",
         "leca-da-palmeira-panoraminca-aterro",
-        "porto-carneiro",
         "porto-homem-do-leme",
         "praia-canide-norte-sul",
         "praia-de-espinho",
@@ -1770,6 +1931,8 @@
         "praia-da-torreira",
         "praia-de-mira",
         "praia-de-sao-jacinto-barra",
+        "vagueira",
+        "vagueira-areao",
         "vagueiracasablanca"
       ]
     },
@@ -1815,7 +1978,6 @@
         "ribeira-dilhas",
         "sao-juliao",
         "sao-pedro-do-estoril",
-        "surfline-castelo",
         "tamariz"
       ]
     },
@@ -1833,6 +1995,7 @@
         "carvoeiro",
         "cordoama",
         "ferragudo",
+        "meia-praia",
         "monte-clerigo",
         "odeceixe",
         "praia-da-amoreira",
@@ -1875,6 +2038,7 @@
         "comporta",
         "portinho-da-arrabida",
         "praia-do-carvalhal",
+        "ski-clube-quinta-grande",
         "troia"
       ]
     },
@@ -1901,6 +2065,8 @@
         "lagide-e-baia",
         "nazare-forte-sao-miguel-arcanjo",
         "nazare-forte-sao-miguel-arcanjo-baia",
+        "nazare-forte-sao-miguel-arcanjo-panoramica",
+        "nazare-forte-sao-miguel-arcanjo-panoramica-1",
         "nazare-porto-de-abrigo",
         "paredes-da-vitoria",
         "peniche-baleal-panoramica",
@@ -1940,6 +2106,7 @@
         "figueira-da-foz-cabedelo-buarcos",
         "figueira-da-foz-tamargueira",
         "murtinheira",
+        "pedra-do-ouro",
         "praia-da-tocha",
         "praia-das-rocas",
         "praia-do-pedrogao",
@@ -1961,6 +2128,21 @@
         "vila-praia-de-ancora"
       ]
     },
+    "112": {
+      "portId": "112",
+      "portName": "Funchal",
+      "gaugeLat": 32.64,
+      "gaugeLon": -16.91,
+      "cameraIds": [
+        "faja-da-areia",
+        "madeira-jardim-do-mar",
+        "madeira-maiata",
+        "madeira-paul-do-mar",
+        "ponta-pequena",
+        "porto-santo",
+        "seixal"
+      ]
+    },
     "152": {
       "portId": "152",
       "portName": "Lisboa - Alcântara",
@@ -1972,6 +2154,15 @@
         "farol-do-bugio-sul",
         "paco-de-arcos",
         "santo-amaro"
+      ]
+    },
+    "211": {
+      "portId": "211",
+      "portName": "Ponta Delgada (Ilha de S. Miguel)",
+      "gaugeLat": 37.741,
+      "gaugeLon": -25.668,
+      "cameraIds": [
+        "acores-ribeira-grande-praia-do-monte-verde"
       ]
     }
   },
@@ -2438,6 +2629,48 @@
         "timeZone": "Europe/Lisbon"
       }
     },
+    "112": {
+      "2026-08-18": {
+        "firstLightUtc": "2026-08-18T06:07:05.979Z",
+        "lastLightUtc": "2026-08-18T20:15:24.693Z",
+        "sunriseUtc": "2026-08-18T06:32:55.086Z",
+        "sunsetUtc": "2026-08-18T19:49:37.310Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-19": {
+        "firstLightUtc": "2026-08-19T06:07:49.507Z",
+        "lastLightUtc": "2026-08-19T20:14:13.979Z",
+        "sunriseUtc": "2026-08-19T06:33:35.181Z",
+        "sunsetUtc": "2026-08-19T19:48:30.001Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-20": {
+        "firstLightUtc": "2026-08-20T06:08:32.867Z",
+        "lastLightUtc": "2026-08-20T20:13:02.468Z",
+        "sunriseUtc": "2026-08-20T06:34:15.164Z",
+        "sunsetUtc": "2026-08-20T19:47:21.837Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-21": {
+        "firstLightUtc": "2026-08-21T06:09:16.053Z",
+        "lastLightUtc": "2026-08-21T20:11:50.190Z",
+        "sunriseUtc": "2026-08-21T06:34:55.032Z",
+        "sunsetUtc": "2026-08-21T19:46:12.846Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-22": {
+        "firstLightUtc": "2026-08-22T06:09:59.060Z",
+        "lastLightUtc": "2026-08-22T20:10:37.175Z",
+        "sunriseUtc": "2026-08-22T06:35:34.784Z",
+        "sunsetUtc": "2026-08-22T19:45:03.055Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      }
+    },
     "152": {
       "2026-08-18": {
         "firstLightUtc": "2026-08-18T05:24:37.526Z",
@@ -2476,6 +2709,48 @@
         "lastLightUtc": "2026-08-22T19:50:00.059Z",
         "sunriseUtc": "2026-08-22T05:56:23.874Z",
         "sunsetUtc": "2026-08-22T19:22:09.110Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      }
+    },
+    "211": {
+      "2026-08-18": {
+        "firstLightUtc": "2026-08-18T06:32:39.702Z",
+        "lastLightUtc": "2026-08-18T20:59:47.968Z",
+        "sunriseUtc": "2026-08-18T07:00:24.632Z",
+        "sunsetUtc": "2026-08-18T20:32:05.214Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-19": {
+        "firstLightUtc": "2026-08-19T06:33:35.622Z",
+        "lastLightUtc": "2026-08-19T20:58:24.816Z",
+        "sunriseUtc": "2026-08-19T07:01:16.219Z",
+        "sunsetUtc": "2026-08-19T20:30:46.357Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-20": {
+        "firstLightUtc": "2026-08-20T06:34:31.418Z",
+        "lastLightUtc": "2026-08-20T20:57:00.824Z",
+        "sunriseUtc": "2026-08-20T07:02:07.757Z",
+        "sunsetUtc": "2026-08-20T20:29:26.585Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-21": {
+        "firstLightUtc": "2026-08-21T06:35:27.081Z",
+        "lastLightUtc": "2026-08-21T20:55:36.027Z",
+        "sunriseUtc": "2026-08-21T07:02:59.240Z",
+        "sunsetUtc": "2026-08-21T20:28:05.928Z",
+        "calculation": "noaa-civil-twilight",
+        "timeZone": "Europe/Lisbon"
+      },
+      "2026-08-22": {
+        "firstLightUtc": "2026-08-22T06:36:22.603Z",
+        "lastLightUtc": "2026-08-22T20:54:10.457Z",
+        "sunriseUtc": "2026-08-22T07:03:50.663Z",
+        "sunsetUtc": "2026-08-22T20:26:44.416Z",
         "calculation": "noaa-civil-twilight",
         "timeZone": "Europe/Lisbon"
       }
@@ -3788,6 +4063,122 @@
         "moon": ""
       }
     ],
+    "112": [
+      {
+        "type": "high",
+        "timeUtc": "2026-08-18T05:12:00.000Z",
+        "heightM": 2.1,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-18T11:14:00.000Z",
+        "heightM": 0.83,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-18T17:31:00.000Z",
+        "heightM": 2.1,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-18T23:41:00.000Z",
+        "heightM": 0.89,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-19T05:55:00.000Z",
+        "heightM": 1.97,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-19T12:01:00.000Z",
+        "heightM": 0.99,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-19T18:18:00.000Z",
+        "heightM": 1.91,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-20T00:28:00.000Z",
+        "heightM": 1.04,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-20T06:50:00.000Z",
+        "heightM": 1.86,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-20T13:05:00.000Z",
+        "heightM": 1.13,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-20T19:24:00.000Z",
+        "heightM": 1.75,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-21T01:36:00.000Z",
+        "heightM": 1.16,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-21T08:11:00.000Z",
+        "heightM": 1.79,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-21T14:46:00.000Z",
+        "heightM": 1.2,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-21T21:05:00.000Z",
+        "heightM": 1.68,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-22T03:11:00.000Z",
+        "heightM": 1.2,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-22T09:45:00.000Z",
+        "heightM": 1.82,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-22T16:28:00.000Z",
+        "heightM": 1.14,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-22T22:36:00.000Z",
+        "heightM": 1.73,
+        "moon": ""
+      }
+    ],
     "152": [
       {
         "type": "low",
@@ -3907,6 +4298,122 @@
         "type": "high",
         "timeUtc": "2026-08-22T23:39:00.000Z",
         "heightM": 2.69,
+        "moon": ""
+      }
+    ],
+    "211": [
+      {
+        "type": "high",
+        "timeUtc": "2026-08-18T05:49:00.000Z",
+        "heightM": 1.43,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-18T11:55:00.000Z",
+        "heightM": 0.59,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-18T18:11:00.000Z",
+        "heightM": 1.42,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-19T00:23:00.000Z",
+        "heightM": 0.62,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-19T06:35:00.000Z",
+        "heightM": 1.33,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-19T12:45:00.000Z",
+        "heightM": 0.7,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-19T19:02:00.000Z",
+        "heightM": 1.3,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-20T01:14:00.000Z",
+        "heightM": 0.72,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-20T07:36:00.000Z",
+        "heightM": 1.25,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-20T13:58:00.000Z",
+        "heightM": 0.79,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-20T20:13:00.000Z",
+        "heightM": 1.2,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-21T02:29:00.000Z",
+        "heightM": 0.79,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-21T09:06:00.000Z",
+        "heightM": 1.22,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-21T15:41:00.000Z",
+        "heightM": 0.82,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-21T21:49:00.000Z",
+        "heightM": 1.17,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-22T04:04:00.000Z",
+        "heightM": 0.79,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-22T10:38:00.000Z",
+        "heightM": 1.25,
+        "moon": ""
+      },
+      {
+        "type": "low",
+        "timeUtc": "2026-08-22T17:09:00.000Z",
+        "heightM": 0.77,
+        "moon": ""
+      },
+      {
+        "type": "high",
+        "timeUtc": "2026-08-22T23:11:00.000Z",
+        "heightM": 1.21,
         "moon": ""
       }
     ]

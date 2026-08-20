@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "provider": "surfcams-portugal",
-  "generatedAt": "2026-07-07T05:41:46.214Z",
+  "generatedAt": "2026-08-19T08:34:15.007Z",
   "method": "aggressive extraction from normalized Surfline metadata, MEO description cues, existing surf-rating fallbacks, and regional heuristics; hand-curate entries by editing coastExposure fields",
   "source": {
     "beachcamCameras": "data/beachcam-cameras.json",
@@ -9,7 +9,7 @@
     "meoSurflineMatches": "data/meo-surfline-matches.json"
   },
   "total": 190,
-  "finite": 175,
+  "finite": 174,
   "exposures": [
     {
       "id": "praia-de-carcavelos",
@@ -92,29 +92,6 @@
       }
     },
     {
-      "id": "praia-do-norte",
-      "name": "Nazaré | Praia do Norte Panorâmica",
-      "region": "nazare",
-      "municipality": "NAZARÉ",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-nazare",
-        "sourceDistanceKm": 0.1,
-        "evidence": [
-          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-do-norte to surfline-nazare at 0.1km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "praia-de-espinho",
       "name": "Espinho | Panorâmica",
       "region": "norte",
@@ -127,29 +104,6 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-do-guincho",
-      "name": "Praia do Guincho | Sul",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-praia-do-guincho",
-        "sourceDistanceKm": 0.5,
-        "evidence": [
-          "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-do-guincho to surfline-praia-do-guincho at 0.5km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
@@ -178,29 +132,6 @@
       }
     },
     {
-      "id": "peniche-supertubos",
-      "name": "Peniche | SuperTubos | Molhe Leste",
-      "region": "peniche",
-      "municipality": "PENICHE",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-supertubos",
-        "sourceDistanceKm": 0.4,
-        "evidence": [
-          "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from peniche-supertubos to surfline-supertubos at 0.4km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "praia-da-nazare",
       "name": "Nazaré | Praia da Vila",
       "region": "nazare",
@@ -219,23 +150,6 @@
           "Matched from praia-da-nazare to surfline-nazare at 1km",
           "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 1km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "furadouro",
-      "name": "Furadouro ",
-      "region": "centro",
-      "municipality": "OVAR",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing central coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for centro"
         ],
         "reviewStatus": "generated"
       }
@@ -264,6 +178,92 @@
       }
     },
     {
+      "id": "praia-do-guincho",
+      "name": "Praia do Guincho | Sul",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-praia-do-guincho",
+        "sourceDistanceKm": 0.5,
+        "evidence": [
+          "Surfline metadata surfline-praia-do-guincho Praia Do Guincho coastExposure.bearing=280",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-do-guincho to surfline-praia-do-guincho at 0.5km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Praia Do Guincho is 0.5km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "peniche-supertubos",
+      "name": "Peniche | SuperTubos | Molhe Leste",
+      "region": "peniche",
+      "municipality": "PENICHE",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-supertubos",
+        "sourceDistanceKm": 0.4,
+        "evidence": [
+          "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from peniche-supertubos to surfline-supertubos at 0.4km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "furadouro",
+      "name": "Furadouro",
+      "region": "centro",
+      "municipality": "OVAR",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing central coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-do-norte",
+      "name": "Nazaré | Praia do Norte Panorâmica",
+      "region": "nazare",
+      "municipality": "NAZARÉ",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-nazare",
+        "sourceDistanceKm": 0.1,
+        "evidence": [
+          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-do-norte to surfline-nazare at 0.1km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "arrifana",
       "name": "Arrifana",
       "region": "costa-vicentina",
@@ -282,7 +282,7 @@
     },
     {
       "id": "lagide-e-baia",
-      "name": "Peniche | Lagide | Cantinho da baía ",
+      "name": "Peniche | Lagide | Cantinho da baía",
       "region": "peniche",
       "municipality": "PENICHE",
       "coastExposure": {
@@ -321,29 +321,6 @@
       }
     },
     {
-      "id": "ribeira-dilhas",
-      "name": "Ribeira D´Ilhas",
-      "region": "mafra",
-      "municipality": "MAFRA",
-      "coastExposure": {
-        "bearing": 330,
-        "compass": "NW",
-        "label": "NW-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-ribeira-d-ilhas",
-        "sourceDistanceKm": 0.5,
-        "evidence": [
-          "Surfline metadata surfline-ribeira-d-ilhas Ribeira D’Ilhas coastExposure.bearing=330",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from ribeira-dilhas to surfline-ribeira-d-ilhas at 0.5km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.5km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "peniche-baleal-panoramica",
       "name": "Peniche | Baleal | Panorâmica",
       "region": "peniche",
@@ -367,58 +344,24 @@
       }
     },
     {
-      "id": "praia-da-rocha",
-      "name": "Praia da Rocha Panorâmica",
-      "region": "algarve",
-      "municipality": "PORTIMÃO",
+      "id": "ribeira-dilhas",
+      "name": "Ribeira D´Ilhas",
+      "region": "mafra",
+      "municipality": "MAFRA",
       "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "foz-do-arelho",
-      "name": "Foz do Arelho ",
-      "region": "costa-oeste",
-      "municipality": "CALDAS DA RAINHA",
-      "coastExposure": {
-        "bearing": 345,
-        "compass": "N",
-        "label": "N-facing Surfline-derived exposure",
+        "bearing": 330,
+        "compass": "NW",
+        "label": "NW-facing Surfline-derived exposure",
         "confidence": "spot",
         "source": "surfline-metadata",
-        "sourceSpotId": "surfline-belgas",
-        "sourceDistanceKm": 4.4,
+        "sourceSpotId": "surfline-ribeira-d-ilhas",
+        "sourceDistanceKm": 0.5,
         "evidence": [
-          "Surfline metadata surfline-belgas Belgas coastExposure.bearing=345",
+          "Surfline metadata surfline-ribeira-d-ilhas Ribeira D’Ilhas coastExposure.bearing=330",
           "Provider source: surfline-offshoreDirection",
-          "Matched from foz-do-arelho to surfline-belgas at 4.4km",
+          "Matched from ribeira-dilhas to surfline-ribeira-d-ilhas at 0.5km",
           "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Foz do Arelho is 0.3km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "costa-da-caparica-praia-nova",
-      "name": "Costa de Caparica | Praia Nova",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Auto-remapped from cached Surfline coordinates; primary Ribeira D’Ilhas is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
@@ -441,6 +384,29 @@
       }
     },
     {
+      "id": "foz-do-arelho",
+      "name": "Foz do Arelho",
+      "region": "costa-oeste",
+      "municipality": "CALDAS DA RAINHA",
+      "coastExposure": {
+        "bearing": 345,
+        "compass": "N",
+        "label": "N-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-belgas",
+        "sourceDistanceKm": 4.4,
+        "evidence": [
+          "Surfline metadata surfline-belgas Belgas coastExposure.bearing=345",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from foz-do-arelho to surfline-belgas at 4.4km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Foz do Arelho is 0.3km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "leca-da-palmeira",
       "name": "Leça da Palmeira",
       "region": "norte",
@@ -458,10 +424,78 @@
       }
     },
     {
+      "id": "esmoriz",
+      "name": "Esmoriz",
+      "region": "norte",
+      "municipality": "OVAR",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "paredes-da-vitoria",
       "name": "Paredes da Vitória",
       "region": "costa-oeste",
       "municipality": "ALCOBAÇA",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing Costa Oeste regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for costa-oeste"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-rocha",
+      "name": "Praia da Rocha Panorâmica",
+      "region": "algarve",
+      "municipality": "PORTIMÃO",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "costa-da-caparica-praia-nova",
+      "name": "Costa de Caparica | Praia Nova",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "sao-pedro-de-moel",
+      "name": "São Pedro de Moel",
+      "region": "costa-oeste",
+      "municipality": "MARINHA GRANDE",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
@@ -498,18 +532,35 @@
       }
     },
     {
-      "id": "praia-da-falesia",
-      "name": "Praia da Falésia ",
-      "region": "algarve",
-      "municipality": "LOULÉ",
+      "id": "praia-canide-norte-sul",
+      "name": "Praia Canide NORTE | SUL",
+      "region": "norte",
+      "municipality": "VILA NOVA DE GAIA",
       "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for algarve"
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "ofir",
+      "name": "Ofir",
+      "region": "norte",
+      "municipality": "ESPOSENDE",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -527,177 +578,6 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for costa-vicentina"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "sao-pedro-de-moel",
-      "name": "São Pedro de Moel ",
-      "region": "costa-oeste",
-      "municipality": "MARINHA GRANDE",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing Costa Oeste regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for costa-oeste"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "esmoriz",
-      "name": "Esmoriz",
-      "region": "norte",
-      "municipality": "OVAR",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "costa-de-caparica-sao-joao-cova-do-vapor",
-      "name": "Costa de Caparica | São João | Cova do Vapor ",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "sao-pedro-do-estoril",
-      "name": "São Pedro do Estoril",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 188,
-        "compass": "S",
-        "label": "S-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-carcavelos",
-        "sourceDistanceKm": 3.2,
-        "evidence": [
-          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from sao-pedro-do-estoril to surfline-carcavelos at 3.2km",
-          "Mapping confidence: curated",
-          "Exact Surfline page plus nearby Cascais-line references."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "ofir",
-      "name": "Ofir ",
-      "region": "norte",
-      "municipality": "ESPOSENDE",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-da-luz",
-      "name": "Praia da Luz",
-      "region": "algarve",
-      "municipality": "LAGOS",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "costa-da-caparica-riviera",
-      "name": "Costa de Caparica | Riviera",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 260,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-castelo",
-        "sourceDistanceKm": 0.7,
-        "evidence": [
-          "Surfline metadata surfline-castelo Costa da Caparica | Costelo (Irmao) coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from costa-da-caparica-riviera to surfline-castelo at 0.7km",
-          "Mapping confidence: curated",
-          "Riviera is closest to Surfline's Praia da Rainha page; Castelo, Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "surfline-castelo",
-      "name": "Costa da Caparica | Costelo (Irmao)",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 260,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-castelo",
-        "sourceDistanceKm": 0.1,
-        "evidence": [
-          "Surfline metadata surfline-castelo Costa da Caparica | Costelo (Irmao) coastExposure.bearing=260",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from surfline-castelo to surfline-castelo at 0.1km",
-          "Mapping confidence: curated",
-          "First-class Surfline-only Castelo spot plus the practical Caparica corridor references."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-canide-norte-sul",
-      "name": "Praia Canide NORTE | SUL",
-      "region": "norte",
-      "municipality": "VILA NOVA DE GAIA",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -737,6 +617,63 @@
       }
     },
     {
+      "id": "praia-da-falesia",
+      "name": "Praia da Falésia",
+      "region": "algarve",
+      "municipality": "LOULÉ",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "costa-de-caparica-sao-joao-cova-do-vapor",
+      "name": "Costa de Caparica | São João | Cova do Vapor",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "costa-da-caparica-riviera",
+      "name": "Costa de Caparica | Riviera",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 260,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-castelo",
+        "sourceDistanceKm": 0.7,
+        "evidence": [
+          "Surfline metadata surfline-castelo Costa da Caparica | Costelo (Irmao) coastExposure.bearing=260",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from costa-da-caparica-riviera to surfline-castelo at 0.7km",
+          "Mapping confidence: curated",
+          "Riviera is closest to Surfline's Praia da Rainha page; Castelo, Barbas, Caparica and Fonte da Telha are the practical same-corridor alternatives."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "ericeira-praia-do-sul",
       "name": "Ericeira | Praia do Sul",
       "region": "mafra",
@@ -754,8 +691,48 @@
       }
     },
     {
+      "id": "sao-pedro-do-estoril",
+      "name": "São Pedro do Estoril",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 188,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-carcavelos",
+        "sourceDistanceKm": 3.2,
+        "evidence": [
+          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from sao-pedro-do-estoril to surfline-carcavelos at 3.2km",
+          "Mapping confidence: curated",
+          "Exact Surfline page plus nearby Cascais-line references."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-luz",
+      "name": "Praia da Luz",
+      "region": "algarve",
+      "municipality": "LAGOS",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "sao-martinho-do-porto",
-      "name": "São Martinho do Porto ",
+      "name": "São Martinho do Porto",
       "region": "costa-oeste",
       "municipality": "ALCOBAÇA",
       "coastExposure": {
@@ -789,7 +766,7 @@
     },
     {
       "id": "areia-branca",
-      "name": "Areia Branca ",
+      "name": "Areia Branca",
       "region": "costa-oeste",
       "municipality": "LOURINHÃ",
       "coastExposure": {
@@ -811,35 +788,18 @@
       }
     },
     {
-      "id": "alvor",
-      "name": "Alvor ",
-      "region": "algarve",
-      "municipality": "PORTIMÃO",
+      "id": "apulia",
+      "name": "Apúlia",
+      "region": "norte",
+      "municipality": "ESPOSENDE",
       "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "meia-praia",
-      "name": "Meia Praia ",
-      "region": "algarve",
-      "municipality": "LAGOS",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
+          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -862,47 +822,18 @@
       }
     },
     {
-      "id": "praia-do-norte-canhao-nazare",
-      "name": "Nazaré | Praia do Norte ",
-      "region": "nazare",
-      "municipality": "NAZARÉ",
+      "id": "meia-praia",
+      "name": "Meia Praia",
+      "region": "algarve",
+      "municipality": "LAGOS",
       "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-nazare",
-        "sourceDistanceKm": 0.1,
-        "evidence": [
-          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-do-norte-canhao-nazare to surfline-nazare at 0.1km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "carcavelos-calhau",
-      "name": "Carcavelos | Calhau",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 188,
+        "bearing": 180,
         "compass": "S",
-        "label": "S-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-carcavelos",
-        "sourceDistanceKm": 0.5,
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
         "evidence": [
-          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from carcavelos-calhau to surfline-carcavelos at 0.5km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
@@ -925,10 +856,10 @@
       }
     },
     {
-      "id": "armacao-de-pera",
-      "name": "Armação de Pêra",
+      "id": "alvor",
+      "name": "Alvor",
       "region": "algarve",
-      "municipality": "SILVES",
+      "municipality": "PORTIMÃO",
       "coastExposure": {
         "bearing": 180,
         "compass": "S",
@@ -942,58 +873,18 @@
       }
     },
     {
-      "id": "monte-clerigo",
-      "name": "Monte Clérigo",
-      "region": "costa-vicentina",
-      "municipality": "ALJEZUR",
+      "id": "armacao-de-pera",
+      "name": "Armação de Pêra",
+      "region": "algarve",
+      "municipality": "SILVES",
       "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing Costa Vicentina regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for costa-vicentina"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "apulia",
-      "name": "Apúlia ",
-      "region": "norte",
-      "municipality": "ESPOSENDE",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-da-torre",
-      "name": "Praia da Torre",
-      "region": "oeiras",
-      "municipality": "OEIRAS",
-      "coastExposure": {
-        "bearing": 188,
+        "bearing": 180,
         "compass": "S",
-        "label": "S-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-carcavelos",
-        "sourceDistanceKm": 1.3,
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
         "evidence": [
-          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-da-torre to surfline-carcavelos at 1.3km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Praia de Torre is 0km away with name score 1.00."
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
@@ -1022,71 +913,8 @@
       }
     },
     {
-      "id": "costa-da-caparica-tarquinio",
-      "name": "Costa de Caparica | Tarquínio",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-de-sao-torpes",
-      "name": "São Torpes",
-      "region": "alentejo",
-      "municipality": "SINES",
-      "coastExposure": {
-        "bearing": 250,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-sao-torpes",
-        "sourceDistanceKm": 0.2,
-        "evidence": [
-          "Surfline metadata surfline-sao-torpes Sao Torpes coastExposure.bearing=250",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-de-sao-torpes to surfline-sao-torpes at 0.2km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "santa-cruz-praia-azul",
-      "name": " Santa Cruz | Praia Azul",
-      "region": "costa-oeste",
-      "municipality": "TORRES VEDRAS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-praia-azul",
-        "sourceDistanceKm": 0.6,
-        "evidence": [
-          "Surfline metadata surfline-praia-azul Praia Azul coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from santa-cruz-praia-azul to surfline-praia-azul at 0.6km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "viana-do-castelo-cabedelo",
-      "name": "Viana do Castelo | Cabedelo ",
+      "name": "Viana do Castelo | Cabedelo",
       "region": "norte",
       "municipality": "VIANA DO CASTELO",
       "coastExposure": {
@@ -1125,42 +953,31 @@
       }
     },
     {
-      "id": "faro",
-      "name": "Faro | Praia de Faro Este ",
-      "region": "algarve",
-      "municipality": "FARO",
+      "id": "carcavelos-calhau",
+      "name": "Carcavelos | Calhau",
+      "region": "cascais",
+      "municipality": "CASCAIS",
       "coastExposure": {
-        "bearing": 180,
+        "bearing": 188,
         "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-carcavelos",
+        "sourceDistanceKm": 0.5,
         "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-verde",
-      "name": "Praia Verde | Castro Marim ",
-      "region": "algarve",
-      "municipality": "CASTRO MARIM",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
+          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from carcavelos-calhau to surfline-carcavelos at 0.5km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "praia-da-tocha",
-      "name": "Praia da Tocha ",
+      "name": "Praia da Tocha",
       "region": "centro",
       "municipality": "CANTANHEDE",
       "coastExposure": {
@@ -1176,18 +993,144 @@
       }
     },
     {
-      "id": "praia-da-vieira",
-      "name": "Praia da Vieira",
-      "region": "centro",
-      "municipality": "MARINHA GRANDE",
+      "id": "praia-do-norte-canhao-nazare",
+      "name": "Nazaré | Praia do Norte",
+      "region": "nazare",
+      "municipality": "NAZARÉ",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-nazare",
+        "sourceDistanceKm": 0.1,
+        "evidence": [
+          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-do-norte-canhao-nazare to surfline-nazare at 0.1km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "monte-clerigo",
+      "name": "Monte Clérigo",
+      "region": "costa-vicentina",
+      "municipality": "ALJEZUR",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing central coast regional estimate",
+        "label": "West-facing Costa Vicentina regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for centro"
+          "Aggressive regional heuristic for costa-vicentina"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "santa-cruz-praia-azul",
+      "name": "Santa Cruz | Praia Azul",
+      "region": "costa-oeste",
+      "municipality": "TORRES VEDRAS",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-praia-azul",
+        "sourceDistanceKm": 0.6,
+        "evidence": [
+          "Surfline metadata surfline-praia-azul Praia Azul coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from santa-cruz-praia-azul to surfline-praia-azul at 0.6km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Praia Azul is 0.6km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-torre",
+      "name": "Praia da Torre",
+      "region": "oeiras",
+      "municipality": "OEIRAS",
+      "coastExposure": {
+        "bearing": 188,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-carcavelos",
+        "sourceDistanceKm": 1.3,
+        "evidence": [
+          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-da-torre to surfline-carcavelos at 1.3km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Praia de Torre is 0km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-verde",
+      "name": "Praia Verde | Castro Marim",
+      "region": "algarve",
+      "municipality": "CASTRO MARIM",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-de-sao-torpes",
+      "name": "São Torpes",
+      "region": "alentejo",
+      "municipality": "SINES",
+      "coastExposure": {
+        "bearing": 250,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-sao-torpes",
+        "sourceDistanceKm": 0.2,
+        "evidence": [
+          "Surfline metadata surfline-sao-torpes Sao Torpes coastExposure.bearing=250",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-de-sao-torpes to surfline-sao-torpes at 0.2km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Sao Torpes is 0.2km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "costa-da-caparica-tarquinio",
+      "name": "Costa de Caparica | Tarquínio",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -1217,7 +1160,7 @@
     },
     {
       "id": "figueira-da-foz-cabedelo-buarcos",
-      "name": "Figueira da Foz  | Panorâmica ",
+      "name": "Figueira da Foz | Panorâmica",
       "region": "centro",
       "municipality": "FIGUEIRA DA FOZ",
       "coastExposure": {
@@ -1233,9 +1176,43 @@
       }
     },
     {
+      "id": "faro",
+      "name": "Faro | Praia de Faro Este",
+      "region": "algarve",
+      "municipality": "FARO",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-vieira",
+      "name": "Praia da Vieira",
+      "region": "centro",
+      "municipality": "MARINHA GRANDE",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing central coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "porto-santo",
       "name": "Porto Santo",
-      "region": "ilhas",
+      "region": "madeira",
       "municipality": "PORTO SANTO",
       "coastExposure": {
         "bearing": null,
@@ -1250,35 +1227,18 @@
       }
     },
     {
-      "id": "praia-da-gale",
-      "name": "Praia da Galé",
-      "region": "algarve",
-      "municipality": "ALBUFEIRA",
+      "id": "costa-nova",
+      "name": "Costa Nova",
+      "region": "centro",
+      "municipality": "ÍLHAVO",
       "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing central coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-do-peixe-baia-de-cascais",
-      "name": "Baía de Cascais ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Aggressive regional heuristic for centro"
         ],
         "reviewStatus": "generated"
       }
@@ -1296,6 +1256,23 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-gale",
+      "name": "Praia da Galé",
+      "region": "algarve",
+      "municipality": "ALBUFEIRA",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
@@ -1324,8 +1301,59 @@
       }
     },
     {
+      "id": "vila-praia-de-ancora",
+      "name": "Vila Praia de Âncora",
+      "region": "norte",
+      "municipality": "CAMINHA",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "esposende",
+      "name": "Esposende",
+      "region": "norte",
+      "municipality": "ESPOSENDE",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-do-peixe-baia-de-cascais",
+      "name": "Baía de Cascais",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "parede",
-      "name": "Parede ",
+      "name": "Parede",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -1347,18 +1375,24 @@
       }
     },
     {
-      "id": "costa-nova",
-      "name": "Costa Nova ",
-      "region": "centro",
-      "municipality": "ÍLHAVO",
+      "id": "praia-das-macas",
+      "name": "Praia das Maçãs",
+      "region": "sintra",
+      "municipality": "SINTRA",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing central coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-praia-pequena",
+        "sourceDistanceKm": 0.8,
         "evidence": [
-          "Aggressive regional heuristic for centro"
+          "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-das-macas to surfline-praia-pequena at 0.8km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
@@ -1388,7 +1422,7 @@
     },
     {
       "id": "santo-amaro",
-      "name": "Santo Amaro ",
+      "name": "Santo Amaro",
       "region": "oeiras",
       "municipality": "OEIRAS",
       "coastExposure": {
@@ -1427,18 +1461,18 @@
       }
     },
     {
-      "id": "vila-praia-de-ancora",
-      "name": "Vila Praia de Âncora ",
-      "region": "norte",
-      "municipality": "CAMINHA",
+      "id": "praia-da-amoreira",
+      "name": "Praia da Amoreira",
+      "region": "costa-vicentina",
+      "municipality": "ALJEZUR",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing north coast regional estimate",
+        "label": "West-facing Costa Vicentina regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for norte"
+          "Aggressive regional heuristic for costa-vicentina"
         ],
         "reviewStatus": "generated"
       }
@@ -1461,65 +1495,8 @@
       }
     },
     {
-      "id": "praia-das-macas",
-      "name": "Praia das Maçãs",
-      "region": "sintra",
-      "municipality": "SINTRA",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-praia-pequena",
-        "sourceDistanceKm": 0.8,
-        "evidence": [
-          "Surfline metadata surfline-praia-pequena Praia Pequena coastExposure.bearing=280",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-das-macas to surfline-praia-pequena at 0.8km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Praia das Maçãs is 0.3km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "esposende",
-      "name": "Esposende",
-      "region": "norte",
-      "municipality": "ESPOSENDE",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-da-amoreira",
-      "name": "Praia da Amoreira ",
-      "region": "costa-vicentina",
-      "municipality": "ALJEZUR",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing Costa Vicentina regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for costa-vicentina"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "lagoa-de-albufeira",
-      "name": "Lagoa de Albufeira ",
+      "name": "Lagoa de Albufeira",
       "region": "sesimbra",
       "municipality": "SESIMBRA",
       "coastExposure": {
@@ -1542,7 +1519,7 @@
     },
     {
       "id": "praia-do-meco",
-      "name": "Praia do Meco ",
+      "name": "Praia do Meco",
       "region": "sesimbra",
       "municipality": "SESIMBRA",
       "coastExposure": {
@@ -1575,6 +1552,46 @@
       }
     },
     {
+      "id": "sao-juliao",
+      "name": "São Julião",
+      "region": "mafra",
+      "municipality": "MAFRA",
+      "coastExposure": {
+        "bearing": 289,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-foz-do-lizandro",
+        "sourceDistanceKm": 1.3,
+        "evidence": [
+          "Surfline metadata surfline-foz-do-lizandro Foz do Lizandro coastExposure.bearing=289",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from sao-juliao to surfline-foz-do-lizandro at 1.3km",
+          "Mapping confidence: curated",
+          "Exact São Julião page plus Ericeira-area options in the same outing corridor."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-do-vau",
+      "name": "Praia do Vau",
+      "region": "algarve",
+      "municipality": "PORTIMÃO",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "costa-da-caparica-cds",
       "name": "Costa de Caparica | CDS SUL",
       "region": "almada",
@@ -1598,10 +1615,10 @@
       }
     },
     {
-      "id": "praia-do-vau",
-      "name": "Praia do Vau",
+      "id": "praia-da-alagoa",
+      "name": "Alagoa | Altura",
       "region": "algarve",
-      "municipality": "PORTIMÃO",
+      "municipality": "CASTRO MARIM",
       "coastExposure": {
         "bearing": 180,
         "compass": "S",
@@ -1615,24 +1632,18 @@
       }
     },
     {
-      "id": "sao-juliao",
-      "name": "São Julião ",
-      "region": "mafra",
-      "municipality": "MAFRA",
+      "id": "cresmina",
+      "name": "Praia da Cresmina",
+      "region": "cascais",
+      "municipality": "CASCAIS",
       "coastExposure": {
-        "bearing": 289,
+        "bearing": 270,
         "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-foz-do-lizandro",
-        "sourceDistanceKm": 1.3,
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Surfline metadata surfline-foz-do-lizandro Foz do Lizandro coastExposure.bearing=289",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from sao-juliao to surfline-foz-do-lizandro at 1.3km",
-          "Mapping confidence: curated",
-          "Exact São Julião page plus Ericeira-area options in the same outing corridor."
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -1678,6 +1689,23 @@
       }
     },
     {
+      "id": "praia-da-consolacao",
+      "name": "Peniche | Consolação",
+      "region": "peniche",
+      "municipality": "PENICHE",
+      "coastExposure": {
+        "bearing": 300,
+        "compass": "NW",
+        "label": "West/Northwest exposure estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West/Northwest exposure estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "senhora-da-rocha-praia-nova",
       "name": "Senhora da Rocha e Praia Nova",
       "region": "algarve",
@@ -1695,42 +1723,8 @@
       }
     },
     {
-      "id": "praia-da-alagoa",
-      "name": "Alagoa | Altura ",
-      "region": "algarve",
-      "municipality": "CASTRO MARIM",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "cresmina",
-      "name": "Praia da Cresmina",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "praia-das-bicas",
-      "name": "Praia das Bicas ",
+      "name": "Praia das Bicas",
       "region": "sesimbra",
       "municipality": "SESIMBRA",
       "coastExposure": {
@@ -1746,18 +1740,35 @@
       }
     },
     {
-      "id": "praia-da-consolacao",
-      "name": "Peniche | Consolação",
-      "region": "peniche",
-      "municipality": "PENICHE",
+      "id": "espinho-silvalde",
+      "name": "Espinho | Silvalde",
+      "region": "norte",
+      "municipality": "ESPINHO",
       "coastExposure": {
-        "bearing": 300,
-        "compass": "NW",
-        "label": "West/Northwest exposure estimate",
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "tamariz",
+      "name": "Praia do Tamariz",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
         "confidence": "regional",
         "source": "legacy-regional",
         "evidence": [
-          "Existing surf-rating fallback: West/Northwest exposure estimate"
+          "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
       }
@@ -1797,40 +1808,6 @@
       }
     },
     {
-      "id": "tamariz",
-      "name": "Praia do Tamariz ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "espinho-silvade",
-      "name": "Espinho | Silvade ",
-      "region": "norte",
-      "municipality": "ESPINHO",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "praia-da-rocha-marina",
       "name": "Praia da Rocha | Marina",
       "region": "algarve",
@@ -1865,27 +1842,10 @@
       }
     },
     {
-      "id": "ferragudo",
-      "name": "Ferragudo | Praia Grande",
-      "region": "algarve",
-      "municipality": "LAGOA (ALGARVE)",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "viana-do-castelo-afife-arda",
-      "name": "Viana do Castelo | Afife | Arda ",
+      "id": "leca-da-palmeira-panoraminca-aterro",
+      "name": "Leça da Palmeira | Panorâmica | Aterro",
       "region": "norte",
-      "municipality": "VIANA DO CASTELO",
+      "municipality": "ESPOSENDE",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
@@ -1899,18 +1859,18 @@
       }
     },
     {
-      "id": "faja-da-areia",
-      "name": "Madeira | Fajã da Areia",
-      "region": "ilhas",
-      "municipality": "SÃO VICENTE",
+      "id": "ferragudo",
+      "name": "Ferragudo | Praia Grande",
+      "region": "algarve",
+      "municipality": "LAGOA (ALGARVE)",
       "coastExposure": {
-        "bearing": 0,
-        "compass": "N",
-        "label": "North-facing MEO description cue",
-        "confidence": "spot",
-        "source": "meo-description",
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
         "evidence": [
-          "MEO description matched /\\bcosta\\s+norte\\s+da\\s+ilha\\b|\\bcosta\\s+norte\\b/i"
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
@@ -1933,6 +1893,57 @@
       }
     },
     {
+      "id": "cordoama",
+      "name": "Cordoama",
+      "region": "costa-vicentina",
+      "municipality": "VILA DO BISPO",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing Costa Vicentina regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for costa-vicentina"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "murtinheira",
+      "name": "Murtinheira",
+      "region": "centro",
+      "municipality": "FIGUEIRA DA FOZ",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing central coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-conceicao-e-duquesa",
+      "name": "Praia da Conceição e Duquesa",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "zambujeira-do-mar",
       "name": "Zambujeira do Mar",
       "region": "alentejo",
@@ -1950,58 +1961,18 @@
       }
     },
     {
-      "id": "praia-da-conceicao-e-duquesa",
-      "name": "Praia da Conceição e Duquesa ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "nazare-forte-sao-miguel-arcanjo",
-      "name": "Nazaré | Forte S. Miguel Arcanjo ",
-      "region": "nazare",
-      "municipality": "NAZARÉ",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-nazare",
-        "sourceDistanceKm": 0.1,
-        "evidence": [
-          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from nazare-forte-sao-miguel-arcanjo to surfline-nazare at 0.1km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "murtinheira",
-      "name": "Murtinheira ",
-      "region": "centro",
-      "municipality": "FIGUEIRA DA FOZ",
+      "id": "viana-do-castelo-afife-arda",
+      "name": "Viana do Castelo | Afife | Arda",
+      "region": "norte",
+      "municipality": "VIANA DO CASTELO",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing central coast regional estimate",
+        "label": "West-facing north coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for centro"
+          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -2030,25 +2001,25 @@
       }
     },
     {
-      "id": "leca-da-palmeira-panoraminca-aterro",
-      "name": "Leça da Palmeira | Panorâmica | Aterro",
-      "region": "norte",
-      "municipality": "ESPOSENDE",
+      "id": "faja-da-areia",
+      "name": "Madeira | Fajã da Areia",
+      "region": "madeira",
+      "municipality": "SÃO VICENTE",
       "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "bearing": 0,
+        "compass": "N",
+        "label": "North-facing MEO description cue",
+        "confidence": "spot",
+        "source": "meo-description",
         "evidence": [
-          "Aggressive regional heuristic for norte"
+          "MEO description matched /\\bcosta\\s+norte\\s+da\\s+ilha\\b|\\bcosta\\s+norte\\b/i"
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "almograve",
-      "name": "Almograve ",
+      "name": "Almograve",
       "region": "alentejo",
       "municipality": "ODEMIRA",
       "coastExposure": {
@@ -2064,18 +2035,41 @@
       }
     },
     {
-      "id": "praia-osso-da-baleia",
-      "name": "Praia Osso da Baleia",
-      "region": "centro",
-      "municipality": "POMBAL",
+      "id": "praia-das-avencas",
+      "name": "Praia das Avencas",
+      "region": "cascais",
+      "municipality": "CASCAIS",
       "coastExposure": {
-        "bearing": 280,
+        "bearing": 270,
         "compass": "W",
-        "label": "West-facing central coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
         "evidence": [
-          "Aggressive regional heuristic for centro"
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "nazare-forte-sao-miguel-arcanjo",
+      "name": "Nazaré | Forte S. Miguel Arcanjo",
+      "region": "nazare",
+      "municipality": "NAZARÉ",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-nazare",
+        "sourceDistanceKm": 0.1,
+        "evidence": [
+          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from nazare-forte-sao-miguel-arcanjo to surfline-nazare at 0.1km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
@@ -2098,42 +2092,25 @@
       }
     },
     {
-      "id": "porto-carneiro",
-      "name": "Porto | Carneiro ",
-      "region": "norte",
-      "municipality": "PORTO",
+      "id": "praia-osso-da-baleia",
+      "name": "Praia Osso da Baleia",
+      "region": "centro",
+      "municipality": "POMBAL",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing north coast regional estimate",
+        "label": "West-facing central coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-das-avencas",
-      "name": "Praia das Avencas  ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Aggressive regional heuristic for centro"
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "praia-das-rocas",
-      "name": "Praia das Rocas ",
+      "name": "Praia das Rocas",
       "region": "fluviaispiscinas",
       "municipality": "CASTANHEIRA DE PÊRA",
       "coastExposure": {
@@ -2149,8 +2126,25 @@
       }
     },
     {
+      "id": "porto-carneiro",
+      "name": "Porto | Carneiro",
+      "region": "norte",
+      "municipality": "PORTO",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "costa-de-caparica-praia-do-norte",
-      "name": "Costa de Caparica | Praia do Norte ",
+      "name": "Costa de Caparica | Praia do Norte",
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
@@ -2167,7 +2161,7 @@
     },
     {
       "id": "lagoa-de-santo-andre",
-      "name": "Lagoa de Santo André ",
+      "name": "Lagoa de Santo André",
       "region": "alentejo",
       "municipality": "SANTIAGO DO CACÉM",
       "coastExposure": {
@@ -2178,6 +2172,40 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for alentejo"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "pedra-do-ouro",
+      "name": "Pedra do Ouro",
+      "region": "costa-oeste",
+      "municipality": "ALCOBAÇA",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing Costa Oeste regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for costa-oeste"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "seixal",
+      "name": "Madeira | Seixal",
+      "region": "madeira",
+      "municipality": "PORTO MONIZ",
+      "coastExposure": {
+        "bearing": 0,
+        "compass": "N",
+        "label": "North-facing MEO description cue",
+        "confidence": "spot",
+        "source": "meo-description",
+        "evidence": [
+          "MEO description matched /\\bcosta\\s+norte\\s+da\\s+ilha\\b|\\bcosta\\s+norte\\b/i"
         ],
         "reviewStatus": "generated"
       }
@@ -2200,52 +2228,18 @@
       }
     },
     {
-      "id": "pedra-do-ouro",
-      "name": "Pedra do Ouro ",
-      "region": "costa-oeste",
-      "municipality": "ALCOBAÇA",
+      "id": "porto-homem-do-leme",
+      "name": "Porto | Homem do Leme",
+      "region": "norte",
+      "municipality": "PORTO",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
-        "label": "West-facing Costa Oeste regional estimate",
+        "label": "West-facing north coast regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for costa-oeste"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "cordoama",
-      "name": "Cordoama",
-      "region": "costa-vicentina",
-      "municipality": "VILA DO BISPO",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing Costa Vicentina regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for costa-vicentina"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "seixal",
-      "name": "Madeira | Seixal ",
-      "region": "ilhas",
-      "municipality": "PORTO MONIZ",
-      "coastExposure": {
-        "bearing": 0,
-        "compass": "N",
-        "label": "North-facing MEO description cue",
-        "confidence": "spot",
-        "source": "meo-description",
-        "evidence": [
-          "MEO description matched /\\bcosta\\s+norte\\s+da\\s+ilha\\b|\\bcosta\\s+norte\\b/i"
+          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -2263,46 +2257,6 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for setubal"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "ericeira-sao-lourenco",
-      "name": "São Lourenço ",
-      "region": "mafra",
-      "municipality": "MAFRA",
-      "coastExposure": {
-        "bearing": 282,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-sao-lourenco",
-        "sourceDistanceKm": 0.4,
-        "evidence": [
-          "Surfline metadata surfline-sao-lourenco São Lourenço coastExposure.bearing=282",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from ericeira-sao-lourenco to surfline-sao-lourenco at 0.4km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "porto-homem-do-leme",
-      "name": "Porto | Homem do Leme ",
-      "region": "norte",
-      "municipality": "PORTO",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -2326,7 +2280,7 @@
     },
     {
       "id": "praia-pequena",
-      "name": "Praia Pequena ",
+      "name": "Praia Pequena",
       "region": "sintra",
       "municipality": "SINTRA",
       "coastExposure": {
@@ -2348,25 +2302,48 @@
       }
     },
     {
-      "id": "ericeira-praia-da-calada",
-      "name": "Praia da Calada",
+      "id": "ericeira-sao-lourenco",
+      "name": "São Lourenço",
       "region": "mafra",
       "municipality": "MAFRA",
       "coastExposure": {
-        "bearing": 290,
+        "bearing": 282,
         "compass": "W",
-        "label": "West/Northwest-facing Mafra regional estimate",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-sao-lourenco",
+        "sourceDistanceKm": 0.4,
+        "evidence": [
+          "Surfline metadata surfline-sao-lourenco São Lourenço coastExposure.bearing=282",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from ericeira-sao-lourenco to surfline-sao-lourenco at 0.4km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary São Lourenço is 0.4km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-do-magoito",
+      "name": "Praia do Magoito",
+      "region": "sintra",
+      "municipality": "SINTRA",
+      "coastExposure": {
+        "bearing": 285,
+        "compass": "W",
+        "label": "West/Northwest-facing Sintra regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for mafra"
+          "Aggressive regional heuristic for sintra"
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "vagueira-areao",
-      "name": "Vagueira | Areão ",
+      "name": "Vagueira | Areão",
       "region": "centro",
       "municipality": "VAGOS",
       "coastExposure": {
@@ -2399,20 +2376,20 @@
       }
     },
     {
-      "id": "ponta-pequena",
-      "name": "Madeira | Ponta Pequena ",
-      "region": "ilhas",
-      "municipality": "CALHETA (MADEIRA)",
+      "id": "ericeira-praia-da-calada",
+      "name": "Praia da Calada",
+      "region": "mafra",
+      "municipality": "MAFRA",
       "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
+        "bearing": 290,
+        "compass": "W",
+        "label": "West/Northwest-facing Mafra regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
         "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+          "Aggressive regional heuristic for mafra"
         ],
-        "reviewStatus": "needs-curation"
+        "reviewStatus": "generated"
       }
     },
     {
@@ -2433,40 +2410,6 @@
       }
     },
     {
-      "id": "madeira-paul-do-mar",
-      "name": "Madeira | Paul do Mar",
-      "region": "ilhas",
-      "municipality": "CALHETA (MADEIRA)",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
-      "id": "madeira-jardim-do-mar",
-      "name": "Madeira | Jardim do Mar",
-      "region": "ilhas",
-      "municipality": "CALHETA (MADEIRA)",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
       "id": "esposende-foz-do-cavado",
       "name": "Esposende | Foz Do Rio Cávado",
       "region": "norte",
@@ -2484,25 +2427,25 @@
       }
     },
     {
-      "id": "portimao-praia-do-amado",
-      "name": "Portimão | Praia do Amado",
-      "region": "algarve",
-      "municipality": "PORTIMÃO",
+      "id": "madeira-paul-do-mar",
+      "name": "Madeira | Paul do Mar",
+      "region": "madeira",
+      "municipality": "CALHETA (MADEIRA)",
       "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
         "evidence": [
-          "Aggressive regional heuristic for algarve"
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
         ],
-        "reviewStatus": "generated"
+        "reviewStatus": "needs-curation"
       }
     },
     {
       "id": "praia-de-sao-jacinto-barra",
-      "name": "Praia de São Jacinto | Barra ",
+      "name": "Praia de São Jacinto | Barra",
       "region": "centro",
       "municipality": "AVEIRO",
       "coastExposure": {
@@ -2513,6 +2456,57 @@
         "source": "region-heuristic",
         "evidence": [
           "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "ponta-pequena",
+      "name": "Madeira | Ponta Pequena",
+      "region": "madeira",
+      "municipality": "CALHETA (MADEIRA)",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
+      "id": "madeira-jardim-do-mar",
+      "name": "Madeira | Jardim do Mar",
+      "region": "madeira",
+      "municipality": "CALHETA (MADEIRA)",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
+      "id": "vilamoura",
+      "name": "Vilamoura",
+      "region": "algarve",
+      "municipality": "LOULÉ",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
@@ -2535,24 +2529,35 @@
       }
     },
     {
-      "id": "sao-joao-do-estoril",
-      "name": "São João do Estoril ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
+      "id": "portimao-praia-do-amado",
+      "name": "Portimão | Praia do Amado",
+      "region": "algarve",
+      "municipality": "PORTIMÃO",
       "coastExposure": {
-        "bearing": 185,
+        "bearing": 180,
         "compass": "S",
-        "label": "S-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-estoril",
-        "sourceDistanceKm": 2.3,
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
         "evidence": [
-          "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from sao-joao-do-estoril to surfline-estoril at 2.3km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.67."
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "caxinas-macaco-17",
+      "name": "Vila do Conde | Caxinas",
+      "region": "norte",
+      "municipality": "VILA DO CONDE",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing north coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for norte"
         ],
         "reviewStatus": "generated"
       }
@@ -2575,31 +2580,31 @@
       }
     },
     {
-      "id": "penichesupertubosestatica",
-      "name": "Peniche | Supertubos | Estática ",
-      "region": "peniche",
-      "municipality": "PENICHE",
+      "id": "sao-joao-do-estoril",
+      "name": "São João do Estoril",
+      "region": "cascais",
+      "municipality": "CASCAIS",
       "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
+        "bearing": 185,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
         "confidence": "spot",
         "source": "surfline-metadata",
-        "sourceSpotId": "surfline-supertubos",
-        "sourceDistanceKm": 0.4,
+        "sourceSpotId": "surfline-estoril",
+        "sourceDistanceKm": 2.3,
         "evidence": [
-          "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
+          "Surfline metadata surfline-estoril Estoril coastExposure.bearing=185",
           "Provider source: surfline-offshoreDirection",
-          "Matched from penichesupertubosestatica to surfline-supertubos at 0.4km",
+          "Matched from sao-joao-do-estoril to surfline-estoril at 2.3km",
           "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
+          "Auto-remapped from cached Surfline coordinates; primary São Pedro do Estoril is 0.1km away with name score 0.67."
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "bafureira",
-      "name": "Bafureira | Estática ",
+      "name": "Bafureira | Estática",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -2621,25 +2626,31 @@
       }
     },
     {
-      "id": "praia-das-moitas",
-      "name": "Praia das Moitas",
-      "region": "cascais",
-      "municipality": "CASCAIS",
+      "id": "penichesupertubosestatica",
+      "name": "Peniche | Supertubos | Estática",
+      "region": "peniche",
+      "municipality": "PENICHE",
       "coastExposure": {
         "bearing": 270,
         "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-supertubos",
+        "sourceDistanceKm": 0.4,
         "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Surfline metadata surfline-supertubos Supertubos coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from penichesupertubosestatica to surfline-supertubos at 0.4km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Supertubos is 0.4km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "vila-nova-de-milfontes-franquia",
-      "name": "V.N.Milfontes | Franquia ",
+      "name": "V.N.Milfontes | Franquia",
       "region": "alentejo",
       "municipality": "ODEMIRA",
       "coastExposure": {
@@ -2662,7 +2673,7 @@
     },
     {
       "id": "vila-nova-de-milfontes-farol",
-      "name": "V.N.Milfontes | Farol ",
+      "name": "V.N.Milfontes | Farol",
       "region": "alentejo",
       "municipality": "ODEMIRA",
       "coastExposure": {
@@ -2678,8 +2689,25 @@
       }
     },
     {
+      "id": "praia-das-moitas",
+      "name": "Praia das Moitas",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "nazare-porto-de-abrigo",
-      "name": "Nazaré | Porto de Abrigo ",
+      "name": "Nazaré | Porto de Abrigo",
       "region": "nazare",
       "municipality": "NAZARÉ",
       "coastExposure": {
@@ -2696,29 +2724,6 @@
           "Matched from nazare-porto-de-abrigo to surfline-nazare at 2.9km",
           "Mapping confidence: name",
           "Auto-remapped from cached Surfline coordinates; primary Nazaré is 2.9km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "peniche-lagide-estatica",
-      "name": "Peniche | Lagide | Estática ",
-      "region": "peniche",
-      "municipality": "PENICHE",
-      "coastExposure": {
-        "bearing": 345,
-        "compass": "N",
-        "label": "N-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-lagide",
-        "sourceDistanceKm": 0,
-        "evidence": [
-          "Surfline metadata surfline-lagide Lagide coastExposure.bearing=345",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from peniche-lagide-estatica to surfline-lagide at 0km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Lagide is 0km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
@@ -2741,25 +2746,8 @@
       }
     },
     {
-      "id": "vilamoura",
-      "name": "Vilamoura",
-      "region": "algarve",
-      "municipality": "LOULÉ",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
       "id": "ferreira-do-zezere-lago-azul",
-      "name": "Praia Fluvial Lago Azul ",
+      "name": "Praia Fluvial Lago Azul",
       "region": "fluviaispiscinas",
       "municipality": "FERREIRA DO ZÊZERE",
       "coastExposure": {
@@ -2775,8 +2763,31 @@
       }
     },
     {
+      "id": "peniche-lagide-estatica",
+      "name": "Peniche | Lagide | Estática",
+      "region": "peniche",
+      "municipality": "PENICHE",
+      "coastExposure": {
+        "bearing": 345,
+        "compass": "N",
+        "label": "N-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-lagide",
+        "sourceDistanceKm": 0,
+        "evidence": [
+          "Surfline metadata surfline-lagide Lagide coastExposure.bearing=345",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from peniche-lagide-estatica to surfline-lagide at 0km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Lagide is 0km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "espinhopicodocasino",
-      "name": "Espinho | Pico do casino | Estática ",
+      "name": "Espinho | Pico do casino | Estática",
       "region": "norte",
       "municipality": "ESPINHO",
       "coastExposure": {
@@ -2832,25 +2843,8 @@
       }
     },
     {
-      "id": "lisboa-belem",
-      "name": "Lisboa | Belém",
-      "region": "lagos-e-rios",
-      "municipality": "LISBOA",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
       "id": "ribeira-dilhas-estatica",
-      "name": "Ribeira D´Ilhas | Estática ",
+      "name": "Ribeira D´Ilhas | Estática",
       "region": "mafra",
       "municipality": "MAFRA",
       "coastExposure": {
@@ -2872,6 +2866,23 @@
       }
     },
     {
+      "id": "ferreira-do-zezere-dornes",
+      "name": "Ferreira do Zêzere | Dornes",
+      "region": "lagos-e-rios",
+      "municipality": "FERREIRA DO ZÊZERE",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
       "id": "costa-de-caparica-sao-joao-estatica",
       "name": "Costa de Caparica | São João | Estática",
       "region": "almada",
@@ -2886,6 +2897,23 @@
           "Existing surf-rating fallback: West-facing regional estimate"
         ],
         "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "lisboa-belem",
+      "name": "Lisboa | Belém",
+      "region": "lagos-e-rios",
+      "municipality": "LISBOA",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
       }
     },
     {
@@ -2912,25 +2940,8 @@
       }
     },
     {
-      "id": "ferreira-do-zezere-dornes",
-      "name": "Ferreira do Zêzere | Dornes",
-      "region": "lagos-e-rios",
-      "municipality": "FERREIRA DO ZÊZERE",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
       "id": "nazare-forte-sao-miguel-arcanjo-panoramica",
-      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica ",
+      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica",
       "region": "nazare",
       "municipality": "NAZARÉ",
       "coastExposure": {
@@ -2969,8 +2980,59 @@
       }
     },
     {
+      "id": "costa-de-caparica-praia-da-sereia-morena",
+      "name": "Costa de Caparica | Praia da Sereia | Morena",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "costa-da-caparica-nova-praia",
+      "name": "Costa de Caparica | Nova Praia",
+      "region": "almada",
+      "municipality": "ALMADA",
+      "coastExposure": {
+        "bearing": 270,
+        "compass": "W",
+        "label": "West-facing regional estimate",
+        "confidence": "regional",
+        "source": "legacy-regional",
+        "evidence": [
+          "Existing surf-rating fallback: West-facing regional estimate"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "praia-da-rocha-estatica",
+      "name": "Praia da Rocha | Estática",
+      "region": "algarve",
+      "municipality": "PORTIMÃO",
+      "coastExposure": {
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for algarve"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
       "id": "praia-do-guincho-estatica",
-      "name": "Praia do Guincho | Estática ",
+      "name": "Praia do Guincho | Estática",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -2993,7 +3055,7 @@
     },
     {
       "id": "sao-pedro-do-estoril-bico-estatica",
-      "name": "São Pedro do Estoril | Bico Estática ",
+      "name": "São Pedro do Estoril | Bico Estática",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -3015,10 +3077,10 @@
       }
     },
     {
-      "id": "praia-da-rocha-estatica",
-      "name": "Praia da Rocha | Estática ",
+      "id": "praia-quarteira-este",
+      "name": "Praia Quarteira | Este",
       "region": "algarve",
-      "municipality": "PORTIMÃO",
+      "municipality": "LOULÉ",
       "coastExposure": {
         "bearing": 180,
         "compass": "S",
@@ -3032,8 +3094,25 @@
       }
     },
     {
+      "id": "praia-fluvial-do-cabril",
+      "name": "Praia Fluvial do Cabril",
+      "region": "fluviaispiscinas",
+      "municipality": "PEDRÓGÃO GRANDE",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
       "id": "paco-de-arcos-estatica",
-      "name": "Paço de Arcos | Estática ",
+      "name": "Paço de Arcos | Estática",
       "region": "oeiras",
       "municipality": "OEIRAS",
       "coastExposure": {
@@ -3055,10 +3134,50 @@
       }
     },
     {
-      "id": "caxinas-macaco-17",
-      "name": "Vila do Conde | Caxinas ",
+      "id": "praia-da-adraga",
+      "name": "Praia da Adraga",
+      "region": "sintra",
+      "municipality": "SINTRA",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-praia-grande",
+        "sourceDistanceKm": 1.5,
+        "evidence": [
+          "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from praia-da-adraga to surfline-praia-grande at 1.5km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "figueiradafozbuarcosestatica",
+      "name": "Figueira da Foz | Buarcos | Estática",
+      "region": "centro",
+      "municipality": "FIGUEIRA DA FOZ",
+      "coastExposure": {
+        "bearing": 280,
+        "compass": "W",
+        "label": "West-facing central coast regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for centro"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "espinhosilvaldeestatica",
+      "name": "Espinho | Silvalde | Estática",
       "region": "norte",
-      "municipality": "VILA DO CONDE",
+      "municipality": "ESPINHO",
       "coastExposure": {
         "bearing": 280,
         "compass": "W",
@@ -3073,7 +3192,7 @@
     },
     {
       "id": "santo-amaro-estatica",
-      "name": "Santo Amaro | Estática ",
+      "name": "Santo Amaro | Estática",
       "region": "oeiras",
       "municipality": "OEIRAS",
       "coastExposure": {
@@ -3095,27 +3214,10 @@
       }
     },
     {
-      "id": "figueiradafozbuarcosestatica",
-      "name": "Figueira da Foz | Buarcos | Estática ",
-      "region": "centro",
-      "municipality": "FIGUEIRA DA FOZ",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing central coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for centro"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-fluvial-do-cabril",
-      "name": "Praia Fluvial do Cabril ",
-      "region": "fluviaispiscinas",
-      "municipality": "PEDRÓGÃO GRANDE",
+      "id": "madeira-maiata",
+      "name": "Madeira | Praia da Maiata",
+      "region": "madeira",
+      "municipality": "SANTA CRUZ",
       "coastExposure": {
         "bearing": null,
         "compass": "unknown",
@@ -3126,23 +3228,6 @@
           "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
         ],
         "reviewStatus": "needs-curation"
-      }
-    },
-    {
-      "id": "costa-da-caparica-praia-nova-estatica",
-      "name": "Costa de Caparica | Praia Nova | Estática",
-      "region": "almada",
-      "municipality": "ALMADA",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
-        "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
       }
     },
     {
@@ -3169,25 +3254,8 @@
       }
     },
     {
-      "id": "espinhosilvadeestatica",
-      "name": "Espinho | Silvade | Estática | ",
-      "region": "norte",
-      "municipality": "ESPINHO",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "West-facing north coast regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for norte"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "costa-da-caparica-nova-praia",
-      "name": "Costa de Caparica | Nova Praia ",
+      "id": "costa-da-caparica-praia-nova-estatica",
+      "name": "Costa de Caparica | Praia Nova | Estática",
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
@@ -3198,46 +3266,6 @@
         "source": "legacy-regional",
         "evidence": [
           "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "carcavelos-calhau-estatica",
-      "name": "Carcavelos | Calhau | Estática ",
-      "region": "cascais",
-      "municipality": "CASCAIS",
-      "coastExposure": {
-        "bearing": 188,
-        "compass": "S",
-        "label": "S-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-carcavelos",
-        "sourceDistanceKm": 0.5,
-        "evidence": [
-          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from carcavelos-calhau-estatica to surfline-carcavelos at 0.5km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-do-magoito",
-      "name": "Praia do Magoito",
-      "region": "sintra",
-      "municipality": "SINTRA",
-      "coastExposure": {
-        "bearing": 285,
-        "compass": "W",
-        "label": "West/Northwest-facing Sintra regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for sintra"
         ],
         "reviewStatus": "generated"
       }
@@ -3260,8 +3288,65 @@
       }
     },
     {
+      "id": "carcavelos-calhau-estatica",
+      "name": "Carcavelos | Calhau | Estática",
+      "region": "cascais",
+      "municipality": "CASCAIS",
+      "coastExposure": {
+        "bearing": 188,
+        "compass": "S",
+        "label": "S-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-carcavelos",
+        "sourceDistanceKm": 0.5,
+        "evidence": [
+          "Surfline metadata surfline-carcavelos Carcavelos coastExposure.bearing=188",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from carcavelos-calhau-estatica to surfline-carcavelos at 0.5km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Carcavelos is 0.5km away with name score 1.00."
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "boardriders-skatepark",
+      "name": "Boardriders | Skatepark",
+      "region": "mafra",
+      "municipality": "MAFRA",
+      "coastExposure": {
+        "bearing": 290,
+        "compass": "W",
+        "label": "West/Northwest-facing Mafra regional estimate",
+        "confidence": "heuristic",
+        "source": "region-heuristic",
+        "evidence": [
+          "Aggressive regional heuristic for mafra"
+        ],
+        "reviewStatus": "generated"
+      }
+    },
+    {
+      "id": "acores-ribeira-grande-praia-do-monte-verde",
+      "name": "Praia do Monte Verde",
+      "region": "acores",
+      "municipality": "RIBEIRA GRANDE",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
       "id": "praia-de-sao-torpes-estatica",
-      "name": "São Torpes | Estática ",
+      "name": "São Torpes | Estática",
       "region": "alentejo",
       "municipality": "SINES",
       "coastExposure": {
@@ -3283,10 +3368,10 @@
       }
     },
     {
-      "id": "madeira-maiata",
-      "name": "Madeira | Praia da Maiata",
-      "region": "ilhas",
-      "municipality": "SANTA CRUZ",
+      "id": "farol-do-bugio-sul",
+      "name": "Farol do Bugio Sul",
+      "region": "lagos-e-rios",
+      "municipality": "LISBOA",
       "coastExposure": {
         "bearing": null,
         "compass": "unknown",
@@ -3300,25 +3385,25 @@
       }
     },
     {
-      "id": "boardriders-skatepark",
-      "name": "Boardriders | Skatepark ",
-      "region": "mafra",
-      "municipality": "MAFRA",
+      "id": "praia-quarteira-oeste",
+      "name": "Praia Quarteira | Oeste",
+      "region": "algarve",
+      "municipality": "LOULÉ",
       "coastExposure": {
-        "bearing": 290,
-        "compass": "W",
-        "label": "West/Northwest-facing Mafra regional estimate",
+        "bearing": 180,
+        "compass": "S",
+        "label": "South-facing Algarve regional estimate",
         "confidence": "heuristic",
         "source": "region-heuristic",
         "evidence": [
-          "Aggressive regional heuristic for mafra"
+          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "parede-estatica",
-      "name": "Parede | Estática ",
+      "name": "Parede | Estática",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -3340,8 +3425,25 @@
       }
     },
     {
-      "id": "costa-de-caparica-praia-da-sereia-morena",
-      "name": "Costa de Caparica | Praia da Sereia | Morena",
+      "id": "viana-do-castelo-wakepark",
+      "name": "Viana do Castelo | Wake Park",
+      "region": "lagos-e-rios",
+      "municipality": "VIANA DO CASTELO",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
+      "id": "costa-da-caparica-tarquinio-fixa",
+      "name": "Costa de Caparica | Tarquínio | Estática",
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
@@ -3357,25 +3459,48 @@
       }
     },
     {
-      "id": "costa-da-caparica-tarquinio-fixa",
-      "name": "Costa de Caparica | Tarquínio | Estática ",
-      "region": "almada",
-      "municipality": "ALMADA",
+      "id": "ski-clube-quinta-grande",
+      "name": "Ski Clube Quinta Grande",
+      "region": "lagos-e-rios",
+      "municipality": "CORUCHE",
+      "coastExposure": {
+        "bearing": null,
+        "compass": "unknown",
+        "label": "Unknown exposure",
+        "confidence": "unknown",
+        "source": "unknown",
+        "evidence": [
+          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
+        ],
+        "reviewStatus": "needs-curation"
+      }
+    },
+    {
+      "id": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
+      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica Norte",
+      "region": "nazare",
+      "municipality": "NAZARÉ",
       "coastExposure": {
         "bearing": 270,
         "compass": "W",
-        "label": "West-facing regional estimate",
-        "confidence": "regional",
-        "source": "legacy-regional",
+        "label": "W-facing Surfline-derived exposure",
+        "confidence": "spot",
+        "source": "surfline-metadata",
+        "sourceSpotId": "surfline-nazare",
+        "sourceDistanceKm": 0.1,
         "evidence": [
-          "Existing surf-rating fallback: West-facing regional estimate"
+          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
+          "Provider source: surfline-offshoreDirection",
+          "Matched from nazare-forte-sao-miguel-arcanjo-panoramica-1 to surfline-nazare at 0.1km",
+          "Mapping confidence: name",
+          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
       }
     },
     {
       "id": "praia-das-moitas-estatica",
-      "name": "Praia das Moitas | Estática ",
+      "name": "Praia das Moitas | Estática",
       "region": "cascais",
       "municipality": "CASCAIS",
       "coastExposure": {
@@ -3394,23 +3519,6 @@
           "Auto-remapped from cached Surfline coordinates; primary Praia das Moitas is 0.1km away with name score 1.00."
         ],
         "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "farol-do-bugio-sul",
-      "name": "Farol do Bugio Sul",
-      "region": "lagos-e-rios",
-      "municipality": "LISBOA",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
       }
     },
     {
@@ -3437,25 +3545,8 @@
       }
     },
     {
-      "id": "viana-do-castelo-wakepark",
-      "name": "Viana do Castelo | Wake Park ",
-      "region": "lagos-e-rios",
-      "municipality": "VIANA DO CASTELO",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
       "id": "costa-da-caparica-cds-norte-estatica",
-      "name": "Costa de Caparica | CDS NORTE | Estática ",
+      "name": "Costa de Caparica | CDS NORTE | Estática",
       "region": "almada",
       "municipality": "ALMADA",
       "coastExposure": {
@@ -3488,23 +3579,6 @@
       }
     },
     {
-      "id": "ski-clube-quinta-grande",
-      "name": "Ski Clube Quinta Grande",
-      "region": "lagos-e-rios",
-      "municipality": "CORUCHE",
-      "coastExposure": {
-        "bearing": null,
-        "compass": "unknown",
-        "label": "Unknown exposure",
-        "confidence": "unknown",
-        "source": "unknown",
-        "evidence": [
-          "No reliable Surfline metadata, MEO description, legacy fallback, or regional heuristic found."
-        ],
-        "reviewStatus": "needs-curation"
-      }
-    },
-    {
       "id": "costadecaparicapraianorteestatica",
       "name": "Costa de Caparica | Praia Norte | Estática",
       "region": "almada",
@@ -3517,86 +3591,6 @@
         "source": "legacy-regional",
         "evidence": [
           "Existing surf-rating fallback: West-facing regional estimate"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
-      "name": "Nazaré | Forte S. Miguel Arcanjo Panorâmica Norte",
-      "region": "nazare",
-      "municipality": "NAZARÉ",
-      "coastExposure": {
-        "bearing": 270,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-nazare",
-        "sourceDistanceKm": 0.1,
-        "evidence": [
-          "Surfline metadata surfline-nazare Nazaré coastExposure.bearing=270",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from nazare-forte-sao-miguel-arcanjo-panoramica-1 to surfline-nazare at 0.1km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Nazaré is 0.1km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-quarteira-este",
-      "name": "Praia Quarteira | Este",
-      "region": "algarve",
-      "municipality": "LOULÉ",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-da-adraga",
-      "name": "Praia da Adraga",
-      "region": "sintra",
-      "municipality": "SINTRA",
-      "coastExposure": {
-        "bearing": 280,
-        "compass": "W",
-        "label": "W-facing Surfline-derived exposure",
-        "confidence": "spot",
-        "source": "surfline-metadata",
-        "sourceSpotId": "surfline-praia-grande",
-        "sourceDistanceKm": 1.5,
-        "evidence": [
-          "Surfline metadata surfline-praia-grande Praia Grande coastExposure.bearing=280",
-          "Provider source: surfline-offshoreDirection",
-          "Matched from praia-da-adraga to surfline-praia-grande at 1.5km",
-          "Mapping confidence: name",
-          "Auto-remapped from cached Surfline coordinates; primary Praia da Adraga is 0.2km away with name score 1.00."
-        ],
-        "reviewStatus": "generated"
-      }
-    },
-    {
-      "id": "praia-quarteira-oeste",
-      "name": "Praia Quarteira | Oeste",
-      "region": "algarve",
-      "municipality": "LOULÉ",
-      "coastExposure": {
-        "bearing": 180,
-        "compass": "S",
-        "label": "South-facing Algarve regional estimate",
-        "confidence": "heuristic",
-        "source": "region-heuristic",
-        "evidence": [
-          "Aggressive regional heuristic for algarve"
         ],
         "reviewStatus": "generated"
       }

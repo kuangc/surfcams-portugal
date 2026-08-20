@@ -1613,6 +1613,13 @@ video {
   box-shadow: none;
 }
 
+.explore-feed-context {
+  min-height: 1.2em;
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  font-weight: 740;
+}
+
 .spot-panel__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -2002,6 +2009,22 @@ button.stretch-tile[aria-current="true"] {
 .cam-marker[data-fit="poor"],
 .cam-marker[data-live="false"] {
   background: var(--red);
+}
+
+.cam-marker[data-kind="info"] {
+  background: var(--blue);
+}
+
+.cam-marker[data-kind="info"]::before {
+  content: "i";
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1;
 }
 
 .cam-marker[data-active="true"] {

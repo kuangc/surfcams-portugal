@@ -35,6 +35,7 @@ test("gate: trusted MEO cam -> spot coverage with linkedCamId", () => {
   assert.equal(alpha.promoted, true);
   assert.equal(alpha.hasStream, false);
   assert.equal(alpha.region, "ericeira");
+  assert.equal(Object.hasOwn(alpha, "surflineCams"), false);
 });
 
 test("gate: stretch member without at-spot cam -> stretch coverage", () => {
@@ -51,12 +52,14 @@ test("gate: no cam, no stretch, no surfline cam -> deferred", () => {
   assert.ok(!out.promoted.find((s) => s.id === "surfline-gamma"));
 });
 
-test("surfline native cam alone passes the gate", () => {
+test("Surfline camera media alone cannot make a spot playable or promoted", () => {
   const noMatches = { matches: [] };
   const out = buildPromotedSpots({ surflineDb, meoDb, matchesDb: noMatches, stretches, promotions });
-  const alpha = out.promoted.find((s) => s.id === "surfline-alpha");
-  assert.equal(alpha.camCoverage, "spot"); // via surflineCams
-  assert.equal(alpha.linkedCamId, null);
+  assert.equal(out.promoted.some((spot) => spot.id === "surfline-alpha"), false);
+  assert.match(
+    out.deferred.find((spot) => spot.surflineSpotId === "surfline-alpha")?.reason || "",
+    /no trusted MEO cam and not on a stretch/i
+  );
 });
 
 test("rejected rows are excluded even when nearest", () => {

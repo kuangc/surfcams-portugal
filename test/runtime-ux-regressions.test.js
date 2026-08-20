@@ -36,9 +36,10 @@ test("gallery and Explore video plus Retry controls carry camera-specific access
 
   assert.match(tileSource, /video\.setAttribute\("aria-label", `\$\{camera\.name\} live camera`\)/);
   assert.match(tileSource, /retryButton\.setAttribute\("aria-label", `[^`]*\$\{camera\.name\}[^`]*`\)/);
-  assert.match(exploreSelectionSource, /exploreVideo\.setAttribute\("aria-label", `\$\{camera\.name\} live camera`\)/);
-  assert.match(exploreSelectionSource, /exploreRetry[^\n]*setAttribute\("aria-label", `[^`]*\$\{camera\.name\}[^`]*`\)/);
-  assert.match(html, /id="map"[^>]*aria-label="Surf camera map"/);
+  assert.match(exploreSelectionSource, /const playbackCamera = exploreCameraForSubject\(camera\)/);
+  assert.match(exploreSelectionSource, /exploreVideo\.setAttribute\("aria-label", `\$\{playbackCamera\.name\} MEO live camera`\)/);
+  assert.match(exploreSelectionSource, /exploreRetry[^\n]*setAttribute\("aria-label", `[^`]*\$\{playbackCamera\.name\} MEO live camera`\)/);
+  assert.match(html, /id="map"[^>]*aria-label="Surf camera and wave information map"/);
 });
 
 test("Explore exposes a visible Retry wired to the existing persistent player", () => {
@@ -49,7 +50,7 @@ test("Explore exposes a visible Retry wired to the existing persistent player", 
   );
   assert.match(
     mainSource,
-    /els\.exploreRetry\.addEventListener\("click",[\s\S]*state\.explorePlayer\.(?:resume|play)\(state\.selectedExploreCamera\)/
+    /els\.exploreRetry\.addEventListener\("click",[\s\S]*const playbackCamera = exploreCameraForSubject\(state\.selectedExploreCamera\)[\s\S]*state\.explorePlayer\.play\(playbackCamera\)/
   );
 });
 

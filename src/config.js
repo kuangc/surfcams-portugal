@@ -15,7 +15,6 @@ export const INITIAL_BOUNDS_IDS = [
 export const FAVORITE_STORAGE_KEY = "surfcamFavoriteIds:v3";
 export const SURF_PREFERENCES_STORAGE_KEY = "surfcamSurfPreferences:v3";
 export const CAMERA_DB_URL = "./data/beachcam-cameras.json";
-export const LOCAL_STREAM_OVERRIDES_URL = "./data/local-stream-overrides.json";
 export const SURFLINE_SPOTS_URL = "./data/surfline-spots.json";
 export const MEO_SPOTS_URL = "./data/meo-spots.json";
 export const MEO_SURFLINE_MATCHES_URL = "./data/meo-surfline-matches.json";

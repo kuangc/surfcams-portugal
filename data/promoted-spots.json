@@ -1,15 +1,15 @@
 {
  "schemaVersion": 1,
- "generatedAt": "2026-07-07T05:42:00.143Z",
+ "generatedAt": "2026-08-19T08:34:35.976Z",
  "total": 42,
  "deferred": [
   {
    "surflineSpotId": "surfline-cave",
-   "reason": "no trusted cam, no surfline cam, not on a stretch"
+   "reason": "no trusted MEO cam and not on a stretch"
   },
   {
    "surflineSpotId": "surfline-praia-da-ursa",
-   "reason": "no trusted cam, no surfline cam, not on a stretch"
+   "reason": "no trusted MEO cam and not on a stretch"
   }
  ],
  "promoted": [
@@ -31,20 +31,6 @@
     "spotId": "58bdfa7882d034001252e3d8",
     "pageUrl": "https://www.surfline.com/surf-report/nazare/58bdfa7882d034001252e3d8"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Nazare Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazareov/latest_small.jpg"
-    },
-    {
-     "title": "PT - Nazare Close Up",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazarecloseup/latest_small.jpg"
-    },
-    {
-     "title": "PT - Nazare",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-nazare/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -124,12 +110,6 @@
     "spotId": "5842041f4e65fad6a7708bc6",
     "pageUrl": "https://www.surfline.com/surf-report/baleal/5842041f4e65fad6a7708bc6"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Baleal",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baleal/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -206,12 +186,6 @@
     "spotId": "58bdf3a70cec4200133464f2",
     "pageUrl": "https://www.surfline.com/surf-report/lagide/58bdf3a70cec4200133464f2"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Lagide",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-lagide/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Lefts",
@@ -286,16 +260,6 @@
     "spotId": "5a1c9e91cbecc0001bb480c8",
     "pageUrl": "https://www.surfline.com/surf-report/cantinho-da-baia/5a1c9e91cbecc0001bb480c8"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Cantinho da Baia Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiaoverview/latest_small.jpg"
-    },
-    {
-     "title": "PT - Cantinho da Baia",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-baiacantinho/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -370,16 +334,6 @@
     "spotId": "5842041f4e65fad6a7708bc3",
     "pageUrl": "https://www.surfline.com/surf-report/supertubos/5842041f4e65fad6a7708bc3"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Supertubos Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubosoverview/latest_small.jpg"
-    },
-    {
-     "title": "PT - Supertubos",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-supertubos/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -455,7 +409,6 @@
     "spotId": "5a53f6e5a8b6a9001b017369",
     "pageUrl": "https://www.surfline.com/surf-report/consolacao/5a53f6e5a8b6a9001b017369"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [
      "Reef",
@@ -524,7 +477,6 @@
     "spotId": "584204204e65fad6a77099d9",
     "pageUrl": "https://www.surfline.com/surf-report/santa-cruz/584204204e65fad6a77099d9"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -600,16 +552,6 @@
     "spotId": "5842041f4e65fad6a7708bc2",
     "pageUrl": "https://www.surfline.com/surf-report/ribeira-d-ilhas/5842041f4e65fad6a7708bc2"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Ribeira d'Ilhas",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhas/latest_small.jpg"
-    },
-    {
-     "title": "PT - Ribeira d'Ilhas Close-Up",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-ribeiradeilhascloseup/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -687,12 +629,6 @@
     "spotId": "5842041f4e65fad6a7708bc1",
     "pageUrl": "https://www.surfline.com/surf-report/reef/5842041f4e65fad6a7708bc1"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Reef",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-reef/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -765,12 +701,6 @@
     "spotId": "584204204e65fad6a77096ae",
     "pageUrl": "https://www.surfline.com/surf-report/pedra-branca/584204204e65fad6a77096ae"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Pedra Branca",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pedrabranca/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Lefts",
@@ -846,7 +776,6 @@
     "spotId": "64bbfc3868c6112c8d112deb",
     "pageUrl": "https://www.surfline.com/surf-report/matadouro/64bbfc3868c6112c8d112deb"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [
      "Point",
@@ -917,12 +846,6 @@
     "spotId": "5fb2c2da7057d993d9d2caa3",
     "pageUrl": "https://www.surfline.com/surf-report/praia-do-sul/5fb2c2da7057d993d9d2caa3"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Praia do Sul",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiadosulericeira/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -997,16 +920,6 @@
     "spotId": "5842041f4e65fad6a7708bbd",
     "pageUrl": "https://www.surfline.com/surf-report/foz-do-lizandro/5842041f4e65fad6a7708bbd"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Foz do Lizandro",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandro/latest_small.jpg"
-    },
-    {
-     "title": "PT - Foz do Lizandro Front",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fozdolizandrofront/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -1080,7 +993,6 @@
     "spotId": "640b9cda4878ebfad81e2b72",
     "pageUrl": "https://www.surfline.com/surf-report/s-o-juli-o/640b9cda4878ebfad81e2b72"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [
      "Beach_Break"
@@ -1150,7 +1062,6 @@
     "spotId": "601853a64071addd994eeb43",
     "pageUrl": "https://www.surfline.com/surf-report/praia-das-macas/601853a64071addd994eeb43"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1178,12 +1089,6 @@
     "spotId": "584204214e65fad6a7709d28",
     "pageUrl": "https://www.surfline.com/surf-report/praia-pequena/584204214e65fad6a7709d28"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Praia Pequena",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiapequena/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1215,12 +1120,6 @@
     "spotId": "5842041f4e65fad6a7708e62",
     "pageUrl": "https://www.surfline.com/surf-report/praia-grande/5842041f4e65fad6a7708e62"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Praia Grande",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-praiagrande/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -1298,7 +1197,6 @@
     "spotId": "640b9d054878eb35041e35bb",
     "pageUrl": "https://www.surfline.com/surf-report/praia-da-adraga/640b9d054878eb35041e35bb"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1326,12 +1224,6 @@
     "spotId": "5842041f4e65fad6a7708e64",
     "pageUrl": "https://www.surfline.com/surf-report/praia-do-guincho/5842041f4e65fad6a7708e64"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Praia Guincho Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-guincho/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -1413,7 +1305,6 @@
     "spotId": "640b9d60606c45bbe5f4841b",
     "pageUrl": "https://www.surfline.com/surf-report/praia-de-caxias/640b9d60606c45bbe5f4841b"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1441,7 +1332,6 @@
     "spotId": "640b9d679b6fab7dac307b39",
     "pageUrl": "https://www.surfline.com/surf-report/s-o-pedro-do-estoril/640b9d679b6fab7dac307b39"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1474,12 +1364,6 @@
     "spotId": "584204214e65fad6a7709d0c",
     "pageUrl": "https://www.surfline.com/surf-report/paco-de-arcos/584204214e65fad6a7709d0c"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Paco de Arcos",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-pacodearcos/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1511,7 +1395,6 @@
     "spotId": "640b9d6db6d769d0c8951b5b",
     "pageUrl": "https://www.surfline.com/surf-report/parede/640b9d6db6d769d0c8951b5b"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1544,7 +1427,6 @@
     "spotId": "640b9d10de81d566960e2892",
     "pageUrl": "https://www.surfline.com/surf-report/praia-da-laje/640b9d10de81d566960e2892"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1577,12 +1459,6 @@
     "spotId": "584204214e65fad6a7709d13",
     "pageUrl": "https://www.surfline.com/surf-report/santo-amaro/584204214e65fad6a7709d13"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Santo Amaro",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-santoamaro/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1619,20 +1495,6 @@
     "spotId": "5842041f4e65fad6a7708bc0",
     "pageUrl": "https://www.surfline.com/surf-report/carcavelos/5842041f4e65fad6a7708bc0"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Carcavelos Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosov/latest_small.jpg"
-    },
-    {
-     "title": "PT - Carcavelos Reef",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelosreef/latest_small.jpg"
-    },
-    {
-     "title": "PT - Carcavelos FPS",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-carcavelos/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -1713,7 +1575,6 @@
     "spotId": "602d64e1d663ff28d7a951c2",
     "pageUrl": "https://www.surfline.com/surf-report/praia-de-torre/602d64e1d663ff28d7a951c2"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1732,7 +1593,7 @@
    "lon": -9.26191,
    "region": "almada",
    "hasStream": false,
-   "camCoverage": "spot",
+   "camCoverage": "stretch",
    "linkedCamId": null,
    "linkedCamDistanceKm": null,
    "stretchId": "caparica",
@@ -1750,12 +1611,6 @@
     "spotId": "584204204e65fad6a77096ad",
     "pageUrl": "https://www.surfline.com/surf-report/cova-do-vapor/584204204e65fad6a77096ad"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Cova Do Vapor",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-covadovapor/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -1826,7 +1681,7 @@
    "lon": -9.2526,
    "region": "almada",
    "hasStream": false,
-   "camCoverage": "spot",
+   "camCoverage": "stretch",
    "linkedCamId": null,
    "linkedCamDistanceKm": null,
    "stretchId": "caparica",
@@ -1844,12 +1699,6 @@
     "spotId": "5dbb587ff387900001fee288",
     "pageUrl": "https://www.surfline.com/surf-report/sao-joao-da-caparica/5dbb587ff387900001fee288"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Sao Joao Caparica",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-saojoaocaparica/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1890,7 +1739,6 @@
     "spotId": "584204214e65fad6a7709d15",
     "pageUrl": "https://www.surfline.com/surf-report/marcelino/584204214e65fad6a7709d15"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1931,12 +1779,6 @@
     "spotId": "584204214e65fad6a7709d16",
     "pageUrl": "https://www.surfline.com/surf-report/praia-do-barbas/584204214e65fad6a7709d16"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Barbas",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-barbas/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -1977,20 +1819,6 @@
     "spotId": "5842041f4e65fad6a7708e65",
     "pageUrl": "https://www.surfline.com/surf-report/costa-da-caparica/5842041f4e65fad6a7708e65?camId=60956af96fe5bbe4ad8557fc"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Costa da Caparica Overview",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costadacaparicaoverview/latest_small.jpg"
-    },
-    {
-     "title": "PT - CDS Costa Caparica",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-cdscaparica/latest_small.jpg"
-    },
-    {
-     "title": "PT - Costa da Caparica",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-costacaparica/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -2080,7 +1908,6 @@
     "spotId": "640b9d48b6d7692692951263",
     "pageUrl": "https://www.surfline.com/surf-report/praia-da-saude/640b9d48b6d7692692951263"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2117,7 +1944,6 @@
     "spotId": "5dbf6037eb8ddf00015a883f",
     "pageUrl": "https://www.surfline.com/surf-report/praia-da-cornelia/5dbf6037eb8ddf00015a883f"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2158,7 +1984,6 @@
     "spotId": "602d65b2c30216a5fdf26598",
     "pageUrl": "https://www.surfline.com/surf-report/praia-da-rainha/602d65b2c30216a5fdf26598"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2195,12 +2020,6 @@
     "spotId": "584204204e65fad6a77099d8",
     "pageUrl": "https://www.surfline.com/surf-report/castelo/584204204e65fad6a77099d8"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Castelo",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-castelo/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -2286,7 +2105,6 @@
     "spotId": "640b9d4ede81d58fdf0e363b",
     "pageUrl": "https://www.surfline.com/surf-report/praia-do-pescador/640b9d4ede81d58fdf0e363b"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2323,7 +2141,6 @@
     "spotId": "640b9d54de81d5217b0e37a6",
     "pageUrl": "https://www.surfline.com/surf-report/praia-do-rei/640b9d54de81d5217b0e37a6"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2360,16 +2177,6 @@
     "spotId": "584204204e65fad6a77099d5",
     "pageUrl": "https://www.surfline.com/surf-report/fonte-da-telha/584204204e65fad6a77099d5"
    },
-   "surflineCams": [
-    {
-     "title": "PT - Fonta da Telha Front",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelhafront/latest_small.jpg"
-    },
-    {
-     "title": "PT - Fonte da Telha",
-     "stillUrl": "https://camstills.cdn-surfline.com/eu-west-1/pt-fontedatelha/latest_small.jpg"
-    }
-   ],
    "surfMetadata": {
     "breakType": [
      "Rights",
@@ -2442,7 +2249,6 @@
     "spotId": "640b9cfe4878eb47751e344d",
     "pageUrl": "https://www.surfline.com/surf-report/lagoa-de-albufeira/640b9cfe4878eb47751e344d"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2470,7 +2276,6 @@
     "spotId": "640b9cf8606c45e808f46d79",
     "pageUrl": "https://www.surfline.com/surf-report/bicas/640b9cf8606c45e808f46d79"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,
@@ -2498,7 +2303,6 @@
     "spotId": "640b9cf38284fe0e10b17b6d",
     "pageUrl": "https://www.surfline.com/surf-report/sesimbra/640b9cf38284fe0e10b17b6d"
    },
-   "surflineCams": [],
    "surfMetadata": {
     "breakType": [],
     "best": null,

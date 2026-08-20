@@ -96,7 +96,7 @@ test("normalization makes copy-safe immutable maps and retains the identity repo
   assert.equal(Object.isFrozen(caxias), true);
   assert.equal(normalized.identityByCameraId.get("praia-sesimbra"), "surfline-sesimbra");
   assert.equal(normalized.identityReport.selectedSurflineIds.length, 44);
-  assert.equal(normalized.identityReport.adviceBearingCameraIds.length, 53);
+  assert.equal(normalized.identityReport.adviceBearingCameraIds.length, 52);
   assert.equal(normalized.subjectsById.get("surfline-cave").guideOnly, true);
   assert.equal(normalized.subjectsById.get("surfline-praia-da-ursa").guideOnly, true);
   assert.throws(() => normalized.subjectsById.set("x", {}), /read-only/i);

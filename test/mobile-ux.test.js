@@ -42,6 +42,16 @@ test("aggregate marker labels stay concise for dense coastal groups", () => {
   );
 });
 
+test("aggregate marker labels describe mixed camera and wave-information groups as spots", () => {
+  assert.equal(
+    mobileUx.aggregateMapMarkerLabel?.([
+      { location: "Almada", hasStream: true },
+      { location: "Almada", exploreInformationOnly: true }
+    ]),
+    "2 surf spots near Almada. Activate to zoom in."
+  );
+});
+
 test("favorite camera results require intent from a useful query or filter", () => {
   assert.equal(shouldShowFavoriteResults({ query: "", region: "", provider: "" }), false);
   assert.equal(shouldShowFavoriteResults({ query: " s ", region: "", provider: "" }), false);

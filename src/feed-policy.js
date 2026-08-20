@@ -8,16 +8,43 @@ function normalizeText(value) {
 
 function httpsStreamUrl(value) {
   if (typeof value !== "string") return null;
-  const normalized = value.trim();
   try {
-    const url = new URL(normalized);
-    return url.protocol === "https:"
-      && url.hostname === MEO_STREAM_HOST
-      && !url.username
-      && !url.password
-      && !url.port
-      ? normalized
-      : null;
+    const url = new URL(value.trim());
+    if (
+      url.protocol !== "https:"
+      || url.hostname !== MEO_STREAM_HOST
+      || url.username
+      || url.password
+      || url.port
+      || !/^\/(?:auth-)?beachcam\/[a-z0-9_-]+\/playlist\.m3u8$/i.test(url.pathname)
+      || url.search
+      || url.hash
+    ) {
+      return null;
+    }
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+function meoImageUrl(value) {
+  if (typeof value !== "string") return null;
+  try {
+    const url = new URL(value.trim());
+    if (
+      !["http:", "https:"].includes(url.protocol)
+      || url.hostname !== "beachcam.meo.pt"
+      || url.username
+      || url.password
+      || url.port
+      || !url.pathname.startsWith("/media/")
+      || url.hash
+    ) {
+      return null;
+    }
+    url.protocol = "https:";
+    return url.toString();
   } catch {
     return null;
   }
@@ -68,8 +95,14 @@ function normalizeNativeCamera(camera) {
 
   const livecamId = normalizeText(camera.livecamId);
   const feedCameraId = livecamId || id;
+  const {
+    poster: _untrustedPoster,
+    stillUrl: _untrustedStill,
+    surflineCams: _untrustedCameraMetadata,
+    ...safeCamera
+  } = camera;
   const normalized = {
-    ...camera,
+    ...safeCamera,
     id,
     name,
     location,
@@ -79,7 +112,9 @@ function normalizeNativeCamera(camera) {
     feedCameraId,
     hasStream: true
   };
-  if (typeof camera.image === "string") normalized.image = camera.image.trim();
+  const image = meoImageUrl(camera.image);
+  if (image) normalized.image = image;
+  else delete normalized.image;
   if (typeof camera.livecamId === "string") normalized.livecamId = livecamId;
   return normalized;
 }

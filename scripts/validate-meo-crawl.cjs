@@ -17,8 +17,39 @@ const RENAMED_IDS = Object.freeze({
   "espinho-silvade": "espinho-silvalde",
   espinhosilvadeestatica: "espinhosilvaldeestatica"
 });
+const EXPECTED_ACTIVATED_FEEDS = Object.freeze({
+  "meia-praia": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/meiapraia/playlist.m3u8",
+    videoId: "130294768/beachcam/web/meia-praia/live/VIDEO"
+  }),
+  vagueira: Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bclabrego/playlist.m3u8",
+    videoId: "130294768/beachcam/web/vagueira/live/VIDEO"
+  }),
+  "pedra-do-ouro": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bcpraiaouro/playlist.m3u8",
+    videoId: "130294768/beachcam/web/pedra-do-ouro/live/VIDEO"
+  }),
+  "vagueira-areao": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bcareao/playlist.m3u8",
+    videoId: "130294768/beachcam/web/vagueira-areao/live/VIDEO"
+  }),
+  "nazare-forte-sao-miguel-arcanjo-panoramica": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bcarcanjo2/playlist.m3u8",
+    videoId: "130294768/beachcam/web/nazare-forte-sao-miguel-arcanjo-panoramica/live/VIDEO"
+  }),
+  "ski-clube-quinta-grande": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bcquintagrande1/playlist.m3u8",
+    videoId: "130294768/beachcam/web/ski-clube-quinta-grande/live/VIDEO"
+  }),
+  "nazare-forte-sao-miguel-arcanjo-panoramica-1": Object.freeze({
+    streamUrl: "video-auth1.iol.pt/beachcam/bcarcanjo1/playlist.m3u8",
+    videoId: "130294768/beachcam/web/nazare-forte-sao-miguel-arcanjo-panoramica-1/live/VIDEO"
+  })
+});
+const EXPECTED_DEACTIVATED_FEEDS = new Set(["porto-carneiro"]);
 const REQUIRED_TOTAL = 190;
-const REQUIRED_PLAYABLE = 148;
+const REQUIRED_PLAYABLE = 154;
 const REQUIRED_MULTICAM = 73;
 const STREAM_HOST = "video-auth1.iol.pt";
 
@@ -154,17 +185,33 @@ function validateStableIdentities(baselineById, candidateById, removedIds, added
       errors.push(`stable camera ${id} changed region from ${beforeRegion} to ${afterRegion}`);
     }
 
-    if (Boolean(before.hasStream) !== Boolean(after.hasStream)) {
-      errors.push(`stable camera ${id} changed hasStream`);
-    }
     if (normalizeIdentityText(before.livecamId) !== normalizeIdentityText(after.livecamId)) {
       errors.push(`stable camera ${id} changed livecamId`);
     }
-    if (comparableStreamIdentity(before.streamUrl) !== comparableStreamIdentity(after.streamUrl)) {
-      errors.push(`stable camera ${id} changed streamUrl`);
-    }
-    if (String(before.videoId || "") !== String(after.videoId || "")) {
-      errors.push(`stable camera ${id} changed videoId`);
+    const availabilityChanged = Boolean(before.hasStream) !== Boolean(after.hasStream);
+    if (availabilityChanged) {
+      const expectedActivation = EXPECTED_ACTIVATED_FEEDS[id];
+      if (expectedActivation && after.hasStream === true) {
+        if (comparableStreamIdentity(after.streamUrl) !== expectedActivation.streamUrl) {
+          errors.push(`stable camera ${id} activated with an unexpected streamUrl`);
+        }
+        if (String(after.videoId || "") !== expectedActivation.videoId) {
+          errors.push(`stable camera ${id} activated with an unexpected videoId`);
+        }
+      } else if (EXPECTED_DEACTIVATED_FEEDS.has(id) && after.hasStream === false) {
+        if (String(after.streamUrl || "") || String(after.videoId || "")) {
+          errors.push(`stable camera ${id} deactivated without clearing feed fields`);
+        }
+      } else {
+        errors.push(`stable camera ${id} changed hasStream unexpectedly`);
+      }
+    } else {
+      if (comparableStreamIdentity(before.streamUrl) !== comparableStreamIdentity(after.streamUrl)) {
+        errors.push(`stable camera ${id} changed streamUrl`);
+      }
+      if (String(before.videoId || "") !== String(after.videoId || "")) {
+        errors.push(`stable camera ${id} changed videoId`);
+      }
     }
   }
 }
@@ -289,15 +336,22 @@ function validateMeoCrawl({ baseline, candidate }) {
   const candidateIds = new Set(cameras.map((camera) => camera.id));
   const removedIds = sorted([...baselineIds].filter((id) => !candidateIds.has(id)));
   const addedIds = sorted([...candidateIds].filter((id) => !baselineIds.has(id)));
-  const expectedRemoved = sorted(EXPECTED_REMOVED_IDS);
-  const expectedAdded = sorted(EXPECTED_ADDED_IDS);
+  const isLegacyBaseline = EXPECTED_REMOVED_IDS.every((id) => baselineIds.has(id))
+    && EXPECTED_ADDED_IDS.every((id) => !baselineIds.has(id));
+  const isMigratedBaseline = EXPECTED_REMOVED_IDS.every((id) => !baselineIds.has(id))
+    && EXPECTED_ADDED_IDS.every((id) => baselineIds.has(id));
+  const expectedRemoved = isLegacyBaseline ? sorted(EXPECTED_REMOVED_IDS) : [];
+  const expectedAdded = isLegacyBaseline ? sorted(EXPECTED_ADDED_IDS) : [];
+  if (!isLegacyBaseline && !isMigratedBaseline) {
+    errors.push("baseline camera IDs do not match either the legacy or migrated MEO catalog state");
+  }
   if (!sameArray(removedIds, expectedRemoved) || !sameArray(addedIds, expectedAdded)) {
     errors.push(`camera ID delta must remove ${expectedRemoved.join(", ")} and add ${expectedAdded.join(", ")}; got removed ${removedIds.join(", ")} and added ${addedIds.join(", ")}`);
   }
 
   const baselineById = new Map(baselineCameras.map((camera) => [camera.id, camera]));
   const candidateById = new Map(cameras.map((camera) => [camera.id, camera]));
-  validateStableIdentities(baselineById, candidateById, EXPECTED_REMOVED_IDS, EXPECTED_ADDED_IDS, errors);
+  validateStableIdentities(baselineById, candidateById, expectedRemoved, expectedAdded, errors);
   validateRenamedFeeds(baselineById, candidateById, errors);
   validateMonteVerde(candidateById, errors);
 

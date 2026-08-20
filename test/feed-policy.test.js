@@ -29,7 +29,8 @@ function nativeCamera(overrides = {}) {
     region: "  lisboa  ",
     lat: 38.7,
     lon: -9.4,
-    image: "  http://beachcam.example/alpha.jpg  ",
+    image: "  http://beachcam.meo.pt/media/alpha.jpg  ",
+    poster: "https://camstills.cdn-surfline.com/alpha/latest_small.jpg",
     streamUrl: "  https://video-auth1.iol.pt/beachcam/alpha/playlist.m3u8  ",
     livecamId: " 42 ",
     hasStream: true,
@@ -66,6 +67,9 @@ test("MEO playback keeps provider-native identity and ignores every Surfline or 
     distinctNativeCamera("lookalike-meo-host", { streamUrl: "https://video-auth1.iol.pt.evil.test/live.m3u8" }),
     distinctNativeCamera("credentialed-meo-stream", { streamUrl: "https://user@video-auth1.iol.pt/live.m3u8" }),
     distinctNativeCamera("ported-meo-stream", { streamUrl: "https://video-auth1.iol.pt:444/live.m3u8" }),
+    distinctNativeCamera("wrong-meo-path", { streamUrl: "https://video-auth1.iol.pt/not-a-provider-feed/playlist.m3u8" }),
+    distinctNativeCamera("query-bearing-stream", { streamUrl: "https://video-auth1.iol.pt/beachcam/query/playlist.m3u8?token=secret" }),
+    distinctNativeCamera("fragment-bearing-stream", { streamUrl: "https://video-auth1.iol.pt/beachcam/fragment/playlist.m3u8#camera" }),
     distinctNativeCamera("bad-id/segment"),
     distinctNativeCamera("blank-name", { name: "  " }),
     distinctNativeCamera("blank-location", { location: "  " }),
@@ -74,6 +78,7 @@ test("MEO playback keeps provider-native identity and ignores every Surfline or 
     distinctNativeCamera("bad-lon", { lon: -181 })
   ] };
   const before = structuredClone(database);
+  const { poster: _untrustedPoster, ...trustedWithoutPoster } = trusted;
 
   // A legacy raw registry is deliberately passed as a second argument. The
   // MEO-only API must not inspect it or substitute any provider-owned fields.
@@ -87,17 +92,18 @@ test("MEO playback keeps provider-native identity and ignores every Surfline or 
 
   assert.deepEqual(database, before);
   assert.deepEqual(resolved, [{
-    ...trusted,
+    ...trustedWithoutPoster,
     name: "Alpha Beach",
     location: "CASCAIS",
     region: "lisboa",
-    image: "http://beachcam.example/alpha.jpg",
+    image: "https://beachcam.meo.pt/media/alpha.jpg",
     streamUrl: "https://video-auth1.iol.pt/beachcam/alpha/playlist.m3u8",
     livecamId: "42",
     streamSource: "meo",
     feedCameraId: "42",
     hasStream: true
   }]);
+  assert.equal(Object.hasOwn(resolved[0], "poster"), false);
 });
 
 test("MEO playback emits one row per logical id and physical feed id or URL", () => {
@@ -106,6 +112,11 @@ test("MEO playback emits one row per logical id and physical feed id or URL", ()
     first,
     nativeCamera({ id: "duplicate-id", livecamId: "101", streamUrl: "https://video-auth1.iol.pt/beachcam/other/playlist.m3u8" }),
     nativeCamera({ id: "duplicate-url", livecamId: "102", streamUrl: first.streamUrl }),
+    nativeCamera({
+      id: "canonical-duplicate-url",
+      livecamId: "104",
+      streamUrl: first.streamUrl.replace("video-auth1.iol.pt", "VIDEO-AUTH1.IOL.PT")
+    }),
     nativeCamera({ id: "first", livecamId: "103", streamUrl: "https://video-auth1.iol.pt/beachcam/id-duplicate/playlist.m3u8" }),
     nativeCamera({ id: "fallback-feed-id", livecamId: "", streamUrl: "https://video-auth1.iol.pt/beachcam/unique/playlist.m3u8" })
   ] });
@@ -168,7 +179,7 @@ test("the real playback roster is exactly the unique provider-native playable se
       location: source.location.trim().replace(/\s+/g, " "),
       lat: source.lat,
       lon: source.lon,
-      image: source.image.trim(),
+      image: source.image.trim().replace(/^http:/, "https:"),
       streamUrl: source.streamUrl.trim(),
       feedCameraId: source.livecamId.trim()
     });

@@ -95,9 +95,10 @@ test("normalized meo database mirrors the current camera index", () => {
   assert.equal(sesimbra.dynamicConcepts.hourly.includes("waveHeight"), true);
   assert.equal(sesimbra.staticMetadata.providerPageType, "beachcam-livecam");
 
-  const castelo = meoDb.spots.find((spot) => spot.id === "surfline-castelo");
-  assert.equal(castelo.provider, "surfline");
-  assert.equal(castelo.staticMetadata.providerPageType, "surfline-report");
+  assert.equal(meoDb.spots.some((spot) => spot.id === "surfline-castelo"), false);
+  const monteVerde = meoDb.spots.find((spot) => spot.id === "acores-ribeira-grande-praia-do-monte-verde");
+  assert.equal(monteVerde.name, "Praia do Monte Verde");
+  assert.equal(monteVerde.provider, "meo-beachcam");
 });
 
 test("mapping links default favorites to one or more surfline spots", () => {
@@ -193,7 +194,7 @@ test("Surfline mapping review artifact exposes cached page titles", () => {
   assert.match(caparica.extractedTitle, /Costa da Caparica/);
   assert.equal(caparica.titleSource, "h1");
   assert.ok(caparica.cachePath.endsWith(".cache/surfline/pages/surfline-costa-da-caparica.html"));
-  assert.equal(castelo.cacheStatus, "browser-fetched");
+  assert.equal(castelo.cacheStatus, "reused-review");
   assert.ok(castelo.cachePath.endsWith(".cache/surfline/pages/surfline-castelo.html"));
   assert.match(rainha.extractedTitle, /Praia da Rainha/);
   assert.equal(rainha.titleSource, "h1");

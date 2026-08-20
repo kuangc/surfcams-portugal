@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-10T15:20:35.590Z",
+  "generatedAt": "2026-08-19T08:34:02.253Z",
   "origin": {
     "label": "Central Lisbon",
     "lat": 38.7223,
     "lon": -9.1393
   },
   "method": {
-    "type": "osrm-table",
-    "note": "Build-time OSRM table refresh. Distances are fastest-route road distances from Central Lisbon and durations are rounded to the nearest five minutes."
+    "type": "preserved-osrm-with-deterministic-fallback",
+    "preservedCount": 182,
+    "fallbackCount": 8,
+    "totalCount": 190,
+    "note": "Preserves plausible build-time OSRM routes for unchanged cameras and uses deterministic distance estimates for new or changed cameras."
   },
   "estimates": [
     {
@@ -60,18 +63,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-do-norte",
-      "distanceKm": 98.2,
-      "routeDistanceKm": 123.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 90,
-      "label": "~1h 30m",
-      "distanceLabel": "~125km",
-      "routeDistanceMeters": 123734,
-      "durationSeconds": 5480,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "praia-de-espinho",
       "distanceKm": 257.8,
       "routeDistanceKm": 299.8,
@@ -81,18 +72,6 @@
       "distanceLabel": "~300km",
       "routeDistanceMeters": 299812,
       "durationSeconds": 11835,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-do-guincho",
-      "distanceKm": 29.1,
-      "routeDistanceKm": 34.1,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~35km",
-      "routeDistanceMeters": 34108,
-      "durationSeconds": 1597,
       "source": "osrm-table"
     },
     {
@@ -108,18 +87,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "peniche-supertubos",
-      "distanceKm": 72,
-      "routeDistanceKm": 99.1,
-      "profile": "regional-long",
-      "estimatedMinutes": 75,
-      "label": "~1h 15m",
-      "distanceLabel": "~100km",
-      "routeDistanceMeters": 99108,
-      "durationSeconds": 4563,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "praia-da-nazare",
       "distanceKm": 98.1,
       "routeDistanceKm": 122.1,
@@ -129,6 +96,42 @@
       "distanceLabel": "~120km",
       "routeDistanceMeters": 122115,
       "durationSeconds": 5476,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "santa-cruz",
+      "distanceKm": 51.3,
+      "routeDistanceKm": 66.7,
+      "profile": "regional-long",
+      "estimatedMinutes": 60,
+      "label": "~1h",
+      "distanceLabel": "~65km",
+      "routeDistanceMeters": 66715,
+      "durationSeconds": 3550,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-do-guincho",
+      "distanceKm": 29.1,
+      "routeDistanceKm": 34.1,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~35km",
+      "routeDistanceMeters": 34108,
+      "durationSeconds": 1597,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "peniche-supertubos",
+      "distanceKm": 72,
+      "routeDistanceKm": 99.1,
+      "profile": "regional-long",
+      "estimatedMinutes": 75,
+      "label": "~1h 15m",
+      "distanceLabel": "~100km",
+      "routeDistanceMeters": 99108,
+      "durationSeconds": 4563,
       "source": "osrm-table"
     },
     {
@@ -144,15 +147,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "santa-cruz",
-      "distanceKm": 51.3,
-      "routeDistanceKm": 66.7,
+      "meoSpotId": "praia-do-norte",
+      "distanceKm": 98.2,
+      "routeDistanceKm": 123.7,
       "profile": "regional-long",
-      "estimatedMinutes": 60,
-      "label": "~1h",
-      "distanceLabel": "~65km",
-      "routeDistanceMeters": 66715,
-      "durationSeconds": 3550,
+      "estimatedMinutes": 90,
+      "label": "~1h 30m",
+      "distanceLabel": "~125km",
+      "routeDistanceMeters": 123734,
+      "durationSeconds": 5480,
       "source": "osrm-table"
     },
     {
@@ -192,18 +195,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "ribeira-dilhas",
-      "distanceKm": 38.1,
-      "routeDistanceKm": 51.4,
-      "profile": "regional",
-      "estimatedMinutes": 45,
-      "label": "~45m",
-      "distanceLabel": "~50km",
-      "routeDistanceMeters": 51435,
-      "durationSeconds": 2671,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "peniche-baleal-panoramica",
       "distanceKm": 73.9,
       "routeDistanceKm": 98,
@@ -216,39 +207,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-da-rocha",
-      "distanceKm": 185.9,
-      "routeDistanceKm": 283.1,
+      "meoSpotId": "ribeira-dilhas",
+      "distanceKm": 38.1,
+      "routeDistanceKm": 51.4,
       "profile": "regional",
-      "estimatedMinutes": 190,
-      "label": "~3h 10m",
-      "distanceLabel": "~285km",
-      "routeDistanceMeters": 283060,
-      "durationSeconds": 11314,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "foz-do-arelho",
-      "distanceKm": 79.4,
-      "routeDistanceKm": 99.9,
-      "profile": "regional-long",
-      "estimatedMinutes": 75,
-      "label": "~1h 15m",
-      "distanceLabel": "~100km",
-      "routeDistanceMeters": 99909,
-      "durationSeconds": 4578,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "costa-da-caparica-praia-nova",
-      "distanceKm": 12.6,
-      "routeDistanceKm": 17.3,
-      "profile": "south-bank",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 17314,
-      "durationSeconds": 1115,
+      "estimatedMinutes": 45,
+      "label": "~45m",
+      "distanceLabel": "~50km",
+      "routeDistanceMeters": 51435,
+      "durationSeconds": 2671,
       "source": "osrm-table"
     },
     {
@@ -264,6 +231,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "foz-do-arelho",
+      "distanceKm": 79.4,
+      "routeDistanceKm": 99.9,
+      "profile": "regional-long",
+      "estimatedMinutes": 75,
+      "label": "~1h 15m",
+      "distanceLabel": "~100km",
+      "routeDistanceMeters": 99909,
+      "durationSeconds": 4578,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "leca-da-palmeira",
       "distanceKm": 276.8,
       "routeDistanceKm": 322.3,
@@ -273,66 +252,6 @@
       "distanceLabel": "~320km",
       "routeDistanceMeters": 322344,
       "durationSeconds": 12838,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "paredes-da-vitoria",
-      "distanceKm": 109.1,
-      "routeDistanceKm": 134.5,
-      "profile": "regional-long",
-      "estimatedMinutes": 100,
-      "label": "~1h 40m",
-      "distanceLabel": "~135km",
-      "routeDistanceMeters": 134458,
-      "durationSeconds": 5981,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "fonte-da-telha",
-      "distanceKm": 17.1,
-      "routeDistanceKm": 25.1,
-      "profile": "south-bank",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 25128,
-      "durationSeconds": 1628,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-da-falesia",
-      "distanceKm": 203.9,
-      "routeDistanceKm": 265,
-      "profile": "regional",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~265km",
-      "routeDistanceMeters": 265046,
-      "durationSeconds": 10925,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-do-amado",
-      "distanceKm": 160.4,
-      "routeDistanceKm": 245.8,
-      "profile": "regional",
-      "estimatedMinutes": 205,
-      "label": "~3h 25m",
-      "distanceLabel": "~245km",
-      "routeDistanceMeters": 245777,
-      "durationSeconds": 12222,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "sao-pedro-de-moel",
-      "distanceKm": 115.2,
-      "routeDistanceKm": 141,
-      "profile": "regional-long",
-      "estimatedMinutes": 110,
-      "label": "~1h 50m",
-      "distanceLabel": "~140km",
-      "routeDistanceMeters": 141022,
-      "durationSeconds": 6485,
       "source": "osrm-table"
     },
     {
@@ -348,27 +267,75 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "costa-de-caparica-sao-joao-cova-do-vapor",
-      "distanceKm": 12.1,
-      "routeDistanceKm": 18.6,
-      "profile": "south-bank",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 18614,
-      "durationSeconds": 1387,
+      "meoSpotId": "paredes-da-vitoria",
+      "distanceKm": 109.1,
+      "routeDistanceKm": 134.5,
+      "profile": "regional-long",
+      "estimatedMinutes": 100,
+      "label": "~1h 40m",
+      "distanceLabel": "~135km",
+      "routeDistanceMeters": 134458,
+      "durationSeconds": 5981,
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "sao-pedro-do-estoril",
-      "distanceKm": 20.2,
-      "routeDistanceKm": 24.2,
-      "profile": "urban-coast",
+      "meoSpotId": "praia-da-rocha",
+      "distanceKm": 185.9,
+      "routeDistanceKm": 283.1,
+      "profile": "regional",
+      "estimatedMinutes": 190,
+      "label": "~3h 10m",
+      "distanceLabel": "~285km",
+      "routeDistanceMeters": 283060,
+      "durationSeconds": 11314,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-da-caparica-praia-nova",
+      "distanceKm": 12.6,
+      "routeDistanceKm": 17.3,
+      "profile": "south-bank",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 17314,
+      "durationSeconds": 1115,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "sao-pedro-de-moel",
+      "distanceKm": 115.2,
+      "routeDistanceKm": 141,
+      "profile": "regional-long",
+      "estimatedMinutes": 110,
+      "label": "~1h 50m",
+      "distanceLabel": "~140km",
+      "routeDistanceMeters": 141022,
+      "durationSeconds": 6485,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "fonte-da-telha",
+      "distanceKm": 17.1,
+      "routeDistanceKm": 25.1,
+      "profile": "south-bank",
       "estimatedMinutes": 25,
       "label": "~25m",
       "distanceLabel": "~25km",
-      "routeDistanceMeters": 24189,
-      "durationSeconds": 1351,
+      "routeDistanceMeters": 25128,
+      "durationSeconds": 1628,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-canide-norte-sul",
+      "distanceKm": 268.9,
+      "routeDistanceKm": 310.9,
+      "profile": "regional-long",
+      "estimatedMinutes": 205,
+      "label": "~3h 25m",
+      "distanceLabel": "~310km",
+      "routeDistanceMeters": 310943,
+      "durationSeconds": 12360,
       "source": "osrm-table"
     },
     {
@@ -384,51 +351,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-da-luz",
-      "distanceKm": 185.3,
-      "routeDistanceKm": 303.8,
+      "meoSpotId": "praia-do-amado",
+      "distanceKm": 160.4,
+      "routeDistanceKm": 245.8,
       "profile": "regional",
       "estimatedMinutes": 205,
       "label": "~3h 25m",
-      "distanceLabel": "~305km",
-      "routeDistanceMeters": 303832,
-      "durationSeconds": 12152,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "costa-da-caparica-riviera",
-      "distanceKm": 13.4,
-      "routeDistanceKm": 19.8,
-      "profile": "south-bank",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 19772,
-      "durationSeconds": 1368,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "surfline-castelo",
-      "distanceKm": 13.9,
-      "routeDistanceKm": 20.6,
-      "profile": "south-bank",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 20562,
-      "durationSeconds": 1376,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-canide-norte-sul",
-      "distanceKm": 268.9,
-      "routeDistanceKm": 310.9,
-      "profile": "regional-long",
-      "estimatedMinutes": 205,
-      "label": "~3h 25m",
-      "distanceLabel": "~310km",
-      "routeDistanceMeters": 310943,
-      "durationSeconds": 12360,
+      "distanceLabel": "~245km",
+      "routeDistanceMeters": 245777,
+      "durationSeconds": 12222,
       "source": "osrm-table"
     },
     {
@@ -456,6 +387,42 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "praia-da-falesia",
+      "distanceKm": 203.9,
+      "routeDistanceKm": 265,
+      "profile": "regional",
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~265km",
+      "routeDistanceMeters": 265046,
+      "durationSeconds": 10925,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-de-caparica-sao-joao-cova-do-vapor",
+      "distanceKm": 12.1,
+      "routeDistanceKm": 18.6,
+      "profile": "south-bank",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 18614,
+      "durationSeconds": 1387,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-da-caparica-riviera",
+      "distanceKm": 13.4,
+      "routeDistanceKm": 19.8,
+      "profile": "south-bank",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 19772,
+      "durationSeconds": 1368,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "ericeira-praia-do-sul",
       "distanceKm": 35.4,
       "routeDistanceKm": 49.6,
@@ -465,6 +432,30 @@
       "distanceLabel": "~50km",
       "routeDistanceMeters": 49585,
       "durationSeconds": 2479,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "sao-pedro-do-estoril",
+      "distanceKm": 20.2,
+      "routeDistanceKm": 24.2,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 24189,
+      "durationSeconds": 1351,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-da-luz",
+      "distanceKm": 185.3,
+      "routeDistanceKm": 303.8,
+      "profile": "regional",
+      "estimatedMinutes": 205,
+      "label": "~3h 25m",
+      "distanceLabel": "~305km",
+      "routeDistanceMeters": 303832,
+      "durationSeconds": 12152,
       "source": "osrm-table"
     },
     {
@@ -504,27 +495,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "alvor",
-      "distanceKm": 184,
-      "routeDistanceKm": 286.3,
-      "profile": "regional",
-      "estimatedMinutes": 195,
-      "label": "~3h 15m",
-      "distanceLabel": "~285km",
-      "routeDistanceMeters": 286274,
-      "durationSeconds": 11646,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "meia-praia",
-      "distanceKm": 184,
-      "routeDistanceKm": 296.2,
-      "profile": "regional",
-      "estimatedMinutes": 200,
-      "label": "~3h 20m",
-      "distanceLabel": "~295km",
-      "routeDistanceMeters": 296167,
-      "durationSeconds": 11877,
+      "meoSpotId": "apulia",
+      "distanceKm": 308.6,
+      "routeDistanceKm": 359.1,
+      "profile": "regional-long",
+      "estimatedMinutes": 240,
+      "label": "~4h",
+      "distanceLabel": "~360km",
+      "routeDistanceMeters": 359137,
+      "durationSeconds": 14335,
       "source": "osrm-table"
     },
     {
@@ -540,27 +519,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-do-norte-canhao-nazare",
-      "distanceKm": 98.2,
-      "routeDistanceKm": 123.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 90,
-      "label": "~1h 30m",
-      "distanceLabel": "~125km",
-      "routeDistanceMeters": 123734,
-      "durationSeconds": 5480,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "carcavelos-calhau",
-      "distanceKm": 17.3,
-      "routeDistanceKm": 24.2,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 24245,
-      "durationSeconds": 1267,
+      "meoSpotId": "meia-praia",
+      "distanceKm": 184,
+      "routeDistanceKm": 296.2,
+      "profile": "regional",
+      "estimatedMinutes": 200,
+      "label": "~3h 20m",
+      "distanceLabel": "~295km",
+      "routeDistanceMeters": 296167,
+      "durationSeconds": 11877,
       "source": "osrm-table"
     },
     {
@@ -576,6 +543,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "alvor",
+      "distanceKm": 184,
+      "routeDistanceKm": 286.3,
+      "profile": "regional",
+      "estimatedMinutes": 195,
+      "label": "~3h 15m",
+      "distanceLabel": "~285km",
+      "routeDistanceMeters": 286274,
+      "durationSeconds": 11646,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "armacao-de-pera",
       "distanceKm": 192.9,
       "routeDistanceKm": 262.1,
@@ -588,42 +567,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "monte-clerigo",
-      "distanceKm": 154.6,
-      "routeDistanceKm": 238.9,
-      "profile": "regional",
-      "estimatedMinutes": 205,
-      "label": "~3h 25m",
-      "distanceLabel": "~240km",
-      "routeDistanceMeters": 238883,
-      "durationSeconds": 12315,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "apulia",
-      "distanceKm": 308.6,
-      "routeDistanceKm": 359.1,
-      "profile": "regional-long",
-      "estimatedMinutes": 240,
-      "label": "~4h",
-      "distanceLabel": "~360km",
-      "routeDistanceMeters": 359137,
-      "durationSeconds": 14335,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-da-torre",
-      "distanceKm": 16.7,
-      "routeDistanceKm": 20.5,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 20485,
-      "durationSeconds": 1167,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "praia-de-santa-rita",
       "distanceKm": 53.6,
       "routeDistanceKm": 66.7,
@@ -633,42 +576,6 @@
       "distanceLabel": "~65km",
       "routeDistanceMeters": 66658,
       "durationSeconds": 3530,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "costa-da-caparica-tarquinio",
-      "distanceKm": 12.4,
-      "routeDistanceKm": 16.8,
-      "profile": "south-bank",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 16829,
-      "durationSeconds": 1067,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-de-sao-torpes",
-      "distanceKm": 93.2,
-      "routeDistanceKm": 162.3,
-      "profile": "regional",
-      "estimatedMinutes": 115,
-      "label": "~1h 55m",
-      "distanceLabel": "~160km",
-      "routeDistanceMeters": 162265,
-      "durationSeconds": 6966,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "santa-cruz-praia-azul",
-      "distanceKm": 48.7,
-      "routeDistanceKm": 65.2,
-      "profile": "regional-long",
-      "estimatedMinutes": 60,
-      "label": "~1h",
-      "distanceLabel": "~65km",
-      "routeDistanceMeters": 65248,
-      "durationSeconds": 3580,
       "source": "osrm-table"
     },
     {
@@ -696,27 +603,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "faro",
-      "distanceKm": 216.1,
-      "routeDistanceKm": 280.1,
-      "profile": "regional",
-      "estimatedMinutes": 190,
-      "label": "~3h 10m",
-      "distanceLabel": "~280km",
-      "routeDistanceMeters": 280133,
-      "durationSeconds": 11306,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-verde",
-      "distanceKm": 225.4,
-      "routeDistanceKm": 319.5,
-      "profile": "regional",
-      "estimatedMinutes": 210,
-      "label": "~3h 30m",
-      "distanceLabel": "~320km",
-      "routeDistanceMeters": 319471,
-      "durationSeconds": 12537,
+      "meoSpotId": "carcavelos-calhau",
+      "distanceKm": 17.3,
+      "routeDistanceKm": 24.2,
+      "profile": "urban-coast",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 24245,
+      "durationSeconds": 1267,
       "source": "osrm-table"
     },
     {
@@ -732,15 +627,87 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-da-vieira",
-      "distanceKm": 129,
-      "routeDistanceKm": 152.5,
+      "meoSpotId": "praia-do-norte-canhao-nazare",
+      "distanceKm": 98.2,
+      "routeDistanceKm": 123.7,
       "profile": "regional-long",
+      "estimatedMinutes": 90,
+      "label": "~1h 30m",
+      "distanceLabel": "~125km",
+      "routeDistanceMeters": 123734,
+      "durationSeconds": 5480,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "monte-clerigo",
+      "distanceKm": 154.6,
+      "routeDistanceKm": 238.9,
+      "profile": "regional",
+      "estimatedMinutes": 205,
+      "label": "~3h 25m",
+      "distanceLabel": "~240km",
+      "routeDistanceMeters": 238883,
+      "durationSeconds": 12315,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "santa-cruz-praia-azul",
+      "distanceKm": 48.7,
+      "routeDistanceKm": 65.2,
+      "profile": "regional-long",
+      "estimatedMinutes": 60,
+      "label": "~1h",
+      "distanceLabel": "~65km",
+      "routeDistanceMeters": 65248,
+      "durationSeconds": 3580,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-da-torre",
+      "distanceKm": 16.7,
+      "routeDistanceKm": 20.5,
+      "profile": "urban-coast",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 20485,
+      "durationSeconds": 1167,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-verde",
+      "distanceKm": 225.4,
+      "routeDistanceKm": 319.5,
+      "profile": "regional",
+      "estimatedMinutes": 210,
+      "label": "~3h 30m",
+      "distanceLabel": "~320km",
+      "routeDistanceMeters": 319471,
+      "durationSeconds": 12537,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-de-sao-torpes",
+      "distanceKm": 93.2,
+      "routeDistanceKm": 162.3,
+      "profile": "regional",
       "estimatedMinutes": 115,
       "label": "~1h 55m",
-      "distanceLabel": "~155km",
-      "routeDistanceMeters": 152462,
-      "durationSeconds": 6989,
+      "distanceLabel": "~160km",
+      "routeDistanceMeters": 162265,
+      "durationSeconds": 6966,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-da-caparica-tarquinio",
+      "distanceKm": 12.4,
+      "routeDistanceKm": 16.8,
+      "profile": "south-bank",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 16829,
+      "durationSeconds": 1067,
       "source": "osrm-table"
     },
     {
@@ -768,6 +735,30 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "faro",
+      "distanceKm": 216.1,
+      "routeDistanceKm": 280.1,
+      "profile": "regional",
+      "estimatedMinutes": 190,
+      "label": "~3h 10m",
+      "distanceLabel": "~280km",
+      "routeDistanceMeters": 280133,
+      "durationSeconds": 11306,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-da-vieira",
+      "distanceKm": 129,
+      "routeDistanceKm": 152.5,
+      "profile": "regional-long",
+      "estimatedMinutes": 115,
+      "label": "~1h 55m",
+      "distanceLabel": "~155km",
+      "routeDistanceMeters": 152462,
+      "durationSeconds": 6989,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "porto-santo",
       "distanceKm": 903.5,
       "routeDistanceKm": 1066.2,
@@ -777,27 +768,15 @@
       "distanceLabel": "~1065km"
     },
     {
-      "meoSpotId": "praia-da-gale",
-      "distanceKm": 196.3,
-      "routeDistanceKm": 260,
-      "profile": "regional",
+      "meoSpotId": "costa-nova",
+      "distanceKm": 213.6,
+      "routeDistanceKm": 253.4,
+      "profile": "regional-long",
       "estimatedMinutes": 180,
       "label": "~3h",
-      "distanceLabel": "~260km",
-      "routeDistanceMeters": 260023,
-      "durationSeconds": 10678,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-do-peixe-baia-de-cascais",
-      "distanceKm": 24.5,
-      "routeDistanceKm": 30.6,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~30km",
-      "routeDistanceMeters": 30629,
-      "durationSeconds": 1444,
+      "distanceLabel": "~255km",
+      "routeDistanceMeters": 253394,
+      "durationSeconds": 10736,
       "source": "osrm-table"
     },
     {
@@ -813,6 +792,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "praia-da-gale",
+      "distanceKm": 196.3,
+      "routeDistanceKm": 260,
+      "profile": "regional",
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~260km",
+      "routeDistanceMeters": 260023,
+      "durationSeconds": 10678,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "praia-do-guincho-norte",
       "distanceKm": 28.9,
       "routeDistanceKm": 34.3,
@@ -822,6 +813,42 @@
       "distanceLabel": "~35km",
       "routeDistanceMeters": 34331,
       "durationSeconds": 1656,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "vila-praia-de-ancora",
+      "distanceKm": 344.3,
+      "routeDistanceKm": 401.3,
+      "profile": "regional-long",
+      "estimatedMinutes": 270,
+      "label": "~4h 30m",
+      "distanceLabel": "~400km",
+      "routeDistanceMeters": 401306,
+      "durationSeconds": 16091,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "esposende",
+      "distanceKm": 315.3,
+      "routeDistanceKm": 365.5,
+      "profile": "regional-long",
+      "estimatedMinutes": 245,
+      "label": "~4h 5m",
+      "distanceLabel": "~365km",
+      "routeDistanceMeters": 365496,
+      "durationSeconds": 14615,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-do-peixe-baia-de-cascais",
+      "distanceKm": 24.5,
+      "routeDistanceKm": 30.6,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~30km",
+      "routeDistanceMeters": 30629,
+      "durationSeconds": 1444,
       "source": "osrm-table"
     },
     {
@@ -837,15 +864,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "costa-nova",
-      "distanceKm": 213.6,
-      "routeDistanceKm": 253.4,
-      "profile": "regional-long",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~255km",
-      "routeDistanceMeters": 253394,
-      "durationSeconds": 10736,
+      "meoSpotId": "praia-das-macas",
+      "distanceKm": 30.8,
+      "routeDistanceKm": 46.3,
+      "profile": "urban-coast",
+      "estimatedMinutes": 40,
+      "label": "~40m",
+      "distanceLabel": "~45km",
+      "routeDistanceMeters": 46279,
+      "durationSeconds": 2370,
       "source": "osrm-table"
     },
     {
@@ -885,15 +912,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "vila-praia-de-ancora",
-      "distanceKm": 344.3,
-      "routeDistanceKm": 401.3,
-      "profile": "regional-long",
-      "estimatedMinutes": 270,
-      "label": "~4h 30m",
-      "distanceLabel": "~400km",
-      "routeDistanceMeters": 401306,
-      "durationSeconds": 16091,
+      "meoSpotId": "praia-da-amoreira",
+      "distanceKm": 154.6,
+      "routeDistanceKm": 238.9,
+      "profile": "regional",
+      "estimatedMinutes": 205,
+      "label": "~3h 25m",
+      "distanceLabel": "~240km",
+      "routeDistanceMeters": 238883,
+      "durationSeconds": 12315,
       "source": "osrm-table"
     },
     {
@@ -906,42 +933,6 @@
       "distanceLabel": "~255km",
       "routeDistanceMeters": 255727,
       "durationSeconds": 10242,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-das-macas",
-      "distanceKm": 30.8,
-      "routeDistanceKm": 46.3,
-      "profile": "urban-coast",
-      "estimatedMinutes": 40,
-      "label": "~40m",
-      "distanceLabel": "~45km",
-      "routeDistanceMeters": 46279,
-      "durationSeconds": 2370,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "esposende",
-      "distanceKm": 315.3,
-      "routeDistanceKm": 365.5,
-      "profile": "regional-long",
-      "estimatedMinutes": 245,
-      "label": "~4h 5m",
-      "distanceLabel": "~365km",
-      "routeDistanceMeters": 365496,
-      "durationSeconds": 14615,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-da-amoreira",
-      "distanceKm": 154.6,
-      "routeDistanceKm": 238.9,
-      "profile": "regional",
-      "estimatedMinutes": 205,
-      "label": "~3h 25m",
-      "distanceLabel": "~240km",
-      "routeDistanceMeters": 238883,
-      "durationSeconds": 12315,
       "source": "osrm-table"
     },
     {
@@ -981,15 +972,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "costa-da-caparica-cds",
-      "distanceKm": 12.3,
-      "routeDistanceKm": 16.9,
-      "profile": "south-bank",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 16915,
-      "durationSeconds": 1093,
+      "meoSpotId": "sao-juliao",
+      "distanceKm": 33.7,
+      "routeDistanceKm": 47.1,
+      "profile": "regional",
+      "estimatedMinutes": 45,
+      "label": "~45m",
+      "distanceLabel": "~45km",
+      "routeDistanceMeters": 47087,
+      "durationSeconds": 2621,
       "source": "osrm-table"
     },
     {
@@ -1005,51 +996,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "sao-juliao",
-      "distanceKm": 33.7,
-      "routeDistanceKm": 47.1,
-      "profile": "regional",
-      "estimatedMinutes": 45,
-      "label": "~45m",
-      "distanceLabel": "~45km",
-      "routeDistanceMeters": 47087,
-      "durationSeconds": 2621,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "fonte-da-telha-sul",
-      "distanceKm": 18,
-      "routeDistanceKm": 25.5,
+      "meoSpotId": "costa-da-caparica-cds",
+      "distanceKm": 12.3,
+      "routeDistanceKm": 16.9,
       "profile": "south-bank",
-      "estimatedMinutes": 30,
-      "label": "~30m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 25479,
-      "durationSeconds": 1680,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "paco-de-arcos",
-      "distanceKm": 14.1,
-      "routeDistanceKm": 19.3,
-      "profile": "urban-coast",
-      "estimatedMinutes": 15,
-      "label": "~15m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 19252,
-      "durationSeconds": 1027,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "senhora-da-rocha-praia-nova",
-      "distanceKm": 192.5,
-      "routeDistanceKm": 267.1,
-      "profile": "regional",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~265km",
-      "routeDistanceMeters": 267109,
-      "durationSeconds": 10859,
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 16915,
+      "durationSeconds": 1093,
       "source": "osrm-table"
     },
     {
@@ -1077,15 +1032,27 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-das-bicas",
-      "distanceKm": 29.2,
-      "routeDistanceKm": 40.6,
+      "meoSpotId": "fonte-da-telha-sul",
+      "distanceKm": 18,
+      "routeDistanceKm": 25.5,
       "profile": "south-bank",
-      "estimatedMinutes": 40,
-      "label": "~40m",
-      "distanceLabel": "~40km",
-      "routeDistanceMeters": 40601,
-      "durationSeconds": 2481,
+      "estimatedMinutes": 30,
+      "label": "~30m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 25479,
+      "durationSeconds": 1680,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "paco-de-arcos",
+      "distanceKm": 14.1,
+      "routeDistanceKm": 19.3,
+      "profile": "urban-coast",
+      "estimatedMinutes": 15,
+      "label": "~15m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 19252,
+      "durationSeconds": 1027,
       "source": "osrm-table"
     },
     {
@@ -1098,6 +1065,54 @@
       "distanceLabel": "~100km",
       "routeDistanceMeters": 99108,
       "durationSeconds": 4563,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "senhora-da-rocha-praia-nova",
+      "distanceKm": 192.5,
+      "routeDistanceKm": 267.1,
+      "profile": "regional",
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~265km",
+      "routeDistanceMeters": 267109,
+      "durationSeconds": 10859,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-das-bicas",
+      "distanceKm": 29.2,
+      "routeDistanceKm": 40.6,
+      "profile": "south-bank",
+      "estimatedMinutes": 40,
+      "label": "~40m",
+      "distanceLabel": "~40km",
+      "routeDistanceMeters": 40601,
+      "durationSeconds": 2481,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "espinho-silvalde",
+      "distanceKm": 256.5,
+      "routeDistanceKm": 300.9,
+      "profile": "regional-long",
+      "estimatedMinutes": 200,
+      "label": "~3h 20m",
+      "distanceLabel": "~300km",
+      "routeDistanceMeters": 300852,
+      "durationSeconds": 11940,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "tamariz",
+      "distanceKm": 22.6,
+      "routeDistanceKm": 26.5,
+      "profile": "urban-coast",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 26481,
+      "durationSeconds": 1295,
       "source": "osrm-table"
     },
     {
@@ -1125,30 +1140,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "tamariz",
-      "distanceKm": 22.6,
-      "routeDistanceKm": 26.5,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 26481,
-      "durationSeconds": 1295,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "espinho-silvade",
-      "distanceKm": 256.5,
-      "routeDistanceKm": 300.9,
-      "profile": "regional-long",
-      "estimatedMinutes": 200,
-      "label": "~3h 20m",
-      "distanceLabel": "~300km",
-      "routeDistanceMeters": 300852,
-      "durationSeconds": 11940,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "praia-da-rocha-marina",
       "distanceKm": 186.4,
       "routeDistanceKm": 283.4,
@@ -1173,6 +1164,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "leca-da-palmeira-panoraminca-aterro",
+      "distanceKm": 278.1,
+      "routeDistanceKm": 324.6,
+      "profile": "regional-long",
+      "estimatedMinutes": 215,
+      "label": "~3h 35m",
+      "distanceLabel": "~325km",
+      "routeDistanceMeters": 324571,
+      "durationSeconds": 13012,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "ferragudo",
       "distanceKm": 186.5,
       "routeDistanceKm": 277.9,
@@ -1183,27 +1186,6 @@
       "routeDistanceMeters": 277906,
       "durationSeconds": 11284,
       "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "viana-do-castelo-afife-arda",
-      "distanceKm": 340.9,
-      "routeDistanceKm": 397.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 270,
-      "label": "~4h 30m",
-      "distanceLabel": "~400km",
-      "routeDistanceMeters": 397750,
-      "durationSeconds": 16125,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "faja-da-areia",
-      "distanceKm": 968.8,
-      "routeDistanceKm": 1143.2,
-      "profile": "regional",
-      "estimatedMinutes": 965,
-      "label": "~16h 5m",
-      "distanceLabel": "~1145km"
     },
     {
       "meoSpotId": "portinho-da-arrabida",
@@ -1218,39 +1200,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "zambujeira-do-mar",
-      "distanceKm": 136.7,
-      "routeDistanceKm": 212.1,
+      "meoSpotId": "cordoama",
+      "distanceKm": 192.8,
+      "routeDistanceKm": 328.4,
       "profile": "regional",
-      "estimatedMinutes": 170,
-      "label": "~2h 50m",
-      "distanceLabel": "~210km",
-      "routeDistanceMeters": 212096,
-      "durationSeconds": 10134,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-da-conceicao-e-duquesa",
-      "distanceKm": 24.1,
-      "routeDistanceKm": 30.7,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~30km",
-      "routeDistanceMeters": 30723,
-      "durationSeconds": 1486,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "nazare-forte-sao-miguel-arcanjo",
-      "distanceKm": 98.2,
-      "routeDistanceKm": 123.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 90,
-      "label": "~1h 30m",
-      "distanceLabel": "~125km",
-      "routeDistanceMeters": 123734,
-      "durationSeconds": 5480,
+      "estimatedMinutes": 225,
+      "label": "~3h 45m",
+      "distanceLabel": "~330km",
+      "routeDistanceMeters": 328409,
+      "durationSeconds": 13521,
       "source": "osrm-table"
     },
     {
@@ -1266,6 +1224,42 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "praia-da-conceicao-e-duquesa",
+      "distanceKm": 24.1,
+      "routeDistanceKm": 30.7,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~30km",
+      "routeDistanceMeters": 30723,
+      "durationSeconds": 1486,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "zambujeira-do-mar",
+      "distanceKm": 136.7,
+      "routeDistanceKm": 212.1,
+      "profile": "regional",
+      "estimatedMinutes": 170,
+      "label": "~2h 50m",
+      "distanceLabel": "~210km",
+      "routeDistanceMeters": 212096,
+      "durationSeconds": 10134,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "viana-do-castelo-afife-arda",
+      "distanceKm": 340.9,
+      "routeDistanceKm": 397.7,
+      "profile": "regional-long",
+      "estimatedMinutes": 270,
+      "label": "~4h 30m",
+      "distanceLabel": "~400km",
+      "routeDistanceMeters": 397750,
+      "durationSeconds": 16125,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "matadouro",
       "distanceKm": 37.2,
       "routeDistanceKm": 50.2,
@@ -1278,16 +1272,13 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "leca-da-palmeira-panoraminca-aterro",
-      "distanceKm": 278.1,
-      "routeDistanceKm": 324.6,
-      "profile": "regional-long",
-      "estimatedMinutes": 215,
-      "label": "~3h 35m",
-      "distanceLabel": "~325km",
-      "routeDistanceMeters": 324571,
-      "durationSeconds": 13012,
-      "source": "osrm-table"
+      "meoSpotId": "faja-da-areia",
+      "distanceKm": 968.8,
+      "routeDistanceKm": 1143.2,
+      "profile": "regional",
+      "estimatedMinutes": 965,
+      "label": "~16h 5m",
+      "distanceLabel": "~1145km"
     },
     {
       "meoSpotId": "almograve",
@@ -1299,42 +1290,6 @@
       "distanceLabel": "~160km",
       "routeDistanceMeters": 162265,
       "durationSeconds": 6966,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-osso-da-baleia",
-      "distanceKm": 148.3,
-      "routeDistanceKm": 181.5,
-      "profile": "regional-long",
-      "estimatedMinutes": 135,
-      "label": "~2h 15m",
-      "distanceLabel": "~180km",
-      "routeDistanceMeters": 181514,
-      "durationSeconds": 8190,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "vagueira",
-      "distanceKm": 205.6,
-      "routeDistanceKm": 242.8,
-      "profile": "regional-long",
-      "estimatedMinutes": 175,
-      "label": "~2h 55m",
-      "distanceLabel": "~245km",
-      "routeDistanceMeters": 242836,
-      "durationSeconds": 10430,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "porto-carneiro",
-      "distanceKm": 272.6,
-      "routeDistanceKm": 317.4,
-      "profile": "regional-long",
-      "estimatedMinutes": 210,
-      "label": "~3h 30m",
-      "distanceLabel": "~315km",
-      "routeDistanceMeters": 317371,
-      "durationSeconds": 12614,
       "source": "osrm-table"
     },
     {
@@ -1350,6 +1305,42 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo",
+      "distanceKm": 98.2,
+      "routeDistanceKm": 123.7,
+      "profile": "regional-long",
+      "estimatedMinutes": 90,
+      "label": "~1h 30m",
+      "distanceLabel": "~125km",
+      "routeDistanceMeters": 123734,
+      "durationSeconds": 5480,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "vagueira",
+      "distanceKm": 205.6,
+      "routeDistanceKm": 242.8,
+      "profile": "regional-long",
+      "estimatedMinutes": 175,
+      "label": "~2h 55m",
+      "distanceLabel": "~245km",
+      "routeDistanceMeters": 242836,
+      "durationSeconds": 10430,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-osso-da-baleia",
+      "distanceKm": 148.3,
+      "routeDistanceKm": 181.5,
+      "profile": "regional-long",
+      "estimatedMinutes": 135,
+      "label": "~2h 15m",
+      "distanceLabel": "~180km",
+      "routeDistanceMeters": 181514,
+      "durationSeconds": 8190,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "praia-das-rocas",
       "distanceKm": 163.5,
       "routeDistanceKm": 193.6,
@@ -1359,6 +1350,18 @@
       "distanceLabel": "~195km",
       "routeDistanceMeters": 193574,
       "durationSeconds": 8056,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "porto-carneiro",
+      "distanceKm": 272.6,
+      "routeDistanceKm": 317.4,
+      "profile": "regional-long",
+      "estimatedMinutes": 210,
+      "label": "~3h 30m",
+      "distanceLabel": "~315km",
+      "routeDistanceMeters": 317371,
+      "durationSeconds": 12614,
       "source": "osrm-table"
     },
     {
@@ -1386,18 +1389,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "faro-oeste",
-      "distanceKm": 215.2,
-      "routeDistanceKm": 279.8,
-      "profile": "regional",
-      "estimatedMinutes": 190,
-      "label": "~3h 10m",
-      "distanceLabel": "~280km",
-      "routeDistanceMeters": 279832,
-      "durationSeconds": 11306,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "pedra-do-ouro",
       "distanceKm": 111.9,
       "routeDistanceKm": 137.5,
@@ -1410,18 +1401,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "cordoama",
-      "distanceKm": 192.8,
-      "routeDistanceKm": 328.4,
-      "profile": "regional",
-      "estimatedMinutes": 225,
-      "label": "~3h 45m",
-      "distanceLabel": "~330km",
-      "routeDistanceMeters": 328409,
-      "durationSeconds": 13521,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "seixal",
       "distanceKm": 972.2,
       "routeDistanceKm": 1147.2,
@@ -1431,27 +1410,15 @@
       "distanceLabel": "~1145km"
     },
     {
-      "meoSpotId": "albarquel",
-      "distanceKm": 30.5,
-      "routeDistanceKm": 51,
-      "profile": "south-bank",
-      "estimatedMinutes": 45,
-      "label": "~45m",
-      "distanceLabel": "~50km",
-      "routeDistanceMeters": 51035,
-      "durationSeconds": 2725,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "ericeira-sao-lourenco",
-      "distanceKm": 40.4,
-      "routeDistanceKm": 54.2,
+      "meoSpotId": "faro-oeste",
+      "distanceKm": 215.2,
+      "routeDistanceKm": 279.8,
       "profile": "regional",
-      "estimatedMinutes": 50,
-      "label": "~50m",
-      "distanceLabel": "~55km",
-      "routeDistanceMeters": 54165,
-      "durationSeconds": 2895,
+      "estimatedMinutes": 190,
+      "label": "~3h 10m",
+      "distanceLabel": "~280km",
+      "routeDistanceMeters": 279832,
+      "durationSeconds": 11306,
       "source": "osrm-table"
     },
     {
@@ -1464,6 +1431,18 @@
       "distanceLabel": "~320km",
       "routeDistanceMeters": 317833,
       "durationSeconds": 12599,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "albarquel",
+      "distanceKm": 30.5,
+      "routeDistanceKm": 51,
+      "profile": "south-bank",
+      "estimatedMinutes": 45,
+      "label": "~45m",
+      "distanceLabel": "~50km",
+      "routeDistanceMeters": 51035,
+      "durationSeconds": 2725,
       "source": "osrm-table"
     },
     {
@@ -1491,15 +1470,27 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "ericeira-praia-da-calada",
-      "distanceKm": 42.1,
-      "routeDistanceKm": 57.8,
+      "meoSpotId": "ericeira-sao-lourenco",
+      "distanceKm": 40.4,
+      "routeDistanceKm": 54.2,
       "profile": "regional",
-      "estimatedMinutes": 55,
-      "label": "~55m",
-      "distanceLabel": "~60km",
-      "routeDistanceMeters": 57800,
-      "durationSeconds": 3243,
+      "estimatedMinutes": 50,
+      "label": "~50m",
+      "distanceLabel": "~55km",
+      "routeDistanceMeters": 54165,
+      "durationSeconds": 2895,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-do-magoito",
+      "distanceKm": 31.2,
+      "routeDistanceKm": 41.8,
+      "profile": "urban-coast",
+      "estimatedMinutes": 40,
+      "label": "~40m",
+      "distanceLabel": "~40km",
+      "routeDistanceMeters": 41833,
+      "durationSeconds": 2348,
       "source": "osrm-table"
     },
     {
@@ -1527,13 +1518,16 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "ponta-pequena",
-      "distanceKm": 986,
-      "routeDistanceKm": 1163.5,
+      "meoSpotId": "ericeira-praia-da-calada",
+      "distanceKm": 42.1,
+      "routeDistanceKm": 57.8,
       "profile": "regional",
-      "estimatedMinutes": 980,
-      "label": "~16h 20m",
-      "distanceLabel": "~1165km"
+      "estimatedMinutes": 55,
+      "label": "~55m",
+      "distanceLabel": "~60km",
+      "routeDistanceMeters": 57800,
+      "durationSeconds": 3243,
+      "source": "osrm-table"
     },
     {
       "meoSpotId": "praia-da-rocha-miradouro",
@@ -1548,7 +1542,40 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "esposende-foz-do-cavado",
+      "distanceKm": 314.8,
+      "routeDistanceKm": 365.5,
+      "profile": "regional-long",
+      "estimatedMinutes": 245,
+      "label": "~4h 5m",
+      "distanceLabel": "~365km",
+      "routeDistanceMeters": 365488,
+      "durationSeconds": 14626,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "madeira-paul-do-mar",
+      "distanceKm": 986,
+      "routeDistanceKm": 1163.5,
+      "profile": "regional",
+      "estimatedMinutes": 980,
+      "label": "~16h 20m",
+      "distanceLabel": "~1165km"
+    },
+    {
+      "meoSpotId": "praia-de-sao-jacinto-barra",
+      "distanceKm": 216.2,
+      "routeDistanceKm": 259.6,
+      "profile": "regional-long",
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~260km",
+      "routeDistanceMeters": 259624,
+      "durationSeconds": 10708,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "ponta-pequena",
       "distanceKm": 986,
       "routeDistanceKm": 1163.5,
       "profile": "regional",
@@ -1566,39 +1593,15 @@
       "distanceLabel": "~1165km"
     },
     {
-      "meoSpotId": "esposende-foz-do-cavado",
-      "distanceKm": 314.8,
-      "routeDistanceKm": 365.5,
-      "profile": "regional-long",
-      "estimatedMinutes": 245,
-      "label": "~4h 5m",
-      "distanceLabel": "~365km",
-      "routeDistanceMeters": 365488,
-      "durationSeconds": 14626,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "portimao-praia-do-amado",
-      "distanceKm": 185.6,
-      "routeDistanceKm": 283.7,
+      "meoSpotId": "vilamoura",
+      "distanceKm": 203.9,
+      "routeDistanceKm": 265,
       "profile": "regional",
-      "estimatedMinutes": 190,
-      "label": "~3h 10m",
-      "distanceLabel": "~285km",
-      "routeDistanceMeters": 283739,
-      "durationSeconds": 11362,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-de-sao-jacinto-barra",
-      "distanceKm": 216.2,
-      "routeDistanceKm": 259.6,
-      "profile": "regional-long",
       "estimatedMinutes": 180,
       "label": "~3h",
-      "distanceLabel": "~260km",
-      "routeDistanceMeters": 259624,
-      "durationSeconds": 10708,
+      "distanceLabel": "~265km",
+      "routeDistanceMeters": 265046,
+      "durationSeconds": 10925,
       "source": "osrm-table"
     },
     {
@@ -1614,15 +1617,27 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "sao-joao-do-estoril",
-      "distanceKm": 20.2,
-      "routeDistanceKm": 24.2,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 24189,
-      "durationSeconds": 1351,
+      "meoSpotId": "portimao-praia-do-amado",
+      "distanceKm": 185.6,
+      "routeDistanceKm": 283.7,
+      "profile": "regional",
+      "estimatedMinutes": 190,
+      "label": "~3h 10m",
+      "distanceLabel": "~285km",
+      "routeDistanceMeters": 283739,
+      "durationSeconds": 11362,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "caxinas-macaco-17",
+      "distanceKm": 295.2,
+      "routeDistanceKm": 345.2,
+      "profile": "regional-long",
+      "estimatedMinutes": 230,
+      "label": "~3h 50m",
+      "distanceLabel": "~345km",
+      "routeDistanceMeters": 345214,
+      "durationSeconds": 13761,
       "source": "osrm-table"
     },
     {
@@ -1638,15 +1653,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "penichesupertubosestatica",
-      "distanceKm": 72,
-      "routeDistanceKm": 99.1,
-      "profile": "regional-long",
-      "estimatedMinutes": 75,
-      "label": "~1h 15m",
-      "distanceLabel": "~100km",
-      "routeDistanceMeters": 99112,
-      "durationSeconds": 4564,
+      "meoSpotId": "sao-joao-do-estoril",
+      "distanceKm": 20.2,
+      "routeDistanceKm": 24.2,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 24189,
+      "durationSeconds": 1351,
       "source": "osrm-table"
     },
     {
@@ -1662,15 +1677,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-das-moitas",
-      "distanceKm": 22.6,
-      "routeDistanceKm": 26.5,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 26481,
-      "durationSeconds": 1295,
+      "meoSpotId": "penichesupertubosestatica",
+      "distanceKm": 72,
+      "routeDistanceKm": 99.1,
+      "profile": "regional-long",
+      "estimatedMinutes": 75,
+      "label": "~1h 15m",
+      "distanceLabel": "~100km",
+      "routeDistanceMeters": 99112,
+      "durationSeconds": 4564,
       "source": "osrm-table"
     },
     {
@@ -1698,6 +1713,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "praia-das-moitas",
+      "distanceKm": 22.6,
+      "routeDistanceKm": 26.5,
+      "profile": "urban-coast",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 26481,
+      "durationSeconds": 1295,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "nazare-porto-de-abrigo",
       "distanceKm": 95.6,
       "routeDistanceKm": 121.8,
@@ -1707,18 +1734,6 @@
       "distanceLabel": "~120km",
       "routeDistanceMeters": 121753,
       "durationSeconds": 5438,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "peniche-lagide-estatica",
-      "distanceKm": 74.4,
-      "routeDistanceKm": 97,
-      "profile": "regional-long",
-      "estimatedMinutes": 80,
-      "label": "~1h 20m",
-      "distanceLabel": "~95km",
-      "routeDistanceMeters": 97037,
-      "durationSeconds": 4720,
       "source": "osrm-table"
     },
     {
@@ -1734,18 +1749,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "vilamoura",
-      "distanceKm": 203.9,
-      "routeDistanceKm": 265,
-      "profile": "regional",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~265km",
-      "routeDistanceMeters": 265046,
-      "durationSeconds": 10925,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "ferreira-do-zezere-lago-azul",
       "distanceKm": 115.1,
       "routeDistanceKm": 155.6,
@@ -1755,6 +1758,18 @@
       "distanceLabel": "~155km",
       "routeDistanceMeters": 155569,
       "durationSeconds": 6837,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "peniche-lagide-estatica",
+      "distanceKm": 74.4,
+      "routeDistanceKm": 97,
+      "profile": "regional-long",
+      "estimatedMinutes": 80,
+      "label": "~1h 20m",
+      "distanceLabel": "~95km",
+      "routeDistanceMeters": 97037,
+      "durationSeconds": 4720,
       "source": "osrm-table"
     },
     {
@@ -1794,18 +1809,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "lisboa-belem",
-      "distanceKm": 6.7,
-      "routeDistanceKm": 7.8,
-      "profile": "regional",
-      "estimatedMinutes": 10,
-      "label": "~10m",
-      "distanceLabel": "~10km",
-      "routeDistanceMeters": 7808,
-      "durationSeconds": 606,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "ribeira-dilhas-estatica",
       "distanceKm": 38.2,
       "routeDistanceKm": 51.4,
@@ -1815,6 +1818,18 @@
       "distanceLabel": "~50km",
       "routeDistanceMeters": 51429,
       "durationSeconds": 2670,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "ferreira-do-zezere-dornes",
+      "distanceKm": 117.8,
+      "routeDistanceKm": 150.8,
+      "profile": "regional",
+      "estimatedMinutes": 105,
+      "label": "~1h 45m",
+      "distanceLabel": "~150km",
+      "routeDistanceMeters": 150786,
+      "durationSeconds": 6403,
       "source": "osrm-table"
     },
     {
@@ -1830,6 +1845,18 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "lisboa-belem",
+      "distanceKm": 6.7,
+      "routeDistanceKm": 7.8,
+      "profile": "regional",
+      "estimatedMinutes": 10,
+      "label": "~10m",
+      "distanceLabel": "~10km",
+      "routeDistanceMeters": 7808,
+      "durationSeconds": 606,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "peniche-lagide-cantinho-da-baia-estatica",
       "distanceKm": 74.2,
       "routeDistanceKm": 97.2,
@@ -1839,18 +1866,6 @@
       "distanceLabel": "~95km",
       "routeDistanceMeters": 97193,
       "durationSeconds": 4757,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "ferreira-do-zezere-dornes",
-      "distanceKm": 117.8,
-      "routeDistanceKm": 150.8,
-      "profile": "regional",
-      "estimatedMinutes": 105,
-      "label": "~1h 45m",
-      "distanceLabel": "~150km",
-      "routeDistanceMeters": 150786,
-      "durationSeconds": 6403,
       "source": "osrm-table"
     },
     {
@@ -1878,6 +1893,42 @@
       "source": "osrm-table"
     },
     {
+      "meoSpotId": "costa-de-caparica-praia-da-sereia-morena",
+      "distanceKm": 14.8,
+      "routeDistanceKm": 22.1,
+      "profile": "south-bank",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 22070,
+      "durationSeconds": 1630,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-da-caparica-nova-praia",
+      "distanceKm": 12.7,
+      "routeDistanceKm": 17.7,
+      "profile": "south-bank",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 17666,
+      "durationSeconds": 1145,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-da-rocha-estatica",
+      "distanceKm": 186.4,
+      "routeDistanceKm": 283.4,
+      "profile": "regional",
+      "estimatedMinutes": 190,
+      "label": "~3h 10m",
+      "distanceLabel": "~285km",
+      "routeDistanceMeters": 283428,
+      "durationSeconds": 11367,
+      "source": "osrm-table"
+    },
+    {
       "meoSpotId": "praia-do-guincho-estatica",
       "distanceKm": 29,
       "routeDistanceKm": 34.4,
@@ -1902,63 +1953,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-da-rocha-estatica",
-      "distanceKm": 186.4,
-      "routeDistanceKm": 283.4,
+      "meoSpotId": "praia-quarteira-este",
+      "distanceKm": 203.9,
+      "routeDistanceKm": 265,
       "profile": "regional",
-      "estimatedMinutes": 190,
-      "label": "~3h 10m",
-      "distanceLabel": "~285km",
-      "routeDistanceMeters": 283428,
-      "durationSeconds": 11367,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "paco-de-arcos-estatica",
-      "distanceKm": 14.1,
-      "routeDistanceKm": 19.3,
-      "profile": "urban-coast",
-      "estimatedMinutes": 15,
-      "label": "~15m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 19252,
-      "durationSeconds": 1027,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "caxinas-macaco-17",
-      "distanceKm": 295.2,
-      "routeDistanceKm": 345.2,
-      "profile": "regional-long",
-      "estimatedMinutes": 230,
-      "label": "~3h 50m",
-      "distanceLabel": "~345km",
-      "routeDistanceMeters": 345214,
-      "durationSeconds": 13761,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "santo-amaro-estatica",
-      "distanceKm": 15.5,
-      "routeDistanceKm": 20.3,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 20298,
-      "durationSeconds": 1113,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "figueiradafozbuarcosestatica",
-      "distanceKm": 161.8,
-      "routeDistanceKm": 199.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 140,
-      "label": "~2h 20m",
-      "distanceLabel": "~200km",
-      "routeDistanceMeters": 199746,
-      "durationSeconds": 8287,
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~265km",
+      "routeDistanceMeters": 265046,
+      "durationSeconds": 10925,
       "source": "osrm-table"
     },
     {
@@ -1974,16 +1977,73 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "costa-da-caparica-praia-nova-estatica",
-      "distanceKm": 12.6,
-      "routeDistanceKm": 17.3,
-      "profile": "south-bank",
+      "meoSpotId": "paco-de-arcos-estatica",
+      "distanceKm": 14.1,
+      "routeDistanceKm": 19.3,
+      "profile": "urban-coast",
+      "estimatedMinutes": 15,
+      "label": "~15m",
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 19252,
+      "durationSeconds": 1027,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-da-adraga",
+      "distanceKm": 31.2,
+      "routeDistanceKm": 44.1,
+      "profile": "urban-coast",
+      "estimatedMinutes": 40,
+      "label": "~40m",
+      "distanceLabel": "~45km",
+      "routeDistanceMeters": 44057,
+      "durationSeconds": 2336,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "figueiradafozbuarcosestatica",
+      "distanceKm": 161.8,
+      "routeDistanceKm": 199.7,
+      "profile": "regional-long",
+      "estimatedMinutes": 140,
+      "label": "~2h 20m",
+      "distanceLabel": "~200km",
+      "routeDistanceMeters": 199746,
+      "durationSeconds": 8287,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "espinhosilvaldeestatica",
+      "distanceKm": 256.5,
+      "routeDistanceKm": 300.9,
+      "profile": "regional-long",
+      "estimatedMinutes": 200,
+      "label": "~3h 20m",
+      "distanceLabel": "~300km",
+      "routeDistanceMeters": 300852,
+      "durationSeconds": 11940,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "santo-amaro-estatica",
+      "distanceKm": 15.5,
+      "routeDistanceKm": 20.3,
+      "profile": "urban-coast",
       "estimatedMinutes": 20,
       "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 17314,
-      "durationSeconds": 1115,
+      "distanceLabel": "~20km",
+      "routeDistanceMeters": 20298,
+      "durationSeconds": 1113,
       "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "madeira-maiata",
+      "distanceKm": 957.9,
+      "routeDistanceKm": 1130.4,
+      "profile": "regional",
+      "estimatedMinutes": 955,
+      "label": "~15h 55m",
+      "distanceLabel": "~1130km"
     },
     {
       "meoSpotId": "carcavelos-norte-estatica",
@@ -1998,51 +2058,15 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "espinhosilvadeestatica",
-      "distanceKm": 256.5,
-      "routeDistanceKm": 300.9,
-      "profile": "regional-long",
-      "estimatedMinutes": 200,
-      "label": "~3h 20m",
-      "distanceLabel": "~300km",
-      "routeDistanceMeters": 300852,
-      "durationSeconds": 11940,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "costa-da-caparica-nova-praia",
-      "distanceKm": 12.7,
-      "routeDistanceKm": 17.7,
+      "meoSpotId": "costa-da-caparica-praia-nova-estatica",
+      "distanceKm": 12.6,
+      "routeDistanceKm": 17.3,
       "profile": "south-bank",
       "estimatedMinutes": 20,
       "label": "~20m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 17666,
-      "durationSeconds": 1145,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "carcavelos-calhau-estatica",
-      "distanceKm": 17.3,
-      "routeDistanceKm": 24.2,
-      "profile": "urban-coast",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 24245,
-      "durationSeconds": 1267,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-do-magoito",
-      "distanceKm": 31.2,
-      "routeDistanceKm": 41.8,
-      "profile": "urban-coast",
-      "estimatedMinutes": 40,
-      "label": "~40m",
-      "distanceLabel": "~40km",
-      "routeDistanceMeters": 41833,
-      "durationSeconds": 2348,
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 17314,
+      "durationSeconds": 1115,
       "source": "osrm-table"
     },
     {
@@ -2058,25 +2082,16 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "praia-de-sao-torpes-estatica",
-      "distanceKm": 93.2,
-      "routeDistanceKm": 162.3,
-      "profile": "regional",
-      "estimatedMinutes": 115,
-      "label": "~1h 55m",
-      "distanceLabel": "~160km",
-      "routeDistanceMeters": 162265,
-      "durationSeconds": 6966,
+      "meoSpotId": "carcavelos-calhau-estatica",
+      "distanceKm": 17.3,
+      "routeDistanceKm": 24.2,
+      "profile": "urban-coast",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 24245,
+      "durationSeconds": 1267,
       "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "madeira-maiata",
-      "distanceKm": 957.9,
-      "routeDistanceKm": 1130.4,
-      "profile": "regional",
-      "estimatedMinutes": 955,
-      "label": "~15h 55m",
-      "distanceLabel": "~1130km"
     },
     {
       "meoSpotId": "boardriders-skatepark",
@@ -2091,51 +2106,24 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "parede-estatica",
-      "distanceKm": 19,
-      "routeDistanceKm": 25.3,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~25km",
-      "routeDistanceMeters": 25305,
-      "durationSeconds": 1370,
-      "source": "osrm-table"
+      "meoSpotId": "acores-ribeira-grande-praia-do-monte-verde",
+      "distanceKm": 1432,
+      "routeDistanceKm": 1689.8,
+      "profile": "regional",
+      "estimatedMinutes": 1420,
+      "label": "~23h 40m",
+      "distanceLabel": "~1690km"
     },
     {
-      "meoSpotId": "costa-de-caparica-praia-da-sereia-morena",
-      "distanceKm": 14.8,
-      "routeDistanceKm": 22.1,
-      "profile": "south-bank",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~20km",
-      "routeDistanceMeters": 22070,
-      "durationSeconds": 1630,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "costa-da-caparica-tarquinio-fixa",
-      "distanceKm": 12.4,
-      "routeDistanceKm": 16.7,
-      "profile": "south-bank",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 16737,
-      "durationSeconds": 1061,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-das-moitas-estatica",
-      "distanceKm": 23.5,
-      "routeDistanceKm": 30.4,
-      "profile": "urban-coast",
-      "estimatedMinutes": 25,
-      "label": "~25m",
-      "distanceLabel": "~30km",
-      "routeDistanceMeters": 30387,
-      "durationSeconds": 1397,
+      "meoSpotId": "praia-de-sao-torpes-estatica",
+      "distanceKm": 93.2,
+      "routeDistanceKm": 162.3,
+      "profile": "regional",
+      "estimatedMinutes": 115,
+      "label": "~1h 55m",
+      "distanceLabel": "~160km",
+      "routeDistanceMeters": 162265,
+      "durationSeconds": 6966,
       "source": "osrm-table"
     },
     {
@@ -2151,15 +2139,27 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "costadecaparicacdssulestatica",
-      "distanceKm": 12.3,
-      "routeDistanceKm": 16.9,
-      "profile": "south-bank",
-      "estimatedMinutes": 20,
-      "label": "~20m",
-      "distanceLabel": "~15km",
-      "routeDistanceMeters": 16930,
-      "durationSeconds": 1095,
+      "meoSpotId": "praia-quarteira-oeste",
+      "distanceKm": 203.9,
+      "routeDistanceKm": 265,
+      "profile": "regional",
+      "estimatedMinutes": 180,
+      "label": "~3h",
+      "distanceLabel": "~265km",
+      "routeDistanceMeters": 265046,
+      "durationSeconds": 10925,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "parede-estatica",
+      "distanceKm": 19,
+      "routeDistanceKm": 25.3,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~25km",
+      "routeDistanceMeters": 25305,
+      "durationSeconds": 1370,
       "source": "osrm-table"
     },
     {
@@ -2172,6 +2172,66 @@
       "distanceLabel": "~385km",
       "routeDistanceMeters": 384947,
       "durationSeconds": 15432,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costa-da-caparica-tarquinio-fixa",
+      "distanceKm": 12.4,
+      "routeDistanceKm": 16.7,
+      "profile": "south-bank",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 16737,
+      "durationSeconds": 1061,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "ski-clube-quinta-grande",
+      "distanceKm": 58.5,
+      "routeDistanceKm": 74.5,
+      "profile": "regional",
+      "estimatedMinutes": 65,
+      "label": "~1h 5m",
+      "distanceLabel": "~75km",
+      "routeDistanceMeters": 74496,
+      "durationSeconds": 3881,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
+      "distanceKm": 98.2,
+      "routeDistanceKm": 123.7,
+      "profile": "regional-long",
+      "estimatedMinutes": 90,
+      "label": "~1h 30m",
+      "distanceLabel": "~125km",
+      "routeDistanceMeters": 123734,
+      "durationSeconds": 5480,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "praia-das-moitas-estatica",
+      "distanceKm": 23.5,
+      "routeDistanceKm": 30.4,
+      "profile": "urban-coast",
+      "estimatedMinutes": 25,
+      "label": "~25m",
+      "distanceLabel": "~30km",
+      "routeDistanceMeters": 30387,
+      "durationSeconds": 1397,
+      "source": "osrm-table"
+    },
+    {
+      "meoSpotId": "costadecaparicacdssulestatica",
+      "distanceKm": 12.3,
+      "routeDistanceKm": 16.9,
+      "profile": "south-bank",
+      "estimatedMinutes": 20,
+      "label": "~20m",
+      "distanceLabel": "~15km",
+      "routeDistanceMeters": 16930,
+      "durationSeconds": 1095,
       "source": "osrm-table"
     },
     {
@@ -2199,18 +2259,6 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "ski-clube-quinta-grande",
-      "distanceKm": 58.5,
-      "routeDistanceKm": 74.5,
-      "profile": "regional",
-      "estimatedMinutes": 65,
-      "label": "~1h 5m",
-      "distanceLabel": "~75km",
-      "routeDistanceMeters": 74496,
-      "durationSeconds": 3881,
-      "source": "osrm-table"
-    },
-    {
       "meoSpotId": "costadecaparicapraianorteestatica",
       "distanceKm": 12.1,
       "routeDistanceKm": 18.6,
@@ -2220,54 +2268,6 @@
       "distanceLabel": "~20km",
       "routeDistanceMeters": 18614,
       "durationSeconds": 1387,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "nazare-forte-sao-miguel-arcanjo-panoramica-1",
-      "distanceKm": 98.2,
-      "routeDistanceKm": 123.7,
-      "profile": "regional-long",
-      "estimatedMinutes": 90,
-      "label": "~1h 30m",
-      "distanceLabel": "~125km",
-      "routeDistanceMeters": 123734,
-      "durationSeconds": 5480,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-quarteira-este",
-      "distanceKm": 203.9,
-      "routeDistanceKm": 265,
-      "profile": "regional",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~265km",
-      "routeDistanceMeters": 265046,
-      "durationSeconds": 10925,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-da-adraga",
-      "distanceKm": 31.2,
-      "routeDistanceKm": 44.1,
-      "profile": "urban-coast",
-      "estimatedMinutes": 40,
-      "label": "~40m",
-      "distanceLabel": "~45km",
-      "routeDistanceMeters": 44057,
-      "durationSeconds": 2336,
-      "source": "osrm-table"
-    },
-    {
-      "meoSpotId": "praia-quarteira-oeste",
-      "distanceKm": 203.9,
-      "routeDistanceKm": 265,
-      "profile": "regional",
-      "estimatedMinutes": 180,
-      "label": "~3h",
-      "distanceLabel": "~265km",
-      "routeDistanceMeters": 265046,
-      "durationSeconds": 10925,
       "source": "osrm-table"
     }
   ]

@@ -1,13 +1,20 @@
 # Surfline Spot Promotion & Fresh Conditions — Design Spec
 
-Date: 2026-07-06 · Status: implemented (2026-07-08). All milestones shipped on
-`kuang/gallant-hermann-bf3ab3`; the 36 at-spot-cam / 6 stretch-cam / 2 deferred split is enforced by
+Date: 2026-07-06 · Status: implemented (2026-07-08), camera-media boundary revised 2026-08-19. All milestones shipped on
+`kuang/gallant-hermann-bf3ab3`; the current 34 at-spot-MEO-cam / 8 stretch-cam / 2 deferred split is enforced by
 `build-promoted-spots` against `data/surfline-promotions.json`. The scheduled CI refresh is now live
 (§5.6): `probe-surfline-browser.yml` proved a real headful Chrome on a GitHub runner clears
 Surfline's Cloudflare from a datacenter IP, so `update-surfline-conditions.yml` runs the in-browser
 CDP refresh daily; `scripts/refresh-surfline-daily.sh` (headed Chrome on a home IP) is retained as a
 documented fallback.
 Related: GH issue #4 (Surfline-first spot metadata layer), `docs/surfline-meo-metadata-comparison.md`, `docs/architecture.md`
+
+> **2026-08-19 boundary update:** Surfline remains the wave-information and spot-intelligence
+> source, but it is no longer a camera provider in the app. The playable/favoritable roster is the
+> one-to-one provider-native MEO catalog. Surfline HLS, camera stills, camera aliases, and camera
+> hotlink/proxy paths are prohibited. Promoted Surfline records are informational subjects that may
+> point to a clearly named MEO camera or stretch; statements below about native Surfline camera
+> media are retained only as historical context where not explicitly revised.
 
 ## 1. Goal
 
@@ -16,8 +23,8 @@ Spot particularities (shelter, orientation, bathymetry) dominate actual wave siz
 from the last crawl** (2026-06-07), not live data. Surfline's per-spot surf heights and ratings are
 much better. This design:
 
-1. Promotes a curated subset of Surfline spots to **first-class app spots** (favoritable, monitorable,
-   shown on the Explore map) — generalizing the existing hand-embedded `surfline-castelo` prototype.
+1. Promotes a curated subset of Surfline spots to **first-class informational app spots** shown in
+   Explore and local advice, while playable/favoritable camera identity remains MEO-native.
 2. Uses **Surfline data for wave info** on promoted spots and on MEO cams with a trusted Surfline match.
 3. Refreshes that data **politely**: one small scheduled daily fetch for a bounded "fresh set" inside
    the geographic fence, plus an **on-load client refresh** (Open-Meteo marine model) for everything
@@ -27,20 +34,22 @@ much better. This design:
 
 ## 2. Current state (evidence)
 
-- App: static GitHub Pages PWA, no build step; embedded camera DB (190 MEO cams, 147 streams);
+- App: static GitHub Pages PWA, no build step; embedded camera DB (190 MEO cams, 154 streams as of 2026-08-19);
   data JSONs under `data/` fetched at runtime (`src/config.js`).
-- Rating: `src/surf-rating.js:133` `rateSurfSpot()` reads `camera.forecast.wave|wind` +
-  `detailMetrics` (MEO strings, crawl-time static) + coast exposure bearing. No runtime forecast fetch
-  exists anywhere; only tides are fresh (GH Action `update-tides.yml`, daily 04:23 UTC).
+- Rating: `src/surf-rating.js` consumes resolved conditions plus spot mechanics. Fresh Surfline
+  conditions win for trusted subjects, Open-Meteo refreshes stale/unmatched selections on demand,
+  and the crawl-time MEO snapshot remains the labeled fallback. Tides refresh independently.
 - Surfline assets: `data/surfline-spots.json` — 80 normalized spots (staticMetadata + a
-  `currentSnapshot` from the 2026-06-11 browser-CDP cache). `.cache/surfline/pages/` (gitignored,
-  main checkout) holds 80 fetched pages, all `browser-fetched`, all with `__NEXT_DATA__`.
-- Mapping: `data/meo-surfline-matches.json` — 89 MEO→Surfline corridor mappings
-  (11 curated / 57 generated / 21 needs-review). Curated rows are preserved across rebuilds.
-- Enrichment: `data/spot-metadata-enrichment.json` (68 MEO-keyed records) and
-  `data/coast-exposures.json` (190 records, 175 finite bearings) feed exposure/wind-fit today.
-- Prototype promotion: `surfline-castelo` is hand-embedded in `data/beachcam-cameras.json` as a
-  stream-less camera with `surfline.pageUrl` (report iframe) and sits in `DEFAULT_FAVORITE_IDS`.
+  `currentSnapshot` from the browser-CDP cache). `.cache/surfline/pages/` (gitignored, main checkout)
+  holds 80 browser-fetched source pages; the committed review now marks all 80 `reused-review`
+  because the 2026-08-19 MEO-key refresh reused their validated metadata offline.
+- Mapping: `data/meo-surfline-matches.json` — 88 MEO→Surfline corridor mappings
+  (10 curated / 54 generated-status / 23 needs-review / 1 rejected). Curated and rejected rows are
+  preserved across rebuilds.
+- Enrichment: `data/spot-metadata-enrichment.json` (64 MEO-keyed records) and
+  `data/coast-exposures.json` (190 records, 174 finite bearings) feed exposure/wind-fit today.
+- Castelo remains a Surfline intelligence subject linked to the clearly named Riviera MEO camera.
+  The former synthetic camera identity was removed, and stored favorites migrate to Riviera.
 - **Unit gotcha:** cached Surfline pages were fetched with imperial units —
   `"units":{"surfHeight":"FT","windSpeed":"KTS"}`. `currentSnapshot.surf.min/max` are feet.
 - Sesimbra today: regional hardcode "sheltered south-facing bay, bearing 180"
@@ -58,31 +67,31 @@ Counts from current data (fence v2):
 | Set | In fence | Total |
 |---|---|---|
 | Surfline spots (normalized catalog) | **73** (all with primary cached page) | 80 |
-| MEO spots | 89 (62 with live stream) | 190 |
-| MEO→Surfline mapping rows | **83** (11 curated · 54 generated · 18 needs-review) | 89 |
-| Surfline spots with a **trusted** cam under the §5.8 name-first rule | 41 of 73 (38 by name, 3 by ≤200 m) | — |
-| Surfline spots with no cam at all (report-only candidates) | 3 (`sao-lourenco`, `coxos`, `praia-da-cruz-quebrada`) | — |
+| MEO spots | 88 (64 with live stream) | 190 |
+| MEO→Surfline mapping rows | **82** (10 curated · 50 generated · 22 needs-review) | 88 |
+| Surfline spots with a **trusted** cam under the §5.8 name-first rule | 42 of 73 (13 curated, 27 by name, 2 by ≤200 m) | — |
+| Selected promotion subjects without a trusted MEO cam/stretch | 2 (`cave`, `praia-da-ursa`) | 2 |
 | Out of fence | — | 7 (6 south of Sesimbra + `portinho-da-arrabida`) |
 
-In-fence stream cams that get a trusted Surfline source under the same rule: **50 of 62**.
+In-fence stream cams that get a trusted Surfline source are derived from the current trusted
+mapping/enrichment layer rather than by substituting a Surfline camera feed.
 Fence constants live in `src/config.js`
 (`SUGGESTION_FENCE = { north: 39.65, south: 38.40, westOfLon: -9.05 }`).
 
 ## 4. Approaches considered
 
-**A. Pseudo-camera merge (recommended).** Promoted Surfline spots become camera-shaped records in a
-new `data/promoted-spots.json`, merged into the camera DB at load. Favorites, Monitor,
-Might-be-good, Explore markers, and the report-only detail view already work on that shape
-(`surfline-castelo` proves it). Smallest change surface; ships in days.
-*Trade-off:* "camera" naming is a white lie for stream-less spots; acceptable, documented.
+**A. Pseudo-camera merge (historical v1 choice; superseded for playback).** Promoted Surfline spots
+remain normalized informational records in `data/promoted-spots.json`, but are not merged into the
+playable/favoritable camera roster. Explore, conditions, advice, and trusted MEO links consume them
+without presenting a Surfline spot as a camera.
 
 **B. Dual-entity refactor.** First-class `Spot` entity with optional attached cameras; cameras become
 children. Cleanest long-term model, but touches every render path, filter, and favorites shape for
 no immediate user-visible gain. Rejected for v1; approach A leaves a migration path (ids stay stable).
 
-**C. Enrichment-only (no new entries).** Keep 190 MEO spots, just swap wave numbers for matched
-Surfline data. Fails the requirement: cam-less quality spots (Coxos, São Lourenço) can never be
-favorited or proposed. Rejected.
+**C. Enrichment-only (no new entries).** Keep 190 MEO spots and only swap wave numbers for matched
+Surfline data. Rejected because cam-less quality spots would disappear from Explore; the implemented
+informational catalog retains those subjects without making them cameras or favorites.
 
 Refresh transport options: **GitHub Actions fetcher (primary — user decision: scheduling reliability,
 logs, and failure alerting beat a laptop cron)**, gated on a feasibility probe since datacenter IPs
@@ -125,20 +134,20 @@ Seed list = the user's map selection of **44 spots** (2026-07-06), with the user
 and graduate automatically once their cam association is curated (file-level policy
 `promoteOnlyWithTrustedCam: true`; the build logs deferrals).
 
-Promote with an **at-spot cam** (36 — trusted MEO stream, Surfline native cam, or both): nazare,
+Promote with an **at-spot MEO cam** (34): nazare,
 baleal, lagide, cantinho-da-baia, supertubos, consolacao, santa-cruz, ribeira-d-ilhas, reef,
 pedra-branca, matadouro, praia-do-sul, foz-do-lizandro, sao-juliao, praia-das-macas, praia-pequena,
 praia-grande, praia-da-adraga, praia-do-guincho, sao-pedro-do-estoril, paco-de-arcos, parede,
-praia-da-laje, santo-amaro, carcavelos, praia-de-torre, cova-do-vapor, sao-joao-da-caparica,
+praia-da-laje, santo-amaro, carcavelos, praia-de-torre,
 praia-do-barbas, costa-da-caparica, praia-da-rainha, castelo, fonte-da-telha, lagoa-de-albufeira,
 bicas, sesimbra.
 
-Promote with **stretch cams only** (6 — same-beach nearby cams, honestly labeled; §5.8 stretch
-semantics): marcelino, praia-da-saude, praia-da-cornelia, praia-do-pescador, praia-do-rei,
-praia-de-caxias.
+Promote with **stretch cams only** (8 — same-beach nearby MEO cams, honestly labeled; §5.8 stretch
+semantics): cova-do-vapor, sao-joao-da-caparica, marcelino, praia-da-saude, praia-da-cornelia,
+praia-do-pescador, praia-do-rei, praia-de-caxias.
 
 Deferred pending cam curation (2): cave, praia-da-ursa — different coves from their nearest cams,
-no Surfline cam; graduate if curation decides the neighboring cam genuinely frames them.
+no trusted MEO cam or stretch; graduate if curation decides a neighboring MEO cam genuinely frames them.
 
 A build check fails if an id is not in `surfline-spots.json`. Promotion is a product decision file —
 deliberately separate from the factual matches file — and is **re-editable at any time** via the
@@ -146,21 +155,17 @@ persistent map page (§5.9); the seed is a starting roster, not a one-shot choic
 
 ### 5.2 Promoted spot records — `scripts/build-promoted-spots.js` → `data/promoted-spots.json`
 
-For each promoted id, emit a camera-DB-compatible record:
+For each promoted id, emit an informational spot record:
 
-- `id` = the existing `surfline-*` id (favorites continuity; `surfline-castelo` keeps working),
+- `id` = the existing `surfline-*` intelligence id,
   `name`, `lat`, `lon`, `region` (nearest matched MEO region, else breadcrumb-derived), `hasStream: false`,
-  `surfline: { spotId, pageUrl }`, `surflineCams: [{ title, stillUrl }]` (still shown on view in the
-  detail panel, never polled), `stretchCamIds` (ordered same-beach cams for stretch spots),
+  `surfline: { spotId, pageUrl }`, `stretchCamIds` (ordered same-beach MEO cams for stretch spots),
   `surfMetadata` (breakType, best.*, coastExposure, guideSummary),
   `linkedCamId` = nearest MEO stream cam with a **trusted association** per the §5.8 name-first rule
   (detail view shows that cam's stream above the Surfline report link; no trusted cam → report-only),
-  `promoted: true`.
-- Client merge in `loadCameraDb()` (`src/camera-data.js`): promoted records are appended;
-  **if an id collides with an embedded camera entry the promoted record wins** (this absorbs and
-  retires the hand-edited `surfline-castelo` row without touching crawler output).
-- Explore map: promoted spots get a distinct marker style; favorites/monitor need no changes
-  (id-based already).
+  `promoted: true`. No camera stream, poster, or still field is emitted.
+- The browser keeps these records in the Surfline intelligence catalog; the playable camera roster
+  is derived independently from provider-native MEO rows.
 
 ### 5.3 Volatile conditions — `data/surfline-conditions.json` (new, small, committed daily)
 
@@ -260,12 +265,12 @@ Surfline conditions are older than 6 h, any unmatched cam):
 
 `mightBeGoodCameras()` gains two gates before rating: candidate must be (a) inside
 `SUGGESTION_FENCE` and (b) resolved with provenance `surfline-fresh` or `live-model` — never propose
-on static MEO numbers. Candidates now include promoted spots (they're in the camera list). Ranking:
-existing drive-distance sort, then Surfline rating desc. Limit stays `MONITOR_CAMERA_LIMIT` (7).
+on static MEO numbers. Monitor recommendations contain only playable provider-native MEO cameras;
+promoted Surfline subjects remain browsable in Explore. Favorites are not capped at seven.
 
 ### 5.8 Mapping completion (supports all of the above)
 
-The 18 in-fence `needs-review` mappings block Surfline data for their cams. Close the loop:
+The 22 in-fence `needs-review` mappings block Surfline data for their cams. Close the loop:
 
 **Name-first trust rule (user decision).** A cam↔spot association is *trusted* when the cam is AT
 the spot: names roughly match — `nameScore ≥ 0.5` **or slug-normalized containment** (strip
@@ -284,18 +289,15 @@ wrongly demoted Castelo — the user's favorite spot — and proved the reading 
 curation, curated rows still gain an explicit `camCoverage: [surflineSpotIds]` field so cam
 semantics become data rather than convention.
 
-**Surfline native cams count as at-spot cams.** Cached pages expose per-spot `cameras[]`
-(title + public still-image URL) that the pipeline currently ignores — 27 of the 89 spots seen in
-cache have ≥1 Surfline cam (Nazaré 3, Carcavelos 3, Costa da Caparica 3, Castelo 1, Cova do Vapor 1,
-São João 1, Fonte da Telha 2, Supertubos 2…). `build-surfline-spots.js` extracts them into
-`staticMetadata.surflineCams`; a spot with a Surfline cam passes the "good cam" gate even with no
-trusted MEO stream (the report view shows the cam; the still is embeddable). Stills are fetched
-on-view only, never polled.
+**Surfline camera media is excluded.** Cached reports may contain camera metadata, but the static
+catalog builder discards it. Surfline HLS and still URLs never satisfy promotion coverage and never
+ship in runtime data. Only a trusted provider-native MEO camera or a named MEO stretch can provide
+camera coverage; Surfline continues to provide report links, conditions, and surf mechanics.
 
 **Stretch semantics for continuous beaches.** The Caparica strip (Cova do Vapor → Fonte da Telha)
-is one ~10 km beach the user wants visible as a unit — "see which spot seems best, via MEO or
-Surfline". Strip spots therefore promote with `camCoverage: "stretch"`: each carries an ordered list
-of nearby strip cams (MEO streams + Surfline stills) labeled honestly ("Nova Praia cam · 0.5 km N"),
+is one ~10 km beach the user wants visible as a unit — "see which spot seems best". Strip spots
+therefore promote with `camCoverage: "stretch"`: each carries an ordered list
+of nearby MEO cams labeled honestly ("Nova Praia cam · 0.5 km N"),
 never presented as at-spot. The UI gets a **stretch view**: a "Caparica stretch" chip on any strip
 spot opens all strip cams + spot conditions north→south in one scan. Caxias joins the Linha
 seafront the same way (no cam at Caxias on either provider; the user's "big-day Caxias check" is the
@@ -308,12 +310,11 @@ for wrong pairs and deflated for right ones. **Name-based auto-trust is disabled
 curated rows or ≤ 0.2 km qualify, and the name scorer treats regional stems as stopwords so suffixes
 carry the signal. Practical effect: the strip resolves via the curation queue, which is the point.
 
-Effect on current data: 41 of 73 in-fence Surfline spots auto-trust (38 by name, 3 by ≤200 m);
-50 of 62 in-fence stream cams keep a trusted source. Three current `needs-review` rows auto-resolve
-(consolação and baleal by name, cantinho-da-baía @0.2 km); ~17 loose corridor associations demote to
-the queue (e.g. `estoril←tamariz@0.5 km`, `cave←ribeira-dilhas@1.2 km`). Known scorer weaknesses to
-fix or hand-curate fast: same-beach pairs the current `nameScore` misses, like
-`praia-do-sul←ericeira-praia-do-sul` and the `crismina←cresmina` spelling variant.
+Effect on current data: 42 of 73 in-fence Surfline spots have a trusted MEO association
+(13 curated, 27 by name, 2 by ≤200 m). The remaining 22 generated in-fence mapping rows stay in the
+review queue rather than borrowing a nearby camera identity. Known scorer weaknesses are handled by
+that queue, including same-beach names such as `praia-do-sul←ericeira-praia-do-sul` and the
+`crismina←cresmina` spelling variant.
 
 Workflow:
 
@@ -340,17 +341,18 @@ therefore a routine data-only commit, available any time — never a one-shot de
   show age honestly.
 - Open-Meteo failure/timeout (3 s) → silent fallback, console-info only.
 - Promotion manifest id typo → build fails loudly (CI-friendly), app never sees bad data.
-- Promoted spot with no `linkedCamId` → report-only detail view (existing castelo behavior).
+- Informational spot with no trusted MEO link → wave-information/playbook detail with no camera
+  media or favorite control (currently Cave and Praia da Ursa).
 - localStorage full/unavailable → in-memory cache for the session.
 
 ## 7. Testing
 
 - `test/forecast-sources.test.js`: provenance precedence table (fresh vs stale vs unmatched vs
   needs-review), age math, unit conversions (3 ft → 0.9 m, 10 kts → 18.5 km/h).
-- `test/promoted-spots.test.js`: merge/collision (castelo override), favorites round-trip with
-  promoted ids, linkedCam selection rules.
+- `test/promoted-spots-build.test.js` and `test/explore-catalog.test.js`: media-free promoted output,
+  linked-MEO selection, guide-only handling, and separation from the favoritable camera roster.
 - `test/monitor-cameras.test.js`: fence gating (lat 39.66 excluded, 39.65/38.40 included; lon −9.04
-  excluded, −9.06 included), freshness gating, promoted spots eligible.
+  excluded, −9.06 included), freshness gating, and provider-native MEO eligibility.
 - Name-first trust rule table: name-match @2.6 km → trusted; no-name @0.3 km → untrusted;
   no-name @0.15 km → trusted; curated always trusted.
 - Extraction: fixture cached page (committed test fixture, not live fetch) → conditions record
@@ -360,11 +362,10 @@ therefore a routine data-only commit, available any time — never a one-shot de
 ## 8. Rollout
 
 1. **M1 — mapping & data:** regenerate matches under the §5.8 name-first close rule; apply-feedback
-   importer; curate the demoted/needs-review queue; conditions extractor + units fix; **Surfline
-   native cam extraction (`staticMetadata.surflineCams`)**; promotion manifest + build (map
+   importer; curate the demoted/needs-review queue; conditions extractor + units fix; promotion manifest + build (map
    selection as seed, stretch semantics); persistent promotion map page (§5.9).
 2. **M2 — app:** forecast-sources resolution + rating changes + provenance chips; promoted spots
-   merged, favoritable, on Explore map; fence + freshness gates on Might-be-good.
+   available as informational Explore/advice subjects; fence + freshness gates on Might-be-good.
 3. **M3 — refresh:** step 0 probe workflow (report pages + KBYG from a runner); then scheduled GH
    Action with politeness budget, validate-before-commit, step summaries, failure alerting, and the
    6 h freshness-guard issue — or launchd CDP fallback if the probe fails; staleness banner;
@@ -385,11 +386,11 @@ Resolved by user review:
 
 5. **Promotion list received (2026-07-06):** 44 spots; per the user's "only promote with good cams —
    feel free to override" instruction plus the follow-up "I want that long stretch of beach visible",
-   the gate splits them 36 at-spot-cam / 6 stretch-cam / 2 deferred (§5.1).
+   the current MEO-only gate splits them 34 at-spot-cam / 8 stretch-cam / 2 deferred (§5.1).
 6. **Caparica naming hazard** flagged by user → ambiguity-zone handling in §5.8.
 7. **Castelo pause → rule fix:** requiring an exception for the user's favorite spot exposed the
    primary-only reading of curated rows as too strict; curated rows are now author-trusted for all
-   members (§5.8), and Surfline's native Castelo cam (Irmão restaurant) independently confirms it.
+   members (§5.8); camera playback remains the linked Riviera MEO feed.
 8. **Caxias finding:** no cam at Caxias on either provider (Surfline page: 0 cams); the big-day
    check is the Paço de Arcos cam on the same seawall — Caxias promotes as a stretch spot with that
    labeling rather than being dropped.

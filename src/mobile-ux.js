@@ -4,6 +4,9 @@ function normalizedText(value) {
 
 export function aggregateMapMarkerLabel(cameras = []) {
   const count = cameras.length;
+  const noun = cameras.some((camera) => camera?.exploreInformationOnly)
+    ? "surf spots"
+    : `surf camera${count === 1 ? "" : "s"}`;
   const contexts = [];
   const seen = new Set();
 
@@ -22,7 +25,7 @@ export function aggregateMapMarkerLabel(cameras = []) {
   const geography = contexts.length
     ? `near ${visibleContexts.join(" · ")}${remainingContextCount ? ` + ${remainingContextCount} more area${remainingContextCount === 1 ? "" : "s"}` : ""}`
     : "in this area";
-  return `${count} surf camera${count === 1 ? "" : "s"} ${geography}. Activate to zoom in.`;
+  return `${count} ${noun} ${geography}. Activate to zoom in.`;
 }
 
 export function shouldShowFavoriteResults({ query = "", region = "", provider = "" } = {}) {

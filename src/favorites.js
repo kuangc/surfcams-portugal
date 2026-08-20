@@ -18,9 +18,14 @@ export function buildFavoriteIdAliases(promotedDb, identityReplacements = {}) {
   const aliases = new Map();
   const promotedRows = Array.isArray(promotedDb?.promoted) ? promotedDb.promoted : [];
   for (const promoted of promotedRows) {
-    if (validAliasEntry(promoted?.id, promoted?.linkedCamId)) {
-      aliases.set(promoted.id, promoted.linkedCamId);
-    }
+    const linkedCamId = validAliasEntry(promoted?.id, promoted?.linkedCamId)
+      ? promoted.linkedCamId
+      : null;
+    const stretchCamId = Array.isArray(promoted?.stretchCamIds)
+      ? promoted.stretchCamIds.find((cameraId) => validAliasEntry(promoted?.id, cameraId))
+      : null;
+    const replacementId = linkedCamId || stretchCamId;
+    if (replacementId) aliases.set(promoted.id, replacementId);
   }
 
   const identityEntries = identityReplacements instanceof Map

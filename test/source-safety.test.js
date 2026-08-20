@@ -516,7 +516,7 @@ test("Favorites mutations persist before state assignment and expose one ten-sec
   assert.match(mainSource, /function createFavoriteToggle[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
   assert.match(mainSource, /detailFavorite\.addEventListener[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
   assert.match(mainSource, /function isFavoriteCamera[\s\S]*favoriteRecordForCamera\(camera\)\?\.saved/);
-  assert.match(mainSource, /function exploreCameras[\s\S]*favoriteIds:\s*feedAwareFavoriteIds\(state\.cameras\)/);
+  assert.match(mainSource, /function exploreCameras[\s\S]*favoriteIds:\s*feedAwareFavoriteIds\(state\.exploreSubjects\)/);
   assert.match(mainSource, /function markerIcon[\s\S]*data-favorite="\$\{isFavoriteCamera\(camera\)\}"/);
 });
 

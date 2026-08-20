@@ -44,14 +44,13 @@ export function buildPromotedSpots({ surflineDb, meoDb, matchesDb, stretches, pr
   for (const want of promotions.promoted) {
     const spot = slById.get(want.surflineSpotId);
     if (!spot) throw new Error(`promotion manifest references unknown spot ${want.surflineSpotId}`);
-    const surflineCams = spot.staticMetadata?.surflineCams || [];
     const trustedCam = trustedCamFor(spot.id);
     const stretch = stretchBySpot.get(spot.id) || null;
     let camCoverage = "none";
-    if (trustedCam || surflineCams.length > 0) camCoverage = "spot";
+    if (trustedCam) camCoverage = "spot";
     else if (stretch) camCoverage = "stretch";
     if (camCoverage === "none" && promotions.promoteOnlyWithTrustedCam) {
-      deferred.push({ surflineSpotId: spot.id, reason: "no trusted cam, no surfline cam, not on a stretch" });
+      deferred.push({ surflineSpotId: spot.id, reason: "no trusted MEO cam and not on a stretch" });
       continue;
     }
     const nearestRegion = meoDb.spots
@@ -73,7 +72,6 @@ export function buildPromotedSpots({ surflineDb, meoDb, matchesDb, stretches, pr
       stretchId: stretch?.id ?? null,
       stretchCamIds: stretch?.meoCamIds ?? [],
       surfline: { spotId: spot.remoteSpotId, pageUrl: spot.url },
-      surflineCams,
       surfMetadata: {
         breakType: spot.staticMetadata?.breakType ?? null,
         best: spot.staticMetadata?.travelDetails?.best ?? null,
@@ -102,7 +100,7 @@ async function main() {
   }, null, 1)}\n`, "utf8");
   console.log(`Promoted ${promoted.length}, deferred ${deferred.length}:`);
   for (const d of deferred) console.log(`  deferred: ${d.surflineSpotId} (${d.reason})`);
-  for (const p of promoted) console.log(`  ${p.camCoverage.padEnd(7)} ${p.id} cam:${p.linkedCamId ?? "-"} slCams:${p.surflineCams.length}`);
+  for (const p of promoted) console.log(`  ${p.camCoverage.padEnd(7)} ${p.id} cam:${p.linkedCamId ?? "-"}`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

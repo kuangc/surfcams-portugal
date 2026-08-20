@@ -1,14 +1,15 @@
 # Surfcams Portugal
 
-Ad-free personal viewer for Portugal surf cameras indexed from public Beachcam/MEO livecam pages.
+Ad-free personal viewer for provider-native Portugal surf cameras indexed from public Beachcam/MEO livecam pages.
 
-The app opens directly to a map and score-ranked camera list, filters out unavailable streams, and lets each browser choose its own favorites with `localStorage`.
+The app opens directly to a map and score-ranked camera list, filters out unavailable streams, and lets each browser choose its own favorites with `localStorage`. Camera names, locations, and feeds stay one-to-one with the MEO provider catalog; Surfline is used for wave intelligence, never camera playback or still imagery.
 
 ## Features
 
-- Interactive Leaflet map of indexed Portugal cameras with live HLS feeds.
+- Interactive Leaflet map of 190 indexed Portugal MEO camera records, including 154 currently playable HLS feeds.
 - Surfline-style model rating labels for small-group sessions, using Beachcam wave, wind, period, tide, and spot/coast mechanics.
-- Promoted Surfline spots (Nazaré→Sesimbra) as first-class favoritable spots, rated from Surfline's own spot conditions when fresh — with a provenance chip showing whether numbers come from Surfline, a live model, or the static MEO snapshot.
+- Surfline spot conditions and mechanics enrich matching MEO cameras and informational Explore spots when fresh, with a provenance chip showing whether numbers come from Surfline, a live model, or the static MEO snapshot.
+- No Surfline HLS, camera-still, hotlink, proxy, or promoted-camera alias path; unavailable upstream camera media cannot be mislabeled as another beach.
 - Source-backed local advice for the 44 selected Surfline spots. Compact cards show at most one context-sensitive **Local lens** line; the detail view's **Local playbook** explains size translation, the best window, mechanics, hazards, scope, confidence, conflicts, and sources.
 - Cave and Praia da Ursa remain honest **guide-only** Explore subjects: their playbooks are available, but the app does not invent live camera or current-condition claims for them.
 - "Good for us" filtering for in-window waves, offshore wind, and light-wind conditions.
@@ -57,10 +58,23 @@ docs/architecture.md       Architecture notes
 
 ## Refresh Camera Data
 
-The crawler uses only Node built-ins and caches downloaded pages under `.cache/beachcam/`.
+The crawler uses only Node built-ins and caches downloaded pages under `.cache/beachcam/`. Refreshes are staged outside the tracked database and accepted only after the identity/feed validator passes; derivative MEO data then preserves reviewed mappings and trusted OSRM routes across known ID corrections.
 
 ```bash
-npm run crawl -- --refresh
+npm run crawl -- --refresh --output /tmp/meo-candidate.json
+node scripts/validate-meo-crawl.cjs \
+  --baseline data/beachcam-cameras.json \
+  --candidate /tmp/meo-candidate.json
+cp /tmp/meo-candidate.json data/beachcam-cameras.json
+ROUTING_PROVIDER=preserve npm run build-spot-data
+npm run build-meo-surfline-matches
+npm run cache-surfline -- --offline
+npm run build-coast-exposures
+npm run build-spot-metadata-enrichment
+npm run build-promoted-spots
+npm run build-promotion-map
+npm run build-spot-advice
+npm run fetch-tides
 npm run embed-data
 npm test
 ```
@@ -75,7 +89,7 @@ This repository is ready for GitHub Pages at `https://kuangc.github.io/surfcams-
 
 ## Legal
 
-Camera streams, images, descriptions, and forecast metadata belong to Beachcam/MEO or their licensors. This project indexes public page metadata for personal viewing and does not claim ownership of upstream content or affiliation with Beachcam/MEO.
+Camera streams, images, and descriptions belong to Beachcam/MEO or their licensors. Surfline reports and wave metadata belong to Surfline or its licensors. This project indexes public metadata for personal viewing and does not claim ownership of upstream content or affiliation with either provider.
 
 ## License
 

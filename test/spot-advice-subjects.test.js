@@ -251,7 +251,8 @@ test("main keeps guide research canonical and resolves the user-facing roster af
   assert.match(source, /const nativeCameraDb\s*=\s*applySpotMetadataToCameraDb\(cameraDb, spotData\)/);
   assert.match(source, /mergeAdviceGuideSubjects\(\s*mergePromotedSpots\(\s*nativeCameraDb,\s*spotData\.promotedDb\s*\),\s*spotData\.advice\s*\)/s);
   assert.match(source, /state\.cameras\s*=\s*sortCamerasByLatitudeDescending\(resolveMeoPlaybackCameras\(nativeCameraDb\)\)/s);
+  assert.match(source, /state\.exploreSubjects\s*=\s*sortCamerasByLatitudeDescending\(\s*buildExploreCatalog\(state\.cameras,\s*state\.db\)/s);
   assert.match(source, /loadFavoriteIds\(state\.cameras, undefined, favoriteIdAliases\)/);
-  assert.match(source, /state\.explorePlayer\.play\(camera\)/);
+  assert.match(source, /state\.explorePlayer\.play\(playbackCamera\)/);
   assert.doesNotMatch(source, /routeCameraPlayback/);
 });

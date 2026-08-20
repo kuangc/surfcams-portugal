@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import {
   parseNextDataState, feetToMeters, knotsToKmh, fahrenheitToCelsius,
-  extractSurflineCams, extractConditionsRecords
+  extractConditionsRecords
 } from "../scripts/lib/surfline-extract.js";
 
 const html = fs.readFileSync("test/fixtures/surfline-page.html", "utf8");
@@ -19,13 +19,6 @@ test("unit conversions", () => {
 test("parseNextDataState finds ssrReduxState", () => {
   const state = parseNextDataState(html);
   assert.equal(state.spot.report.data.spot.name, "Testspot");
-});
-
-test("extractSurflineCams", () => {
-  const state = parseNextDataState(html);
-  assert.deepEqual(extractSurflineCams(state.spot.report.data.spot), [
-    { title: "PT - Testspot", stillUrl: "https://camstills.example/test.jpg" }
-  ]);
 });
 
 test("extractConditionsRecords normalizes primary + nearby, FT->m, KTS->kmh", () => {
@@ -72,7 +65,6 @@ test("null and malformed inputs degrade to null/empty", () => {
   assert.equal(parseNextDataState('<script id="__NEXT_DATA__">not json</script>'), null);
   const viaDoubleEncoded = parseNextDataState(JSON.stringify(html));
   assert.equal(viaDoubleEncoded.spot.report.data.spot.name, "Testspot");
-  assert.deepEqual(extractSurflineCams(null), []);
   assert.deepEqual(extractConditionsRecords(null, { fetchedAt: "x" }), []);
   assert.deepEqual(extractConditionsRecords({}, { fetchedAt: "x" }), []);
 });

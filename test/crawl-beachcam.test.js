@@ -72,12 +72,18 @@ test("provider identity normalization removes empty pipe segments", () => {
   assert.equal(detail.name, "Espinho | Silvalde | Estática");
 });
 
-test("parseCliArgs requires an explicit path after --output", () => {
+test("parseCliArgs requires an explicit staging output and refuses the accepted catalog", () => {
   assert.deepEqual(parseCliArgs(["--refresh", "--output", "/tmp/meo.json"]), {
     refresh: true,
     outputPath: "/tmp/meo.json"
   });
+  assert.throws(() => parseCliArgs([]), /--output is required/i);
+  assert.throws(() => parseCliArgs(["--refresh"]), /--output is required/i);
   assert.throws(() => parseCliArgs(["--output"]), /--output requires a path/);
+  assert.throws(
+    () => parseCliArgs(["--output", "data/../data/beachcam-cameras.json"]),
+    /accepted camera catalog/i
+  );
   assert.throws(() => parseCliArgs(["--unknown"]), /Unknown option/);
 });
 
@@ -119,6 +125,23 @@ test("crawl leaves the staged output untouched when any detail fetch fails", asy
       logger: () => {}
     }),
     /provider detail unavailable/
+  );
+  assert.equal(await fs.readFile(outputPath, "utf8"), "existing candidate\n");
+});
+
+test("crawl rejects an empty provider listing before replacing the staged output", async (t) => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "meo-empty-crawl-test-"));
+  t.after(() => fs.rm(tempDir, { recursive: true, force: true }));
+  const outputPath = path.join(tempDir, "candidate.json");
+  await fs.writeFile(outputPath, "existing candidate\n", "utf8");
+
+  await assert.rejects(
+    crawl({
+      outputPath,
+      fetchPage: async () => "<html><body>No provider cameras parsed</body></html>",
+      logger: () => {}
+    }),
+    /provider listing contained no cameras/i
   );
   assert.equal(await fs.readFile(outputPath, "utf8"), "existing candidate\n");
 });

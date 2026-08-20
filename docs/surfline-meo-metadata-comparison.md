@@ -1,6 +1,6 @@
 # Surfline vs MEO Metadata Comparison
 
-Generated: 2026-06-11
+Updated: 2026-08-19
 
 ## Source Decision
 
@@ -15,7 +15,7 @@ Surfline is better for:
 
 MEO/Beachcam is better for:
 
-- Camera inventory coverage: 190 normalized camera/report entries.
+- Camera inventory coverage: 190 provider-native camera records, 154 with playable feeds.
 - Live stream and camera page metadata.
 - Portuguese local descriptions, which are useful as fallback cues.
 
@@ -25,7 +25,7 @@ Surfline within 100km of central Lisbon:
 
 - 80 normalized Surfline spots in `data/surfline-spots.json`.
 - 80 cached HTML files in `.cache/surfline/pages`.
-- 80 are real browser-fetched Surfline pages.
+- The 80 local cache sources were browser-fetched; the committed mapping-review rows are currently marked `reused-review` because the MEO-key refresh reused those validated cached results offline.
 - 80 have current Surfline snapshot data.
 - 35 have Surfline-derived `coastExposure`.
 - 26 have Surfline `travelDetails`.
@@ -34,17 +34,16 @@ Surfline within 100km of central Lisbon:
 
 MEO/Beachcam:
 
-- 190 normalized MEO/Beachcam entries in `data/meo-spots.json`.
+- 190 normalized MEO/Beachcam entries in `data/meo-spots.json`, with 154 unique playable provider feeds.
 - Better inventory breadth, but weaker structured surf mechanics.
 
 MEO-keyed enrichment:
 
-- 89 MEO-to-Surfline mapping rows in `data/meo-surfline-matches.json`.
-- 11 mappings are curated and preserved ahead of generated joins.
+- 88 MEO-to-Surfline mapping rows in `data/meo-surfline-matches.json`.
+- 10 mappings are curated and preserved ahead of generated joins.
 - 78 mappings are generated from cached Surfline coordinates and names.
-- 21 generated mappings are coordinate-nearby `needs-review` joins.
-- 89 MEO-keyed entries in `data/spot-metadata-enrichment.json`.
-- 53 entries have guide summaries, 50 have break type and ability metadata, 42 have bottom metadata, and 89 carry coast exposure metadata.
+- 23 generated mappings are coordinate-nearby `needs-review` joins; one rejected mapping remains preserved.
+- 64 MEO-keyed entries in `data/spot-metadata-enrichment.json`; 47 have guide summaries, 40 have break type, 49 have ability metadata, 40 have bottom metadata, and all 64 carry coast exposure metadata.
 
 ## Exposure Layer
 
@@ -52,19 +51,20 @@ MEO-keyed enrichment:
 
 | Source | Count | Meaning | Examples |
 | --- | ---: | --- | --- |
-| `surfline-metadata` | 84 | Spot-level or nearby Surfline exposure from normalized Surfline metadata, selected through curated/generated MEO-to-Surfline mappings. Coordinate-only joins keep `needs-review`. | `praia-de-carcavelos` 188, `praia-do-guincho` 280, `costa-da-caparica` 260 |
+| `surfline-metadata` | 59 | Spot-level or nearby Surfline exposure from normalized Surfline metadata, selected through curated/generated MEO-to-Surfline mappings. Coordinate-only joins keep `needs-review`. | `praia-de-carcavelos` 188, `praia-do-guincho` 280, `costa-da-caparica` 260 |
 | `meo-description` | 3 | Directional cue found in the MEO description text. | `praia-das-bicas` west-facing, `faja-da-areia` north-facing, `seixal` north-facing |
 | `legacy-spot` | 2 | Existing spot-level exposure fallback from `src/surf-rating.js`. | `carcavelos-calhau`, `carcavelos-calhau-estatica` |
-| `region-heuristic` | 86 | Aggressive broad regional estimate for otherwise-uncovered spots. | `praia-de-matosinhos`, `praia-da-barra`, `paredes-da-vitoria` |
-| `unknown` | 15 | No reliable source yet; needs hand curation. | `porto-santo`, `praia-das-rocas`, `ponta-pequena` |
+| `legacy-regional` | 20 | Existing named regional exposure fallback. | regional cameras retained from the prior rated catalog |
+| `region-heuristic` | 90 | Aggressive broad regional estimate for otherwise-uncovered spots. | `praia-de-matosinhos`, `praia-da-barra`, `paredes-da-vitoria` |
+| `unknown` | 16 | No reliable source yet; needs hand curation. | island/river cameras without a defensible facing bearing |
 
-Finite exposures: 175 of 190 entries.
+Finite exposures: 174 of 190 entries.
 
 Review status:
 
-- 154 generated entries.
-- 21 Surfline coordinate-nearby entries marked `needs-review`.
-- 15 unknown entries marked `needs-curation`.
+- 174 generated entries.
+- 23 Surfline coordinate-nearby mappings remain marked `needs-review`.
+- 16 unknown entries are marked `needs-curation`.
 
 ## Refresh Order
 
@@ -87,6 +87,6 @@ npm run build-spot-metadata-enrichment
 npm run build-surfline-needs-review
 ```
 
-`cache-surfline-browser` expects an open Chrome session with remote debugging enabled and a Surfline report page already loaded past the Cloudflare challenge. It fetches pages from inside that browser session, writes real full HTML, and marks cache metadata as `browser-fetched`. `cache-surfline` regenerates the mapping review from the cached HTML after `build-meo-surfline-matches`, without doing a network refresh.
+`cache-surfline-browser` expects an open Chrome session with remote debugging enabled and a Surfline report page already loaded past the Cloudflare challenge. It fetches pages from inside that browser session, writes real full HTML, and marks cache metadata as `browser-fetched`. `cache-surfline` then regenerates the mapping review from the refreshed cache. For an MEO-only identity refresh that intentionally does not touch Surfline inputs, use `npm run cache-surfline -- --offline` to reuse the committed reviewed page metadata.
 
 Generated `needs-review` mappings are excluded from runtime enrichment until curated. Review them in `docs/surfline-needs-review.html`, then apply accepted mappings as curated rows.

@@ -68,8 +68,17 @@ test("favorite aliases combine promoted links and static MEO identity replacemen
   const aliases = buildFavoriteIdAliases(
     {
       promoted: [
-        { id: "surfline-alpha", linkedCamId: "cam-alpha" },
-        { id: "surfline-unlinked" },
+        {
+          id: "surfline-alpha",
+          linkedCamId: "cam-alpha",
+          stretchCamIds: ["cam-stretch-ignored"]
+        },
+        {
+          id: "surfline-stretch",
+          linkedCamId: "",
+          stretchCamIds: [null, "", "cam-stretch", "cam-stretch-later"]
+        },
+        { id: "surfline-unlinked", stretchCamIds: [null, " ", 42] },
         { id: "", linkedCamId: "cam-invalid" }
       ]
     },
@@ -77,6 +86,7 @@ test("favorite aliases combine promoted links and static MEO identity replacemen
   );
 
   assert.equal(aliases.get("surfline-alpha"), "cam-alpha");
+  assert.equal(aliases.get("surfline-stretch"), "cam-stretch");
   assert.equal(aliases.get("surfline-unlinked"), undefined);
   assert.equal(aliases.get("espinho-silvade"), "espinho-silvalde");
   assert.equal(aliases.get("surfline-castelo"), "costa-da-caparica-riviera");
@@ -118,18 +128,30 @@ test("stored favorites are loaded and unavailable IDs are ignored", () => {
 test("stored promoted and provider-renamed favorites migrate before availability filtering", () => {
   const migratedCameras = [
     { id: "cam-alpha" },
+    { id: "cam-stretch" },
     { id: "espinho-silvalde" }
   ];
-  const storage = storageWith(JSON.stringify(["surfline-alpha", "espinho-silvade"]));
+  const storage = storageWith(JSON.stringify([
+    "surfline-alpha",
+    "surfline-stretch",
+    "surfline-unavailable",
+    "espinho-silvade"
+  ]));
   const aliases = buildFavoriteIdAliases(
-    { promoted: [{ id: "surfline-alpha", linkedCamId: "cam-alpha" }] },
+    {
+      promoted: [
+        { id: "surfline-alpha", linkedCamId: "cam-alpha" },
+        { id: "surfline-stretch", stretchCamIds: ["cam-stretch"] },
+        { id: "surfline-unavailable", stretchCamIds: ["missing-camera"] }
+      ]
+    },
     MEO_FAVORITE_ID_REPLACEMENTS
   );
 
   const favorites = loadFavoriteIds(migratedCameras, storage, aliases);
 
-  assert.deepEqual([...favorites], ["cam-alpha", "espinho-silvalde"]);
-  assert.equal(storage.value(), JSON.stringify(["cam-alpha", "espinho-silvalde"]));
+  assert.deepEqual([...favorites], ["cam-alpha", "cam-stretch", "espinho-silvalde"]);
+  assert.equal(storage.value(), JSON.stringify(["cam-alpha", "cam-stretch", "espinho-silvalde"]));
 });
 
 test("alias and native duplicates collapse in original order and persist once", () => {

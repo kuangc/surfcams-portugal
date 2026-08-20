@@ -263,7 +263,7 @@ async function mapWithConcurrency(items, limit, callback) {
 function parseCliArgs(args) {
   const options = {
     refresh: false,
-    outputPath: OUTPUT_PATH
+    outputPath: ""
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -282,6 +282,13 @@ function parseCliArgs(args) {
       continue;
     }
     throw new Error(`Unknown option: ${arg}`);
+  }
+
+  if (!options.outputPath) {
+    throw new Error("--output is required and must point to a staging file");
+  }
+  if (path.resolve(options.outputPath) === OUTPUT_PATH) {
+    throw new Error("--output must be a staging path; refusing to overwrite the accepted camera catalog");
   }
 
   return options;
@@ -361,6 +368,9 @@ async function crawl(optionsOrRefresh = {}) {
   const { refresh, outputPath, fetchPage, logger } = normalizeCrawlOptions(optionsOrRefresh);
   const listingHtml = await fetchPage(LISTING_URL, "livecams-index.html", refresh);
   const listingItems = parseListing(listingHtml);
+  if (!listingItems.length) {
+    throw new Error("Provider listing contained no cameras");
+  }
 
   const cameras = await mapWithConcurrency(listingItems, CONCURRENCY, async (camera, index) => {
     try {
