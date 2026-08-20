@@ -13,7 +13,7 @@ test("Explore renders the retained Surfline intelligence catalog without adding 
 });
 
 test("Explore labels and plays only a resolved MEO camera for informational subjects", () => {
-  assert.match(source, /function exploreCameraForSubject\(subject\)[\s\S]*?explorePlaybackCamera\(subject,\s*state\.cameras\)/);
+  assert.match(source, /function exploreCameraForSubject\(subject\)[\s\S]*?explorePlaybackCamera\(subject,\s*state\.explorePlaybackIndex\)/);
   assert.match(source, /function playExploreCamera\(camera\)[\s\S]*?const playbackCamera = exploreCameraForSubject\(camera\)/);
   assert.match(source, /state\.explorePlayer\.play\(playbackCamera\)/);
   assert.match(source, /Wave information only/);

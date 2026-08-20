@@ -131,7 +131,9 @@ test("main controller wires v3 screens and keeps might-be-good explicit", () => 
   assert.match(mainSource, /renderExploreList/);
   assert.match(mainSource, /playExploreCamera/);
   assert.match(mainSource, /createGalleryPreviewSession/);
-  assert.match(mainSource, /playableFavoriteCatalog/);
+  assert.match(mainSource, /createFavoriteCatalogIndex/);
+  assert.match(mainSource, /createExplorePlaybackIndex/);
+  assert.match(mainSource, /favoriteExploreIds/);
   assert.match(mainSource, /searchFavoriteCatalog/);
   assert.match(mainSource, /addFavorite/);
   assert.match(mainSource, /commitFavoriteMutation/);
@@ -507,15 +509,15 @@ test("Favorites mutations persist before state assignment and expose one ten-sec
   assert.match(mainSource, /favoriteUndo\.consumeOffer\(\)/);
   assert.match(mainSource, /favoriteUndo\.cancel\(\)/);
   assert.match(mainSource, /const nextFavoriteIds = commitFavoriteMutation\(state\.favoriteIds/);
-  assert.match(mainSource, /state\.favoriteIds = nextFavoriteIds/);
+  assert.match(mainSource, /setFavoriteIds\(nextFavoriteIds\)/);
   assert.match(mainSource, /try\s*{[\s\S]*commitFavoriteMutation[\s\S]*}\s*catch \(error\)\s*{[\s\S]*announceFavoriteStatus/s);
   assert.match(mainSource, /renderMonitorIfActive\(\)[\s\S]*renderFavorites\(\)[\s\S]*renderExploreList\(\)[\s\S]*renderMarkers\(\)/);
-  assert.match(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
+  assert.match(mainSource, /state\.favoriteCatalogIndex\.records/);
   assert.match(mainSource, /function favoriteRecordForCamera[\s\S]*favoriteFeedRecord\(/);
   assert.match(mainSource, /function syncFavoriteToggle[\s\S]*favoriteRecordForCamera\(camera\)[\s\S]*record\?\.saved/);
   assert.match(mainSource, /function createFavoriteToggle[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
   assert.match(mainSource, /detailFavorite\.addEventListener[\s\S]*toggleFavorite\(camera,\s*!favoriteRecordForCamera\(camera\)\?\.saved\)/);
-  assert.match(mainSource, /function isFavoriteCamera[\s\S]*favoriteRecordForCamera\(camera\)\?\.saved/);
+  assert.match(mainSource, /function isFavoriteCamera[\s\S]*state\.exploreFavoriteIds\.has\(camera\.id\)/);
   assert.match(mainSource, /function exploreCameras[\s\S]*favoriteIds:\s*feedAwareFavoriteIds\(state\.exploreSubjects\)/);
   assert.match(mainSource, /function markerIcon[\s\S]*data-favorite="\$\{isFavoriteCamera\(camera\)\}"/);
 });
@@ -537,19 +539,43 @@ test("Favorites cancel an old undo offer only after a new mutation commits", () 
     /function removeFavoriteCamera\(camera\)\s*{([\s\S]*?)\n}\n\nfunction undoFavoriteRemoval/
   )?.[1] || "";
 
-  const addCommitIndex = addSource.indexOf("state.favoriteIds = nextFavoriteIds;");
+  const addCommitIndex = addSource.indexOf("setFavoriteIds(nextFavoriteIds);");
   const addCancelIndex = addSource.indexOf("cancelFavoriteUndoOffer();");
-  assert.ok(addCommitIndex >= 0, "add assigns only the successfully persisted Set");
+  assert.ok(addCommitIndex >= 0, "add applies only the successfully persisted Set");
   assert.ok(addCancelIndex > addCommitIndex, "add preserves pending undo through no-op and failure exits");
   assert.equal(addSource.lastIndexOf("cancelFavoriteUndoOffer();"), addCancelIndex);
 
-  const removeCommitIndex = removeSource.indexOf("state.favoriteIds = nextFavoriteIds;");
+  const removeCommitIndex = removeSource.indexOf("setFavoriteIds(nextFavoriteIds);");
   const removeCancelIndex = removeSource.indexOf("cancelFavoriteUndoOffer();");
   const removeOfferIndex = removeSource.indexOf("favoriteUndo.offer(removedCamera, restoreFavoriteFocus);");
-  assert.ok(removeCommitIndex >= 0, "remove assigns only the successfully persisted Set");
+  assert.ok(removeCommitIndex >= 0, "remove applies only the successfully persisted Set");
   assert.ok(removeCancelIndex > removeCommitIndex, "remove preserves pending undo through no-op and failure exits");
   assert.ok(removeOfferIndex > removeCancelIndex, "a committed remove replaces the prior offer with the new camera");
   assert.equal(removeSource.lastIndexOf("cancelFavoriteUndoOffer();"), removeCancelIndex);
+});
+
+test("Explore and Favorites refresh indexed lookup state from controller seams instead of rebuilding per row", () => {
+  assert.doesNotMatch(mainSource, /playableFavoriteCatalog\(state\.cameras,\s*state\.favoriteIds\)/);
+  assert.doesNotMatch(mainSource, /explorePlaybackCamera\(subject,\s*state\.cameras\)/);
+  assert.match(mainSource, /function refreshFavoriteIndexes\(\)\s*{[\s\S]*state\.favoriteCatalogIndex\s*=\s*createFavoriteCatalogIndex\(state\.cameras,\s*state\.favoriteIds\);[\s\S]*state\.exploreFavoriteIds\s*=\s*favoriteExploreIds\([\s\S]*state\.exploreSubjects,[\s\S]*state\.explorePlaybackIndex,[\s\S]*state\.favoriteCatalogIndex[\s\S]*\);[\s\S]*}/);
+  assert.match(mainSource, /function setFavoriteIds\(nextFavoriteIds\)\s*{[\s\S]*state\.favoriteIds\s*=\s*nextFavoriteIds;[\s\S]*refreshFavoriteIndexes\(\);[\s\S]*}/);
+  assert.match(mainSource, /state\.explorePlaybackIndex\s*=\s*createExplorePlaybackIndex\(state\.cameras\)/);
+  assert.match(mainSource, /setFavoriteIds\(sanitizeFavoriteIds\(/);
+
+  const addSource = mainSource.match(
+    /function addFavoriteCamera\(cameraId\)\s*{([\s\S]*?)\n}\n\nfunction favoriteRecordForCamera/
+  )?.[1] || "";
+  const removeSource = mainSource.match(
+    /function removeFavoriteCamera\(camera\)\s*{([\s\S]*?)\n}\n\nfunction undoFavoriteRemoval/
+  )?.[1] || "";
+  const undoSource = mainSource.match(
+    /function undoFavoriteRemoval\(\)\s*{([\s\S]*?)\n}\n\nfunction toggleFavorite/
+  )?.[1] || "";
+
+  assert.match(addSource, /const catalog = state\.favoriteCatalogIndex\.records;/);
+  assert.match(addSource, /setFavoriteIds\(nextFavoriteIds\);/);
+  assert.match(removeSource, /setFavoriteIds\(nextFavoriteIds\);/);
+  assert.match(undoSource, /setFavoriteIds\(nextFavoriteIds\);/);
 });
 
 test("Favorites navigation opens results before deriving Home, End, and arrow targets", () => {

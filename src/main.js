@@ -25,8 +25,8 @@ import {
 } from "./config.js";
 import {
   addFavorite,
+  createFavoriteCatalogIndex,
   favoriteFeedRecord,
-  playableFavoriteCatalog,
   searchFavoriteCatalog
 } from "./favorite-catalog.js";
 import {
@@ -51,7 +51,12 @@ import {
   openSelectedExploreSpot,
   selectExploreSpot
 } from "./explore-emphasis.js";
-import { buildExploreCatalog, explorePlaybackCamera } from "./explore-catalog.js";
+import {
+  buildExploreCatalog,
+  createExplorePlaybackIndex,
+  explorePlaybackCamera,
+  favoriteExploreIds
+} from "./explore-catalog.js";
 import { inSuggestionFence, monitorFavoriteCameras } from "./monitor-cameras.js";
 import {
   addComparisonCamera,
@@ -114,6 +119,9 @@ const state = {
   tideData: emptyTideData(),
   cameras: [],
   exploreSubjects: [],
+  explorePlaybackIndex: createExplorePlaybackIndex([]),
+  favoriteCatalogIndex: createFavoriteCatalogIndex([], new Set()),
+  exploreFavoriteIds: new Set(),
   favoriteIds: new Set(),
   preferences: DEFAULT_SURF_PREFERENCES,
   liveForecastCache: new Map(),
@@ -364,6 +372,20 @@ function favoriteOrder() {
 
 function byId() {
   return new Map(state.cameras.map((camera) => [camera.id, camera]));
+}
+
+function refreshFavoriteIndexes() {
+  state.favoriteCatalogIndex = createFavoriteCatalogIndex(state.cameras, state.favoriteIds);
+  state.exploreFavoriteIds = favoriteExploreIds(
+    state.exploreSubjects,
+    state.explorePlaybackIndex,
+    state.favoriteCatalogIndex
+  );
+}
+
+function setFavoriteIds(nextFavoriteIds) {
+  state.favoriteIds = nextFavoriteIds;
+  refreshFavoriteIndexes();
 }
 
 function favoriteCameras() {
@@ -1546,7 +1568,7 @@ function renderFavoriteMutationSurfaces(cameraId = null) {
 }
 
 function addFavoriteCamera(cameraId) {
-  const catalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
+  const catalog = state.favoriteCatalogIndex.records;
   const camera = state.cameras.find((candidate) => candidate.id === cameraId);
   const record = favoriteFeedRecord(catalog, camera);
 
@@ -1566,7 +1588,7 @@ function addFavoriteCamera(cameraId) {
       nextFavoriteIds.clear();
       candidateFavoriteIds.forEach((id) => nextFavoriteIds.add(id));
     });
-    state.favoriteIds = nextFavoriteIds;
+    setFavoriteIds(nextFavoriteIds);
   } catch (error) {
     announceFavoriteStatus(`Could not save ${record.camera.name}. Your favorites were not changed.`);
     return false;
@@ -1585,18 +1607,19 @@ function addFavoriteCamera(cameraId) {
 
 function favoriteRecordForCamera(camera) {
   const favoriteCamera = exploreCameraForSubject(camera) || camera;
-  return favoriteFeedRecord(
-    playableFavoriteCatalog(state.cameras, state.favoriteIds),
-    favoriteCamera
-  );
+  return favoriteFeedRecord(state.favoriteCatalogIndex, favoriteCamera);
 }
 
 function isFavoriteCamera(camera) {
-  return Boolean(favoriteRecordForCamera(camera)?.saved);
+  return Boolean(camera?.id) && state.exploreFavoriteIds.has(camera.id);
 }
 
 function feedAwareFavoriteIds(cameras) {
-  return new Set(cameras.filter(isFavoriteCamera).map(({ id }) => id));
+  return new Set(
+    cameras
+      .map(({ id }) => id)
+      .filter((id) => state.exploreFavoriteIds.has(id))
+  );
 }
 
 function removeFavoriteCamera(camera) {
@@ -1610,7 +1633,7 @@ function removeFavoriteCamera(camera) {
     const nextFavoriteIds = commitFavoriteMutation(state.favoriteIds, (nextFavoriteIds) => {
       savedAliasIds.forEach((id) => nextFavoriteIds.delete(id));
     });
-    state.favoriteIds = nextFavoriteIds;
+    setFavoriteIds(nextFavoriteIds);
   } catch (error) {
     announceFavoriteStatus(`Could not remove ${record.camera.name}. Your favorites were not changed.`);
     return false;
@@ -1636,7 +1659,7 @@ function undoFavoriteRemoval() {
     const nextFavoriteIds = commitFavoriteMutation(state.favoriteIds, (nextFavoriteIds) => {
       nextFavoriteIds.add(camera.id);
     });
-    state.favoriteIds = nextFavoriteIds;
+    setFavoriteIds(nextFavoriteIds);
   } catch (error) {
     announceFavoriteStatus(`Could not restore ${camera.name}. Your favorites were not changed.`);
     offer.restoreFocus?.(camera);
@@ -1774,8 +1797,7 @@ function favoriteProviderValue(camera) {
 }
 
 function renderFavoriteAddFilterOptions() {
-  const catalogCameras = playableFavoriteCatalog(state.cameras, state.favoriteIds)
-    .map(({ camera }) => camera);
+  const catalogCameras = state.favoriteCatalogIndex.records.map(({ camera }) => camera);
   renderRegionOptions(els.favoriteAddRegion, catalogCameras);
 
   els.favoriteAddProvider.textContent = "";
@@ -1850,7 +1872,7 @@ function renderFavoriteAddResults() {
     region: els.favoriteAddRegion.value,
     provider: els.favoriteAddProvider.value
   };
-  const catalog = playableFavoriteCatalog(state.cameras, state.favoriteIds);
+  const catalog = state.favoriteCatalogIndex.records;
   favoriteAddRecords = shouldShowFavoriteResults(resultIntent)
     ? searchFavoriteCatalog(catalog, resultIntent)
     : [];
@@ -1961,7 +1983,7 @@ function handleFavoriteAddKeydown(event) {
 }
 
 function exploreCameraForSubject(subject) {
-  return explorePlaybackCamera(subject, state.cameras);
+  return explorePlaybackCamera(subject, state.explorePlaybackIndex);
 }
 
 function playExploreCamera(camera) {
@@ -2928,14 +2950,15 @@ async function init() {
   state.exploreSubjects = sortCamerasByLatitudeDescending(
     buildExploreCatalog(state.cameras, state.db)
   );
+  state.explorePlaybackIndex = createExplorePlaybackIndex(state.cameras);
   const favoriteIdAliases = buildFavoriteIdAliases(
     spotData.promotedDb,
     MEO_FAVORITE_ID_REPLACEMENTS
   );
-  state.favoriteIds = sanitizeFavoriteIds(
+  setFavoriteIds(sanitizeFavoriteIds(
     state.cameras,
     loadFavoriteIds(state.cameras, undefined, favoriteIdAliases)
-  );
+  ));
   state.preferences = loadSurfPreferences();
   state.todayForecastStore = createTodayForecastStore({
     fetchForecast: (camera) => fetchLiveForecast(camera)

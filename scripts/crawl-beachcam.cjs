@@ -287,11 +287,19 @@ function parseCliArgs(args) {
   if (!options.outputPath) {
     throw new Error("--output is required and must point to a staging file");
   }
-  if (path.resolve(options.outputPath) === OUTPUT_PATH) {
-    throw new Error("--output must be a staging path; refusing to overwrite the accepted camera catalog");
-  }
+  assertStagingOutputPath(options.outputPath);
 
   return options;
+}
+
+function assertStagingOutputPath(outputPath) {
+  if (!outputPath) {
+    throw new Error("--output is required and must point to a staging file");
+  }
+  if (path.resolve(outputPath) === OUTPUT_PATH) {
+    throw new Error("--output must be a staging path; refusing to overwrite the accepted camera catalog");
+  }
+  return path.resolve(outputPath);
 }
 
 function isPlayableStreamUrl(value) {
@@ -355,10 +363,11 @@ function normalizeCrawlOptions(optionsOrRefresh) {
     ? { refresh: optionsOrRefresh }
     : (optionsOrRefresh || {});
   const refresh = Boolean(options.refresh);
+  const outputPath = assertStagingOutputPath(options.outputPath);
 
   return {
     refresh,
-    outputPath: path.resolve(options.outputPath || OUTPUT_PATH),
+    outputPath,
     fetchPage: options.fetchPage || ((url, cacheName) => cachedFetch(url, cacheName, refresh)),
     logger: options.logger || console.error
   };
@@ -431,6 +440,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertStagingOutputPath,
   assertUniqueCameras,
   crawl,
   decodeEntities,

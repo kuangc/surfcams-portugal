@@ -41,13 +41,39 @@ export function buildExploreCatalog(playbackCameras, canonicalDb) {
   return subjects;
 }
 
-export function explorePlaybackCamera(subject, playbackCameras) {
-  if (!subject || !Array.isArray(playbackCameras)) return null;
-  const playbackById = new Map(playbackCameras.map((camera) => [camera.id, camera]));
+export function createExplorePlaybackIndex(playbackCameras) {
+  const cameras = Array.isArray(playbackCameras) ? playbackCameras : [];
+  return {
+    cameras,
+    byId: new Map(cameras.map((camera) => [camera.id, camera]))
+  };
+}
+
+function playbackIndex(playbackCamerasOrIndex) {
+  if (playbackCamerasOrIndex?.byId instanceof Map) return playbackCamerasOrIndex;
+  return createExplorePlaybackIndex(playbackCamerasOrIndex);
+}
+
+export function explorePlaybackCamera(subject, playbackCamerasOrIndex) {
+  if (!subject) return null;
+  const byId = playbackIndex(playbackCamerasOrIndex).byId;
   const candidateIds = [
     subject.id,
     subject.linkedCamId,
     ...(Array.isArray(subject.stretchCamIds) ? subject.stretchCamIds : [])
   ];
-  return candidateIds.map((id) => playbackById.get(id)).find(Boolean) || null;
+  return candidateIds.map((id) => byId.get(id)).find(Boolean) || null;
+}
+
+export function favoriteExploreIds(subjects, playbackCamerasOrIndex, favoriteCatalogIndex) {
+  const ids = new Set();
+  const allSubjects = Array.isArray(subjects) ? subjects : [];
+  for (const subject of allSubjects) {
+    const playbackCamera = explorePlaybackCamera(subject, playbackCamerasOrIndex);
+    const record = playbackCamera?.id
+      ? favoriteCatalogIndex?.recordByCameraId?.get?.(playbackCamera.id) || null
+      : null;
+    if (record?.saved) ids.add(subject.id);
+  }
+  return ids;
 }

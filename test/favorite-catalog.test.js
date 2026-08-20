@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   addFavorite,
+  createFavoriteCatalogIndex,
   favoriteFeedRecord,
   playableFavoriteCatalog,
   searchFavoriteCatalog,
@@ -65,6 +66,22 @@ test("playableFavoriteCatalog marks a feed saved when any duplicate alias is sav
   ], new Set(["promoted"]));
 
   assert.deepEqual(catalog.map(({ camera: item, saved }) => [item.id, saved]), [["promoted", true]]);
+});
+
+test("favorite catalog index resolves feed aliases and saved state by camera id", () => {
+  const cameras = [
+    camera("native", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("promoted", { streamUrl: "https://example.com/shared.m3u8" }),
+    camera("distinct", { streamUrl: "https://example.com/distinct.m3u8" })
+  ];
+  const index = createFavoriteCatalogIndex(cameras, new Set(["promoted"]));
+
+  assert.deepEqual(ids(index.records), ["promoted", "distinct"]);
+  assert.equal(index.recordByCameraId.get("native"), index.records[0]);
+  assert.equal(index.recordByCameraId.get("promoted"), index.records[0]);
+  assert.equal(index.recordByCameraId.get("distinct"), index.records[1]);
+  assert.equal(favoriteFeedRecord(index, cameras[0]), index.records[0]);
+  assert.equal(favoriteFeedRecord(index, cameras[1]), index.records[0]);
 });
 
 test("addFavorite replaces saved feed aliases with the catalog representative", () => {

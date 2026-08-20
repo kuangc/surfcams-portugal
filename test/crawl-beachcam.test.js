@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -7,6 +8,7 @@ import test from "node:test";
 
 const require = createRequire(import.meta.url);
 const {
+  assertStagingOutputPath,
   assertUniqueCameras,
   crawl,
   parseCliArgs,
@@ -144,6 +146,33 @@ test("crawl rejects an empty provider listing before replacing the staged output
     /provider listing contained no cameras/i
   );
   assert.equal(await fs.readFile(outputPath, "utf8"), "existing candidate\n");
+});
+
+test("assertStagingOutputPath requires an explicit non-canonical staging path", () => {
+  const tempPath = path.join(os.tmpdir(), "meo-candidate.json");
+
+  assert.equal(assertStagingOutputPath(tempPath), path.resolve(tempPath));
+  assert.throws(
+    () => assertStagingOutputPath(""),
+    /--output is required and must point to a staging file/i
+  );
+  assert.throws(
+    () => assertStagingOutputPath("data/../data/beachcam-cameras.json"),
+    /accepted camera catalog/i
+  );
+});
+
+test("crawl option normalization delegates staging-path rejection before fetch/write setup", () => {
+  const source = fsSync.readFileSync("scripts/crawl-beachcam.cjs", "utf8");
+
+  assert.match(
+    source,
+    /function normalizeCrawlOptions\(optionsOrRefresh\)\s*{[\s\S]*const outputPath = assertStagingOutputPath\(options\.outputPath\);[\s\S]*fetchPage: options\.fetchPage \|\| \(\(url, cacheName\) => cachedFetch\(url, cacheName, refresh\)\),[\s\S]*}/
+  );
+  assert.match(
+    source,
+    /function parseCliArgs\(args\)\s*{[\s\S]*assertStagingOutputPath\(options\.outputPath\);[\s\S]*return options;[\s\S]*}/
+  );
 });
 
 test("duplicate camera IDs and playable provider feeds are rejected", () => {
