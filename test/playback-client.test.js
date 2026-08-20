@@ -771,6 +771,85 @@ test("a stale GET drains every refresh barrier even when an earlier one rejects"
   assert.equal(resolved.revision === secondResult.revision, true);
 });
 
+test("a refresh installed after barrier drain is rechecked before the GET starts", async () => {
+  const firstPost = deferred();
+  const secondPost = deferred();
+  const staleGet = deferred();
+  const secondRefreshStarted = deferred();
+  const sizeDescriptor = Object.getOwnPropertyDescriptor(Map.prototype, "size");
+  let currentRevision = "revision-1";
+  let secondRefresh;
+  let secondRefreshInstalled = false;
+  let secondPostSettled = false;
+  let getCalls = 0;
+  let postCalls = 0;
+  let triggerPreflightGap = false;
+  let gapTriggered = false;
+  let client;
+
+  const fetcher = async (url, init) => {
+    if (init.method === "POST") {
+      postCalls += 1;
+      return postCalls === 1 ? firstPost.promise : secondPost.promise;
+    }
+    getCalls += 1;
+    const cameraId = decodeURIComponent(url.split("/").at(-1));
+    if (secondRefreshInstalled && !secondPostSettled) return staleGet.promise;
+    return response(playbackRecord(cameraId, { revision: currentRevision }));
+  };
+  client = createPlaybackBrokerClient({ fetcher, now: () => NOW });
+
+  const firstRefresh = client.refresh("camera-a", "revision-0");
+  const resolving = client.resolve("camera-b");
+  await waitFor(() => postCalls === 1);
+  await Promise.resolve();
+
+  Object.defineProperty(Map.prototype, "size", {
+    configurable: sizeDescriptor.configurable,
+    get() {
+      const value = sizeDescriptor.get.call(this);
+      if (triggerPreflightGap && !gapTriggered && value === 0) {
+        gapTriggered = true;
+        queueMicrotask(() => {
+          Object.defineProperty(Map.prototype, "size", sizeDescriptor);
+          secondRefreshInstalled = true;
+          secondRefresh = client.refresh("camera-a", "revision-1");
+          secondRefreshStarted.resolve();
+        });
+      }
+      return value;
+    }
+  });
+  triggerPreflightGap = true;
+  firstPost.resolve(response(playbackRecord("camera-a", {
+    revision: "revision-1"
+  })));
+
+  try {
+    await secondRefreshStarted.promise;
+    await waitFor(() => postCalls === 2);
+    for (let turn = 0; turn < 10; turn += 1) await Promise.resolve();
+  } finally {
+    Object.defineProperty(Map.prototype, "size", sizeDescriptor);
+  }
+  const getStartedBeforeRefreshSettled = getCalls > 0;
+  currentRevision = "revision-2";
+  secondPostSettled = true;
+  secondPost.resolve(response(playbackRecord("camera-a", {
+    revision: "revision-2"
+  })));
+  await secondRefresh;
+  staleGet.resolve(response(playbackRecord("camera-b", {
+    revision: "revision-1"
+  })));
+  const [firstResult, resolved] = await Promise.all([firstRefresh, resolving]);
+
+  assert.equal(firstResult.revision === "revision-1", true);
+  assert.equal(getStartedBeforeRefreshSettled, false);
+  assert.equal(resolved.revision === currentRevision, true);
+  assert.equal(getCalls, 1);
+});
+
 test("rejected resolve and refresh operations are removed from their in-flight maps", async () => {
   let getCalls = 0;
   let postCalls = 0;

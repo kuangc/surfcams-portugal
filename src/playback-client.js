@@ -300,8 +300,7 @@ export function createPlaybackBrokerClient({
     return options;
   }
 
-  async function networkGet(cameraId) {
-    const epoch = refreshEpoch;
+  async function networkGet(cameraId, epoch) {
     let encodedCameraId;
     try {
       encodedCameraId = encodeURIComponent(cameraId);
@@ -326,6 +325,17 @@ export function createPlaybackBrokerClient({
     }
   }
 
+  async function networkGetAfterRefreshPreflight(cameraId) {
+    while (true) {
+      if (refreshInFlight.size > 0) {
+        await waitForActiveRefreshes();
+        continue;
+      }
+      const epoch = refreshEpoch;
+      return networkGet(cameraId, epoch);
+    }
+  }
+
   function cacheRecord(record) {
     cache.set(record.cameraId, record);
     return record;
@@ -336,12 +346,10 @@ export function createPlaybackBrokerClient({
   }
 
   async function resolveFromNetwork(cameraId) {
-    await waitForActiveRefreshes();
-    const first = await networkGet(cameraId);
+    const first = await networkGetAfterRefreshPreflight(cameraId);
     if (isCurrentGet(first)) return cacheRecord(first.record);
 
-    await waitForActiveRefreshes();
-    const second = await networkGet(cameraId);
+    const second = await networkGetAfterRefreshPreflight(cameraId);
     if (!isCurrentGet(second)) throw internalError();
     return cacheRecord(second.record);
   }
