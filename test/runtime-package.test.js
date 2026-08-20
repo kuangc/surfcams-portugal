@@ -283,6 +283,60 @@ test('the public Worker test command builds ignored assets first', () => {
   assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
 });
 
+test('bootstrap and functional deploy scripts use their named Wrangler configs', () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+  );
+  assert.equal(
+    packageJson.scripts['cf:bootstrap'],
+    'wrangler deploy --config wrangler.bootstrap.jsonc'
+  );
+  assert.equal(
+    packageJson.scripts.deploy,
+    'wrangler deploy --config wrangler.jsonc'
+  );
+  assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
+});
+
+test('deny-only bootstrap targets the production Worker name without app bindings', () => {
+  const functional = JSON.parse(
+    fs.readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8')
+  );
+  const bootstrap = JSON.parse(
+    fs.readFileSync(new URL('../wrangler.bootstrap.jsonc', import.meta.url), 'utf8')
+  );
+
+  assert.equal(bootstrap.name, functional.name);
+  assert.deepEqual(Object.keys(bootstrap).sort(), [
+    '$schema',
+    'compatibility_date',
+    'main',
+    'name',
+    'preview_urls',
+    'workers_dev',
+  ]);
+  assert.deepEqual(bootstrap, {
+    $schema: './node_modules/wrangler/config-schema.json',
+    name: 'surfcams-portugal',
+    main: 'worker/bootstrap.js',
+    compatibility_date: '2026-08-19',
+    workers_dev: true,
+    preview_urls: false,
+  });
+  for (const forbidden of [
+    'assets',
+    'durable_objects',
+    'exports',
+    'route',
+    'routes',
+    'secrets',
+    'vars',
+    'env',
+  ]) {
+    assert.equal(forbidden in bootstrap, false);
+  }
+});
+
 test('the Worker dry-run uses only the committed non-production secrets fixture', () => {
   const packageJson = JSON.parse(
     fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')

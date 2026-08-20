@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "surfcams-portugal",
+  "main": "worker/bootstrap.js",
+  "compatibility_date": "2026-08-19",
+  "workers_dev": true,
+  "preview_urls": false
+}

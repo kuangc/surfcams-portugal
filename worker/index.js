@@ -1,7 +1,5 @@
+import { createWorker } from "./router.js";
+
 export { MeoTokenCoordinator } from "./meo-token-coordinator.js";
 
-export default {
-  async fetch() {
-    return new Response("Not Found", { status: 404 });
-  }
-};
+export default createWorker();

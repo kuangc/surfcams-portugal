@@ -11,6 +11,8 @@
     "test:worker": "npm run build && vitest run --config vitest.worker.config.js",
     "test": "npm run test:app && npm run test:worker",
     "check:worker": "wrangler deploy --dry-run --config wrangler.jsonc --secrets-file test/fixtures/wrangler-dry-run-secrets.env --outdir .wrangler/dry-run",
+    "cf:bootstrap": "wrangler deploy --config wrangler.bootstrap.jsonc",
+    "deploy": "wrangler deploy --config wrangler.jsonc",
     "probe-surfline": "node scripts/probe-surfline-fetch.js",
     "embed-data": "node scripts/embed-camera-db.js",
     "build-pwa-icons": "node scripts/generate-pwa-icons.js",
