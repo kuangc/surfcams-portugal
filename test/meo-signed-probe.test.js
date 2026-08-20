@@ -106,6 +106,59 @@ function safeResultKeys(result) {
   return Object.keys(result).sort();
 }
 
+const SUMMARY_KEYS = [
+  "masterHardFailures",
+  "masterRecovered",
+  "masterRequired",
+  "masterRetried",
+  "masterSucceeded",
+  "masterSuccessRatio",
+  "masterTolerated404",
+  "masterTotal",
+  "representativeChainsRequired",
+  "representativeChainsSucceeded"
+];
+
+function acceptanceRoster() {
+  return [
+    camera("auth-a"),
+    camera("auth-b"),
+    camera("auth-c"),
+    camera("auth-d"),
+    camera("auth-e"),
+    camera("auth-f"),
+    camera("auth-g"),
+    camera("auth-h"),
+    camera("auth-i"),
+    camera("public-a", "beachcam")
+  ];
+}
+
+function cameraIdFromProbeUrl(url) {
+  return new URL(url).pathname.split("/")[2];
+}
+
+function acceptedChainResponse(url) {
+  const pathname = new URL(url).pathname;
+  if (pathname.endsWith("/segment.ts")) return segmentResponse();
+  if (pathname.endsWith("/child.m3u8")) {
+    return hlsResponse("#EXTM3U\nsegment.ts?nimblesessionid=fixture-session");
+  }
+  return hlsResponse("#EXTM3U\nchild.m3u8?nimblesessionid=fixture-session");
+}
+
+function signedNotFoundResponse({ cors = true } = {}) {
+  const headers = new Headers({ "content-type": "text/plain" });
+  if (cors) headers.set("access-control-allow-origin", "*");
+  return new Response("fixture not found", { headers, status: 404 });
+}
+
+function fixtureSignUrl(streamUrl) {
+  const signed = new URL(streamUrl);
+  signed.searchParams.set("wmsAuthSign", FIXTURE_TOKEN);
+  return signed.toString();
+}
+
 test("Access docs scope optional OTP to a separate exact-email policy", () => {
   const runbook = readFileSync(
     new URL("../docs/runbooks/cloudflare-access.md", import.meta.url),
@@ -161,6 +214,85 @@ test("Access docs scope optional OTP to a separate exact-email policy", () => {
     normalizedRunbook.includes("Keep the same exact email in the existing allow policy."),
     false,
     "OTP fallback should not inherit the Google-only login-method requirement"
+  );
+});
+
+test("Task 11 docs define the bounded camera-local signed-404 acceptance policy", () => {
+  const sources = [
+    [
+      "implementation plan",
+      readFileSync(
+        new URL(
+          "../docs/superpowers/plans/2026-08-19-private-meo-worker-migration.md",
+          import.meta.url
+        ),
+        "utf8"
+      )
+    ],
+    [
+      "approved design",
+      readFileSync(
+        new URL(
+          "../docs/superpowers/specs/2026-08-19-private-meo-worker-migration-design.md",
+          import.meta.url
+        ),
+        "utf8"
+      )
+    ],
+    [
+      "release runbook",
+      readFileSync(
+        new URL("../docs/runbooks/cloudflare-release.md", import.meta.url),
+        "utf8"
+      )
+    ]
+  ];
+
+  for (const [name, source] of sources) {
+    const normalized = source.replace(/\s+/gu, " ");
+    assert.equal(
+      normalized.includes("camera-local signed 404"),
+      true,
+      `${name} should distinguish eligible camera-local signed 404s`
+    );
+    assert.equal(
+      normalized.includes("90%"),
+      true,
+      `${name} should state the post-retry master success floor`
+    );
+    assert.equal(
+      normalized.includes("2/2 representative chains"),
+      true,
+      `${name} should require both deterministic representative chains`
+    );
+    assert.equal(
+      normalized.includes("hard failure regardless of the ratio"),
+      true,
+      `${name} should preserve the systemic-failure veto`
+    );
+  }
+
+  const normalizedPlan = sources[0][1].replace(/\s+/gu, " ");
+  const normalizedRunbook = sources[2][1].replace(/\s+/gu, " ");
+  assert.equal(
+    normalizedPlan.includes("retry the same signed master URL exactly once"),
+    true,
+    "plan should constrain the retry to the same signed URL"
+  );
+  assert.equal(
+    normalizedPlan.includes(
+      "every accepted MEO master and representative master→child→segment chain passes"
+    ),
+    false,
+    "plan should not retain the architecturally incorrect all-master gate"
+  );
+  assert.equal(
+    normalizedRunbook.includes("masterSucceeded")
+      && normalizedRunbook.includes("masterRequired")
+      && normalizedRunbook.includes("masterTolerated404")
+      && normalizedRunbook.includes("representativeChainsSucceeded"),
+    true,
+    "candidate record should retain only safe aggregate degradation and chain evidence"
   );
 });
 
@@ -399,13 +531,390 @@ test("probeSignedStreams probes every master at concurrency three and both repre
     assert.equal(serialized.includes(forbidden), false);
   }
   assert.equal(
-    JSON.stringify(Object.keys(report).sort()) === JSON.stringify(["cameraCount", "ok", "results"]),
+    JSON.stringify(Object.keys(report).sort())
+      === JSON.stringify(["cameraCount", "ok", "results", "summary"]),
     true,
     "aggregate report should expose only fixed redacted fields"
   );
+  assert.equal(
+    JSON.stringify(Object.keys(report.summary || {}).sort()) === JSON.stringify(SUMMARY_KEYS),
+    true,
+    "summary should expose only bounded counts and the success ratio"
+  );
+  assert.equal(report.summary.masterTotal, cameras.length);
+  assert.equal(report.summary.masterRequired, cameras.length);
+  assert.equal(report.summary.masterSucceeded, cameras.length);
+  assert.equal(report.summary.masterTolerated404, 0);
+  assert.equal(report.summary.masterRetried, 0);
+  assert.equal(report.summary.masterRecovered, 0);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.masterSuccessRatio, 1);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 2);
   assert.equal(report.results.every((result) => (
     JSON.stringify(safeResultKeys(result))
     === JSON.stringify(["authorizationOk", "cameraId", "corsOk", "durationMs", "phase", "status"])
+  )), true);
+});
+
+test("probeSignedStreams retries the same signed master once and counts a recovery", async () => {
+  const cameras = acceptanceRoster();
+  const masterCalls = new Map();
+  const retriedUrls = [];
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    const cameraId = cameraIdFromProbeUrl(url);
+    if (parsed.pathname.endsWith("/playlist.m3u8")) {
+      masterCalls.set(cameraId, (masterCalls.get(cameraId) || 0) + 1);
+      if (cameraId === "auth-i") {
+        retriedUrls.push(url);
+        if (masterCalls.get(cameraId) === 1) return signedNotFoundResponse();
+      }
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...cameras),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.ok, true);
+  assert.equal(masterCalls.get("auth-i"), 2);
+  assert.equal(
+    retriedUrls.length === 2 && retriedUrls[0] === retriedUrls[1],
+    true,
+    "retry should reuse the exact signed master URL without exposing it"
+  );
+  assert.equal(
+    cameras.every(({ id }) => masterCalls.get(id) === (id === "auth-i" ? 2 : 1)),
+    true,
+    "the complete roster should be attempted and only the signed 404 retried"
+  );
+  assert.equal(report.results.filter(({ phase }) => phase === "master").length, cameras.length);
+  assert.equal(report.results.filter(({ cameraId }) => cameraId === "auth-i").length, 1);
+  assert.equal(report.summary.masterSucceeded, 10);
+  assert.equal(report.summary.masterRequired, 9);
+  assert.equal(report.summary.masterTolerated404, 0);
+  assert.equal(report.summary.masterRetried, 1);
+  assert.equal(report.summary.masterRecovered, 1);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.representativeChainsSucceeded, 2);
+});
+
+test("probeSignedStreams accepts one final signed 404 at the exact 90 percent floor", async () => {
+  const cameras = acceptanceRoster();
+  let unavailableCalls = 0;
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    if (
+      parsed.pathname.endsWith("/playlist.m3u8")
+      && cameraIdFromProbeUrl(url) === "auth-i"
+    ) {
+      unavailableCalls += 1;
+      return signedNotFoundResponse();
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...cameras),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.ok, true);
+  assert.equal(unavailableCalls, 2);
+  assert.equal(report.summary.masterTotal, 10);
+  assert.equal(report.summary.masterRequired, 9);
+  assert.equal(report.summary.masterSucceeded, 9);
+  assert.equal(report.summary.masterTolerated404, 1);
+  assert.equal(report.summary.masterRetried, 1);
+  assert.equal(report.summary.masterRecovered, 0);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.masterSuccessRatio, 0.9);
+  assert.equal(report.summary.representativeChainsSucceeded, 2);
+  const unavailable = report.results.filter(({ cameraId }) => cameraId === "auth-i");
+  assert.equal(unavailable.length, 1, "only the final retry outcome should be public");
+  assert.equal(unavailable[0].status, 404);
+  assert.equal(unavailable[0].authorizationOk, true);
+  assert.equal(unavailable[0].corsOk, true);
+  assert.equal(
+    JSON.stringify(safeResultKeys(unavailable[0]))
+      === JSON.stringify(["authorizationOk", "cameraId", "corsOk", "durationMs", "phase", "status"]),
+    true,
+    "final 404 result should retain the six-field redacted schema"
+  );
+});
+
+test("probeSignedStreams rejects final signed 404s below the integer 90 percent floor", async () => {
+  const unavailableIds = new Set(["auth-h", "auth-i"]);
+  const masterCalls = new Map();
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    const cameraId = cameraIdFromProbeUrl(url);
+    if (parsed.pathname.endsWith("/playlist.m3u8")) {
+      masterCalls.set(cameraId, (masterCalls.get(cameraId) || 0) + 1);
+      if (unavailableIds.has(cameraId)) return signedNotFoundResponse();
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.ok, false);
+  assert.equal(masterCalls.get("auth-h"), 2);
+  assert.equal(masterCalls.get("auth-i"), 2);
+  assert.equal(report.summary.masterRequired, 9);
+  assert.equal(report.summary.masterSucceeded, 8);
+  assert.equal(report.summary.masterTolerated404, 2);
+  assert.equal(report.summary.masterRetried, 2);
+  assert.equal(report.summary.masterRecovered, 0);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.masterSuccessRatio, 0.8);
+  assert.equal(report.summary.representativeChainsSucceeded, 2);
+});
+
+test("probeSignedStreams treats every non-eligible master outcome as a hard veto", async (t) => {
+  const responseWithStatus = (status) => new Response("fixture failure", {
+    headers: {
+      "access-control-allow-origin": "*",
+      "content-type": "text/plain"
+    },
+    status
+  });
+  const cases = [
+    {
+      name: "network status zero",
+      respond: async () => {
+        throw new Error("private network detail");
+      }
+    },
+    {
+      name: "timeout status zero",
+      respond: async (_attempt, options) => new Promise((resolve, reject) => {
+        options.signal.addEventListener(
+          "abort",
+          () => reject(new Error("private timeout detail")),
+          { once: true }
+        );
+      })
+    },
+    { name: "401", respond: async () => responseWithStatus(401) },
+    { name: "403", respond: async () => responseWithStatus(403) },
+    { name: "redirect", respond: async () => responseWithStatus(302) },
+    { name: "5xx", respond: async () => responseWithStatus(503) },
+    { name: "other status", respond: async () => responseWithStatus(418) },
+    { name: "404 without CORS", respond: async () => signedNotFoundResponse({ cors: false }) },
+    {
+      name: "unsigned 404",
+      respond: async () => signedNotFoundResponse(),
+      signUrl: (streamUrl) => (
+        streamUrl.includes("/auth-i/") ? streamUrl : fixtureSignUrl(streamUrl)
+      )
+    },
+    {
+      name: "invalid 200 MIME",
+      respond: async () => responseWithStatus(200)
+    },
+    {
+      name: "invalid 200 body",
+      respond: async () => hlsResponse("not an HLS manifest")
+    },
+    {
+      name: "200 without CORS",
+      respond: async () => new Response("#EXTM3U", {
+        headers: { "content-type": "application/vnd.apple.mpegurl" }
+      })
+    },
+    {
+      name: "signed 404 followed by 5xx",
+      expectedCalls: 2,
+      expectedRetried: 1,
+      respond: async (attempt) => (
+        attempt === 1 ? signedNotFoundResponse() : responseWithStatus(503)
+      )
+    },
+    {
+      name: "signed 404 followed by 404 without CORS",
+      expectedCalls: 2,
+      expectedRetried: 1,
+      respond: async (attempt) => (
+        attempt === 1
+          ? signedNotFoundResponse()
+          : signedNotFoundResponse({ cors: false })
+      )
+    }
+  ];
+
+  for (const failureCase of cases) {
+    await t.test(failureCase.name, async () => {
+      let failedMasterCalls = 0;
+      const fetcher = async (url, options) => {
+        const parsed = new URL(url);
+        if (
+          parsed.pathname.endsWith("/playlist.m3u8")
+          && cameraIdFromProbeUrl(url) === "auth-i"
+        ) {
+          failedMasterCalls += 1;
+          return failureCase.respond(failedMasterCalls, options);
+        }
+        return acceptedChainResponse(url);
+      };
+
+      const report = await probeSignedStreams({
+        cameraDb: cameraDb(...acceptanceRoster()),
+        fetchToken: async () => FIXTURE_TOKEN,
+        fetcher,
+        signUrl: failureCase.signUrl,
+        timeoutMs: 10
+      });
+
+      assert.equal(report.ok, false);
+      assert.equal(failedMasterCalls, failureCase.expectedCalls || 1);
+      assert.equal(report.summary.masterSucceeded, 9);
+      assert.equal(report.summary.masterRequired, 9);
+      assert.equal(report.summary.masterTolerated404, 0);
+      assert.equal(report.summary.masterRetried, failureCase.expectedRetried || 0);
+      assert.equal(report.summary.masterRecovered, 0);
+      assert.equal(report.summary.masterHardFailures, 1);
+      assert.equal(report.summary.representativeChainsSucceeded, 2);
+      const serialized = JSON.stringify(report);
+      assert.equal(serialized.includes("private network detail"), false);
+      assert.equal(serialized.includes("private timeout detail"), false);
+    });
+  }
+});
+
+test("probeSignedStreams requires both deterministic representative chains", async () => {
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    if (
+      cameraIdFromProbeUrl(url) === "public-a"
+      && parsed.pathname.endsWith("/child.m3u8")
+    ) {
+      return hlsResponse("not an HLS manifest");
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(report.summary.masterSucceeded, 10);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 1);
+  assert.equal(report.ok, false);
+});
+
+test("probeSignedStreams rejects a final signed 404 on a required representative", async () => {
+  let representativeMasterCalls = 0;
+  const fetcher = async (url) => {
+    const parsed = new URL(url);
+    if (
+      cameraIdFromProbeUrl(url) === "auth-a"
+      && parsed.pathname.endsWith("/playlist.m3u8")
+    ) {
+      representativeMasterCalls += 1;
+      return signedNotFoundResponse();
+    }
+    return acceptedChainResponse(url);
+  };
+
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher
+  });
+
+  assert.equal(representativeMasterCalls, 2);
+  assert.equal(report.summary.masterSucceeded, 9);
+  assert.equal(report.summary.masterRequired, 9);
+  assert.equal(report.summary.masterTolerated404, 1);
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 1);
+  assert.equal(report.ok, false);
+});
+
+test("probeSignedStreams fails closed when either representative namespace is absent", async () => {
+  const authOnlyRoster = acceptanceRoster().filter(({ id }) => id !== "public-a");
+  const report = await probeSignedStreams({
+    cameraDb: cameraDb(...authOnlyRoster),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher: async (url) => acceptedChainResponse(url)
+  });
+
+  assert.equal(report.summary.masterSucceeded, authOnlyRoster.length);
+  assert.equal(report.summary.masterRequired, Math.ceil(authOnlyRoster.length * 0.9));
+  assert.equal(report.summary.masterHardFailures, 0);
+  assert.equal(report.summary.representativeChainsRequired, 2);
+  assert.equal(report.summary.representativeChainsSucceeded, 1);
+  assert.equal(report.ok, false);
+});
+
+test("probeSignedStreams keeps the fixed summary schema on preflight failures", async () => {
+  const emptyReport = await probeSignedStreams({ cameraDb: cameraDb() });
+  const tokenFailureReport = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => {
+      throw new Error("private token detail");
+    }
+  });
+  const signingFailureReport = await probeSignedStreams({
+    cameraDb: cameraDb(...acceptanceRoster()),
+    fetchToken: async () => FIXTURE_TOKEN,
+    fetcher: async (url) => acceptedChainResponse(url),
+    signUrl: (streamUrl) => {
+      if (streamUrl.includes("/auth-i/")) throw new Error("private signing detail");
+      return fixtureSignUrl(streamUrl);
+    }
+  });
+
+  for (const report of [emptyReport, tokenFailureReport, signingFailureReport]) {
+    assert.equal(
+      JSON.stringify(Object.keys(report).sort())
+        === JSON.stringify(["cameraCount", "ok", "results", "summary"]),
+      true,
+      "preflight report should preserve the fixed top-level schema"
+    );
+    assert.equal(
+      JSON.stringify(Object.keys(report.summary).sort()) === JSON.stringify(SUMMARY_KEYS),
+      true,
+      "preflight report should preserve the fixed aggregate schema"
+    );
+    assert.equal(report.ok, false);
+    assert.equal(report.summary.representativeChainsRequired, 2);
+  }
+  assert.equal(emptyReport.summary.masterTotal, 0);
+  assert.equal(emptyReport.summary.masterRequired, 0);
+  assert.equal(emptyReport.summary.representativeChainsSucceeded, 0);
+  assert.equal(tokenFailureReport.summary.masterTotal, 10);
+  assert.equal(tokenFailureReport.summary.masterRequired, 9);
+  assert.equal(tokenFailureReport.summary.masterHardFailures, 10);
+  assert.equal(tokenFailureReport.summary.representativeChainsSucceeded, 0);
+  assert.equal(signingFailureReport.summary.masterSucceeded, 9);
+  assert.equal(signingFailureReport.summary.masterRequired, 9);
+  assert.equal(signingFailureReport.summary.masterHardFailures, 1);
+  assert.equal(signingFailureReport.summary.representativeChainsSucceeded, 2);
+  assert.equal(JSON.stringify(tokenFailureReport).includes("private token detail"), false);
+  assert.equal(JSON.stringify(signingFailureReport).includes("private signing detail"), false);
+  assert.equal(tokenFailureReport.results.every((result) => (
+    JSON.stringify(safeResultKeys(result))
+      === JSON.stringify(["authorizationOk", "cameraId", "corsOk", "durationMs", "phase", "status"])
+  )), true);
+  assert.equal(signingFailureReport.results.every((result) => (
+    JSON.stringify(safeResultKeys(result))
+      === JSON.stringify(["authorizationOk", "cameraId", "corsOk", "durationMs", "phase", "status"])
   )), true);
 });
 
@@ -658,7 +1167,7 @@ test("probeSignedStreams rejects arbitrary octet-stream bytes as a segment", asy
   assert.equal(segment.corsOk, true);
 });
 
-test("probeSignedStreams treats missing CORS and invalid playlist content as camera-local failures", async () => {
+test("probeSignedStreams treats missing CORS and invalid playlist content as hard failures", async () => {
   const report = await probeSignedStreams({
     cameraDb: cameraDb(
       camera("auth-no-cors"),

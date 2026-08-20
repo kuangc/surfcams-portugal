@@ -15,6 +15,7 @@ const PROBE_CONCURRENCY = 3;
 const DEFAULT_TIMEOUT_MS = 8_000;
 const MAX_MANIFEST_BYTES = 256 * 1024;
 const MAX_SEGMENT_BYTES = 1024;
+const REPRESENTATIVE_CHAINS_REQUIRED = 2;
 const MEO_HLS_PATH = /^\/(?:auth-)?beachcam\//i;
 const HLS_CONTENT_TYPES = new Set([
   "application/vnd.apple.mpegurl",
@@ -206,6 +207,58 @@ function failedPhase(cameraId, phase) {
   };
 }
 
+function isSignedMasterNotFound(phase) {
+  return phase?.result?.phase === "master"
+    && phase.result.status === 404
+    && phase.result.authorizationOk
+    && phase.result.corsOk;
+}
+
+function completeRepresentativeChain(phases) {
+  const expectedPhases = ["master", "child", "segment"];
+  return phases.length === expectedPhases.length
+    && phases.every((phase, index) => (
+      phase.ok && phase.result.phase === expectedPhases[index]
+    ));
+}
+
+function probeSummary({
+  masterHardFailures,
+  masterRecovered,
+  masterRetried,
+  masterSucceeded,
+  masterTolerated404,
+  masterTotal,
+  representativeChainsSucceeded
+}) {
+  return {
+    masterTotal,
+    masterRequired: Math.ceil((masterTotal * 9) / 10),
+    masterSucceeded,
+    masterTolerated404,
+    masterRetried,
+    masterRecovered,
+    masterHardFailures,
+    masterSuccessRatio: masterTotal === 0
+      ? 0
+      : Number((masterSucceeded / masterTotal).toFixed(4)),
+    representativeChainsRequired: REPRESENTATIVE_CHAINS_REQUIRED,
+    representativeChainsSucceeded
+  };
+}
+
+function whollyFailedSummary(masterTotal) {
+  return probeSummary({
+    masterHardFailures: masterTotal,
+    masterRecovered: 0,
+    masterRetried: 0,
+    masterSucceeded: 0,
+    masterTolerated404: 0,
+    masterTotal,
+    representativeChainsSucceeded: 0
+  });
+}
+
 async function probeResource({ cameraId, fetcher, phase, timeoutMs, url }) {
   const startedAt = performance.now();
   let status = 0;
@@ -319,18 +372,28 @@ async function probeCamera({ camera, fetcher, representative, signUrl, timeoutMs
   try {
     masterUrl = signUrl(camera.streamUrl, token);
   } catch {
-    return [failedPhase(camera.id, "master")];
+    return {
+      masterRecovered: false,
+      masterRetried: false,
+      phases: [failedPhase(camera.id, "master")]
+    };
   }
 
-  const master = await probeResource({
+  const probeMaster = () => probeResource({
     cameraId: camera.id,
     fetcher,
     phase: "master",
     timeoutMs,
     url: masterUrl
   });
+  let master = await probeMaster();
+  const masterRetried = isSignedMasterNotFound(master);
+  if (masterRetried) master = await probeMaster();
+  const masterRecovered = masterRetried && master.ok;
   const phases = [master];
-  if (!representative || !master.ok) return phases;
+  if (!representative || !master.ok) {
+    return { masterRecovered, masterRetried, phases };
+  }
 
   const childReference = parseHlsUris(master.manifestText)[0];
   let childUrl;
@@ -338,7 +401,7 @@ async function probeCamera({ camera, fetcher, representative, signUrl, timeoutMs
     childUrl = resolveHlsUri(masterUrl, childReference);
   } catch {
     phases.push(failedPhase(camera.id, "child"));
-    return phases;
+    return { masterRecovered, masterRetried, phases };
   }
   const child = await probeResource({
     cameraId: camera.id,
@@ -348,7 +411,7 @@ async function probeCamera({ camera, fetcher, representative, signUrl, timeoutMs
     url: childUrl
   });
   phases.push(child);
-  if (!child.ok) return phases;
+  if (!child.ok) return { masterRecovered, masterRetried, phases };
 
   const segmentReference = parseHlsUris(child.manifestText)[0];
   let segmentUrl;
@@ -356,7 +419,7 @@ async function probeCamera({ camera, fetcher, representative, signUrl, timeoutMs
     segmentUrl = resolveHlsUri(childUrl, segmentReference);
   } catch {
     phases.push(failedPhase(camera.id, "segment"));
-    return phases;
+    return { masterRecovered, masterRetried, phases };
   }
   phases.push(await probeResource({
     cameraId: camera.id,
@@ -365,7 +428,7 @@ async function probeCamera({ camera, fetcher, representative, signUrl, timeoutMs
     timeoutMs,
     url: segmentUrl
   }));
-  return phases;
+  return { masterRecovered, masterRetried, phases };
 }
 
 async function mapWithConcurrency(items, concurrency, operation) {
@@ -393,7 +456,12 @@ export async function probeSignedStreams({
 } = {}) {
   const cameras = resolveMeoPlaybackCameras(cameraDb);
   if (cameras.length === 0) {
-    return { ok: false, cameraCount: 0, results: [] };
+    return {
+      ok: false,
+      cameraCount: 0,
+      results: [],
+      summary: whollyFailedSummary(0)
+    };
   }
 
   let token;
@@ -403,7 +471,8 @@ export async function probeSignedStreams({
     return {
       ok: false,
       cameraCount: cameras.length,
-      results: cameras.map((camera) => failedPhase(camera.id, "master").result)
+      results: cameras.map((camera) => failedPhase(camera.id, "master").result),
+      summary: whollyFailedSummary(cameras.length)
     };
   }
 
@@ -422,11 +491,31 @@ export async function probeSignedStreams({
   );
   token = undefined;
 
-  const internalResults = cameraPhases.flat();
+  const internalResults = cameraPhases.flatMap(({ phases }) => phases);
+  const masterPhases = cameraPhases.map(({ phases }) => phases[0]);
+  const masterSucceeded = masterPhases.filter(({ ok }) => ok).length;
+  const masterTolerated404 = masterPhases.filter(isSignedMasterNotFound).length;
+  const masterHardFailures = cameras.length - masterSucceeded - masterTolerated404;
+  const representativeChainsSucceeded = cameraPhases.filter(({ phases }, index) => (
+    representativeIds.has(cameras[index].id) && completeRepresentativeChain(phases)
+  )).length;
+  const summary = probeSummary({
+    masterHardFailures,
+    masterRecovered: cameraPhases.filter(({ masterRecovered }) => masterRecovered).length,
+    masterRetried: cameraPhases.filter(({ masterRetried }) => masterRetried).length,
+    masterSucceeded,
+    masterTolerated404,
+    masterTotal: cameras.length,
+    representativeChainsSucceeded
+  });
+  const masterFloorMet = masterSucceeded * 10 >= cameras.length * 9;
   return {
-    ok: internalResults.every((phase) => phase.ok),
+    ok: masterFloorMet
+      && masterHardFailures === 0
+      && representativeChainsSucceeded === REPRESENTATIVE_CHAINS_REQUIRED,
     cameraCount: cameras.length,
-    results: internalResults.map((phase) => phase.result)
+    results: internalResults.map((phase) => phase.result),
+    summary
   };
 }
 

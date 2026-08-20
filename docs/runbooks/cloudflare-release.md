@@ -57,8 +57,35 @@ Builds. If the freshness gate is stale, run or wait for the unchanged
 `update-surfline-conditions.yml` workflow on `main`, merge its accepted commit,
 and restart the checks; do not manufacture fresh data.
 
-The output must be clean and every gate must pass. Then record these non-secret
-values in ignored `.wrangler/private-meo-release-record.md`:
+The live probe attempts the complete retained MEO roster at concurrency no
+greater than three. A first camera-local signed 404 with the authorization query
+and CORS intact is retried once using the same token and signed master URL. No
+other outcome is retried. After those retries:
+
+- valid status-200 HLS masters must meet the integer 90% floor
+  (`masterSucceeded * 10 >= masterTotal * 9`); for 154 cameras,
+  `masterRequired` is 139 and at most 15 final camera-local signed 404 outcomes
+  can be tolerated;
+- status 0/401/403, redirects, missing authorization or CORS, invalid 200
+  MIME/body, timeout/network errors, 5xx, and other statuses are a hard failure
+  regardless of the ratio; and
+- 2/2 representative chains must complete: one deterministic
+  master→child→ranged-segment chain from `/auth-beachcam/` and one from
+  `/beachcam/`.
+
+The report exposes only final six-field camera/phase results and a fixed
+numeric summary: `masterTotal`, `masterRequired`, `masterSucceeded`,
+`masterTolerated404`, `masterRetried`, `masterRecovered`,
+`masterHardFailures`, `masterSuccessRatio`,
+`representativeChainsRequired`, and `representativeChainsSucceeded`. A final
+signed 404 is a camera-local availability exception only when the 90% floor and
+every other gate pass. It does not authorize quarantining, deleting, renaming,
+or substituting that official MEO camera.
+
+The output must be clean and every gate must pass. Copy the sanitized numeric
+summary, including 2/2 representative-chain proof, into ignored
+`.wrangler/private-meo-release-record.md`; do not copy per-camera or attempt
+details. Then record these other non-secret values:
 
 ```bash
 git rev-parse HEAD

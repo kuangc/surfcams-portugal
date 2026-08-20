@@ -1655,9 +1655,23 @@ The tests must prove:
 - only non-comment HLS URI lines are returned;
 - relative URIs resolve against the parent without stripping either authorization query;
 - master and child must return 200 with HLS playlist MIME/content; the segment probe must send `Range: bytes=0-1023`, receive 206 with a media/transport-stream MIME, and all three responses must satisfy the expected permissive CORS check;
-- roster concurrency is bounded to three;
-- timeout/failure is camera-local;
+- every retained master is attempted and roster concurrency is bounded to three;
+- a master is retried exactly once only after a first camera-local signed 404
+  with the authorization query present and valid CORS; the retry reuses the
+  same token and signed master URL;
+- after retries, valid status-200 HLS masters must meet the integer 90% floor,
+  and only final camera-local signed 404 outcomes may consume the remaining
+  allowance;
+- a status 0/401/403, redirect, missing authorization or CORS, invalid 200
+  MIME/body, timeout/network error, 5xx, or other status is a hard failure
+  regardless of the ratio;
+- 2/2 representative chains, one from each MEO namespace, must complete;
+- a timeout or other hard failure is contained to that camera so the remaining
+  roster is still attempted, but remains a hard release failure;
 - `publicProbeResult` exposes only camera ID, phase, status, duration, and Boolean authorization/CORS checks;
+- the top-level summary exposes only bounded counts/ratio for total, required,
+  successful, tolerated-404, retried, recovered, hard-failure, and
+  representative-chain outcomes;
 - JSON/text output contains no token, full URL, query, `wmsAuthSign`, `nimblesessionid`, response body, or request headers.
 
 Run:
@@ -1676,10 +1690,24 @@ Create `scripts/probe-meo-signed-streams.js`. It must:
 2. acquire a temporary token with `fetchMeoToken` only in memory;
 3. sign each immutable master URL with `signMeoPlaylistUrl`;
 4. probe every master at concurrency three with bounded timeouts;
-5. probe master → first child → first segment for deterministic representative IDs from both `/auth-beachcam/` and `/beachcam/` namespaces, sending exactly `Range: bytes=0-1023` for that segment;
-6. require 200 HLS MIME/content for master/child, 206 plus a segment media/transport-stream MIME for the bounded segment response, and permissive CORS throughout the chain;
-7. print only redacted aggregate and camera-ID results;
-8. exit nonzero if any retained master or representative chain fails.
+5. after a first master attempt returns a camera-local signed 404 with its
+   authorization query present and valid CORS, retry the same signed master URL
+   exactly once with the same in-memory token; do not retry any other outcome;
+6. probe master → first child → first segment for deterministic representative IDs from both `/auth-beachcam/` and `/beachcam/` namespaces, sending exactly `Range: bytes=0-1023` for that segment;
+7. require 200 HLS MIME/content for master/child, 206 plus a segment media/transport-stream MIME for the bounded segment response, and permissive CORS throughout the chain;
+8. after retries, require `masterSucceeded * 10 >= masterTotal * 9` (an
+   integer 90% floor: 139 successes for a 154-camera roster); only final
+   camera-local signed 404 results with authorization and CORS may be tolerated
+   within that floor;
+9. treat status 0/401/403, redirects, missing authorization or CORS, invalid
+   200 MIME/body, timeout/network failure, 5xx, and every other status as a hard
+   failure regardless of the ratio;
+10. require 2/2 representative chains to complete and fail closed when either
+    namespace representative is absent or unavailable;
+11. print only the final six-field redacted camera/phase results plus bounded
+    aggregate counts and ratio, including retried and recovered counts; and
+12. exit nonzero unless the 90% floor, zero-hard-failure veto, and 2/2 chain
+    gate all pass.
 
 This script is an owner-run release acceptance tool. It must not run in GitHub CI and must never write the token or signed URL to disk.
 
@@ -1845,11 +1873,30 @@ Expected:
 
 - every Node and Workerd test passes;
 - advice, freshness, deterministic asset, and Worker dry-run checks pass;
-- every accepted MEO master and representative master→child→segment chain passes with redacted output;
+- the complete accepted MEO roster is attempted at concurrency no greater than
+  three, and a first eligible camera-local signed 404 causes one retry of the
+  same signed URL and token;
+- after the retry, `masterSucceeded * 10 >= masterTotal * 9`: the integer 90%
+  floor requires at least 139 of the current 154 masters and permits at most 15
+  final camera-local signed 404 outcomes with authorization and CORS intact;
+- status 0/401/403, a redirect, authorization/CORS failure, invalid 200
+  MIME/body, timeout/network failure, 5xx, or any other status is a hard failure
+  regardless of the ratio;
+- 2/2 representative chains, one deterministic
+  master→child→ranged-segment chain from each namespace, pass;
+- output contains only final six-field per-phase results and the fixed sanitized
+  aggregate counts/ratio; no attempt-level URL, token, query, header, body, or
+  error is exposed;
 - `git diff --check` exits 0;
 - worktree is clean.
 
-If the live provider probe fails, do not release. Diagnose the provider/token/feed identity with superpowers:systematic-debugging; never substitute another beach or Surfline camera media.
+Final eligible 404s are camera-local availability evidence, not catalog
+identity failures. Keep every official MEO identity in the catalog and runtime
+roster; do not quarantine, delete, or substitute a camera because of this
+bounded acceptance exception. If the floor, hard-failure veto, or either
+representative chain fails, do not release. Diagnose the provider/token/feed
+identity with superpowers:systematic-debugging; never substitute another beach
+or Surfline camera media.
 
 - [ ] **Step 4: Record the immutable candidate**
 
@@ -1868,6 +1915,15 @@ Create/update `.wrangler/private-meo-release-record.md` with these four labeled 
 - the deterministic manifest has one SHA-256 digest;
 - the Surfline workflow blob remains `83444c23091be79bc735c3d54391efe6a70a4b7a` unless an independently accepted production change altered it;
 - no source or data edit occurs after these values are recorded.
+
+Also copy only the probe's sanitized aggregate summary into the candidate
+record: `masterTotal`, `masterRequired`, `masterSucceeded`,
+`masterTolerated404`, `masterRetried`, `masterRecovered`,
+`masterHardFailures`, `masterSuccessRatio`,
+`representativeChainsRequired`, and `representativeChainsSucceeded`. Candidate
+evidence must show 2/2 representative chains. Do not copy per-camera results,
+attempt details, URLs, queries, headers, bodies, tokens, or errors into the
+record.
 
 The working record is ignored local release state, not a source change. It will later also hold the candidate/production Worker version IDs, accepted main SHA/tree, bot SHA/deployment, rollback proof, Pages result, and emergency hold branch. Never add identities or secrets.
 

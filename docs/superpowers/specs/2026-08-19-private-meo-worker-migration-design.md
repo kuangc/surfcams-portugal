@@ -324,6 +324,17 @@ data rather than pinning a count that prevents future legitimate MEO catalog
 updates. The accepted 2026-08-19 snapshot can remain documented as a release
 audit value, not the resolver's business rule.
 
+Live release acceptance attempts the full retained roster but does not mutate
+catalog identity from a transient availability sample. Retry the same signed
+master URL once only after a first camera-local signed 404 with authorization
+and CORS intact. After that retry, valid status-200 HLS masters must meet the
+integer 90% floor; final camera-local signed 404 outcomes are the only tolerated
+remainder. Status 0/401/403, redirects, authorization or CORS defects, invalid
+200 MIME/body, timeout/network failures, 5xx, and other statuses are a hard
+failure regardless of the ratio. Both namespaces remain mandatory: 2/2
+representative chains must complete. These camera-local exceptions never
+quarantine, delete, rename, or substitute an official MEO camera.
+
 ### Surfline boundary
 
 Surfline remains an intelligence source for conditions, ratings, forecasts,
@@ -436,9 +447,11 @@ OAuth secrets, or detailed viewing history.
    and provider failure.
 8. Run desktop and iPhone acceptance across Monitor, Favorites, Focus/Compare,
    Explore, map, fullscreen, and responsive orientations.
-9. Live-probe the accepted MEO roster with a temporary token and verify camera
-   names against provider-native identities. Do not classify an HTTPS-looking
-   URL alone as playable.
+9. Live-probe every accepted MEO master with a temporary token at concurrency
+   no greater than three. Apply the one-retry, 90%, camera-local signed 404,
+   zero-hard-failure, and 2/2 representative chains contract above, then verify
+   camera names against provider-native identities. Do not classify an
+   HTTPS-looking URL alone as playable or alter the roster from this sample.
 10. Synchronize the candidate with the latest `main`, rerun all checks, record
     the immutable accepted candidate commit and tree, and deploy that exact tree
     for the protected acceptance pass.
@@ -501,6 +514,10 @@ OAuth secrets, or detailed viewing history.
 - every approved Google account can authenticate;
 - removed account cannot authenticate and its active Access session can be
   revoked;
+- the full MEO roster is attempted, the post-retry master result meets the 90%
+  floor with no hard failure regardless of the ratio, and 2/2 representative
+  chains pass; any camera-local signed 404 exceptions remain provider-native
+  identities in the runtime roster;
 - representative native and HLS.js MEO feeds play on desktop, iPhone Safari,
   and an iPhone Add-to-Home-Screen launch;
 - stale/expired token recovery is actionable and local during initial load and
