@@ -1,5 +1,11 @@
 # Private MEO Worker Migration Implementation Plan
 
+> **Status: Superseded on 2026-08-22. Do not execute.** The user does not
+> operate a Cloudflare account. The approved replacement uses Sites-managed
+> hosting and is specified in
+> `../specs/2026-08-22-sites-managed-private-surfcams-design.md`. A replacement
+> implementation plan will be written after that specification's review gate.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Deploy the existing Surfcams experience as a Google-authenticated Cloudflare Worker, obtain MEO’s temporary playback token server-side, retain Surfline wave intelligence, and remove every direct or Surfline-camera media path without regressing the accepted desktop or iPhone UX.

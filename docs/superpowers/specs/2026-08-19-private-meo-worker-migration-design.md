@@ -2,7 +2,11 @@
 
 **Date:** 2026-08-19
 
-**Status:** Approved for implementation
+**Status:** Superseded on 2026-08-22
+
+> Do not implement this Cloudflare-account design. It is retained as decision
+> history and is replaced by
+> `2026-08-22-sites-managed-private-surfcams-design.md`.
 
 **Repository:** `kuangc/surfcams-portugal`
 
