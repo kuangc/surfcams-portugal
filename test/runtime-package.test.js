@@ -34,12 +34,10 @@ const EXPECTED_DATA_FILES = [
   'lisbon-drive-estimates.json',
   'meo-spots.json',
   'meo-surfline-matches.json',
-  'portugal-tides.json',
   'promoted-spots.json',
   'spot-advice-resolved.json',
   'spot-metadata-enrichment.json',
   'stretches.json',
-  'surfline-conditions.json',
   'surfline-spots.json',
 ];
 
@@ -87,9 +85,12 @@ async function outputFiles(outputDir) {
   return files;
 }
 
+
 test('exports the exact runtime root and data allowlists', () => {
   assert.deepEqual(RUNTIME_ROOT_FILES, EXPECTED_ROOT_FILES);
   assert.deepEqual(RUNTIME_DATA_FILES, EXPECTED_DATA_FILES);
+  assert.equal(RUNTIME_DATA_FILES.includes('surfline-conditions.json'), false);
+  assert.equal(RUNTIME_DATA_FILES.includes('portugal-tides.json'), false);
 });
 
 test('two fresh builds return identical metadata-only manifests', async () => {
@@ -281,21 +282,94 @@ test('the public Worker test command builds ignored assets first', () => {
     fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
   );
   assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
+  assert.equal(
+    packageJson.scripts.test,
+    'npm run build && npm run test:app && vitest run --config vitest.worker.config.js'
+  );
+  assert.equal(
+    packageJson.scripts.verify,
+    'npm run build && npm test && npm run check-spot-advice && npm run check:package'
+  );
 });
 
-test('bootstrap and functional deploy scripts use their named Wrangler configs', () => {
+test('the project engine matches the Sites Vite plugin Node floor', () => {
   const packageJson = JSON.parse(
     fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
   );
-  assert.equal(
-    packageJson.scripts['cf:bootstrap'],
-    'wrangler deploy --config wrangler.bootstrap.jsonc'
+  const packageLock = JSON.parse(
+    fs.readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8')
   );
-  assert.equal(
-    packageJson.scripts.deploy,
-    'wrangler deploy --config wrangler.jsonc'
+  assert.equal(packageJson.engines.node, '>=22.13.0');
+  assert.equal(packageLock.packages[''].engines.node, '>=22.13.0');
+});
+
+test('the Sites build and verification scripts replace production Wrangler deployment', () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
   );
-  assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
+  assert.equal(packageJson.scripts['build:client'], 'node scripts/build-runtime-assets.js');
+  assert.equal(packageJson.scripts['build:server'], 'vite build');
+  assert.equal(packageJson.scripts['build:manifest'], 'node scripts/build-sites-manifest.js');
+  assert.equal(
+    packageJson.scripts.build,
+    'npm run build:client && npm run build:server && npm run build:manifest'
+  );
+  assert.equal(packageJson.scripts['check:package'], 'node scripts/verify-sites-package.js');
+  assert.equal(
+    packageJson.scripts['db:generate'],
+    'drizzle-kit generate --name=sites_private_surfcams'
+  );
+  assert.equal(packageJson.scripts['cf:bootstrap'], undefined);
+  assert.equal(packageJson.scripts.deploy, undefined);
+  assert.equal(packageJson.scripts['check:worker'], undefined);
+});
+
+test('the transitional server build externalizes only the Cloudflare runtime builtin', async () => {
+  const {default: viteConfig} = await import('../vite.config.js');
+  assert.deepEqual(viteConfig.build.rollupOptions.external, ['cloudflare:workers']);
+});
+
+
+test('the built server preserves the Worker module exports', () => {
+  const serverSource = fs.readFileSync('dist/server/index.js', 'utf8');
+  assert.match(serverSource, /export\s*\{/);
+  assert.match(serverSource, /\bas\s+default\b/);
+  assert.match(serverSource, /\bas\s+MeoTokenCoordinator\b/);
+});
+
+test('the full build is a deterministic Sites package without obsolete deployment files', async () => {
+  assert.ok(fs.existsSync('dist/server/index.js'));
+  const hosting = JSON.parse(fs.readFileSync('dist/.openai/hosting.json', 'utf8'));
+  assert.equal(hosting.d1, 'DB');
+  assert.equal(hosting.r2, null);
+  assert.equal(
+    Object.keys(hosting).every((key) => ['project_id', 'd1', 'r2'].includes(key)),
+    true
+  );
+
+  const packageFiles = await outputFiles(resolve('dist'));
+  assert.equal(packageFiles.includes('wrangler.jsonc'), false);
+  assert.equal(packageFiles.includes('wrangler.bootstrap.jsonc'), false);
+  assert.equal(packageFiles.includes('data/surfline-conditions.json'), false);
+  assert.equal(packageFiles.includes('data/portugal-tides.json'), false);
+
+  const manifest = JSON.parse(
+    fs.readFileSync('dist/sites-package-manifest.json', 'utf8')
+  );
+  assert.deepEqual(
+    manifest.files,
+    [...manifest.files].sort((a, b) => a.path.localeCompare(b.path))
+  );
+  assert.deepEqual(
+    manifest.files.map(({path}) => path),
+    packageFiles.filter((path) => path !== 'sites-package-manifest.json')
+  );
+  for (const entry of manifest.files) {
+    const bytes = await readFile(join('dist', entry.path));
+    assert.deepEqual(Object.keys(entry), ['path', 'bytes', 'sha256']);
+    assert.equal(entry.bytes, bytes.byteLength);
+    assert.equal(entry.sha256, createHash('sha256').update(bytes).digest('hex'));
+  }
 });
 
 test('deny-only bootstrap targets the production Worker name without app bindings', () => {
@@ -337,14 +411,7 @@ test('deny-only bootstrap targets the production Worker name without app binding
   }
 });
 
-test('the Worker dry-run uses only the committed non-production secrets fixture', () => {
-  const packageJson = JSON.parse(
-    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
-  );
-  assert.equal(
-    packageJson.scripts['check:worker'],
-    'wrangler deploy --dry-run --config wrangler.jsonc --secrets-file test/fixtures/wrangler-dry-run-secrets.env --outdir .wrangler/dry-run'
-  );
+test('the committed Worker fixture remains local-test-only', () => {
   const fixture = fs.readFileSync(
     new URL('./fixtures/wrangler-dry-run-secrets.env', import.meta.url),
     'utf8'

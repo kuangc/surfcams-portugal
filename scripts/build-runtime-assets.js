@@ -23,12 +23,10 @@ export const RUNTIME_DATA_FILES = Object.freeze([
   'lisbon-drive-estimates.json',
   'meo-spots.json',
   'meo-surfline-matches.json',
-  'portugal-tides.json',
   'promoted-spots.json',
   'spot-advice-resolved.json',
   'spot-metadata-enrichment.json',
   'stretches.json',
-  'surfline-conditions.json',
   'surfline-spots.json',
 ]);
 
