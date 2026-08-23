@@ -60,7 +60,8 @@ docs/architecture.md       Architecture notes
 The crawler uses only Node built-ins and caches downloaded pages under `.cache/beachcam/`.
 
 ```bash
-npm run crawl -- --refresh
+npm run crawl -- --refresh --output .cache/beachcam-candidate.json
+# Review the candidate before explicitly replacing data/beachcam-cameras.json.
 npm run embed-data
 npm test
 ```

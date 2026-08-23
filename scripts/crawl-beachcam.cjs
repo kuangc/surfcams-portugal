@@ -2,6 +2,7 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const { randomUUID } = require("node:crypto");
 const http = require("node:http");
 const https = require("node:https");
 
@@ -40,6 +41,14 @@ function stripTags(value) {
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function normalizeIdentityText(value) {
+  return stripTags(value)
+    .split("|")
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .join(" | ");
 }
 
 function attrsFromTag(tag) {
@@ -114,19 +123,19 @@ function parseListing(html) {
 
     if (!pageUrl) continue;
 
-    const name = stripTags(firstMatch(itemHtml, /<p\b[^>]*class="[^"]*liveCamsGrid__list-item-name[^"]*"[^>]*>([\s\S]*?)<\/p>/i));
+    const name = normalizeIdentityText(firstMatch(itemHtml, /<p\b[^>]*class="[^"]*liveCamsGrid__list-item-name[^"]*"[^>]*>([\s\S]*?)<\/p>/i));
     const location = stripTags(firstMatch(itemHtml, /<label\b[^>]*class="[^"]*liveCamsGrid__list-item-location[^"]*"[^>]*>([\s\S]*?)<\/label>/i));
 
     items.push({
       id: slugFromUrl(pageUrl),
-      name: name || attrs["data-name"] || slugFromUrl(pageUrl),
+      name: name || normalizeIdentityText(attrs["data-name"]) || slugFromUrl(pageUrl),
       location,
-      region: attrs["data-region"] || "",
+      region: stripTags(attrs["data-region"]),
       pageUrl,
       lat: Number.parseFloat(attrs["data-lat"]),
       lon: Number.parseFloat(attrs["data-lon"]),
       clicks: Number.parseInt(attrs["data-clicks"] || "0", 10),
-      isMulti: /liveCamsGrid__list-item-cam/i.test(itemHtml),
+      isMulti: /liveCamsGrid__(?:feature--multicam|list-item-cam)/i.test(itemHtml),
       forecast: parseListingForecast(itemHtml)
     });
   }
@@ -158,11 +167,14 @@ function parseDetail(html, pageUrl) {
   const livecamTag = firstMatch(html, /(<[^>]+data-control=["']livecam["'][^>]*>)/i);
   const livecamAttrs = attrsFromTag(livecamTag);
   const headerTag = firstMatch(html, /(<section\b[^>]*class="[^"]*liveCamsHeader[^"]*"[^>]*>)/i);
+  if (!headerTag) {
+    throw new Error("Provider detail page is missing live camera header");
+  }
   const headerAttrs = attrsFromTag(headerTag);
   const ogImage = metaContent(html, "og:image");
 
   return {
-    name: headerAttrs["data-name"] || metaContent(html, "og:title") || "",
+    name: normalizeIdentityText(headerAttrs["data-name"] || metaContent(html, "og:title")),
     livecamId: headerAttrs["data-livecam-id"] || "",
     streamUrl: absoluteUrl(livecamAttrs["data-video-url"] || "", pageUrl),
     videoId: livecamAttrs["data-video-id"] || "",
@@ -239,26 +251,160 @@ async function cachedFetch(url, cacheName, refresh) {
 async function mapWithConcurrency(items, limit, callback) {
   const results = new Array(items.length);
   let nextIndex = 0;
+  let stopped = false;
+  let firstError = null;
 
   async function worker() {
-    while (nextIndex < items.length) {
+    while (!stopped && nextIndex < items.length) {
       const index = nextIndex;
       nextIndex += 1;
-      results[index] = await callback(items[index], index);
+      try {
+        results[index] = await callback(items[index], index);
+      } catch (error) {
+        if (firstError === null) firstError = error;
+        stopped = true;
+      }
     }
   }
 
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  if (firstError !== null) throw firstError;
   return results;
 }
 
-async function crawl(refresh) {
-  const listingHtml = await cachedFetch(LISTING_URL, "livecams-index.html", refresh);
+async function writeDurableTempFile(temporaryPath, contents) {
+  let handle = null;
+  try {
+    handle = await fs.open(temporaryPath, "wx", 0o600);
+    await handle.writeFile(contents, "utf8");
+    await handle.sync();
+  } finally {
+    if (handle) await handle.close();
+  }
+}
+
+async function writeFileAtomically(outputPath, contents, {
+  forbiddenPath = null,
+  makeDirectory = fs.mkdir,
+  writeTemp = writeDurableTempFile,
+  renameFile = fs.rename,
+  removeFile = fs.unlink,
+  resolveRealPath = fs.realpath,
+  readLinkStatus = fs.lstat,
+  readStatus = fs.stat
+} = {}) {
+  const outputDirectory = path.dirname(outputPath);
+  await makeDirectory(outputDirectory, { recursive: true });
+
+  if (forbiddenPath) {
+    const [realOutputDirectory, realForbiddenPath] = await Promise.all([
+      resolveRealPath(outputDirectory),
+      resolveRealPath(forbiddenPath)
+    ]);
+    const realOutputPath = path.join(realOutputDirectory, path.basename(outputPath));
+    let aliasesForbiddenFile = false;
+    try {
+      const outputLinkStatus = await readLinkStatus(outputPath);
+      if (!outputLinkStatus.isSymbolicLink()) {
+        const [outputStatus, forbiddenStatus] = await Promise.all([
+          readStatus(outputPath),
+          readStatus(forbiddenPath)
+        ]);
+        aliasesForbiddenFile = outputStatus.dev === forbiddenStatus.dev
+          && outputStatus.ino === forbiddenStatus.ino;
+      }
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+    if (realOutputPath === realForbiddenPath || aliasesForbiddenFile) {
+      throw new Error("Refusing to overwrite the accepted camera catalog through a path alias");
+    }
+  }
+
+  const temporaryPath = path.join(
+    outputDirectory,
+    `.${path.basename(outputPath)}.${process.pid}.${randomUUID()}.tmp`
+  );
+
+  try {
+    await writeTemp(temporaryPath, contents);
+    await renameFile(temporaryPath, outputPath);
+  } catch (error) {
+    try {
+      await removeFile(temporaryPath);
+    } catch (cleanupError) {
+      if (cleanupError.code !== "ENOENT") error.cleanupError = cleanupError;
+    }
+    throw error;
+  }
+}
+
+function assertStagingOutputPath(outputPath) {
+  if (!outputPath) {
+    throw new Error("--output is required and must point to a staging file");
+  }
+  const resolved = path.resolve(outputPath);
+  if (resolved === OUTPUT_PATH) {
+    throw new Error("--output must be a staging path; refusing to overwrite the accepted camera catalog");
+  }
+  return resolved;
+}
+
+function parseCliArgs(args) {
+  const options = { refresh: false, outputPath: "" };
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--refresh") {
+      options.refresh = true;
+      continue;
+    }
+    if (arg === "--output") {
+      const outputPath = args[index + 1];
+      if (!outputPath || outputPath.startsWith("--")) {
+        throw new Error("--output requires a path");
+      }
+      options.outputPath = outputPath;
+      index += 1;
+      continue;
+    }
+    throw new Error(`Unknown option: ${arg}`);
+  }
+
+  assertStagingOutputPath(options.outputPath);
+  return options;
+}
+
+function normalizeCrawlOptions(options = {}) {
+  const refresh = Boolean(options.refresh);
+  return {
+    refresh,
+    outputPath: assertStagingOutputPath(options.outputPath),
+    fetchPage: options.fetchPage || ((url, cacheName) => cachedFetch(url, cacheName, refresh)),
+    logger: options.logger || console.error
+  };
+}
+
+async function crawl(options = {}) {
+  const { refresh, outputPath, fetchPage, logger } = normalizeCrawlOptions(options);
+  const listingHtml = await fetchPage(LISTING_URL, "livecams-index.html", refresh);
   const listingItems = parseListing(listingHtml);
+  if (!listingItems.length) {
+    throw new Error("Provider listing contained no cameras");
+  }
+  const seenIds = new Set();
+  const duplicateIds = new Set();
+  listingItems.forEach((camera) => {
+    if (seenIds.has(camera.id)) duplicateIds.add(camera.id);
+    seenIds.add(camera.id);
+  });
+  if (duplicateIds.size) {
+    throw new Error(`Provider listing contained duplicate camera IDs: ${[...duplicateIds].join(", ")}`);
+  }
 
   const cameras = await mapWithConcurrency(listingItems, CONCURRENCY, async (camera, index) => {
     try {
-      const html = await cachedFetch(camera.pageUrl, cacheNameForUrl(camera.pageUrl), refresh);
+      const html = await fetchPage(camera.pageUrl, cacheNameForUrl(camera.pageUrl), refresh);
       const detail = parseDetail(html, camera.pageUrl);
       return {
         ...camera,
@@ -272,14 +418,10 @@ async function crawl(refresh) {
         detailMetrics: detail.detailMetrics
       };
     } catch (error) {
-      return {
-        ...camera,
-        hasStream: false,
-        error: error.message
-      };
+      throw new Error(`Detail failed for ${camera.id}: ${error.message}`, { cause: error });
     } finally {
       if ((index + 1) % 25 === 0 || index + 1 === listingItems.length) {
-        console.error(`Processed ${index + 1}/${listingItems.length}`);
+        logger(`Processed ${index + 1}/${listingItems.length}`);
       }
     }
   });
@@ -299,14 +441,16 @@ async function crawl(refresh) {
     cameras
   };
 
-  await fs.writeFile(OUTPUT_PATH, `${JSON.stringify(db, null, 2)}\n`, "utf8");
+  await writeFileAtomically(outputPath, `${JSON.stringify(db, null, 2)}\n`, {
+    forbiddenPath: OUTPUT_PATH
+  });
   return db;
 }
 
 async function main() {
-  const refresh = process.argv.includes("--refresh");
-  const db = await crawl(refresh);
-  console.log(`Wrote ${db.total} cameras (${db.withStreams} streams, ${db.withCoordinates} coordinates) to ${OUTPUT_PATH}`);
+  const options = parseCliArgs(process.argv.slice(2));
+  const db = await crawl(options);
+  console.log(`Wrote ${db.total} cameras (${db.withStreams} streams, ${db.withCoordinates} coordinates) to ${path.resolve(options.outputPath)}`);
 }
 
 if (require.main === module) {
@@ -317,8 +461,12 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertStagingOutputPath,
+  crawl,
   decodeEntities,
+  parseCliArgs,
   parseListing,
   parseDetail,
-  stripTags
+  stripTags,
+  writeFileAtomically
 };

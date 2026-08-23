@@ -21,10 +21,10 @@ This project is intentionally small and dependency-light. Keep changes focused, 
 Use the crawler politely:
 
 ```bash
-npm run crawl -- --refresh
+npm run crawl -- --refresh --output .cache/beachcam-candidate.json
+# Review the candidate, then explicitly replace data/beachcam-cameras.json.
 npm run embed-data
 npm test
 ```
 
 The crawler indexes public Beachcam/MEO pages and stream URLs for personal viewing. Do not redistribute upstream video content or imply affiliation.
-

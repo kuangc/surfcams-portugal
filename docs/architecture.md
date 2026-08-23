@@ -20,7 +20,7 @@ Surfcams Portugal is a static web app. It has no backend, build step, database s
 
 ## Data Pipeline
 
-- `scripts/crawl-beachcam.cjs` crawls public Beachcam/MEO livecam pages and writes `data/beachcam-cameras.json`.
+- `scripts/crawl-beachcam.cjs` crawls public Beachcam/MEO livecam pages and writes an explicit staging file for review before the accepted camera catalog is replaced.
 - `scripts/build-spot-data.js` normalizes the Beachcam/MEO camera index into `data/meo-spots.json` and deterministic central Lisbon drive estimates into `data/lisbon-drive-estimates.json`.
 - `scripts/cache-surfline-pages.js` builds Surfline mapping-review artifacts from cached HTML and can direct-fetch pages when Surfline allows it; it does not synthesize placeholder HTML when direct fetches are blocked.
 - `scripts/cache-surfline-browser-cdp.js` fetches real Surfline HTML through a Chrome DevTools Protocol session after Chrome has passed Surfline's browser challenge.
