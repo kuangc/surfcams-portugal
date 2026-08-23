@@ -43,6 +43,7 @@ import {
   runAfterFullscreenExit
 } from "./fullscreen-controller.js";
 import {
+  createExploreRefreshScheduler,
   createExploreViewState,
   expandExploreMap,
   initializeExploreSelection,
@@ -245,6 +246,7 @@ state.fullscreenController = createFullscreenController({
 let favoriteAddRecords = [];
 let favoriteAddActiveIndex = -1;
 let pendingComparisonCameraId = null;
+let exploreRefreshSuspended = false;
 
 const favoriteUndo = createFavoriteUndo({
   durationMs: 10_000,
@@ -256,6 +258,21 @@ const favoriteUndo = createFavoriteUndo({
 function afterNextPaint(callback) {
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(callback);
+  });
+}
+
+const exploreRefreshScheduler = createExploreRefreshScheduler({
+  defer: afterNextPaint,
+  isSuspended: () => exploreRefreshSuspended || document.hidden
+});
+
+function scheduleExploreMapRefresh({
+  fit = false,
+  replaySelected = true,
+  recenterSelected = true
+} = {}) {
+  return exploreRefreshScheduler.schedule(() => {
+    refreshExploreMap({ fit, replaySelected, recenterSelected });
   });
 }
 
@@ -332,9 +349,7 @@ function setRoute(route) {
   }
 
   if (route === "explore") {
-    afterNextPaint(() => {
-      refreshExploreMap({ fit: !state.mapHasInitialFit });
-    });
+    scheduleExploreMapRefresh({ fit: !state.mapHasInitialFit });
   }
 
   if (routeChanged) {
@@ -2710,7 +2725,11 @@ function ensureMap() {
   });
 }
 
-function refreshExploreMap({ fit = false } = {}) {
+function refreshExploreMap({
+  fit = false,
+  replaySelected = true,
+  recenterSelected = true
+} = {}) {
   if (state.activeRoute !== "explore") return;
 
   ensureMap();
@@ -2721,13 +2740,14 @@ function refreshExploreMap({ fit = false } = {}) {
     fitInitialBounds();
     state.mapHasInitialFit = true;
   } else if (
-    Number.isFinite(state.selectedExploreCamera?.lat)
+    recenterSelected
+    && Number.isFinite(state.selectedExploreCamera?.lat)
     && Number.isFinite(state.selectedExploreCamera?.lon)
   ) {
     state.map.panTo([state.selectedExploreCamera.lat, state.selectedExploreCamera.lon], { animate: false });
   }
 
-  if (state.selectedExploreCamera) {
+  if (replaySelected && state.selectedExploreCamera) {
     playExploreCamera(state.selectedExploreCamera);
   }
 
@@ -2801,6 +2821,8 @@ function bindEvents() {
     void state.explorePlayer.play(state.selectedExploreCamera);
   });
   window.addEventListener("pagehide", (event) => {
+    exploreRefreshSuspended = true;
+    exploreRefreshScheduler.cancel();
     cancelFavoriteUndoOffer();
     clearMonitorPlayers();
     clearFocusedPlayers();
@@ -2809,21 +2831,35 @@ function bindEvents() {
   });
   window.addEventListener("pageshow", (event) => {
     if (!event.persisted) return;
+    exploreRefreshScheduler.cancel();
+    exploreRefreshSuspended = false;
     if (state.activeRoute === "monitor") {
       renderMonitor();
-    } else if (state.activeRoute === "explore" && state.selectedExploreCamera) {
-      playExploreCamera(state.selectedExploreCamera);
+    } else if (state.activeRoute === "explore") {
+      if (state.selectedExploreCamera) playExploreCamera(state.selectedExploreCamera);
+      scheduleExploreMapRefresh({
+        fit: !state.mapHasInitialFit,
+        replaySelected: false,
+        recenterSelected: false
+      });
     }
   });
   document.addEventListener("visibilitychange", () => {
+    exploreRefreshScheduler.cancel();
+    exploreRefreshSuspended = document.hidden;
     if (document.hidden) {
       clearMonitorPlayers();
       clearFocusedPlayers();
       state.explorePlayer.clear();
     } else if (state.activeRoute === "monitor") {
       renderMonitor();
-    } else if (state.activeRoute === "explore" && state.selectedExploreCamera) {
-      playExploreCamera(state.selectedExploreCamera);
+    } else if (state.activeRoute === "explore") {
+      if (state.selectedExploreCamera) playExploreCamera(state.selectedExploreCamera);
+      scheduleExploreMapRefresh({
+        fit: !state.mapHasInitialFit,
+        replaySelected: false,
+        recenterSelected: false
+      });
     }
   });
 
