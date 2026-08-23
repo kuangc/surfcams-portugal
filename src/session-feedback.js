@@ -1,3 +1,5 @@
+import { canonicalMeoCameraId } from "./meo-camera-identities.js";
+
 export const SESSION_FEEDBACK_STORAGE_KEY = "surfcamSessionFeedback:v1";
 const SCHEMA_VERSION = 1;
 const FACE_VALUES = new Set(["flat", "ankle", "knee-waist", "waist-chest", "head-plus"]);
@@ -20,7 +22,8 @@ function enumValue(value, allowed, field) {
 
 function normalizeRecord(input, { requireId = true } = {}) {
   const id = typeof input?.id === "string" ? input.id.trim() : "";
-  const spotId = typeof input?.spotId === "string" ? input.spotId.trim() : "";
+  const rawSpotId = typeof input?.spotId === "string" ? input.spotId.trim() : "";
+  const spotId = canonicalMeoCameraId(rawSpotId);
   const startedMs = Date.parse(input?.startedAt || "");
   if (requireId && !id) throw new TypeError("id is required");
   if (!spotId) throw new TypeError("spotId is required");
@@ -67,7 +70,19 @@ export function loadSessionFeedback(storage = globalThis.localStorage) {
     if (!raw) return freezeList([]);
     const payload = JSON.parse(raw);
     if (payload?.schemaVersion !== SCHEMA_VERSION || !Array.isArray(payload.records)) return freezeList([]);
-    return freezeList(payload.records.map((record) => normalizeRecord(record)));
+    const migrated = payload.records.some((record) => {
+      const spotId = typeof record?.spotId === "string" ? record.spotId.trim() : "";
+      return canonicalMeoCameraId(spotId) !== spotId;
+    });
+    const records = freezeList(payload.records.map((record) => normalizeRecord(record)));
+    if (migrated) {
+      try {
+        writeRecords(storage, records);
+      } catch {
+        // Canonical records remain usable in memory when migration persistence fails.
+      }
+    }
+    return records;
   } catch {
     return freezeList([]);
   }

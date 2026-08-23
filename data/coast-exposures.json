@@ -1814,8 +1814,8 @@
       }
     },
     {
-      "id": "espinho-silvade",
-      "name": "Espinho | Silvade ",
+      "id": "espinho-silvalde",
+      "name": "Espinho | Silvalde",
       "region": "norte",
       "municipality": "ESPINHO",
       "coastExposure": {
@@ -3169,8 +3169,8 @@
       }
     },
     {
-      "id": "espinhosilvadeestatica",
-      "name": "Espinho | Silvade | Estática | ",
+      "id": "espinhosilvaldeestatica",
+      "name": "Espinho | Silvalde | Estática",
       "region": "norte",
       "municipality": "ESPINHO",
       "coastExposure": {

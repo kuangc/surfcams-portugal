@@ -13,17 +13,20 @@ import {
 function storageWith(initialValue = null) {
   const values = new Map();
   if (initialValue !== null) values.set(FAVORITE_STORAGE_KEY, initialValue);
+  const writes = [];
 
   return {
     getItem(key) {
       return values.has(key) ? values.get(key) : null;
     },
     setItem(key, value) {
+      writes.push([key, value]);
       values.set(key, value);
     },
     value(key = FAVORITE_STORAGE_KEY) {
       return values.get(key);
-    }
+    },
+    writes
   };
 }
 
@@ -45,6 +48,83 @@ test("stored favorites are loaded and unavailable IDs are ignored", () => {
   const favorites = loadFavoriteIds(cameras, storage);
 
   assert.deepEqual([...favorites], ["praia-de-carcavelos"]);
+});
+
+test("stored Espinho favorites migrate to available corrected IDs and persist", () => {
+  const storage = storageWith(JSON.stringify([
+    "espinho-silvade",
+    "praia-de-carcavelos",
+    "espinhosilvadeestatica"
+  ]));
+  const migratedCameras = [
+    { id: "espinho-silvalde" },
+    { id: "praia-de-carcavelos" },
+    { id: "espinhosilvaldeestatica" }
+  ];
+
+  const favorites = loadFavoriteIds(migratedCameras, storage);
+
+  assert.deepEqual([...favorites], [
+    "espinho-silvalde",
+    "praia-de-carcavelos",
+    "espinhosilvaldeestatica"
+  ]);
+  assert.deepEqual(storage.writes, [[
+    FAVORITE_STORAGE_KEY,
+    JSON.stringify([
+      "espinho-silvalde",
+      "praia-de-carcavelos",
+      "espinhosilvaldeestatica"
+    ])
+  ]]);
+});
+
+test("an Espinho favorite remains migrated when the storage rewrite fails", () => {
+  const storage = {
+    getItem() {
+      return JSON.stringify(["espinho-silvade"]);
+    },
+    setItem() {
+      throw new Error("storage quota exceeded");
+    }
+  };
+
+  const favorites = loadFavoriteIds([{ id: "espinho-silvalde" }], storage);
+
+  assert.deepEqual([...favorites], ["espinho-silvalde"]);
+});
+
+test("migrated and already-correct Espinho favorites collapse without changing order", () => {
+  const storage = storageWith(JSON.stringify([
+    "espinho-silvade",
+    "espinho-silvalde",
+    "espinhosilvadeestatica",
+    "espinhosilvaldeestatica"
+  ]));
+  const migratedCameras = [
+    { id: "espinho-silvalde" },
+    { id: "espinhosilvaldeestatica" }
+  ];
+
+  const favorites = loadFavoriteIds(migratedCameras, storage);
+
+  assert.deepEqual([...favorites], ["espinho-silvalde", "espinhosilvaldeestatica"]);
+  assert.equal(
+    storage.value(),
+    JSON.stringify(["espinho-silvalde", "espinhosilvaldeestatica"])
+  );
+});
+
+test("an available legacy Espinho ID remains native until the catalog is renamed", () => {
+  const storage = storageWith(JSON.stringify(["espinho-silvade"]));
+
+  const favorites = loadFavoriteIds([
+    { id: "espinho-silvade" },
+    { id: "espinho-silvalde" }
+  ], storage);
+
+  assert.deepEqual([...favorites], ["espinho-silvade"]);
+  assert.equal(storage.writes.length, 0);
 });
 
 test("invalid stored favorites fall back to defaults", () => {

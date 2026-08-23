@@ -1137,7 +1137,7 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "espinho-silvade",
+      "meoSpotId": "espinho-silvalde",
       "distanceKm": 256.5,
       "routeDistanceKm": 300.9,
       "profile": "regional-long",
@@ -1998,7 +1998,7 @@
       "source": "osrm-table"
     },
     {
-      "meoSpotId": "espinhosilvadeestatica",
+      "meoSpotId": "espinhosilvaldeestatica",
       "distanceKm": 256.5,
       "routeDistanceKm": 300.9,
       "profile": "regional-long",

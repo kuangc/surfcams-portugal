@@ -100,3 +100,42 @@ test("invalid imports are rejected without changing existing records", () => {
   assert.throws(() => importSessionFeedback(JSON.stringify({ schemaVersion: 1, records: [record({ actualQuality: "epic" })] }), { storage }), /actualQuality/);
   assert.equal(storage.value(SESSION_FEEDBACK_STORAGE_KEY), before);
 });
+
+test("legacy Espinho feedback identities migrate on load, export, and import", () => {
+  const legacyRecords = [
+    record({ id: "legacy-live", spotId: "espinho-silvade" }),
+    record({
+      id: "legacy-static",
+      spotId: "espinhosilvadeestatica",
+      startedAt: "2026-07-13T11:00:00.000Z"
+    })
+  ];
+  const storage = fakeStorage([[
+    SESSION_FEEDBACK_STORAGE_KEY,
+    JSON.stringify({ schemaVersion: 1, records: legacyRecords })
+  ]]);
+
+  const loaded = loadSessionFeedback(storage);
+  assert.deepEqual(loaded.map((entry) => entry.spotId), [
+    "espinho-silvalde",
+    "espinhosilvaldeestatica"
+  ]);
+  assert.deepEqual(
+    JSON.parse(storage.value(SESSION_FEEDBACK_STORAGE_KEY)).records.map((entry) => entry.spotId),
+    ["espinho-silvalde", "espinhosilvaldeestatica"]
+  );
+  assert.deepEqual(
+    JSON.parse(exportSessionFeedback(storage)).records.map((entry) => entry.spotId),
+    ["espinho-silvalde", "espinhosilvaldeestatica"]
+  );
+
+  const importedStorage = fakeStorage();
+  const imported = importSessionFeedback(JSON.stringify({
+    schemaVersion: 1,
+    records: legacyRecords
+  }), { storage: importedStorage });
+  assert.deepEqual(imported.map((entry) => entry.spotId), [
+    "espinho-silvalde",
+    "espinhosilvaldeestatica"
+  ]);
+});

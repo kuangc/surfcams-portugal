@@ -389,9 +389,9 @@
       "source": "nearest-geomar-gauge-fallback",
       "fallbackDistanceKm": 25.6
     },
-    "espinho-silvade": {
-      "cameraId": "espinho-silvade",
-      "cameraName": "Espinho | Silvade ",
+    "espinho-silvalde": {
+      "cameraId": "espinho-silvalde",
+      "cameraName": "Espinho | Silvalde",
       "cameraRegion": "norte",
       "cameraLat": 40.99806714090027,
       "cameraLon": -8.647296248547374,
@@ -1748,7 +1748,7 @@
       "cameraIds": [
         "caxinas-macaco-17",
         "esmoriz",
-        "espinho-silvade",
+        "espinho-silvalde",
         "leca-da-palmeira",
         "leca-da-palmeira-panoraminca-aterro",
         "porto-carneiro",

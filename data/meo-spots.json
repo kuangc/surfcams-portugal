@@ -4883,10 +4883,10 @@
       }
     },
     {
-      "id": "espinho-silvade",
+      "id": "espinho-silvalde",
       "provider": "meo-beachcam",
-      "name": "Espinho | Silvade ",
-      "url": "http://beachcam.meo.pt/livecams/espinho-silvade/",
+      "name": "Espinho | Silvalde",
+      "url": "http://beachcam.meo.pt/livecams/espinho-silvalde/",
       "lat": 40.99806714090027,
       "lon": -8.647296248547374,
       "region": "norte",
@@ -8559,10 +8559,10 @@
       }
     },
     {
-      "id": "espinhosilvadeestatica",
+      "id": "espinhosilvaldeestatica",
       "provider": "meo-beachcam",
-      "name": "Espinho | Silvade | Estática | ",
-      "url": "http://beachcam.meo.pt/livecams/espinhosilvadeestatica/",
+      "name": "Espinho | Silvalde | Estática",
+      "url": "http://beachcam.meo.pt/livecams/espinhosilvaldeestatica/",
       "lat": 40.99806714090027,
       "lon": -8.647296248547374,
       "region": "norte",

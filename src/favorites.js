@@ -1,4 +1,8 @@
 import { DEFAULT_FAVORITE_IDS, FAVORITE_STORAGE_KEY } from "./config.js";
+import {
+  MEO_CAMERA_ID_RENAMES,
+  canonicalMeoCameraId
+} from "./meo-camera-identities.js";
 
 export function defaultFavoriteSet(availableIds, defaultIds = DEFAULT_FAVORITE_IDS) {
   return new Set(defaultIds.filter((id) => availableIds.has(id)));
@@ -12,7 +16,24 @@ export function loadFavoriteIds(cameras, storage) {
     if (stored !== null) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        return new Set(parsed.filter((id) => availableIds.has(id)));
+        let migrated = false;
+        const normalized = parsed.flatMap((id) => {
+          if (availableIds.has(id)) return [id];
+          if (typeof id !== "string" || !Object.hasOwn(MEO_CAMERA_ID_RENAMES, id)) return [];
+          const replacementId = canonicalMeoCameraId(id);
+          if (!availableIds.has(replacementId)) return [];
+          migrated = true;
+          return [replacementId];
+        });
+        const favoriteIds = new Set(normalized);
+        if (migrated) {
+          try {
+            resolvedStorage.setItem(FAVORITE_STORAGE_KEY, JSON.stringify([...favoriteIds]));
+          } catch (_error) {
+            // The in-memory migration is still valid when storage cannot be updated.
+          }
+        }
+        return favoriteIds;
       }
     }
   } catch (_error) {
