@@ -27,6 +27,15 @@ async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, "utf8"));
 }
 
+async function readOptionalJson(filePath, fallback) {
+  try {
+    return await readJson(filePath);
+  } catch (error) {
+    if (error.code === "ENOENT") return fallback;
+    throw error;
+  }
+}
+
 function htmlDecode(value = "") {
   const named = {
     amp: "&",
@@ -280,6 +289,65 @@ function buildMappingReview({ mappingDb, meoById, pageById }) {
   });
 }
 
+function normalizePreviousReviewSource(previousPage) {
+  const source = previousPage?.metadataSource;
+  if (!source || typeof source !== "object" || Array.isArray(source)) return null;
+  if (source.kind !== "previous-review" || source.pageUrl !== previousPage.url) return null;
+
+  const nullableStringFields = [
+    "reviewGeneratedAt",
+    "fetchedAt",
+    "generatedAt",
+    "cacheStatus"
+  ];
+  if (nullableStringFields.some((field) => (
+    source[field] !== null && typeof source[field] !== "string"
+  ))) return null;
+  if (source.httpStatus !== null && !Number.isInteger(source.httpStatus)) return null;
+
+  return {
+    kind: source.kind,
+    reviewGeneratedAt: source.reviewGeneratedAt,
+    pageUrl: source.pageUrl,
+    fetchedAt: source.fetchedAt,
+    generatedAt: source.generatedAt,
+    cacheStatus: source.cacheStatus,
+    httpStatus: source.httpStatus
+  };
+}
+
+function reuseReviewPage(spot, previousPage, reviewGeneratedAt = null) {
+  if (!previousPage || typeof spot.url !== "string" || previousPage.url !== spot.url) return null;
+  return {
+    id: spot.id,
+    provider: spot.provider,
+    name: spot.name,
+    url: spot.url,
+    lat: spot.lat,
+    lon: spot.lon,
+    region: spot.region,
+    country: spot.country,
+    extractedTitle: previousPage.extractedTitle ?? null,
+    titleSource: previousPage.titleSource ?? "missing",
+    cachePath: null,
+    cacheMetaPath: null,
+    cacheStatus: "reused-review-metadata",
+    httpStatus: null,
+    fetchedAt: null,
+    generatedAt: null,
+    fetchError: null,
+    metadataSource: normalizePreviousReviewSource(previousPage) ?? {
+      kind: "previous-review",
+      reviewGeneratedAt,
+      pageUrl: previousPage.url,
+      fetchedAt: previousPage.fetchedAt ?? null,
+      generatedAt: previousPage.generatedAt ?? null,
+      cacheStatus: previousPage.cacheStatus ?? null,
+      httpStatus: previousPage.httpStatus ?? null
+    }
+  };
+}
+
 function markdownLink(label, url) {
   return `[${label.replaceAll("|", "\\|")}](${url})`;
 }
@@ -290,7 +358,7 @@ function buildMarkdown(review) {
     "",
     `Generated: ${review.generatedAt}`,
     "",
-    "Raw HTML is cached locally under `.cache/surfline/pages/`; this Markdown file only stores extracted titles, URLs, and mapping notes.",
+    "When available, raw HTML is cached locally under `.cache/surfline/pages/`. Entries marked `reused-review-metadata` come from the prior review and do not claim a local HTML cache.",
     "",
     "## Pages",
     "",
@@ -337,16 +405,31 @@ function buildMarkdown(review) {
 }
 
 async function main() {
-  const [surflineDb, meoDb, mappingDb] = await Promise.all([
+  const [surflineDb, meoDb, mappingDb, previousReview] = await Promise.all([
     readJson(surflineDbPath),
     readJson(meoDbPath),
-    readJson(mappingDbPath)
+    readJson(mappingDbPath),
+    options.offline
+      ? readOptionalJson(reviewJsonPath, { pages: [] })
+      : Promise.resolve({ pages: [] })
   ]);
   await fs.mkdir(cacheDir, { recursive: true });
   await fs.mkdir(docsDir, { recursive: true });
 
   const pages = [];
+  let reusedMetadataCount = 0;
+  const previousPageById = new Map(
+    (previousReview.pages ?? []).map((page) => [page.id, page])
+  );
   for (const spot of surflineDb.spots) {
+    const reusedPage = options.offline
+      ? reuseReviewPage(spot, previousPageById.get(spot.id), previousReview.generatedAt ?? null)
+      : null;
+    if (reusedPage) {
+      pages.push(reusedPage);
+      reusedMetadataCount += 1;
+      continue;
+    }
     const page = await loadPage(spot);
     const title = extractPageTitle(page.html);
     pages.push({
@@ -387,7 +470,7 @@ async function main() {
 
   await fs.writeFile(reviewJsonPath, `${JSON.stringify(review, null, 2)}\n`);
   await fs.writeFile(reviewMarkdownPath, buildMarkdown(review));
-  console.log(`Cached ${pages.length} Surfline pages and wrote ${relativePath(reviewJsonPath)} + ${relativePath(reviewMarkdownPath)}`);
+  console.log(`Reviewed ${pages.length} Surfline pages; reused metadata for ${reusedMetadataCount}; wrote ${relativePath(reviewJsonPath)} + ${relativePath(reviewMarkdownPath)}`);
 }
 
 main().catch((error) => {
