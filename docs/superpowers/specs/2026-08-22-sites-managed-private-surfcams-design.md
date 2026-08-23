@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-22
 
-**Status:** Awaiting written-spec review
+**Status:** Approved for planning and implementation
 
 **Repository:** `kuangc/surfcams-portugal`
 
