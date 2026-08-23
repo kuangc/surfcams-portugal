@@ -4,6 +4,7 @@ import { withoutAstLiteralText } from "./ast-utils.js";
 import {
   credentialLabel,
   findAstCredentialLiteral,
+  findDecodedCredentialLiteral,
   findFallbackCredentialLiteral
 } from "./credential-scan.js";
 import { findHtmlRuntimeLiteral } from "./html-scan.js";
@@ -34,8 +35,9 @@ function hasInlineSourceMapComment(text, { lineComments = false } = {}) {
 
 function findTextRuntimeLiteral(text) {
   const normalized = text.replace(/[\t\r\n]/g, "");
-  const signedValue = /[?&]wmsAuthSign=([^&#"'`<>]*)/i.exec(normalized)?.[1];
-  if (signedValue) return "signed MEO token";
+  if (advanceSignedQueryMarker(new Set(), normalized, false, "\"'`<>").unsafe) {
+    return "signed MEO token";
+  }
   const withoutEmptyQueryPrefixes = normalized.replace(
     /[?&]wmsAuthSign=(?=[&#"'`<>]|$)/gi,
     ""
@@ -88,6 +90,8 @@ function findJsonRuntimeLiteral(value, { skipValueKeys = new Set() } = {}) {
     const current = pending.pop();
     if (typeof current === "string") {
       if (advanceSignedQueryMarker(new Set(), current).unsafe) return "signed MEO token";
+      const literal = findDecodedCredentialLiteral(current);
+      if (literal) return literal;
       continue;
     }
     if (Array.isArray(current)) {
@@ -97,6 +101,8 @@ function findJsonRuntimeLiteral(value, { skipValueKeys = new Set() } = {}) {
     if (current === null || typeof current !== "object") continue;
     for (const [key, child] of Object.entries(current)) {
       if (advanceSignedQueryMarker(new Set(), key).unsafe) return "signed MEO token";
+      const keyLiteral = findDecodedCredentialLiteral(key);
+      if (keyLiteral) return keyLiteral;
       const label = credentialLabel(key);
       if (label && jsonValueIsLiteral(child)) return label;
       if (!skipValueKeys.has(key)) pending.push(child);

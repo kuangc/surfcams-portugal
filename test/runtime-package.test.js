@@ -283,12 +283,16 @@ test('the public Worker test command builds ignored assets first', () => {
   );
   assert.match(packageJson.scripts['test:worker'], /^npm run build && /);
   assert.equal(
+    packageJson.scripts['test:internal'],
+    'npm run test:app && vitest run --config vitest.worker.config.js'
+  );
+  assert.equal(
     packageJson.scripts.test,
-    'npm run build && npm run test:app && vitest run --config vitest.worker.config.js'
+    'npm run build && npm run test:internal'
   );
   assert.equal(
     packageJson.scripts.verify,
-    'npm run build && npm test && npm run check-spot-advice && npm run check:package'
+    'npm run build && npm run test:internal && npm run check-spot-advice && npm run check:package'
   );
 });
 
