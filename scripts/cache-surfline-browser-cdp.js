@@ -3,6 +3,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchValidatedPages, waitForHydratedReport } from "./lib/surfline-cdp-reliability.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -183,6 +184,10 @@ function chunk(items, size) {
   return chunks;
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function main() {
   if (!Number.isInteger(options.port) || options.port <= 0) throw new Error("Invalid --port");
   if (!Number.isInteger(options.batchSize) || options.batchSize <= 0) throw new Error("Invalid --batch-size");
@@ -203,15 +208,24 @@ async function main() {
   let written = 0;
 
   try {
-    await evaluate(client, "document.title");
+    const report = await waitForHydratedReport({
+      readState: () => evaluate(client, `(() => ({
+        title: document.title || "",
+        hasNextData: !!document.getElementById("__NEXT_DATA__")
+      }))()`),
+      sleep: delay
+    });
+    console.log(`Surfline report ready: ${report.title}`);
     for (const batch of chunk(spots, options.batchSize)) {
-      const pages = await fetchBatchInBrowser(client, batch);
+      const result = await fetchValidatedPages({
+        spots: batch,
+        fetchBatch: (pending) => fetchBatchInBrowser(client, pending),
+        validate: validateFetchedPage,
+        sleep: delay
+      });
+      failures.push(...result.failures);
+      const pages = result.pages;
       for (const page of pages) {
-        const validationError = validateFetchedPage(page);
-        if (validationError) {
-          failures.push(`${page.id}: ${validationError}`);
-          continue;
-        }
         const { htmlPath } = await writeFetchedPage(page);
         written += 1;
         console.log(`Fetched ${page.id} -> ${relativePath(htmlPath)}`);
