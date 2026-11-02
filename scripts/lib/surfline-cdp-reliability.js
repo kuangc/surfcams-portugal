@@ -3,8 +3,9 @@ export async function waitForHydratedReport({ readState, sleep, maxAttempts = 30
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     try {
       state = await readState();
-    } catch {
+    } catch (error) {
       // Chrome may replace the execution context while the report navigates.
+      if (!/Execution context was destroyed|Cannot find context with specified id/i.test(error.message)) throw error;
     }
     if (state?.hasNextData && !/just a moment/i.test(state.title || "")) return state;
     if (attempt < maxAttempts - 1) await sleep(intervalMs);
@@ -19,18 +20,19 @@ export async function fetchValidatedPages({ spots, fetchBatch, validate, sleep, 
 
   for (let attempt = 0; attempt < 2 && pending.length; attempt += 1) {
     const fetched = await fetchBatch(pending);
-    const failedIds = new Set();
+    const nextPending = [];
     failures = [];
-    for (const page of fetched) {
-      const error = validate(page);
+    for (const spot of pending) {
+      const page = fetched.find((item) => item.id === spot.id);
+      const error = page ? validate(page) : "missing browser response";
       if (error) {
-        failedIds.add(page.id);
-        failures.push(`${page.id}: ${error}`);
+        nextPending.push(spot);
+        failures.push(`${spot.id}: ${error}`);
       } else {
         pages.push(page);
       }
     }
-    pending = pending.filter((spot) => failedIds.has(spot.id));
+    pending = nextPending;
     if (pending.length && attempt === 0) await sleep(retryDelayMs);
   }
 

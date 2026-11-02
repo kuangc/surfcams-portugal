@@ -45,6 +45,19 @@ test("waitForHydratedReport tolerates a transient CDP context error during navig
   assert.equal(state.hasNextData, true);
 });
 
+test("waitForHydratedReport exposes a permanent CDP failure without waiting", async () => {
+  let waits = 0;
+  await assert.rejects(
+    waitForHydratedReport({
+      readState: async () => { throw new Error("WebSocket is not open"); },
+      sleep: async () => { waits += 1; },
+      maxAttempts: 2
+    }),
+    /WebSocket is not open/
+  );
+  assert.equal(waits, 0);
+});
+
 test("fetchValidatedPages retries only the page blocked by a temporary 403", async () => {
   const calls = [];
   const waits = [];
@@ -74,4 +87,15 @@ test("fetchValidatedPages keeps a persistent 403 as a failure", async () => {
   });
   assert.deepEqual(result.pages, []);
   assert.deepEqual(result.failures, ["a: HTTP 403"]);
+});
+
+test("fetchValidatedPages reports a missing browser response as a failure", async () => {
+  const result = await fetchValidatedPages({
+    spots: [{ id: "a" }, { id: "b" }],
+    fetchBatch: async () => [{ id: "a", status: 200 }],
+    validate: (page) => page.status === 200 ? null : `HTTP ${page.status}`,
+    sleep: async () => {}
+  });
+  assert.deepEqual(result.pages.map((page) => page.id), ["a"]);
+  assert.deepEqual(result.failures, ["b: missing browser response"]);
 });
